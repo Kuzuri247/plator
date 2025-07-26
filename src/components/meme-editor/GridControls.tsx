@@ -49,19 +49,19 @@ export function GridControls({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-white font-semibold flex items-center gap-2">
+      <h3 className="dark:text-white text-black font-semibold flex items-center gap-2">
         <Grid className="w-4 h-4" />
         Grid & Canvas
       </h3>
 
       {/* Canvas Size Presets */}
       <div>
-        <Label className="text-white/80 text-sm flex items-center gap-2">
+        <Label className="dark:text-white text-black text-sm flex items-center gap-2">
           <Maximize2 className="w-3 h-3" />
           Canvas Size
         </Label>
         <Select onValueChange={handlePresetChange}>
-          <SelectTrigger className="mt-2 bg-white/10 border-white/30 text-white">
+          <SelectTrigger className="mt-2 bg-neutral-400 dark:bg-white/10  border-white/30 text-white ">
             <SelectValue placeholder="Choose preset" />
           </SelectTrigger>
           <SelectContent>
@@ -72,14 +72,14 @@ export function GridControls({
             ))}
           </SelectContent>
         </Select>
-        <div className="text-white/60 text-xs mt-1">
+        <div className="dark:text-white text-black text-xs mt-1">
           Current: {canvasSize.width}×{canvasSize.height}px
         </div>
       </div>
 
       {/* Grid Rows */}
       <div>
-        <Label className="text-white/80 text-sm">Rows: {config.rows}</Label>
+        <Label className="dark:text-white text-black text-sm">Rows: {config.rows}</Label>
         <Slider
           value={[config.rows]}
           onValueChange={handleRowsChange}
@@ -92,7 +92,7 @@ export function GridControls({
 
       {/* Grid Columns */}
       <div>
-        <Label className="text-white/80 text-sm">Columns: {config.cols}</Label>
+        <Label className="dark:text-white text-black text-sm">Columns: {config.cols}</Label>
         <Slider
           value={[config.cols]}
           onValueChange={handleColsChange}
@@ -105,7 +105,7 @@ export function GridControls({
 
       {/* Grid Gap */}
       <div>
-        <Label className="text-white/80 text-sm">Gap: {config.gap}px</Label>
+        <Label className="dark:text-white text-black text-sm">Gap: {config.gap}px</Label>
         <Slider
           value={[config.gap]}
           onValueChange={handleGapChange}
@@ -117,8 +117,8 @@ export function GridControls({
       </div>
 
       {/* Grid Info */}
-      <div className="p-3 bg-white/5 rounded border border-white/20">
-        <div className="text-white/80 text-sm">
+      <div className="p-3 bg-white/5 rounded border border-neutral-300 dark:border-white/20">
+        <div className="dark:text-white text-black text-sm flex justify-around" >
           <div>Total Cells: {config.rows * config.cols}</div>
           <div>Cell Size: {Math.round((canvasSize.width / config.cols) - (config.gap * 2))}×{Math.round((canvasSize.height / config.rows) - (config.gap * 2))}px</div>
         </div>

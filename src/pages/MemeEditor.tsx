@@ -108,100 +108,81 @@ export default function MemeEditor() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className="min-h-screen dark:bg-neutral-900 bg-neutral-100 text-black dark:text-white">
       <Header />
 
       <div className="pt-20 px-4">
-        <div className="container mx-auto">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Meme Template Maker
-            </h1>
-            <p className="text-white/80">
-              Create stunning memes with customizable grids and text styling
-            </p>
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Left Sidebar - Controls */}
+        <div className="lg:col-span-1 space-y-4">
+          <Card className="p-4 dark:bg-neutral-900 bg-neutral-100 border-neutral-300 dark:border-neutral-700">
+          <GridControls
+            config={gridConfig}
+            onChange={setGridConfig}
+            canvasSize={canvasSize}
+            onCanvasSizeChange={setCanvasSize}
+          />
+          </Card>
+
+          <Card className="p-4 dark:bg-neutral-900 bg-neutral-100 border-neutral-200 dark:border-neutral-700">
+          <h3 className="dark:text-white text-black font-semibold mb-4">
+            Actions
+          </h3>
+          <div className="space-y-2">
+            <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="w-full border-neutral-300 dark:border-neutral-600 dark:text-white text-black hover:bg-neutral-200 dark:hover:bg-neutral-800"
+            >
+              <Undo className="w-2 h-4 mr-2" />
+              Undo
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full border-neutral-300 dark:border-neutral-600 dark:text-white text-black hover:bg-neutral-200 dark:hover:bg-neutral-800"
+            >
+              <Redo className="w-2 h-4 mr-2" />
+              Redo
+            </Button>
+            </div>
+            <Button
+            variant="outline"
+            className="w-full border-neutral-300 dark:border-neutral-600 dark:text-white text-black hover:bg-neutral-200 dark:hover:bg-neutral-800"
+            >
+            <Save className="w-4 h-4 mr-2" />
+            Save Template
+            </Button>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Left Sidebar - Controls */}
-            <div className="lg:col-span-1 space-y-4">
-              <Card className="p-4 bg-white/10 backdrop-blur-md border-white/20">
-                <GridControls
-                  config={gridConfig}
-                  onChange={setGridConfig}
-                  canvasSize={canvasSize}
-                  onCanvasSizeChange={setCanvasSize}
-                />
-              </Card>
-
-              <Card className="p-4 bg-white/10 backdrop-blur-md border-white/20">
-                <h3 className="text-white font-semibold mb-4">Actions</h3>
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      className="w-full border-white/30 text-white hover:bg-white/10"
-                    >
-                      <Undo className="w-2 h-4 mr-2" />
-                      Undo
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full border-white/30 text-white hover:bg-white/10"
-                    >
-                      <Redo className="w-2 h-4 mr-2" />
-                      Redo
-                    </Button>
-                  </div>
-                  <Button
-                    variant="outline"
-                    className="w-full border-white/30 text-white hover:bg-white/10"
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Template
-                  </Button>
-                </div>
-              </Card>
-
-              {/* {selectedElement && (
-                <Card className="p-4 bg-white/10 backdrop-blur-md border-white/20">
-                  <TextEditor
-                    element={elements.find((el) => el.id === selectedElement)}
-                    onUpdate={(updates) =>
-                      updateElement(selectedElement, updates)
-                    }
-                    onDelete={() => deleteElement(selectedElement)}
-                  />
-                </Card>
-              )} */}
-            </div>
-
-            {/* Center - Canvas */}
-            <div className="lg:col-span-2">
-              <Card className="p-4 bg-white/5 backdrop-blur-md border-white/20">
-                <MemeCanvas
-                  elements={elements}
-                  selectedElement={selectedElement}
-                  onElementSelect={setSelectedElement}
-                  onElementUpdate={updateElement}
-                  onTextAdd={handleAddText}
-                  gridConfig={gridConfig}
-                  canvasSize={canvasSize}
-                />
-              </Card>
-            </div>
-
-            {/* Right Sidebar - Actions */}
-            <div className="lg:col-span-1 space-y-4">
-              <Card className="p-4 bg-white/10 backdrop-blur-md border-white/20">
-                <ImageUploader
-                  onImageAdd={handleAddImage}
-                  gridConfig={gridConfig}
-                />
-              </Card>
-            </div>
-          </div>
+          </Card>
         </div>
+
+        {/* Center - Canvas */}
+        <div className="lg:col-span-2">
+          <Card className="p-4 dark:bg-neutral-900 bg-neutral-100 border-neutral-200 dark:border-neutral-700">
+          <MemeCanvas
+            elements={elements}
+            selectedElement={selectedElement}
+            onElementSelect={setSelectedElement}
+            onElementUpdate={updateElement}
+            onTextAdd={handleAddText}
+            gridConfig={gridConfig}
+            canvasSize={canvasSize}
+          />
+          </Card>
+        </div>
+
+        {/* Right Sidebar - Actions */}
+        <div className="lg:col-span-1 space-y-4">
+          <Card className="p-4 dark:bg-neutral-900 bg-neutral-100 border-neutral-200 dark:border-neutral-700">
+          <ImageUploader
+            onImageAdd={handleAddImage}
+            gridConfig={gridConfig}
+          />
+          </Card>
+        </div>
+        </div>
+      </div>
       </div>
     </div>
   );

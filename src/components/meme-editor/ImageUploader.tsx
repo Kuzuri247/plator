@@ -44,36 +44,51 @@ export function ImageUploader({ onImageAdd, gridConfig }: ImageUploaderProps) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-white font-semibold flex items-center gap-2">
+      <h3 className="dark:text-white text-black font-semibold flex items-center gap-2">
         <Upload className="w-4 h-4" />
         Add Images
       </h3>
 
       {/* Grid Selection */}
       <div>
-        <Label className="text-white/80 text-sm">Target Grid Cell</Label>
+        <Label className="dark:text-white text-black text-sm">Target Grid Cell</Label>
         <div className="grid grid-cols-4 gap-2 mt-2">
           {Array.from({ length: totalGrids }, (_, index) => (
-            <Button
-              key={index}
-              variant={selectedGrid === index ? "default" : "outline"}
-              size="sm"
-              className={`h-8 text-xs ${
-                selectedGrid === index 
-                  ? "bg-primary text-primary-foreground" 
-                  : "border-white/30 text-white hover:bg-white/10"
-              }`}
-              onClick={() => setSelectedGrid(index)}
-            >
-              {index + 1}
-            </Button>
+            <div className="relative" key={index}>
+              <Button
+                variant={selectedGrid === index ? "default" : "outline"}
+                size="sm"
+                className={`h-8 text-xs ${
+                  selectedGrid === index
+                    ? "bg-primary text-primary-foreground"
+                    : "border-neutral-300 dark:border-neutral-600 dark:text-white text-black hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                } w-full`}
+                onClick={() => setSelectedGrid(index)}
+              >
+                {index + 1}
+              </Button>
+              {/* Delete image button (shows only if image exists for this grid cell) */}
+              {gridConfig.images?.[index] && (
+                <button
+                  type="button"
+                  className="absolute -top-2 -right-2 bg-red-600 dark:bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow"
+                  title="Delete image"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onImageAdd("", index)
+                  }}
+                >
+                  ×
+                </button>
+              )}
+            </div>
           ))}
         </div>
       </div>
 
       {/* File Upload */}
       <div>
-        <Label className="text-white/80 text-sm">Upload Image</Label>
+        <Label className="dark:text-white text-black text-sm">Upload Image</Label>
         <input
           ref={fileInputRef}
           type="file"
@@ -83,7 +98,7 @@ export function ImageUploader({ onImageAdd, gridConfig }: ImageUploaderProps) {
         />
         <Button
           variant="outline"
-          className="w-full mt-2 border-white/30 text-white hover:bg-white/10"
+          className="w-full mt-2 border-neutral-300 dark:border-neutral-600 dark:text-white text-black hover:bg-neutral-200 dark:hover:bg-neutral-700"
           onClick={() => fileInputRef.current?.click()}
         >
           <Upload className="w-4 h-4 mr-2" />
@@ -93,18 +108,18 @@ export function ImageUploader({ onImageAdd, gridConfig }: ImageUploaderProps) {
 
       {/* URL Input */}
       <div>
-        <Label className="text-white/80 text-sm">Image URL</Label>
+        <Label className="dark:text-white text-black text-sm">Image URL</Label>
         <div className="flex gap-2 mt-2">
           <Input
             placeholder="https://example.com/image.jpg"
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
-            className="bg-white/10 border-white/30 text-white placeholder:text-white/50"
+            className="bg-neutral-100 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600 dark:text-white text-black placeholder:text-neutral-300 dark:placeholder:text-neutral-500"
           />
           <Button
             variant="outline"
             size="icon"
-            className="border-white/30 text-white hover:bg-white/10"
+            className="border-neutral-300 dark:border-neutral-600 dark:text-white text-black hover:bg-neutral-200 dark:hover:bg-neutral-700"
             onClick={handleUrlAdd}
           >
             <Link className="w-4 h-4" />
@@ -114,11 +129,11 @@ export function ImageUploader({ onImageAdd, gridConfig }: ImageUploaderProps) {
 
       {/* Sample Images */}
       <div>
-        <Label className="text-white/80 text-sm">Quick Start</Label>
+        <Label className="dark:text-white text-black text-sm">Quick Start</Label>
         <div className="space-y-2 mt-2">
           <Button
             variant="outline"
-            className="w-full border-white/30 text-white hover:bg-white/10"
+            className="w-full border-neutral-300 dark:border-neutral-600 dark:text-white text-black hover:bg-neutral-200 dark:hover:bg-neutral-700"
             onClick={handleSampleImage}
           >
             <Grid className="w-4 h-4 mr-2" />
@@ -129,7 +144,7 @@ export function ImageUploader({ onImageAdd, gridConfig }: ImageUploaderProps) {
 
       {/* Popular Meme Templates */}
       <div>
-        <Label className="text-white/80 text-sm">Popular Templates</Label>
+        <Label className="dark:text-white text-black text-sm">Popular Templates</Label>
         <div className="grid grid-cols-2 gap-2 mt-2">
           {[
             { name: "Drake", url: "https://i.imgflip.com/30b1gx.jpg" },
@@ -141,7 +156,7 @@ export function ImageUploader({ onImageAdd, gridConfig }: ImageUploaderProps) {
               key={template.name}
               variant="outline"
               size="sm"
-              className="text-xs border-white/30 text-white hover:bg-white/10"
+              className="text-xs border-neutral-300 dark:border-neutral-600 dark:text-white text-black hover:bg-neutral-200 dark:hover:bg-neutral-700"
               onClick={() => onImageAdd(template.url, selectedGrid)}
             >
               {template.name}
