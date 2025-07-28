@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 export function Header() {
   return (
     <nav className="fixed top-0 w-full z-50 py-2 ">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between  font-inter">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center">
             <img
@@ -18,28 +18,28 @@ export function Header() {
           </a>
         </div>
 
-        <div className="hidden md:flex items-center gap-8 font-medium font-inter text-lg">
+        <div className="hidden md:flex items-center gap-8 font-medium text-lg">
           <a
             href="/meme-editor"
-            className="text-muted-foreground hover:text-foreground transition-smooth"
+            className="text-neutral-600 dark:text-muted-foreground hover:text-foreground dark:hover:text-slate-100 transition-smooth"
           >
             Editor
           </a>
           <a
             href="/style-text"
-            className="text-muted-foreground hover:text-foreground transition-smooth"
+            className="text-neutral-600 dark:text-muted-foreground hover:text-foreground dark:hover:text-slate-100 transition-smooth"
           >
             Texter
           </a>
           <a
             href="#pricing"
-            className="text-muted-foreground hover:text-foreground transition-smooth"
+            className="text-neutral-600 dark:text-muted-foreground hover:text-foreground dark:hover:text-slate-100 transition-smooth"
           >
             Scheduler
           </a>
           <a
             href="#about"
-            className="text-muted-foreground hover:text-foreground transition-smooth"
+            className="text-neutral-600 dark:text-muted-foreground hover:text-foreground dark:hover:text-slate-100 transition-smooth"
           >
             About
           </a>

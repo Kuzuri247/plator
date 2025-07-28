@@ -66,7 +66,7 @@ export function GridControls({
           Canvas Size
         </Label>
         <Select onValueChange={handlePresetChange}>
-          <SelectTrigger className="mt-2 bg-neutral-400 dark:bg-white/10  border-white/30 text-white ">
+          <SelectTrigger className="mt-2 bg-neutral-300 dark:bg-white/10  border-white/30 text-white ">
             <SelectValue placeholder="Choose preset" />
           </SelectTrigger>
           <SelectContent>

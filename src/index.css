@@ -38,16 +38,15 @@ All colors MUST be HSL.
 
     /* Creative gradients inspired by InboxWarden */
     --gradient-primary: linear-gradient(
-      135deg,
-      hsl(262, 85%, 48%),
-      hsl(316 60% 68%)
+      90deg,
+      hsl(262 53% 60%) 0%,
+      /* Soft lavender */ hsl(316 50% 60%) 100% /* Pale pink */
     );
-    --gradient-hero: linear-gradient(
-      0deg,
-      hsl(262 53% 58%) 0%,
-      hsl(316 50% 68%) 0%,
-      hsl(45 53% 87%) 100%
-    );
+
+    --gradient-hero:
+      radial-gradient(circle at top, hsl(30 53% 85%) 0%, transparent 60%),
+      linear-gradient(180deg, hsl(316 50% 66%) 60%, hsl(30 53% 85%) 100%);
+
     --gradient-card: linear-gradient(
       145deg,
       hsl(0 0% 100% / 0.1),
@@ -111,16 +110,21 @@ All colors MUST be HSL.
     --ring: 262 83% 58%;
 
     /* Dark mode gradients */
+    --gradient-primary: linear-gradient(
+      90deg,
+      hsl(240, 24%, 40%) 0%,
+      hsl(265 40% 50%) 100%
+    );
+
     --gradient-dark: linear-gradient(
       135deg,
       hsl(262, 45%, 18%),
       hsl(316, 35%, 25%)
     );
-    --gradient-hero: linear-gradient(
-      180deg,
-      hsl(222.2 84% 4.9%) 0%,
-      hsl(262 83% 58%) 100%
-    );
+    --gradient-hero:
+      radial-gradient(circle at top, hsl(262 70% 50%) 0%, transparent 60%),
+      linear-gradient(180deg, hsl(222.2 90% 4.9%) 60%, hsl(262 70% 50%) 100%);
+
     --gradient-card: linear-gradient(
       145deg,
       hsl(0 0% 100% / 0.05),
@@ -145,4 +149,9 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+}
+
+html,
+body {
+  font-family: 'Inter', sans-serif;
 }

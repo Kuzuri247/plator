@@ -201,7 +201,7 @@ export default function StyleTextEditor() {
   };
 
   return (
-    <div className="min-h-screen dark:bg-neutral-900 bg-neutral-100 text-black dark:text-white font-inter">
+    <div className="min-h-screen dark:bg-neutral-900 bg-neutral-100 text-black dark:text-white  ">
       <Header />
 
       <div className="pt-20 px-4">
@@ -475,70 +475,68 @@ export default function StyleTextEditor() {
 
             <div className="lg:col-span-1 space-y-4">
               <Card className="p-4 dark:bg-neutral-900 bg-neutral-100 border-neutral-300 dark:border-neutral-700">
-              <div className="mb-4">
-                <Label className="dark:text-white/80 text-black/80 text-sm flex items-center gap-2">
-                <Sparkles className="w-4 h-4" />
-                Text Shadow
-                </Label>
-                <Select
-                value={selectedElementData?.style.textShadow || textShadow}
-                onValueChange={(value) => {
-                  if (selectedElementData) {
-                  updateSelectedElement({
-                    style: {
-                    ...selectedElementData.style,
-                    textShadow: value,
-                    },
-                  });
-                  } else {
-                  setTextShadow(value);
-                  }
-                }}
-                >
-                <SelectTrigger className="mt-2 w-full border-neutral-300 dark:border-neutral-600">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {shadowPresets.map((shadow) => (
-                  <SelectItem 
-                    key={shadow.name} 
-                    value={shadow.value}
-                    className="font-normal"
+                <div className="mb-4">
+                  <Label className="dark:text-white/80 text-black/80 text-sm flex items-center gap-2">
+                    Text Shadow
+                  </Label>
+                  <Select
+                    value={selectedElementData?.style.textShadow || textShadow}
+                    onValueChange={(value) => {
+                      if (selectedElementData) {
+                        updateSelectedElement({
+                          style: {
+                            ...selectedElementData.style,
+                            textShadow: value,
+                          },
+                        });
+                      } else {
+                        setTextShadow(value);
+                      }
+                    }}
                   >
-                    {shadow.name}
-                  </SelectItem>
-                  ))}
-                </SelectContent>
-                </Select>
-              </div>
+                    <SelectTrigger className="mt-2 w-full border-neutral-300 dark:border-neutral-600">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {shadowPresets.map((shadow) => (
+                        <SelectItem
+                          key={shadow.name}
+                          value={shadow.value}
+                          className="font-normal"
+                        >
+                          {shadow.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <Button
-                onClick={addTextElement}
-                className="w-full mb-6"
-                variant="default"
-              >
-                Add Text to Canvas
-              </Button>
+                <Button
+                  onClick={addTextElement}
+                  className="w-full mb-6"
+                  variant="default"
+                >
+                  Add Text to Canvas
+                </Button>
 
-              <Label className="dark:text-white/80 text-black/80 text-sm block mb-2">
-                Background Image
-              </Label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-              <Button
-                onClick={() => fileInputRef.current?.click()}
-                variant="outline"
-                className="w-full border-neutral-300 dark:border-neutral-600"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Image
-              </Button>
-
+                <Label className="dark:text-white/80 text-black/80 text-sm block mb-2">
+                  Background Image
+                </Label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <Button
+                  onClick={() => fileInputRef.current?.click()}
+                  variant="outline"
+                  className="w-full border-neutral-300 dark:border-neutral-600"
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  Upload Image
+                </Button>
 
                 <div className="mt-4">
                   <Label className="dark:text-white text-black text-sm">
