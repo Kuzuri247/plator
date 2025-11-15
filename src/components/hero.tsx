@@ -1,19 +1,34 @@
 import { Button } from './ui/button';
-import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { Github } from 'lucide-react';
 
 export function Hero() {
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 bg-gradient-hero">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24">
+      {/* Aurora Background */}
+      <div className="absolute inset-0 z-0 dark:bg-black bg-white">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(ellipse 120% 80% at 70% 20%, rgba(255, 20, 147, 0.15), transparent 50%),
+              radial-gradient(ellipse 100% 60% at 30% 10%, rgba(0, 255, 255, 0.12), transparent 60%),
+              radial-gradient(ellipse 90% 70% at 50% 0%, rgba(138, 43, 226, 0.18), transparent 65%),
+              radial-gradient(ellipse 110% 50% at 80% 30%, rgba(255, 215, 0, 0.08), transparent 40%),
+              transparent
+            `,
+          }}
+        />
+      </div>
+
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-4xl mx-auto tracking-tighter">
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
-            <ColourfulText text="Everything in a Plate" />
+        <div className="text-center max-w-4xl mx-auto">
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight tracking-[-0.05em] bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-violet-400 to-amber-600">
+            Everything in a Plate
             <br />
-            <ColourfulText text="Create with Style" />
+            Create with ease
           </h1>
 
-          <p className="text-xl md:text-2xl text-neutral-600 dark:text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed text-wrap">
+          <p className="text-xl md:text-2xl text-neutral-700 dark:text-neutral-300 mb-8 max-w-2xl mx-auto leading-relaxed tracking-tight">
             Transform your content creation with meme templates, stylish text
             integration, and smart post scheduling.
           </p>
@@ -21,64 +36,21 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Button
               size="lg"
-              className="bg-gradient-primary dark:bg-gradient-primary-dark hover:shadow-purple transition-all text-lg px-8 py-6 hover:-translate-y-1 ease-in-out duration-200"
-            >
-              <p>Start Creating Free</p>
+ className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white hover:shadow-lg hover:shadow-purple-500/50 transition-all text-lg px-8 py-6 hover:-translate-y-1 ease-in-out duration-200"
+>            
+              Start Creating Free
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="bg-neutral-200 dark:bg-neutral-800 border-white/20 hover:bg-white/10 dark:hover:bg-white/10 transition-smooth text-lg px-8 py-6"
+              className="flex items-center gap-4 bg-neutral-100 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-black dark:text-white transition-all text-lg px-8 py-6"
             >
-              Watch Demo
+              <span>Github</span>
+              <Github className="w-5 h-5" />
             </Button>
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function ColourfulText({ text }: { text: string }) {
-  const colors = ['currentColor']; // Single color to maintain the parent text color
-
-  const [currentColors, setCurrentColors] = useState(colors);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const shuffled = [...colors].sort(() => Math.random() - 0.5);
-      setCurrentColors(shuffled);
-      setCount((prev) => prev + 1);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <>
-      {text.split('').map((char, index) => (
-        <motion.span
-          key={`${char}-${count}-${index}`}
-          initial={{
-            y: 0,
-          }}
-          animate={{
-            color: currentColors[index % currentColors.length],
-            y: [0, -3, 0],
-            scale: [1, 1.01, 1],
-            filter: ['blur(0px)', `blur(5px)`, 'blur(0px)'],
-            opacity: [1, 0.8, 1],
-          }}
-          transition={{
-            duration: 0.5,
-            delay: index * 0.05,
-          }}
-          className="inline-block whitespace-pre tracking-tight"
-        >
-          {char}
-        </motion.span>
-      ))}
-    </>
   );
 }

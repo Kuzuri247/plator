@@ -2,142 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Minimal neutral design system - All colors in HSL */
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 9%;
 
-    --primary: 262 83% 58%;
+    --primary: 0 0% 9%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 262 83% 58%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 9%;
 
-    /* Creative gradients inspired by InboxWarden */
+    /* Subtle neutral gradients */
     --gradient-primary: linear-gradient(
-      90deg,
-      hsl(262 53% 60%) 0%,
-      /* Soft lavender */ hsl(316 50% 60%) 100% /* Pale pink */
+      180deg,
+      hsl(0 0% 100%) 0%,
+      hsl(0 0% 98%) 100%
     );
 
-    --gradient-hero:
-      radial-gradient(circle at top, hsl(30 53% 85%) 0%, transparent 60%),
-      linear-gradient(180deg, hsl(316 50% 66%) 60%, hsl(30 53% 85%) 100%);
+    --gradient-hero: radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      hsl(0 0% 96%),
+      transparent
+    );
 
     --gradient-card: linear-gradient(
       145deg,
-      hsl(0 0% 100% / 0.1),
-      hsl(262 83% 58% / 0.05)
+      hsl(0 0% 100%),
+      hsl(0 0% 98%)
     );
 
-    /* Shadows with brand colors */
-    --shadow-purple: 0 10px 30px -5px hsl(262 83% 58% / 0.3);
-    --shadow-glow: 0 0 50px hsl(316 70% 68% / 0.4);
+    --shadow-soft: 0 2px 8px hsl(0 0% 0% / 0.04);
+    --shadow-medium: 0 4px 16px hsl(0 0% 0% / 0.08);
 
-    /* Animation variables */
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-
+    --transition-smooth: all 0.3s ease;
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
+    --sidebar-foreground: 0 0% 9%;
+    --sidebar-primary: 0 0% 9%;
     --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 0 0% 9%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 9%;
+    --foreground: 0 0% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 262 83% 58%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 98%;
 
-    /* Dark mode gradients */
+    /* Subtle dark gradients */
     --gradient-primary: linear-gradient(
-      90deg,
-      hsl(240, 24%, 40%) 0%,
-      hsl(265 40% 50%) 100%
+      180deg,
+      hsl(0 0% 9%) 0%,
+      hsl(0 0% 7%) 100%
     );
 
-    --gradient-dark: linear-gradient(
-      135deg,
-      hsl(262, 45%, 18%),
-      hsl(316, 35%, 25%)
+    --gradient-hero: radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      hsl(0 0% 12%),
+      transparent
     );
-    --gradient-hero:
-      radial-gradient(circle at top, hsl(262 70% 50%) 0%, transparent 60%),
-      linear-gradient(180deg, hsl(222.2 90% 4.9%) 60%, hsl(262 70% 50%) 100%);
 
     --gradient-card: linear-gradient(
       145deg,
-      hsl(0 0% 100% / 0.05),
-      hsl(262 83% 58% / 0.1)
+      hsl(0 0% 10%),
+      hsl(0 0% 8%)
     );
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --shadow-soft: 0 2px 8px hsl(0 0% 0% / 0.3);
+    --shadow-medium: 0 4px 16px hsl(0 0% 0% / 0.5);
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 9%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 98%;
   }
 }
 
