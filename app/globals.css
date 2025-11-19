@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+:root {
+  /* Light mode base variables */
+  --background: oklch(98% 0.01 270);
+  --surface: oklch(100% 0 0);
+  --foreground: oklch(15% 0.02 270);
+  --muted: oklch(92% 0.01 270);
+  --muted-foreground: oklch(50% 0.02 270);
+  --border: oklch(90% 0.01 270);
+  --primary: oklch(55% 0.22 270);
+  --primary-foreground: oklch(98% 0 0);
+  --secondary: oklch(95% 0.02 270);
+  --secondary-foreground: oklch(40% 0.1 270);
+  --destructive: oklch(60% 0.18 25);
+  --destructive-foreground: oklch(98% 0 0);
+  --shadow-glow: 0 0 20px -5px oklch(60% 0.25 270 / 0.4);
+}
+
+.dark {
+  /* Dark mode variables */
+  --background: oklch(12% 0.02 270);
+  --surface: oklch(16% 0.025 270);
+  --foreground: oklch(98% 0.01 270);
+  --muted: oklch(20% 0.03 270);
+  --muted-foreground: oklch(70% 0.02 270);
+  --border: oklch(22% 0.03 270);
+  --primary: oklch(65% 0.22 270);
+  --primary-foreground: oklch(100% 0 0);
+  --secondary: oklch(25% 0.04 270);
+  --secondary-foreground: oklch(85% 0.05 270);
+  --destructive: oklch(55% 0.2 25);
+  --destructive-foreground: oklch(98% 0 0);
+  --shadow-glow: 0 0 30px -10px oklch(65% 0.25 270 / 0.5);
+}
+
+@theme inline {
+  /* shadows */
+    --shadow-next: 0 80px 30px rgb(0, 0.1, 0.1, 0.90);
+
+  /* fonts */
+  --font-inter: var(--font-inter);
+  --font-manrope: var(--font-manrope);
+  --font-jakarta: var(--font-jakarta);
+
+  /* colors */
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
