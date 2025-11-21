@@ -4,6 +4,7 @@ import { CalendarHeartIcon } from "@phosphor-icons/react";
 import { ThemeToggle } from "./theme-toggle";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import ThemeSwitch from "./ThemeSwitch";
 
 export function Navbar({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,8 +49,7 @@ export function Navbar({ className }: { className?: string }) {
         </div>
 
         <div className="flex items-center space-x-4">
-          <ThemeToggle />
-
+        <ThemeSwitch />
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2"
