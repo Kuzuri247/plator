@@ -11,7 +11,7 @@ export const Button: React.FC<ButtonProps> = ({
   const baseStyles = "inline-flex items-center justify-center font-medium transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none cursor-pointer border rounded-none tracking-wide uppercase text-xs md:text-sm";
   
   const variants = {
-    primary: "bg-primary text-primary-foreground hover:bg-primary/90 border-primary shadow-sm",
+    primary: "bg-primary text-primary-foreground hover:bg-primary/90 border-primary shadow-next",
     secondary: "bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/80",
     outline: "border-input bg-background hover:bg-accent hover:text-accent-foreground text-foreground",
     ghost: "border-transparent hover:bg-accent hover:text-accent-foreground text-muted-foreground",

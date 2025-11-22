@@ -1,39 +1,44 @@
 @import "tailwindcss";
 
-/* CSS Custom Properties for Light and Dark Modes */
-
-
-
-/* Inline theme variables for usage */
 @theme inline {
-  /* shadows */
-  --shadow-next: 0 80px 30px rgba(0, 0, 0, 0.1);
+  --shadow-next: 0 8px 30px rgba(0, 0, 0, 0.1);
 
-  /* fonts */
   --font-inter: var(--font-inter);
   --font-manrope: var(--font-manrope);
   --font-space: var(--font-space);
 
-  /* colors */
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --color-background: oklch(var(--background));
+  --color-surface: oklch(var(--surface)); 
+  --color-foreground: oklch(var(--foreground));
+  --color-card: oklch(var(--card));
+  --color-card-foreground: oklch(var(--card-foreground));
+  --color-popover: oklch(var(--popover));
+  --color-popover-foreground: oklch(var(--popover-foreground));
+  --color-primary: oklch(var(--primary));
+  --color-primary-foreground: oklch(var(--primary-foreground));
+  --color-secondary: oklch(var(--secondary));
+  --color-secondary-foreground: oklch(var(--secondary-foreground));
+  --color-muted: oklch(var(--muted));
+  --color-muted-foreground: oklch(var(--muted-foreground));
+  --color-accent: oklch(var(--accent));
+  --color-accent-foreground: oklch(var(--accent-foreground));
+  --color-destructive: oklch(var(--destructive));
+  --color-destructive-foreground: oklch(var(--destructive-foreground));
+  --color-border: oklch(var(--border));
+  --color-input: oklch(var(--input));
+  --color-ring: oklch(var(--ring));
+  
+  --color-success: oklch(var(--success));
+  --color-success-foreground: oklch(var(--success-foreground));
 }
 
-/* Base style applying Tailwind utilities */
 @layer base {
 
 :root {
-  /* Light Mode - Industrial Clean */
+
+  --shadow-next: 0 8px 30px rgba(0, 0, 0, 0.25);
+
+
   --background: 0.99 0.005 100;
   --foreground: 0.14 0.02 100;
 
@@ -43,8 +48,8 @@
   --popover: 1 0 0;
   --popover-foreground: 0.14 0.02 100;
 
-  --primary: 0.8 0.18 95; /* Strong Industrial Yellow */
-  --primary-foreground: 0.1 0.03 100; /* Black text on yellow */
+  --primary: 0.8 0.18 95; 
+  --primary-foreground: 0.1 0.03 100; 
 
   --secondary: 0.95 0.01 100;
   --secondary-foreground: 0.14 0.02 100;
@@ -69,6 +74,10 @@
 }
 
 .dark {
+
+  --shadow-next: 0 8px 30px rgba(0, 225, 250, 0.915);
+
+
   /* Dark Mode - Cyberpunk/Neon Future */
   --background: 0.1 0.01 100; /* Deep Carbon Black */
   --foreground: 0.95 0.01 100; /* Off-white */
@@ -101,8 +110,6 @@
   --input: 0.22 0.02 100;
   --ring: 0.88 0.22 100;
 }
-
-
 
   * {
     @apply border-border;

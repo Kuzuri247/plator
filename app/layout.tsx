@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/provider";
+import { ReactLenis } from "lenis/react";
+
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -14,7 +16,7 @@ const inter = Inter({
 });
 
 const space = Space_Grotesk({
-  variable: "--font-inter",
+  variable: "--font-space",
   subsets: ["latin"],
 });
 
@@ -33,6 +35,8 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} ${space.variable} antialiased`}
       >
+                  <ReactLenis root />
+
         <Provider
           attribute="class"
           defaultTheme="system"
