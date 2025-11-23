@@ -7,7 +7,7 @@ export const ScalePattern = () => {
       {Array.from({ length: rows * cols }).map((_, i) => {
         const row = Math.floor(i / cols);
         const col = i % cols;
-
+        // staggered pattern
         // Determine if this cell should have the pattern
         let isActive = false;
         if (row % 2 === 0) {
@@ -25,7 +25,7 @@ export const ScalePattern = () => {
                 className="absolute inset-0 opacity-100 dark:opacity-50 transition-opacity duration-500"
                 style={{
                   backgroundImage:
-                    "repeating-linear-gradient(315deg, oklch(var(--primary)/0.15) 0, oklch(var(--primary)/0.15) 1px, transparent 0, transparent 50%)",
+                    "repeating-linear-gradient(315deg, oklch(var(--primary)/0.30) 0, oklch(var(--primary)/0.2) 1px, transparent 0, transparent 50%)",
                   backgroundSize: "9px 9px",
                 }}
               />
@@ -36,3 +36,11 @@ export const ScalePattern = () => {
     </div>
   );
 };
+
+export const EtchingCorner = ({ className }: { className?: string }) => (
+  <div className={`absolute size-4 border-black dark:border-white ${className}`}>
+    <div className="absolute w-full h-px bg-black dark:border-white top-0 left-0"></div>
+    <div className="absolute h-full w-px bg-black dark:border-white top-0 left-0"></div>
+    <div className="absolute top-0 left-0 size-4 bg-foreground"></div>
+  </div>
+);

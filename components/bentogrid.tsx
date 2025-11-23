@@ -10,7 +10,6 @@ import {
 } from "framer-motion";
 import {
   LayoutTemplate,
-  Type,
   CalendarClock,
   Smartphone,
   Image as ImageIcon,
@@ -24,6 +23,7 @@ import {
   ChevronDown,
   Monitor,
   Wifi,
+  TypeOutline,
 } from "lucide-react";
 
 const BentoCard = ({
@@ -252,20 +252,18 @@ export const BentoGrid = () => {
       {/* Specific Pattern Overlay */}
       <div className="absolute inset-0 w-[90%] md:w-[85%] mx-auto pointer-events-none">
         <div className="absolute inset-0 grid grid-cols-5 h-full opacity-100 dark:opacity-50">
-          {/* Column 1 */}
           <div
-            className="relative col-start-2 row-span-full border-x border-primary/10 bg-[size:10px_10px] bg-fixed"
+            className="relative col-start-1 row-span-full border-x border-primary/10 bg-size-[10px_10px] bg-fixed"
             style={{
               backgroundImage:
-                "repeating-linear-gradient(315deg, oklch(var(--primary)/0.2) 0, oklch(var(--primary)/0.1) 1px, transparent 0, transparent 50%)",
+                "repeating-linear-gradient(315deg, oklch(var(--primary)/0.3) 0, oklch(var(--primary)/0.1) 1px, transparent 0, transparent 50%)",
             }}
           ></div>
-          {/* Column 3 */}
           <div
-            className="relative col-start-4 row-span-full border-x border-primary/10 bg-[size:10px_10px] bg-fixed"
+            className="relative col-start-4 row-span-full border-x border-primary/10 bg-size-[10px_10px] bg-fixed"
             style={{
               backgroundImage:
-                "repeating-linear-gradient(315deg, oklch(var(--primary)/0.2) 0, oklch(var(--primary)/0.1) 1px, transparent 0, transparent 50%)",
+                "repeating-linear-gradient(315deg, oklch(var(--primary)/0.3) 0, oklch(var(--primary)/0.1) 1px, transparent 0, transparent 50%)",
             }}
           ></div>
         </div>
@@ -276,10 +274,10 @@ export const BentoGrid = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground font-display uppercase tracking-tight">
             Features for
             <br />
-            Modern Creators
+            <span className="text-primary">Modern Creators</span>
           </h2>
           <div className="h-1 w-20 bg-foreground mb-6" />
-          <p className="text-muted-foreground text-sm md:text-base">
+          <p className="text-muted-foreground text-sm md:text-base font-manrope">
             Everything you need to go from idea to published post in minutes.
             Minimalist tools for maximalist impact.
           </p>
@@ -310,7 +308,7 @@ export const BentoGrid = () => {
                   Smart Editor
                 </h3>
               </div>
-              <p className="text-muted-foreground max-w-md text-xs md:text-sm leading-relaxed">
+              <p className="text-muted-foreground max-w-md text-xs md:text-sm leading-relaxed font-manrope">
                 Create with purpose. Seamlessly switch between modes.
               </p>
             </div>
@@ -351,7 +349,7 @@ export const BentoGrid = () => {
                           Bold Moves
                         </motion.h4>
                         <motion.p
-                          className="text-[10px] text-neutral-500 font-sans text-center max-w-[80%]"
+                          className="text-[10px] text-neutral-500 text-center max-w-[80%] font-inter"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.4 }}
@@ -430,7 +428,7 @@ export const BentoGrid = () => {
                     }`}
                   >
                     <Edit3 size={10} />
-                    <span className="text-[8px] uppercase hidden sm:inline">
+                    <span className="text-[8px] uppercase hidden sm:inline font-manrope">
                       Typography
                     </span>
                   </div>
@@ -440,7 +438,7 @@ export const BentoGrid = () => {
                     }`}
                   >
                     <Move size={10} />
-                    <span className="text-[8px] uppercase hidden sm:inline">
+                    <span className="text-[8px] uppercase hidden sm:inline font-manrope">
                       Structure
                     </span>
                   </div>
@@ -450,7 +448,7 @@ export const BentoGrid = () => {
                     }`}
                   >
                     <Sparkles size={10} />
-                    <span className="text-[8px] uppercase hidden sm:inline">
+                    <span className="text-[8px] uppercase hidden sm:inline font-manrope">
                       Effects
                     </span>
                   </div>
@@ -468,12 +466,12 @@ export const BentoGrid = () => {
           >
             <div className="w-full flex flex-col items-center">
               <div className="p-3 border-2 bg-muted text-foreground mb-6">
-                <Type size={24} />
+                <TypeOutline size={24} />
               </div>
               <h3 className="text-lg font-bold mb-2 font-display uppercase text-foreground">
                 Typography
               </h3>
-              <p className="text-xs text-muted-foreground mb-8 uppercase tracking-widest">
+              <p className="text-xs text-muted-foreground mb-8 uppercase tracking-widest font-manrope">
                 {isCardHovered ? "Arrow Keys to Cycle" : "Hover to Interact"}
               </p>
             </div>
@@ -532,8 +530,6 @@ export const BentoGrid = () => {
                 >
                   <Underline size={12} />
                 </button>
-               
-                
               </div>
             </div>
           </BentoCard>
@@ -552,7 +548,7 @@ export const BentoGrid = () => {
                   <h3 className="text-lg font-bold font-display uppercase text-foreground">
                     Schedule
                   </h3>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground font-manrope">
                     Auto-post magic.
                   </p>
                 </div>
@@ -641,7 +637,7 @@ export const BentoGrid = () => {
                   <h3 className="text-lg font-bold font-display uppercase text-foreground">
                     Live Preview
                   </h3>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground font-manrope">
                     Pixel perfect.
                   </p>
                 </div>

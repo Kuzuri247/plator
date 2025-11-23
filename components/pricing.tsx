@@ -4,17 +4,8 @@ import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, X } from "lucide-react";
 import { Button } from "./ui/button";
+import { EtchingCorner } from "./patterns";
 
-const EtchingCorner = ({ className }: { className?: string }) => (
-  <div className={`absolute w-4 h-4 border-muted-foreground/50 ${className}`}>
-    {/* Decorative Etchings */}
-    <div className="absolute w-full h-px bg-muted-foreground/50 top-0 left-0"></div>
-    <div className="absolute h-full w-px bg-muted-foreground/50 top-0 left-0"></div>
-    <div className="absolute top-1 left-1 w-0.5 h-0.5 bg-foreground"></div>
-  </div>
-);
-
-// --- Spotlight Card Component ---
 const SpotlightCard = ({
   children,
   className = "",
@@ -50,11 +41,10 @@ const SpotlightCard = ({
       onClick={onClick}
       className={`relative overflow-hidden group ${className}`}
     >
-      {/* Spotlight Gradient */}
       <div
         className="pointer-events-none absolute -inset-px transition duration-300 opacity-0 group-hover:opacity-100"
         style={{
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, oklch(var(--primary)/0.15), transparent 40%)`,
+          background: `radial-gradient(500px circle at ${position.x}px ${position.y}px, oklch(var(--primary)/0.15), transparent 40%)`,
         }}
       />
       {children}
@@ -70,23 +60,24 @@ export const Pricing: React.FC = () => {
       <div className="container w-[90%] md:w-[70%] lg:w-[50%] mx-auto">
         <div className="flex flex-col items-center mb-20">
           <div className="relative mb-8">
-            <div className=" border-2 px-8 py-4 md:px-12 md:py-6 bg-background/50 backdrop-blur-sm relative z-10">
-              <h2 className="text-3xl md:text-5xl font-bold text-foreground font-display uppercase tracking-tighter m-0 leading-none text-center">
-                Unlock Potential
+            <div className=" border-2 px-8 py-4 md:px-12 md:py-6 bg-background/50 backdrop-blur-xl relative z-10">
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground font-display  uppercase tracking-tighter m-0 leading-none text-center">
+                Unlock <span className="text-primary">Potential</span>
               </h2>
             </div>
             <EtchingCorner className="-top-px -left-px border-t border-l" />
+            <EtchingCorner className="-top-px -right-px border-t border-r" />
             <EtchingCorner className="-bottom-px -right-px rotate-180 border-t border-l" />
+            <EtchingCorner className="-bottom-px -left-px rotate-270 border-t border-l" />
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-6">
-            <p className="text-muted-foreground text-sm text-center max-w-xs">
+            <p className="text-muted-foreground text-sm text-center max-w-xs font-manrope">
               Choose the plan that fits your workflow. No hidden fees.
             </p>
 
             <div className="h-8 w-px bg-border hidden md:block"></div>
 
-            {/* Toggle */}
             <div className="flex items-center gap-1 bg-muted/50  border-2 p-1">
               <button
                 onClick={() => setIsAnnual(false)}
@@ -113,9 +104,8 @@ export const Pricing: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Free Tier */}
-          <SpotlightCard className=" border-2 bg-card p-6 md:p-12 flex flex-col hover:border-foreground/30 transition-colors">
-            <div className="mb-8 relative z-10">
+          <SpotlightCard className="hover:scale-102 transition-transform duration-300 ease-in-out border-2 border-foreground/20 bg-card p-6 md:p-12 flex flex-col hover:border-foreground/30">
+            <div className="mb-14 relative z-10">
               <div className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-2">
                 Starter
               </div>
@@ -138,7 +128,7 @@ export const Pricing: React.FC = () => {
                   key={i}
                   className="flex items-center gap-3 text-sm text-muted-foreground"
                 >
-                  <Check size={16} className="text-succes" />
+                  <Check size={16} className="text-success" />
                   {item}
                 </li>
               ))}
@@ -148,7 +138,7 @@ export const Pricing: React.FC = () => {
                     key={i}
                     className="flex items-center gap-3 text-sm text-muted-foreground/50 line-through decoration-border"
                   >
-                    <X size={16} className="text-muted-foreground/50" />
+                    <X size={16} className="text-destructive" />
                     {item}
                   </li>
                 )
@@ -156,75 +146,77 @@ export const Pricing: React.FC = () => {
             </ul>
 
             <div className="relative z-10">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full hover:scale-103 transition-transform duration-300 ease-in-out">
                 Get Started
               </Button>
             </div>
           </SpotlightCard>
 
-          {/* Premium Tier */}
-          <SpotlightCard className="border-2 border-primary/20 bg-linear-to-b from-card to-muted/20 p-6 md:p-12 flex flex-col hover:border-primary/50 transition-colors duration-500">
-            {/* Cool Etchings / Corner Accents */}
-            <EtchingCorner className="top-0 left-0 border-t border-l" />
-            <EtchingCorner className="top-0 right-0 rotate-90 border-t border-l" />
-            <EtchingCorner className="bottom-0 left-0 -rotate-90 border-t border-l" />
-            <EtchingCorner className="bottom-0 right-0 rotate-180 border-t border-l" />
-
-            <div className="mb-8 relative z-10">
-              <div className="flex justify-between items-start">
-                <div className="text-foreground text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
-                  Pro{" "}
-                  <span className="px-2 py-0.5 bg-foreground text-background text-[10px]">
-                    Popular
+          <div className="relative group">
+ 
+            <SpotlightCard className="relative z-20 flex flex-col p-6 hover:scale-102 transition-transform duration-300 ease-in-out border-2 md:p-12 border-primary/50 hover:border-primary/80 backdrop-blur-xl bg-background/50">
+              <div className="relative z-20 mb-8">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2 mb-2 text-xs font-bold tracking-widest uppercase text-foreground">
+                    Pro{" "}
+                    <span className="px-2 py-0.5 bg-foreground text-background text-[10px]">
+                      Popular
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-end gap-1 text-4xl font-bold font-display text-foreground">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={isAnnual ? "year" : "month"}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                    >
+                      ${isAnnual ? "5" : "10"}
+                    </motion.span>
+                  </AnimatePresence>
+                  <span className="text-lg font-normal text-muted-foreground">
+                    /mo
                   </span>
                 </div>
+                <div className="h-4 mt-2 text-xs text-muted-foreground">
+                  {isAnnual && "Billed $60 yearly"}
+                </div>
               </div>
-              <div className="text-4xl font-display font-bold text-foreground flex items-end gap-1">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={isAnnual ? "year" : "month"}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+
+              <ul className="relative z-20 flex-1 mb-12 space-y-4">
+                {[
+                  "Unlimited Projects",
+                  "Premium Templates",
+                  "4K Exports",
+                  "Priority Support",
+                  "Team Collaboration",
+                  "AI Magic Tools",
+                  "Custom Fonts",
+                ].map((item, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center gap-3 text-sm text-foreground"
                   >
-                    ${isAnnual ? "5" : "10"}
-                  </motion.span>
-                </AnimatePresence>
-                <span className="text-lg text-muted-foreground font-normal">
-                  /mo
-                </span>
-              </div>
-              <div className="text-xs text-muted-foreground mt-2 h-4">
-                {isAnnual && "Billed $228 yearly"}
-              </div>
-            </div>
+                    <Check size={16} className="text-success" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
 
-            <ul className="space-y-4 mb-12 flex-1 relative z-10">
-              {[
-                "Unlimited Projects",
-                "Premium Templates",
-                "4K Exports",
-                "Priority Support",
-                "Team Collaboration",
-                "AI Magic Tools",
-                "Custom Fonts",
-              ].map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-center gap-3 text-sm text-foreground"
-                >
-                  <Check size={16} className="text-success" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <div className="relative z-10">
-              <Button variant="primary" className="w-full">
-                Upgrade Now
-              </Button>
+              <div className="relative z-20">
+                <Button variant="primary" className="w-full bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out">
+                  Upgrade Now
+                </Button>
+              </div>
+            </SpotlightCard>
+            <div className="absolute inset-0 z-10 pointer-events-none">
+              <EtchingCorner className="absolute -top-px size-4 -left-[0.5px] border-t border-l text-primary" />
+              <EtchingCorner className="absolute -top-px -right-px rotate-90 border-t border-l text-primary" />
+              <EtchingCorner className="absolute -bottom-px -left-[0.5px] -rotate-90 border-t border-l text-primary" />
+              <EtchingCorner className="absolute -right-px -bottom-px rotate-180 border-t border-l text-primary" />
             </div>
-          </SpotlightCard>
+          </div>
         </div>
       </div>
     </section>

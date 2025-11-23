@@ -21,9 +21,10 @@ export const Button: React.FC<ButtonProps> = ({
     sm: "h-8 px-4",
     md: "h-12 px-8",
     lg: "h-14 px-10",
+    icon: "h-10 w-10",
   };
 
-  const combinedClassName = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+  const combinedClassName = `${baseStyles} ${variants[variant]} ${sizes[size as keyof typeof sizes]} ${className}`;
 
   return (
     <button className={combinedClassName} {...props}>

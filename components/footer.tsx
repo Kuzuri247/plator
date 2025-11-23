@@ -22,9 +22,9 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-bold text-foreground mb-4 font-display uppercase tracking-tight">
-              PlateCreator
+              Pla<span className="text-primary">tor</span>
             </h3>
-            <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
+            <p className="text-muted-foreground max-w-sm text-sm leading-relaxed font-manrope">
               The all-in-one workspace for modern content creators.
               Design, Edit, Schedule, and Dominate your feed.
             </p>
@@ -32,7 +32,7 @@ export const Footer: React.FC = () => {
 
           <div>
             <h4 className="font-bold text-foreground mb-4 uppercase text-xs tracking-widest">Product</h4>
-            <ul className="space-y-3 text-muted-foreground text-sm">
+            <ul className="space-y-3 text-muted-foreground text-sm font-manrope">
               <li><a href="#" className="hover:text-foreground transition-colors">Templates</a></li>
               <li><a href="#" className="hover:text-foreground transition-colors">Editor</a></li>
               <li><a href="#" className="hover:text-foreground transition-colors">Scheduling</a></li>
@@ -42,11 +42,11 @@ export const Footer: React.FC = () => {
 
           <div>
             <h4 className="font-bold text-foreground mb-4 uppercase text-xs tracking-widest">Connect</h4>
-            <div className="flex flex-col gap-3">
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
+            <div className="flex flex-col gap-3 font-manrope">
+              <a href="https://x.com/kuzuri247" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
                 <Twitter size={16} /> Twitter (X)
               </a>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
+              <a href="https://github.com/Kuzuri247" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
                 <Github size={16} /> GitHub
               </a>
               <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
@@ -57,7 +57,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Section - Clean Background Area */}
-        <div className=" pt-8 flex flex-col md:flex-row justify-center items-center gap-6 text-muted-foreground text-xs uppercase tracking-wider">
+        <div className="font-inter pt-8 flex flex-col md:flex-row justify-center items-center gap-6 text-muted-foreground text-xs uppercase tracking-wider">
             <span>© {new Date().getFullYear()} PlateCreator Inc.</span>
             <span className="hidden md:block w-1 h-1 rounded-full bg-border"></span>
             <a href="#" className="hover:text-foreground transition-colors">Privacy</a>

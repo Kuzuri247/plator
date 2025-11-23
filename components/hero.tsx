@@ -2,20 +2,20 @@ import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { XPost, LinkedInPost, InstagramPost } from "./posts";
-import { ScalePattern } from "./scales";
+import { ScalePattern } from "./patterns";
 
 export const Hero = ({ children }: { children: React.ReactNode }) => {
   const [activeSlide, setActiveSlide] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % 3);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setActiveSlide((prev) => (prev + 1) % 3);
+  //   }, 4000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
-    <section className="relative w-[90%] md:w-[80%] mx-auto min-h-[85vh] md:min-h-[90vh] flex items-center justify-center pt-24 pb-10 bg-background">
+    <section className="relative w-full md:w-[80%] mx-auto min-h-[85vh] md:min-h-[90vh] flex items-center justify-center pt-24 pb-10 bg-background">
       <div className="relative z-10 h-full w-full flex flex-col justify-center">
         {/* Cool Tech Corners */}
         <div className="absolute -top-3 -left-3 w-8 h-8 border-t-4 border-l-4 border-foreground z-30" />
@@ -45,8 +45,7 @@ export const Hero = ({ children }: { children: React.ReactNode }) => {
                 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 tracking-tighter leading-[0.9] text-foreground font-display uppercase"
               >
                 Everything
-                <br />
-                In A Plate
+                <br /><span className="text-primary/95">In A Plate</span>
               </motion.h1>
 
               <motion.p
@@ -64,7 +63,7 @@ export const Hero = ({ children }: { children: React.ReactNode }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <Button size="md" variant="primary">
+                <Button size="md" variant="primary" className="bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out">
                   Start Creating Free
                 </Button>
               </motion.div>
@@ -75,10 +74,10 @@ export const Hero = ({ children }: { children: React.ReactNode }) => {
           <div className="relative min-h-[400px] lg:min-h-[600px] bg-background flex items-center justify-center overflow-hidden p-6 md:p-8">
             {/* Simple Grid Background for Right Column */}
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 mask-radial-fade pointer-events-none"
               style={{
                 backgroundImage:
-                  "linear-gradient(oklch(var(--border)/0.3) 1px, transparent 1px), linear-gradient(90deg, oklch(var(--border)/0.3) 1px, transparent 1px)",
+                  "linear-gradient(oklch(var(--border)/0.5) 1px, transparent 1px), linear-gradient(90deg, oklch(var(--border)/0.5) 1px, transparent 1px)",
                 backgroundSize: "40px 40px",
               }}
             />
