@@ -8,7 +8,7 @@
   --font-space: var(--font-space);
 
   --color-background: oklch(var(--background));
-  --color-surface: oklch(var(--surface)); 
+  --color-surface: oklch(var(--surface));
   --color-foreground: oklch(var(--foreground));
   --color-card: oklch(var(--card));
   --color-card-foreground: oklch(var(--card-foreground));
@@ -27,89 +27,84 @@
   --color-border: oklch(var(--border));
   --color-input: oklch(var(--input));
   --color-ring: oklch(var(--ring));
-  
+
   --color-success: oklch(var(--success));
   --color-success-foreground: oklch(var(--success-foreground));
 }
 
 @layer base {
+  :root {
+    --shadow-next: 0 8px 30px rgba(0, 0, 0, 0.25);
 
-:root {
+    --background: 0.99 0.005 100;
+    --foreground: 0.14 0.02 100;
 
-  --shadow-next: 0 8px 30px rgba(0, 0, 0, 0.25);
+    --card: 1 0 0;
+    --card-foreground: 0.14 0.02 100;
 
+    --popover: 1 0 0;
+    --popover-foreground: 0.14 0.02 100;
 
-  --background: 0.99 0.005 100;
-  --foreground: 0.14 0.02 100;
+    --primary: 0.8 0.18 95;
+    --primary-foreground: 0.1 0.03 100;
 
-  --card: 1 0 0;
-  --card-foreground: 0.14 0.02 100;
+    --secondary: 0.95 0.01 100;
+    --secondary-foreground: 0.14 0.02 100;
 
-  --popover: 1 0 0;
-  --popover-foreground: 0.14 0.02 100;
+    --muted: 0.94 0.01 100;
+    --muted-foreground: 0.45 0.02 100;
 
-  --primary: 0.8 0.18 95; 
-  --primary-foreground: 0.1 0.03 100; 
+    --accent: 0.94 0.02 100;
+    --accent-foreground: 0.14 0.02 100;
 
-  --secondary: 0.95 0.01 100;
-  --secondary-foreground: 0.14 0.02 100;
+    --destructive: 0.6 0.15 25;
+    --destructive-foreground: 0.98 0.005 100;
 
-  --muted: 0.94 0.01 100;
-  --muted-foreground: 0.45 0.02 100;
+    --success: 0.65 0.18 145; /* Green */
+    --success-foreground: 0.98 0 100;
 
-  --accent: 0.94 0.02 100;
-  --accent-foreground: 0.14 0.02 100;
+    --border: 0.9 0.02 100;
+    --input: 0.9 0.02 100;
+    --ring: 0.8 0.18 95;
 
-  --destructive: 0.6 0.15 25;
-  --destructive-foreground: 0.98 0.005 100;
+    --radius: 0.5rem;
+  }
 
-  --success: 0.65 0.18 145; /* Green */
-  --success-foreground: 0.98 0 100;
+  .dark {
+    --shadow-next: 0 8px 30px rgba(0, 225, 250, 0.915);
 
-  --border: 0.9 0.02 100;
-  --input: 0.9 0.02 100;
-  --ring: 0.8 0.18 95;
+    /* Dark Mode - Cyberpunk/Neon Future */
+    --background: 0.1 0.01 100; /* Deep Carbon Black */
+    --foreground: 0.95 0.01 100; /* Off-white */
 
-  --radius: 0.5rem;
-}
+    --card: 0.12 0.01 100; /* Slightly lighter carbon */
+    --card-foreground: 0.95 0.01 100;
 
-.dark {
+    --popover: 0.12 0.01 100;
+    --popover-foreground: 0.95 0.01 100;
 
-  --shadow-next: 0 8px 30px rgba(0, 225, 250, 0.915);
+    --primary: 0.88 0.22 100; /* Bright Neon Yellow */
+    --primary-foreground: 0.1 0.02 100; /* Black text on neon button */
 
+    --secondary: 0.2 0.02 100;
+    --secondary-foreground: 0.95 0.01 100;
 
-  /* Dark Mode - Cyberpunk/Neon Future */
-  --background: 0.1 0.01 100; /* Deep Carbon Black */
-  --foreground: 0.95 0.01 100; /* Off-white */
+    --muted: 0.18 0.02 100;
+    --muted-foreground: 0.65 0.02 100;
 
-  --card: 0.12 0.01 100; /* Slightly lighter carbon */
-  --card-foreground: 0.95 0.01 100;
+    --accent: 0.18 0.03 100;
+    --accent-foreground: 0.88 0.22 100; /* Yellow text on accent hover */
 
-  --popover: 0.12 0.01 100;
-  --popover-foreground: 0.95 0.01 100;
+    --destructive: 0.4 0.15 25;
+    --destructive-foreground: 0.98 0.005 100;
 
-  --primary: 0.88 0.22 100; /* Bright Neon Yellow */
-  --primary-foreground: 0.1 0.02 100; /* Black text on neon button */
+    --success: 0.75 0.2 145; /* Neon Green */
+    --success-foreground: 0.1 0.02 100;
 
-  --secondary: 0.2 0.02 100;
-  --secondary-foreground: 0.95 0.01 100;
-
-  --muted: 0.18 0.02 100;
-  --muted-foreground: 0.65 0.02 100;
-
-  --accent: 0.18 0.03 100;
-  --accent-foreground: 0.88 0.22 100; /* Yellow text on accent hover */
-
-  --destructive: 0.4 0.15 25;
-  --destructive-foreground: 0.98 0.005 100;
-
-  --success: 0.75 0.2 145; /* Neon Green */
-  --success-foreground: 0.1 0.02 100;
-
-  --border: 0.22 0.02 100; /* Dark Yellow-ish Grey */
-  --input: 0.22 0.02 100;
-  --ring: 0.88 0.22 100;
-}
+    --border: 0.22 0.02 100; /* Dark Yellow-ish Grey */
+    --input: 0.22 0.02 100;
+    --ring: 0.88 0.22 100;
+  }
 
   * {
     @apply border-border;

@@ -39,7 +39,10 @@ export const XPost = () => (
             <span className="font-bold text-foreground truncate hover:underline cursor-pointer">
               Alex Creator
             </span>
-            <BadgeCheck size={16} className="text-blue-500 fill-blue-500/10 shrink-0" />
+            <BadgeCheck
+              size={16}
+              className="text-blue-500 fill-blue-500/10 shrink-0"
+            />
             <span className="text-muted-foreground truncate">@alexcreates</span>
             <span className="text-muted-foreground shrink-0">·</span>
             <span className="text-muted-foreground shrink-0 hover:underline cursor-pointer">
@@ -53,12 +56,16 @@ export const XPost = () => (
 
         {/* Post Text */}
         <div className="mt-0.5 mb-3 text-[15px] leading-normal font-normal font-manrope text-foreground whitespace-pre-wrap">
-          Just used PlateCreator to schedule my whole week of content. The brutalist
-          templates are literally a cheat code.
+          Just used PlateCreator to schedule my whole week of content. The
+          brutalist templates are literally a cheat code.
           <br />
           <br />
-          <span className="text-blue-500 hover:underline cursor-pointer">#contentcreator</span>{" "}
-          <span className="text-blue-500 hover:underline cursor-pointer">#growth</span>
+          <span className="text-blue-500 hover:underline cursor-pointer">
+            #contentcreator
+          </span>{" "}
+          <span className="text-blue-500 hover:underline cursor-pointer">
+            #growth
+          </span>
         </div>
 
         {/* Post Media (Video/Image Placeholder) */}
@@ -89,7 +96,7 @@ export const XPost = () => (
             </div>
             <span className="text-xs">12</span>
           </div>
-          
+
           <div className="flex items-center gap-1 group cursor-pointer transition-colors hover:text-green-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-green-500/10 transition-colors">
               <Repeat size={18} />

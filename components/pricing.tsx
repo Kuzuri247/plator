@@ -141,19 +141,21 @@ export const Pricing: React.FC = () => {
                     <X size={16} className="text-destructive" />
                     {item}
                   </li>
-                )
+                ),
               )}
             </ul>
 
             <div className="relative z-10">
-              <Button variant="outline" className="w-full hover:scale-103 transition-transform duration-300 ease-in-out">
+              <Button
+                variant="outline"
+                className="w-full hover:scale-103 transition-transform duration-300 ease-in-out"
+              >
                 Get Started
               </Button>
             </div>
           </SpotlightCard>
 
           <div className="relative group">
- 
             <SpotlightCard className="relative z-20 flex flex-col p-6 hover:scale-102 transition-transform duration-300 ease-in-out border-2 md:p-12 border-primary/50 hover:border-primary/80 backdrop-blur-xl bg-background/50">
               <div className="relative z-20 mb-8">
                 <div className="flex items-start justify-between">
@@ -205,7 +207,10 @@ export const Pricing: React.FC = () => {
               </ul>
 
               <div className="relative z-20">
-                <Button variant="primary" className="w-full bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out">
+                <Button
+                  variant="primary"
+                  className="w-full bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out"
+                >
                   Upgrade Now
                 </Button>
               </div>

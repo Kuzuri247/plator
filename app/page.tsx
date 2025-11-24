@@ -6,6 +6,7 @@ import { BentoGrid } from "@/components/bentogrid";
 import { Footer } from "@/components/footer";
 import { Pricing } from "@/components/pricing";
 import { Moon, Sun } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function App() {
   const [isDark, setIsDark] = useState(true);
@@ -27,10 +28,7 @@ function App() {
             Pla<span className="text-primary">tor</span>
           </div>
           <div className="hidden md:flex gap-8 text-xs font-medium text-muted-foreground uppercase tracking-widest">
-            <a
-              href="/"
-              className="hover:text-foreground transition-colors"
-            >
+            <a href="/" className="hover:text-foreground transition-colors">
               Features
             </a>
             <a href="#" className="hover:text-foreground transition-colors">
@@ -43,7 +41,11 @@ function App() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsDark(!isDark)}
-              className="text-muted-foreground hover:text-foreground transition-colors p-2"
+              className={cn(
+                "text-muted-foreground hover:text-foreground p-2",
+                "transition-all duration-300 ease-in-out",
+                isDark ? "rotate-180" : "rotate-0",
+              )}
               aria-label="Toggle Theme"
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
@@ -57,7 +59,7 @@ function App() {
 
       <Hero />
 
-      <div className="relative z-20 bg-background border-t border-border transition-colors duration-300">
+      <div className="relative z-20 bg-background border-t border-b transition-colors duration-300">
         <BentoGrid />
       </div>
 

@@ -25,6 +25,7 @@ import {
   Wifi,
   TypeOutline,
 } from "lucide-react";
+import { BentoPattern } from "./patterns";
 
 const BentoCard = ({
   children,
@@ -163,7 +164,7 @@ export const BentoGrid = () => {
 
   const toggleStyle = (style: string) => {
     setActiveStyles((prev) =>
-      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
+      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style],
     );
   };
 
@@ -238,30 +239,12 @@ export const BentoGrid = () => {
   const calendarDays = getCalendarDays(currentMonth);
 
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">(
-    "mobile"
+    "mobile",
   );
 
   return (
     <section className="w-full relative bg-background py-10 md:py-20">
-      {/* Specific Pattern Overlay */}
-      <div className="absolute inset-0 w-[90%] md:w-[85%] mx-auto pointer-events-none">
-        <div className="absolute inset-0 grid grid-cols-5 h-full opacity-100 dark:opacity-50">
-          <div
-            className="relative col-start-1 row-span-full border-x border-primary/10 bg-size-[10px_10px] bg-fixed"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(315deg, oklch(var(--primary)/0.3) 0, oklch(var(--primary)/0.1) 1px, transparent 0, transparent 50%)",
-            }}
-          ></div>
-          <div
-            className="relative col-start-4 row-span-full border-x border-primary/10 bg-size-[10px_10px] bg-fixed"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(315deg, oklch(var(--primary)/0.3) 0, oklch(var(--primary)/0.1) 1px, transparent 0, transparent 50%)",
-            }}
-          ></div>
-        </div>
-      </div>
+      <BentoPattern />
 
       <div className="container w-[90%] md:w-[80%] lg:w-[75%] mx-auto relative z-20">
         <div className="mb-10 md:mb-16 max-w-2xl">
@@ -394,7 +377,7 @@ export const BentoGrid = () => {
                           alt="Space"
                         />
                         {/* Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/80" />
+                        <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/80" />
 
                         {/* Twinkling Dots Effect */}
                         <TwinklingStars />
@@ -553,7 +536,7 @@ export const BentoGrid = () => {
                 >
                   <ChevronDown size={14} className="rotate-90" />
                 </button>
-                <div className="px-3 py-1 text-xs font-mono text-foreground border-x border-border min-w-[70px] md:min-w-[80px] text-center">
+                <div className="px-3 py-1 text-xs font-mono text-foreground border-x border-border min-w-[70px] md:min-w-20 text-center">
                   {months[currentMonth].substring(0, 3)}
                 </div>
                 <button
@@ -567,7 +550,7 @@ export const BentoGrid = () => {
 
             {/* Calendar Visual */}
             <div className="flex-1 border-2 bg-muted/10 p-2 md:p-4 relative overflow-hidden flex flex-col min-h-[200px]">
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--border)/0.2)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--border)/0.2)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--border)/0.2)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--border)/0.2)_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none" />
 
               <div className="relative z-10 grid grid-cols-7 gap-1 h-full content-stretch">
                 {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
@@ -588,7 +571,7 @@ export const BentoGrid = () => {
                     <div
                       key={i}
                       className={`
-                           flex items-center justify-center relative group/day transition-colors min-h-[24px] rounded-sm
+                           flex items-center justify-center relative group/day transition-colors min-h-6 rounded-sm
                            ${
                              day.current
                                ? "bg-transparent text-muted-foreground hover:bg-muted"
@@ -726,7 +709,7 @@ export const BentoGrid = () => {
                     </motion.div>
 
                     {/* Reflection Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none z-20"></div>
+                    <div className="absolute inset-0 bg-linear-to-tr from-white/5 to-transparent pointer-events-none z-20"></div>
                   </motion.div>
                 </AnimatePresence>
               </TiltCard>

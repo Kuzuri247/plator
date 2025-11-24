@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { XPost, LinkedInPost, InstagramPost } from "./posts";
-import { ScalePattern } from "./patterns";
+import { LeftHeroPattern, RightHeroPattern } from "./patterns";
 
 export const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -26,7 +26,7 @@ export const Hero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 bg-background w-full shadow-2xl relative z-20">
           {/* Left Column: Content with Scale Pattern */}
           <div className="relative p-6 md:p-12 lg:p-16 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-border overflow-hidden min-h-[450px] lg:min-h-[600px]">
-            <ScalePattern />
+            <LeftHeroPattern />
 
             <div className="relative z-10">
               <motion.div
@@ -45,7 +45,8 @@ export const Hero = () => {
                 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 tracking-tighter leading-[0.9] text-foreground font-display uppercase"
               >
                 Everything
-                <br /><span className="text-primary/95">In A Plate</span>
+                <br />
+                <span className="text-primary/95">In A Plate</span>
               </motion.h1>
 
               <motion.p
@@ -63,7 +64,11 @@ export const Hero = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <Button size="md" variant="primary" className="bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out">
+                <Button
+                  size="md"
+                  variant="primary"
+                  className="bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out"
+                >
                   Start Creating Free
                 </Button>
               </motion.div>
@@ -73,14 +78,7 @@ export const Hero = () => {
           {/* Right Column: Rotating Social Mocks */}
           <div className="relative min-h-[400px] lg:min-h-[600px] bg-background flex items-center justify-center overflow-hidden p-6 md:p-8">
             {/* Simple Grid Background for Right Column */}
-            <div
-              className="absolute inset-0 mask-radial-fade pointer-events-none"
-              style={{
-                backgroundImage:
-                  "linear-gradient(oklch(var(--border)/0.5) 1px, transparent 1px), linear-gradient(90deg, oklch(var(--border)/0.5) 1px, transparent 1px)",
-                backgroundSize: "40px 40px",
-              }}
-            />
+            <RightHeroPattern />
 
             <div className="relative z-10 w-full max-w-md flex flex-col items-center">
               <AnimatePresence mode="wait">

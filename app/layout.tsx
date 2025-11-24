@@ -4,7 +4,6 @@ import "./globals.css";
 import { Provider } from "@/components/provider";
 import { ReactLenis } from "lenis/react";
 
-
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
@@ -35,7 +34,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} ${space.variable} antialiased`}
       >
-                  <ReactLenis root />
+        <ReactLenis root />
 
         <Provider
           attribute="class"
@@ -44,7 +43,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <main className="bg-background text-foreground font-space">
-            
             {children}
           </main>
         </Provider>

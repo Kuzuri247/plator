@@ -35,7 +35,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       canUndo,
       canRedo,
     },
-    ref
+    ref,
   ) => {
     return (
       <Card className="p-4 bg-surface border border-border">
@@ -46,7 +46,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             width: CANVAS_SIZE.width,
             height: CANVAS_SIZE.height,
             backgroundColor: "var(--color-muted)",
-            overflow: "hidden", 
+            overflow: "hidden",
           }}
           onMouseMove={onMouseMove}
           onMouseUp={onMouseUp}
@@ -54,7 +54,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
         >
           {/* Background Image  */}
           {backgroundImage && (
-            <div 
+            <div
               className="absolute inset-0 flex items-center justify-center pointer-events-none"
               style={{
                 width: "100%",
@@ -80,7 +80,9 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             <div
               key={element.id}
               className={`absolute cursor-move select-none transition-all ${
-                selectedElement === element.id ? "ring-2 ring-primary rounded px-1" : ""
+                selectedElement === element.id
+                  ? "ring-2 ring-primary rounded px-1"
+                  : ""
               }`}
               style={{
                 left: element.position.x,
@@ -122,7 +124,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
         </div>
       </Card>
     );
-  }
+  },
 );
 
 Canvas.displayName = "Canvas";

@@ -38,7 +38,7 @@ export default function EditorPage() {
   const saveHistory = (
     newElements: TextElement[],
     newBg: string | null,
-    newBgSize: number
+    newBgSize: number,
   ) => {
     const newHistory = history.slice(0, historyIndex + 1);
     newHistory.push({
@@ -82,17 +82,17 @@ export default function EditorPage() {
 
   const updateElementPosition = (
     elementId: string,
-    position: { x: number; y: number }
+    position: { x: number; y: number },
   ) => {
     setTextElements((prev) =>
-      prev.map((el) => (el.id === elementId ? { ...el, position } : el))
+      prev.map((el) => (el.id === elementId ? { ...el, position } : el)),
     );
   };
 
   const updateSelectedElement = (updates: Partial<TextElement>) => {
     if (!selectedElement) return;
     const updated = textElements.map((el) =>
-      el.id === selectedElement ? { ...el, ...updates } : el
+      el.id === selectedElement ? { ...el, ...updates } : el,
     );
     setTextElements(updated);
     saveHistory(updated, backgroundImage, backgroundImageSize);
@@ -108,10 +108,10 @@ export default function EditorPage() {
 
   const handleStyleChange = (
     property: keyof TextElement["style"],
-    value: any
+    value: any,
   ) => {
     const selectedElementData = textElements.find(
-      (el) => el.id === selectedElement
+      (el) => el.id === selectedElement,
     );
     if (selectedElementData) {
       updateSelectedElement({
@@ -247,7 +247,7 @@ export default function EditorPage() {
   };
 
   const selectedElementData = textElements.find(
-    (el) => el.id === selectedElement
+    (el) => el.id === selectedElement,
   );
 
   return (
