@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 
@@ -28,41 +27,40 @@ export function Background({
   };
 
   return (
-    <Card className="p-4 bg-surface border border-border">
-      <h3 className="font-semibold mb-4">Background</h3>
-      <div className="space-y-4">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-        <Button
-          onClick={() => fileInputRef.current?.click()}
-          variant="outline"
-          className="w-full"
-        >
-          <Upload className="w-4 h-4 mr-2" />
-          Upload Image
-        </Button>
+    <div className="space-y-4 py-2">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+      <Button
+        onClick={() => fileInputRef.current?.click()}
+        variant="outline"
+        className="w-full border-dashed"
+      >
+        <Upload className="w-4 h-4 mr-2" />
+        {backgroundImage ? "Change Image" : "Upload Image"}
+      </Button>
 
-        {backgroundImage && (
-          <div>
-            <Label className="text-sm text-muted-foreground">
-              Image Size: {imageSize}%
+      {backgroundImage && (
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-medium text-muted-foreground">
+              Scale
             </Label>
-            <Slider
-              value={[imageSize]}
-              onValueChange={([value]) => onImageSizeChange(value)}
-              min={20}
-              max={150}
-              step={5}
-              className="mt-2"
-            />
+            <span className="text-xs text-muted-foreground">{imageSize}%</span>
           </div>
-        )}
-      </div>
-    </Card>
+          <Slider
+            value={[imageSize]}
+            onValueChange={([value]) => onImageSizeChange(value)}
+            min={20}
+            max={150}
+            step={1}
+          />
+        </div>
+      )}
+    </div>
   );
 }

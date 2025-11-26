@@ -4,6 +4,17 @@ export interface TextStyle {
   fontWeight: string;
   color: string;
   textShadow: string;
+  borderRadius: number;
+  backgroundColor: string;
+  padding: number;
+  showBackground: boolean; // Added toggle
+}
+
+export interface ImageStyle {
+  scale: number;
+  borderRadius: number;
+  shadow: string;
+  rotate: number;
 }
 
 export interface TextElement {
@@ -21,19 +32,30 @@ export const FONT_FAMILIES = [
   "Arial",
   "Helvetica",
   "Impact",
+  "Courier New",
 ];
 
 export const FONT_WEIGHTS = [
   { value: "normal", label: "Normal" },
   { value: "bold", label: "Bold" },
-  { value: "700", label: "Semi Bold" },
-  { value: "900", label: "Black" },
+  { value: "800", label: "Extra Bold" },
 ];
 
 export const SHADOW_PRESETS = [
   { name: "None", value: "none" },
-  { name: "Light", value: "1px 1px 2px rgba(0,0,0,0.5)" },
-  { name: "Medium", value: "2px 2px 4px rgba(0,0,0,0.8)" },
-  { name: "Heavy", value: "3px 3px 6px rgba(0,0,0,0.9)" },
-  { name: "Glow", value: "0 0 10px rgba(255,255,255,0.8)" },
+  { name: "Soft", value: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" },
+  { name: "Medium", value: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" },
+  { name: "Hard", value: "8px 8px 0px rgba(0,0,0,1)" },
+  { name: "Float", value: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" },
+];
+
+export const BACKGROUND_OPTIONS = [
+  { name: "Dark", value: "#1a1a1a" },
+  { name: "Light", value: "#ffffff" },
+  { name: "Blue", value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
+  { name: "Sunset", value: "linear-gradient(135deg, #ff0844 0%, #ffb199 100%)" },
+  { name: "Forest", value: "linear-gradient(135deg, #0ba360 0%, #3cba92 100%)" },
+  { name: "Midnight", value: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)" },
+  { name: "Neon", value: "linear-gradient(135deg, #00c6ff, #0072ff)" },
+  { name: "Peach", value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
 ];
