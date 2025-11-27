@@ -104,7 +104,7 @@ export function LeftPanel({
   return (
     <div className="flex flex-col h-full">
       <Tabs defaultValue="image" className="w-full flex-1 flex flex-col">
-        <TabsList className="w-full grid grid-cols-2 mb-4">
+        <TabsList className="w-full grid grid-cols-2 mb-4 bg-muted/50">
           <TabsTrigger value="image">
             <ImageIcon className="w-4 h-4 mr-2" />
             Image
@@ -116,10 +116,10 @@ export function LeftPanel({
         </TabsList>
 
         {/* === IMAGE CONTROLS === */}
-        <TabsContent value="image" className="flex-1 flex flex-col gap-6 data-[state=inactive]:hidden">
-          <div className="space-y-4">
+        <TabsContent value="image" className="flex-1 flex flex-col gap-6 data-[state=inactive]:hidden focus-visible:outline-none">
+          <div className="space-y-5">
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">Source</Label>
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Source</Label>
               <div className="relative">
                 <Input 
                   type="file" 
@@ -128,119 +128,154 @@ export function LeftPanel({
                   className="hidden"
                   id="image-upload"
                 />
-                <Button asChild variant="outline" className="w-full border-dashed">
+                <Button asChild variant="outline" size="sm" className="w-full border-dashed bg-transparent border-border/50 hover:bg-muted/50">
                   <label htmlFor="image-upload" className="cursor-pointer">
-                    Upload Screenshot
+                    Upload Image
                   </label>
                 </Button>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs font-medium text-muted-foreground">Scale</Label>
-                <span className="text-xs text-muted-foreground">{userImageStyle.scale}%</span>
-              </div>
-              <Slider
-                value={[userImageStyle.scale]}
-                onValueChange={([val]) => onImageStyleChange({ scale: val })}
-                min={50}
-                max={150}
-                step={1}
-              />
-            </div>
+            <Separator className="bg-border/50" />
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs font-medium text-muted-foreground">Roundness</Label>
-                <span className="text-xs text-muted-foreground">{userImageStyle.borderRadius}px</span>
+            <div className="space-y-4">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Properties</Label>
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium">Scale</Label>
+                  <span className="text-xs text-muted-foreground">{userImageStyle.scale}%</span>
+                </div>
+                <Slider
+                  value={[userImageStyle.scale]}
+                  onValueChange={([val]) => onImageStyleChange({ scale: val })}
+                  min={50}
+                  max={150}
+                  step={1}
+                />
               </div>
-              <Slider
-                value={[userImageStyle.borderRadius]}
-                onValueChange={([val]) => onImageStyleChange({ borderRadius: val })}
-                min={0}
-                max={40}
-                step={1}
-              />
-            </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-muted-foreground">Shadow</Label>
-              <Select 
-                value={userImageStyle.shadow} 
-                onValueChange={(val) => onImageStyleChange({ shadow: val })}
-              >
-                <SelectTrigger className="h-8 bg-background/50">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {SHADOW_PRESETS.map((shadow) => (
-                    <SelectItem key={shadow.name} value={shadow.value}>
-                      {shadow.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium">Roundness</Label>
+                  <span className="text-xs text-muted-foreground">{userImageStyle.borderRadius}px</span>
+                </div>
+                <Slider
+                  value={[userImageStyle.borderRadius]}
+                  onValueChange={([val]) => onImageStyleChange({ borderRadius: val })}
+                  min={0}
+                  max={40}
+                  step={1}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-medium">Shadow</Label>
+                <Select 
+                  value={userImageStyle.shadow} 
+                  onValueChange={(val) => onImageStyleChange({ shadow: val })}
+                >
+                  <SelectTrigger className="h-8 bg-transparent border-border/50">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="font-manrope">
+                    {SHADOW_PRESETS.map((shadow) => (
+                      <SelectItem key={shadow.name} value={shadow.value}>
+                        {shadow.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </TabsContent>
 
         {/* === TEXT CONTROLS === */}
-        <TabsContent value="text" className="flex-1 flex flex-col gap-5 data-[state=inactive]:hidden overflow-y-auto pr-1">
+        <TabsContent value="text" className="flex-1 flex flex-col gap-4 data-[state=inactive]:hidden pr-1 focus-visible:outline-none">
           <div className="space-y-3">
-            <Label className="text-xs font-medium text-muted-foreground">Content</Label>
+             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Content</Label>
             <Textarea
               value={activeText}
               onChange={(e) => onTextChange(e.target.value)}
-              className="min-h-[70px] resize-none bg-background/50"
+              className="min-h-8 resize-none bg-transparent placeholder:font-manrope"
               placeholder="Type text here..."
             />
+            {/* Added Text Button Here */}
+            <Button onClick={onAddText} variant="outline" size="sm" className="w-full bg-transparent border-dashed border hover:bg-muted/50">
+              <Plus className="w-3.5 h-3.5 mr-2" /> Add Text Layer
+            </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <Select value={activeFontFamily} onValueChange={onFontFamilyChange}>
-              <SelectTrigger className="h-8 bg-background/50"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Select value={activeFontWeight} onValueChange={onFontWeightChange}>
-              <SelectTrigger className="h-8 bg-background/50"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {FONT_WEIGHTS.map((w) => <SelectItem key={w.value} value={w.value}>{w.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
+          <Separator className="bg-border/50" />
 
-          <div className="space-y-3">
-            <div className="flex justify-between"><Label className="text-xs text-muted-foreground">Size</Label><span className="text-xs text-muted-foreground">{activeFontSize}px</span></div>
-            <Slider value={[activeFontSize]} onValueChange={([v]) => onFontSizeChange(v)} min={12} max={160} />
-          </div>
-
-          <div className="flex items-center gap-3">
-             <div className="flex-1 space-y-1">
-                <Label className="text-xs text-muted-foreground">Color</Label>
-                <div className="flex items-center gap-2 h-8 border rounded-md px-2 bg-background/50 relative">
-                  <div className="w-4 h-4 rounded-full border shrink-0" style={{ backgroundColor: activeColor }} />
-                  <Input type="color" value={activeColor} onChange={(e) => onColorChange(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer" />
-                </div>
-             </div>
-             <div className="flex-1 space-y-1">
-                <Label className="text-xs text-muted-foreground">Shadow</Label>
-                <Select value={activeTextShadow} onValueChange={onTextShadowChange}>
-                  <SelectTrigger className="h-8 bg-background/50"><SelectValue placeholder="None" /></SelectTrigger>
-                  <SelectContent>
-                    {SHADOW_PRESETS.map((s) => <SelectItem key={s.name} value={s.value}>{s.name}</SelectItem>)}
-                  </SelectContent>
+          <div className="space-y-4">
+            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Typography</Label>
+            
+            <div className="grid grid-cols-2 gap-2">
+                <Select value={activeFontFamily} onValueChange={onFontFamilyChange}>
+                <SelectTrigger className="h-8 bg-transparent border-border/50"><SelectValue /></SelectTrigger>
+                <SelectContent className="font-manrope">
+                    {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
+                </SelectContent>
                 </Select>
-             </div>
+                <Select value={activeFontWeight} onValueChange={onFontWeightChange}>
+                <SelectTrigger className="h-8 bg-transparent border-border/50 "><SelectValue /></SelectTrigger>
+                <SelectContent className="font-manrope">
+                    {FONT_WEIGHTS.map((w) => <SelectItem key={w.value} value={w.value}>{w.label}</SelectItem>)}
+                </SelectContent>
+                </Select>
+            </div>
+
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <Label className="text-xs font-medium">Color & Size</Label>
+                    <span className="text-xs text-muted-foreground">{activeFontSize}px</span>
+                </div>
+                
+                {/* COMPACT COLOR & SIZE ROW */}
+                <div className="flex items-center gap-3">
+                    {/* Subtle Color Picker */}
+                    <div className="relative group cursor-pointer">
+                    <div 
+                        className="size-6 rounded-full border border-border shadow-sm flex items-center justify-center transition-transform hover:scale-105"
+                        style={{ backgroundColor: activeColor }}
+                    />
+                    <Input 
+                        type="color" 
+                        value={activeColor} 
+                        onChange={(e) => onColorChange(e.target.value)} 
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0" 
+                    />
+                    </div>
+                    
+                    {/* Slider takes remaining space */}
+                    <Slider 
+                    value={[activeFontSize]} 
+                    onValueChange={([v]) => onFontSizeChange(v)} 
+                    min={12} 
+                    max={160} 
+                    className="flex-1"
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                <Label className="text-xs font-medium">Text Shadow</Label>
+                <Select value={activeTextShadow} onValueChange={onTextShadowChange}>
+                <SelectTrigger className="h-8 bg-transparent border-border/50"><SelectValue placeholder="None" /></SelectTrigger>
+                <SelectContent>
+                    {SHADOW_PRESETS.map((s) => <SelectItem key={s.name} value={s.value}>{s.name}</SelectItem>)}
+                </SelectContent>
+                </Select>
+            </div>
           </div>
 
-          <Separator />
+          <Separator className="bg-border/50" />
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-semibold">Background</Label>
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Background Box</Label>
               <Switch 
                 checked={activeShowTextBg}
                 onCheckedChange={onShowTextBackgroundChange}
@@ -248,32 +283,26 @@ export function LeftPanel({
             </div>
 
             {activeShowTextBg && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground">Bg Color</Label>
-                  <div className="flex items-center gap-2 h-8 border rounded-md px-2 bg-background/50 relative">
-                    <div className="w-4 h-4 rounded-full border shrink-0" style={{ backgroundColor: activeTextBgColor }} />
-                    <Input type="color" value={activeTextBgColor} onChange={(e) => onTextBackgroundColorChange(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer" />
-                  </div>
+              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 pl-1">
+                <div className="flex items-center justify-between">
+                   <Label className="text-xs font-medium">Box Color</Label>
+                   <div className="relative size-6 rounded-md border border-border overflow-hidden">
+                      <div className="absolute inset-0" style={{ backgroundColor: activeTextBgColor }} />
+                      <Input type="color" value={activeTextBgColor} onChange={(e) => onTextBackgroundColorChange(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0" />
+                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <div className="flex justify-between"><Label className="text-xs text-muted-foreground">Rounded</Label><span className="text-xs text-muted-foreground">{activeTextBorderRadius}px</span></div>
+                  <div className="flex justify-between"><Label className="text-xs font-medium">Rounded</Label><span className="text-xs text-muted-foreground">{activeTextBorderRadius}px</span></div>
                   <Slider value={[activeTextBorderRadius]} onValueChange={([v]) => onTextBorderRadiusChange(v)} min={0} max={50} />
                 </div>
 
                 <div className="space-y-3">
-                  <div className="flex justify-between"><Label className="text-xs text-muted-foreground">Padding</Label><span className="text-xs text-muted-foreground">{activeTextPadding}px</span></div>
+                  <div className="flex justify-between"><Label className="text-xs font-medium">Padding</Label><span className="text-xs text-muted-foreground">{activeTextPadding}px</span></div>
                   <Slider value={[activeTextPadding]} onValueChange={([v]) => onTextPaddingChange(v)} min={0} max={60} />
                 </div>
               </div>
             )}
-          </div>
-
-          <div className="mt-auto pt-4">
-            <Button onClick={onAddText} variant="secondary" className="w-full">
-              <Plus className="w-4 h-4 mr-2" /> Add Text
-            </Button>
           </div>
         </TabsContent>
       </Tabs>

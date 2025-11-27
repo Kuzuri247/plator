@@ -7,18 +7,9 @@ import { Footer } from "@/components/footer";
 import { Pricing } from "@/components/pricing";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 function App() {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDark]);
-
   return (
     <main className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground transition-colors duration-300 flex flex-col gap-16 md:gap-32">
       {/* Fixed Navigation Bar */}
@@ -39,17 +30,7 @@ function App() {
             </a>
           </div>
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsDark(!isDark)}
-              className={cn(
-                "text-muted-foreground hover:text-foreground p-2",
-                "transition-all duration-300 ease-in-out",
-                isDark ? "rotate-180" : "rotate-0",
-              )}
-              aria-label="Toggle Theme"
-            >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            <ThemeToggle />
             <button className="bg-foreground text-background hover:bg-muted-foreground hover:text-white px-5 py-2 text-xs font-bold uppercase tracking-wide transition-colors rounded-none">
               Log In
             </button>
