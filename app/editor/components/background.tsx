@@ -5,12 +5,19 @@ import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Undo2, Redo2 ,RefreshCcw} from "lucide-react";
 
 interface BackgroundPanelProps {
   backgroundImage: string | null;
   imageSize: number;
   onImageUpload: (file: File) => void;
   onImageSizeChange: (size: number) => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  onRefresh: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  canRefresh: boolean;
 }
 
 export function Background({
@@ -18,6 +25,12 @@ export function Background({
   imageSize,
   onImageUpload,
   onImageSizeChange,
+  onUndo,
+  onRedo,
+  onRefresh,
+  canUndo,
+  canRedo,
+  canRefresh,
 }: BackgroundPanelProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -61,6 +74,35 @@ export function Background({
           />
         </div>
       )}
+      <div className="absolute z-50 bottom-4 center flex gap-2 opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300">
+        <Button
+          onClick={onUndo}
+          disabled={!canUndo}
+          variant="secondary"
+          size="icon"
+          className="rounded-full shadow-lg bg-background/80 backdrop-blur hover:bg-background"
+        >
+          <Undo2 className="w-4 h-4" />
+        </Button>
+        <Button
+          onClick={onRedo}
+          disabled={!canRedo}
+          variant="secondary"
+          size="icon"
+          className="rounded-full shadow-lg bg-background/80 backdrop-blur hover:bg-background"
+        >
+          <Redo2 className="w-4 h-4" />
+        </Button>
+        <Button
+          onClick={onRefresh}
+          disabled={!canRefresh}
+          variant="secondary"
+          size="icon"
+          className="rounded-full shadow-lg bg-background/80 backdrop-blur hover:bg-background"
+        >
+          <RefreshCcw className="w-4 h-4" />
+        </Button>
+      </div>
     </div>
   );
 }

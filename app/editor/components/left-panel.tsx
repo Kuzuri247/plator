@@ -149,8 +149,50 @@ export function LeftPanel({
                 <Slider
                   value={[userImageStyle.scale]}
                   onValueChange={([val]) => onImageStyleChange({ scale: val })}
-                  min={50}
-                  max={150}
+                  min={10}
+                  max={200}
+                  step={1}
+                />
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium">Opacity</Label>
+                  <span className="text-xs text-muted-foreground">{userImageStyle.opacity}%</span>
+                </div>
+                <Slider
+                  value={[userImageStyle.opacity]}
+                  onValueChange={([val]) => onImageStyleChange({ opacity: val })}
+                  min={0}
+                  max={100}
+                  step={1}
+                />
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium">Blur</Label>
+                  <span className="text-xs text-muted-foreground">{userImageStyle.blur}px</span>
+                </div>
+                <Slider
+                  value={[userImageStyle.blur]}
+                  onValueChange={([val]) => onImageStyleChange({ blur: val })}
+                  min={0}
+                  max={20}
+                  step={1}
+                />
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium">Noise</Label>
+                  <span className="text-xs text-muted-foreground">{userImageStyle.noise}%</span>
+                </div>
+                <Slider
+                  value={[userImageStyle.noise]}
+                  onValueChange={([val]) => onImageStyleChange({ noise: val })}
+                  min={0}
+                  max={50}
                   step={1}
                 />
               </div>
@@ -164,7 +206,7 @@ export function LeftPanel({
                   value={[userImageStyle.borderRadius]}
                   onValueChange={([val]) => onImageStyleChange({ borderRadius: val })}
                   min={0}
-                  max={40}
+                  max={100}
                   step={1}
                 />
               </div>
@@ -201,7 +243,6 @@ export function LeftPanel({
               className="min-h-8 resize-none bg-transparent placeholder:font-manrope"
               placeholder="Type text here..."
             />
-            {/* Added Text Button Here */}
             <Button onClick={onAddText} variant="outline" size="sm" className="w-full bg-transparent border-dashed border hover:bg-muted/50">
               <Plus className="w-3.5 h-3.5 mr-2" /> Add Text Layer
             </Button>
@@ -233,9 +274,7 @@ export function LeftPanel({
                     <span className="text-xs text-muted-foreground">{activeFontSize}px</span>
                 </div>
                 
-                {/* COMPACT COLOR & SIZE ROW */}
                 <div className="flex items-center gap-3">
-                    {/* Subtle Color Picker */}
                     <div className="relative group cursor-pointer">
                     <div 
                         className="size-6 rounded-full border border-border shadow-sm flex items-center justify-center transition-transform hover:scale-105"
@@ -249,7 +288,6 @@ export function LeftPanel({
                     />
                     </div>
                     
-                    {/* Slider takes remaining space */}
                     <Slider 
                     value={[activeFontSize]} 
                     onValueChange={([v]) => onFontSizeChange(v)} 

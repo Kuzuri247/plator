@@ -7,7 +7,7 @@ export interface TextStyle {
   borderRadius: number;
   backgroundColor: string;
   padding: number;
-  showBackground: boolean; // Added toggle
+  showBackground: boolean;
 }
 
 export interface ImageStyle {
@@ -15,6 +15,9 @@ export interface ImageStyle {
   borderRadius: number;
   shadow: string;
   rotate: number;
+  blur: number;
+  opacity: number;
+  noise: number;
 }
 
 export interface TextElement {
@@ -24,7 +27,14 @@ export interface TextElement {
   style: TextStyle;
 }
 
-export const CANVAS_SIZE = { width: 800, height: 600 };
+export const ASPECT_RATIOS = [
+  { name: "16:9", label: "YouTube / Video", width: 900, height: 506, previewClass: "aspect-video" },
+  { name: "9:16", label: "TikTok / Story", width: 400, height: 711, previewClass: "aspect-[9/16]" },
+  { name: "1:1", label: "Instagram Square", width: 600, height: 600, previewClass: "aspect-square" },
+  { name: "4:5", label: "Instagram Portrait", width: 500, height: 625, previewClass: "aspect-[4/5]" },
+  { name: "4:3", label: "Standard", width: 800, height: 600, previewClass: "aspect-[4/3]" },
+  { name: "2:1", label: "Twitter Header", width: 800, height: 400, previewClass: "aspect-[2/1]" },
+];
 
 export const FONT_FAMILIES = [
   "Inter",
@@ -49,10 +59,11 @@ export const FONT_WEIGHTS = [
 
 export const SHADOW_PRESETS = [
   { name: "None", value: "none" },
-  { name: "Soft", value: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" },
-  { name: "Medium", value: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" },
-  { name: "Hard", value: "8px 8px 0px rgba(0,0,0,1)" },
-  { name: "Float", value: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" },
+  { name: "Small", value: "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
+  { name: "Medium", value: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06)" },
+  { name: "Large", value: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)" },
+  { name: "X-Large", value: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)" },
+  { name: "2X-Large", value: "0 25px 50px -12px rgb(0 0 0 / 0.25)" },
 ];
 
 export const BACKGROUND_OPTIONS = [
