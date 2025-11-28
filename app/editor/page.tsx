@@ -539,8 +539,8 @@ export default function EditorPage() {
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden">
       {/* Left Panel */}
-      <div className="w-80 shrink-0 border-r-2 bg-card flex flex-col z-20 shadow-xl h-full">
-        <div className="h-12 border-b-2 flex items-center justify-between px-3 shrink-0">
+      <div className="w-80 shrink-0 border-r-2 dark:border-neutral-800 bg-card flex flex-col z-20 shadow-xl h-full">
+        <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center justify-between px-3 shrink-0">
           <Link href="/">
             <Button
               variant="ghost"
@@ -663,7 +663,7 @@ export default function EditorPage() {
               onClick={resetCanvas}
               variant="ghost"
               size="icon"
-              className="rounded-full w-8 h-8 hover:bg-muted text-destructive hover:text-destructive"
+              className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-destructive hover:text-red-500"
               title="Reset Canvas"
             >
               <RotateCcw />
@@ -673,8 +673,8 @@ export default function EditorPage() {
       </div>
 
       {/* Right Panel */}
-      <div className="w-80 shrink-0 border-2 bg-card flex flex-col z-20 shadow-xl h-full">
-        <div className="h-12 border-b-2 flex items-center px-4 shrink-0 bg-transparent">
+      <div className="w-80 shrink-0 border-2 dark:border-neutral-800 bg-card flex flex-col z-20 shadow-xl h-full">
+        <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center px-4 shrink-0 bg-transparent">
           <span className="font-bold text-xs uppercase tracking-widest text-muted-foreground">
             Canvas & Export
           </span>

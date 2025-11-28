@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --shadow-next: 0 8px 30px rgba(0, 0, 0, 0.1);
 
