@@ -10,7 +10,6 @@ import {
   ImageStyle,
   ASPECT_RATIOS,
 } from "./components/types";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, Twitter, Undo2, Redo2, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -25,8 +24,8 @@ interface HistoryState {
 }
 
 const DEFAULT_IMAGE_STYLE: ImageStyle = {
-  scale: 90,
-  borderRadius: 12,
+  scale: 100,
+  borderRadius: 0,
   shadow: "none",
   rotate: 0,
   rotateX: 0,
@@ -49,7 +48,7 @@ export default function EditorPage() {
   const currentAspectRatio =
     ASPECT_RATIOS.find((r) => r.name === aspectRatioName) || ASPECT_RATIOS[4];
   const [canvasBackground, setCanvasBackground] = useState(
-    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+    "linear-gradient(135deg, #0f0c29, #302b63, #24243e)"
   );
 
   const [imageElements, setImageElements] = useState<ImageElement[]>([]);
@@ -80,10 +79,18 @@ export default function EditorPage() {
     {
       textElements: [],
       imageElements: [],
-      canvasBackground: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      canvasBackground: "",
     },
   ]);
   const [historyIndex, setHistoryIndex] = useState(0);
+
+  // --- Helper to get current visual scale of the canvas ---
+  const getCanvasScale = useCallback(() => {
+    if (!canvasRef.current) return 1;
+    const rect = canvasRef.current.getBoundingClientRect();
+    // The scale is the Visual Width / Actual Internal Width
+    return rect.width / currentAspectRatio.width;
+  }, [currentAspectRatio.width]);
 
   const queueHistorySave = useCallback(() => {
     if (historyTimeoutRef.current) {
@@ -120,11 +127,11 @@ export default function EditorPage() {
   const resetCanvas = () => {
     setImageElements([]);
     setTextElements([]);
-    setCanvasBackground("linear-gradient(135deg, #667eea 0%, #764ba2 100%)");
+    setCanvasBackground("linear-gradient(135deg, #0f0c29, #302b63, #24243e)");
     const initialState: HistoryState = {
       textElements: [],
       imageElements: [],
-      canvasBackground: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      canvasBackground: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
     };
     setHistory([initialState]);
     setHistoryIndex(0);
@@ -179,13 +186,28 @@ export default function EditorPage() {
       const img = new Image();
       img.onload = () => {
         const id = `img_${Date.now()}`;
-        const x = (currentAspectRatio.width - img.naturalWidth) / 2;
-        const y = (currentAspectRatio.height - img.naturalHeight) / 2;
+
+        // --- 3. CONTAIN LOGIC ---
+        const canvasW = currentAspectRatio.width;
+        const canvasH = currentAspectRatio.height;
+        const imgW = img.naturalWidth;
+        const imgH = img.naturalHeight;
+
+        // Calculate scale to fit "contain"
+        const scaleX = canvasW / imgW;
+        const scaleY = canvasH / imgH;
+        // Use 90% of the container to leave a little breathing room initially
+        const scale = Math.min(scaleX, scaleY, 1) * 90;
+
+        // Center based on the top-left 0,0 anchor
+        const x = (canvasW - imgW) / 2;
+        const y = (canvasH - imgH) / 2;
+
         const newImage: ImageElement = {
           id,
           src: result,
-          position: { x: Math.max(0, x), y: Math.max(0, y) },
-          style: { ...DEFAULT_IMAGE_STYLE },
+          position: { x, y },
+          style: { ...DEFAULT_IMAGE_STYLE, scale: Math.round(scale) }, // Apply calculated scale
         };
         setImageElements((prev) => [...prev, newImage]);
         setSelectedElementId(id);
@@ -209,7 +231,6 @@ export default function EditorPage() {
     queueHistorySave();
   };
 
-  // UI Handlers
   const handleTextChange = (val: string) =>
     selectedElementId?.startsWith("text")
       ? updateSelectedText({ content: val })
@@ -250,37 +271,63 @@ export default function EditorPage() {
     selectedElementId?.startsWith("text")
       ? updateSelectedText({ showBackground: val })
       : setShowTextBackground(val);
-
   const handleCanvasBackgroundChange = (val: string) => {
     setCanvasBackground(val);
     queueHistorySave();
   };
 
+  // --- UPDATED DRAG START ---
   const handleElementMouseDown = (e: React.MouseEvent, elementId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+
+    // Get the current visual scale factor of the canvas
+    const scale = getCanvasScale();
+    const element =
+      imageElements.find((el) => el.id === elementId) ||
+      textElements.find((el) => el.id === elementId);
+
+    if (!element || !canvasRef.current) return;
+
+    const canvasRect = canvasRef.current.getBoundingClientRect();
+
+    // Calculate position in Canvas Units (Visual Pixels / Scale Factor)
+    const mouseXInCanvas = (e.clientX - canvasRect.left) / scale;
+    const mouseYInCanvas = (e.clientY - canvasRect.top) / scale;
+
+    setDragOffset({
+      x: mouseXInCanvas - element.position.x,
+      y: mouseYInCanvas - element.position.y,
+    });
+
     setDragTarget(elementId);
     setSelectedElementId(elementId);
   };
 
+  // --- UPDATED DRAG MOVE ---
   const handleCanvasMouseMove = (e: React.MouseEvent) => {
     if (!dragTarget || !canvasRef.current) return;
+
+    const scale = getCanvasScale();
     const canvasRect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - canvasRect.left - dragOffset.x;
-    const y = e.clientY - canvasRect.top - dragOffset.y;
+
+    // Convert screen coordinates to canvas coordinates using scale factor
+    const mouseXInCanvas = (e.clientX - canvasRect.left) / scale;
+    const mouseYInCanvas = (e.clientY - canvasRect.top) / scale;
+
+    const newX = mouseXInCanvas - dragOffset.x;
+    const newY = mouseYInCanvas - dragOffset.y;
 
     if (dragTarget.startsWith("img")) {
       setImageElements((prev) =>
         prev.map((el) =>
-          el.id === dragTarget ? { ...el, position: { x, y } } : el
+          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el
         )
       );
     } else {
       setTextElements((prev) =>
         prev.map((el) =>
-          el.id === dragTarget ? { ...el, position: { x, y } } : el
+          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el
         )
       );
     }
@@ -327,16 +374,11 @@ export default function EditorPage() {
     );
   };
 
-  // --- UPDATED EXPORT LOGIC USING HTML-TO-IMAGE ---
   const handleDownload = async () => {
     if (!canvasRef.current) return;
-
     // De-select elements to remove selection rings/borders before capturing
     const prevSelection = selectedElementId;
     setSelectedElementId(null);
-
-    // Wait for state to update (short delay)
-    await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
       const pixelRatio = parseInt(exportQuality) || 2;
@@ -345,7 +387,6 @@ export default function EditorPage() {
         pixelRatio: pixelRatio,
         width: currentAspectRatio.width,
         height: currentAspectRatio.height,
-        // Ensure we capture the background colors properly
         backgroundColor: canvasBackground.startsWith("#")
           ? canvasBackground
           : undefined,
@@ -369,7 +410,6 @@ export default function EditorPage() {
       console.error("Export failed:", error);
       toast.error("Failed to export. Please try again.");
     } finally {
-      // Restore selection
       setSelectedElementId(prevSelection);
     }
   };
@@ -384,7 +424,7 @@ export default function EditorPage() {
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden">
       {/* --- LEFT PANEL --- */}
-      <div className="w-80 shrink-0 border-r-2 dark:border-neutral-800 bg-card flex flex-col z-20 shadow-xl h-full">
+      <div className="w-80 shrink-0 border-r-2 dark:border-neutral-800 bg-card flex flex-col z-20 h-full">
         <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center justify-between px-3 shrink-0">
           <Link href="/">
             <Button
@@ -410,48 +450,44 @@ export default function EditorPage() {
           </div>
         </div>
 
-        {/* Updated: ScrollArea wraps content with min-h-0 for proper scrolling */}
-        <div className="flex-1 min-h-0 w-full">
-          <ScrollArea className="h-full w-full scrollbar-none">
-            <div className="p-4">
-              <LeftPanel
-                selectedTextElement={selectedTextElement}
-                selectedImageElement={selectedImageElement}
-                currentText={currentText}
-                fontSize={fontSize}
-                fontFamily={fontFamily}
-                fontWeight={fontWeight}
-                color={color}
-                textShadow={textShadow}
-                textBorderRadius={textBorderRadius}
-                textBackgroundColor={textBackgroundColor}
-                textPadding={textPadding}
-                showTextBackground={showTextBackground}
-                onTextChange={handleTextChange}
-                onFontFamilyChange={handleFontFamily}
-                onFontSizeChange={handleFontSize}
-                onFontWeightChange={handleFontWeight}
-                onColorChange={handleColor}
-                onTextShadowChange={handleShadow}
-                onTextBorderRadiusChange={handleTextRadius}
-                onTextBackgroundColorChange={handleTextBgColor}
-                onTextPaddingChange={handleTextPadding}
-                onShowTextBackgroundChange={handleShowTextBg}
-                onAddText={addTextElement}
-                onImageStyleChange={updateSelectedImage}
-                onImageUpload={handleImageUpload}
-              />
-              <input
-                ref={hiddenInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  e.target.files?.[0] && handleImageUpload(e.target.files[0])
-                }
-                className="hidden"
-              />
-            </div>
-          </ScrollArea>
+        {/* Content Container - No scroll area here, delegated to LeftPanel */}
+        <div className="flex-1 min-h-0 w-full relative">
+          <LeftPanel
+            selectedTextElement={selectedTextElement}
+            selectedImageElement={selectedImageElement}
+            currentText={currentText}
+            fontSize={fontSize}
+            fontFamily={fontFamily}
+            fontWeight={fontWeight}
+            color={color}
+            textShadow={textShadow}
+            textBorderRadius={textBorderRadius}
+            textBackgroundColor={textBackgroundColor}
+            textPadding={textPadding}
+            showTextBackground={showTextBackground}
+            onTextChange={handleTextChange}
+            onFontFamilyChange={handleFontFamily}
+            onFontSizeChange={handleFontSize}
+            onFontWeightChange={handleFontWeight}
+            onColorChange={handleColor}
+            onTextShadowChange={handleShadow}
+            onTextBorderRadiusChange={handleTextRadius}
+            onTextBackgroundColorChange={handleTextBgColor}
+            onTextPaddingChange={handleTextPadding}
+            onShowTextBackgroundChange={handleShowTextBg}
+            onAddText={addTextElement}
+            onImageStyleChange={updateSelectedImage}
+            onImageUpload={handleImageUpload}
+          />
+          <input
+            ref={hiddenInputRef}
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              e.target.files?.[0] && handleImageUpload(e.target.files[0])
+            }
+            className="hidden"
+          />
         </div>
       </div>
 
@@ -477,7 +513,7 @@ export default function EditorPage() {
         </div>
 
         {/* Canvas Actions */}
-        <div className="absolute bottom-6 left-6 flex items-center gap-2 z-50">
+        <div className="absolute bottom-6 left-6 flex items-center gap-2 z-100">
           <div className="bg-background/80 backdrop-blur border-2 rounded-full p-1 shadow-lg flex items-center gap-1">
             <Button
               onClick={undo}
@@ -511,30 +547,25 @@ export default function EditorPage() {
       </div>
 
       {/* --- RIGHT PANEL --- */}
-      <div className="w-80 shrink-0 border-2 dark:border-neutral-800 bg-card flex flex-col z-20 shadow-xl h-full">
+      <div className="w-80 shrink-0 border-2 dark:border-neutral-800 bg-card flex flex-col z-20 h-full">
         <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center px-4 shrink-0 bg-transparent">
           <span className="font-bold text-xs uppercase tracking-widest text-muted-foreground">
             Canvas & Export
           </span>
         </div>
 
-        {/* Updated: ScrollArea added here as well */}
-        <div className="flex-1 min-h-0 w-full">
-          <ScrollArea className="h-full w-full scrollbar-none">
-            <div className="p-4">
-              <RightPanel
-                canvasBackground={canvasBackground}
-                aspectRatio={aspectRatioName}
-                exportFormat={exportFormat}
-                exportQuality={exportQuality}
-                onCanvasBackgroundChange={handleCanvasBackgroundChange}
-                onAspectRatioChange={setAspectRatioName}
-                onExportFormatChange={setExportFormat}
-                onExportQualityChange={setExportQuality}
-                onDownload={handleDownload}
-              />
-            </div>
-          </ScrollArea>
+        <div className="flex-1 min-h-0 w-full relative">
+          <RightPanel
+            canvasBackground={canvasBackground}
+            aspectRatio={aspectRatioName}
+            exportFormat={exportFormat}
+            exportQuality={exportQuality}
+            onCanvasBackgroundChange={handleCanvasBackgroundChange}
+            onAspectRatioChange={setAspectRatioName}
+            onExportFormatChange={setExportFormat}
+            onExportQualityChange={setExportQuality}
+            onDownload={handleDownload}
+          />
         </div>
       </div>
     </div>

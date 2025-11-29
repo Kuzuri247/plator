@@ -49,7 +49,7 @@ export interface TextElement {
 export interface LeftPanelProps {
   selectedTextElement: TextElement | undefined;
   selectedImageElement: ImageElement | undefined; // Changed from just 'userImageStyle'
-  
+
   // Text State (Keep these or refactor to use selectedTextElement directly, keeping simple for now)
   currentText: string;
   fontSize: number;
@@ -61,7 +61,7 @@ export interface LeftPanelProps {
   textBackgroundColor: string;
   textPadding: number;
   showTextBackground: boolean;
-  
+
   // Handlers
   onTextChange: (value: string) => void;
   onFontFamilyChange: (value: string) => void;
@@ -74,7 +74,7 @@ export interface LeftPanelProps {
   onTextPaddingChange: (value: number) => void;
   onShowTextBackgroundChange: (value: boolean) => void;
   onAddText: () => void;
-  
+
   onImageStyleChange: (updates: Partial<ImageStyle>) => void;
   onImageUpload: (file: File) => void;
 }
@@ -119,17 +119,21 @@ export const CLIP_PATHS = [
 
 export const SHADOW_PRESETS = [
   { name: "None", value: "none" },
-  { name: "Small", value: "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
-  { name: "Medium", value: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06)" },
-  { name: "Large", value: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)" },
-  { name: "X-Large", value: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)" },
-  { name: "2X-Large", value: "0 25px 50px -12px rgb(0 0 0 / 0.25)" },
+  { name: "Small", value: "0 1px 2px 0 rgb(0 0 0 / 0.15)" },
+  { name: "Medium", value: "0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -1px rgb(0 0 0 / 0.1)" },
+  { name: "Large", value: "0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -2px rgb(0 0 0 / 0.08)" },
+  { name: "Left", value: "-8px 0 15px -3px rgb(0 0 0 / 0.5), -4px 0 6px -2px rgb(0 0 0 / 0.08)" },
+  { name: "Right", value: "8px 0 15px -3px rgb(0 0 0 / 0.5), 4px 0 6px -2px rgb(0 0 0 / 0.08)" },
+  { name: "X-Large", value: "0 20px 25px -5px rgb(0 0 0 / 0.7), 0 10px 10px -5px rgb(0 0 0 / 0.06)" },
+  { name: "Left Bottom", value: "-12px 12px 25px -5px rgb(0 0 0 / 0.7), -6px 6px 10px -5px rgb(0 0 0 / 0.06)" },
+  { name: "Right Bottom", value: "12px 12px 25px -5px rgb(0 0 0 / 0.7), 6px 6px 10px -5px rgb(0 0 0 / 0.06)" },
+  { name: "2X-Large", value: "0 50px 50px -12px rgb(0 0 0 / 0.9)" },
 ];
+
 
 export const BACKGROUND_OPTIONS = [
   { name: "Dark", value: "#1a1a1a" },
   { name: "Light", value: "#ffffff" },
-  { name: "Blue", value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
   { name: "Sunset", value: "linear-gradient(135deg, #ff0844 0%, #ffb199 100%)" },
   { name: "Forest", value: "linear-gradient(135deg, #0ba360 0%, #3cba92 100%)" },
   { name: "Midnight", value: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)" },
@@ -139,7 +143,25 @@ export const BACKGROUND_OPTIONS = [
   { name: "Aurora", value: "linear-gradient(135deg, #00ff88 0%, #00ccff 50%, #0088ff 100%)" },
   { name: "Lava", value: "linear-gradient(135deg, #ff6b00 0%, #ff0000 50%, #660000 100%)" },
   { name: "Ocean", value: "linear-gradient(135deg, #0066cc 0%, #0099ff 50%, #00ccff 100%)" },
+  { name: "Purple Haze", value: "linear-gradient(135deg, #360033 0%, #0b8793 100%)" },
+  { name: "Miami", value: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+  { name: "Fire", value: "linear-gradient(135deg, #f83600 0%, #f9d423 100%)" },
+  { name: "Emerald", value: "linear-gradient(135deg, #348f50 0%, #56b4d3 100%)" },
+  { name: "Rose", value: "linear-gradient(135deg, #ed4264 0%, #ffedbc 100%)" },
+  { name: "Twilight", value: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)" },
+  { name: "Ice", value: "linear-gradient(135deg, #c9ffbf 0%, #ffafbd 100%)" },
+  { name: "Candy", value: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" },
+  { name: "Berry", value: "linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%)" },
+  { name: "Tropical", value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
+  { name: "Cyber", value: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
+  { name: "Deep Ocean", value: "linear-gradient(135deg, #2e3192 0%, #1bffff 100%)" },
+  { name: "Mint", value: "linear-gradient(135deg, #00b09b 0%, #96c93d 100%)" },
+  { name: "Purple Dream", value: "linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)" },
+  { name: "Warm Flame", value: "linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)" },
+  { name: "Royal", value: "linear-gradient(135deg, #141e30 0%, #243b55 100%)" },
+  { name: "Citrus", value: "linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%)" },
 ];
+
 
 export interface RightPanelProps {
   canvasBackground: string;
