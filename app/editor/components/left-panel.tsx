@@ -1,6 +1,16 @@
 "use client";
 
-import { Type, Image as ImageIcon, Plus } from "lucide-react";
+import {
+  Type,
+  Image as ImageIcon,
+  Plus,
+  BoxSelect,
+  Rotate3d,
+  FlipHorizontal,
+  FlipVertical,
+  Scissors,
+  RotateCcw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,11 +26,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { FONT_FAMILIES, FONT_WEIGHTS, SHADOW_PRESETS } from "./types";
-import { LeftPanelProps } from "./types";
+import {
+  FONT_FAMILIES,
+  FONT_WEIGHTS,
+  SHADOW_PRESETS,
+  LeftPanelProps,
+  CLIP_PATHS,
+} from "./types";
 
 export function LeftPanel({
-  selectedElement,
+  selectedTextElement,
+  selectedImageElement,
   currentText,
   fontSize,
   fontFamily,
@@ -31,7 +47,6 @@ export function LeftPanel({
   textBackgroundColor,
   textPadding,
   showTextBackground,
-  userImageStyle,
   onTextChange,
   onFontFamilyChange,
   onFontSizeChange,
@@ -46,19 +61,40 @@ export function LeftPanel({
   onImageStyleChange,
   onImageUpload,
 }: LeftPanelProps) {
-  const activeText = selectedElement?.content ?? currentText;
-  const activeFontSize = selectedElement?.style.fontSize ?? fontSize;
-  const activeFontFamily = selectedElement?.style.fontFamily ?? fontFamily;
-  const activeFontWeight = selectedElement?.style.fontWeight ?? fontWeight;
-  const activeColor = selectedElement?.style.color ?? color;
-  const activeTextShadow = selectedElement?.style.textShadow ?? textShadow;
+  // Use selected image styles or defaults if nothing selected
+  const imgStyle = selectedImageElement?.style || {
+    scale: 100,
+    opacity: 100,
+    blur: 0,
+    noise: 0,
+    borderRadius: 0,
+    shadow: "none",
+    rotate: 0,
+    rotateX: 0,
+    rotateY: 0,
+    clipPath: "none",
+    flipX: false,
+    flipY: false,
+    crop: { top: 0, right: 0, bottom: 0, left: 0 },
+  };
+
+  // Helper to reset crop
+  const resetCrop = () =>
+    onImageStyleChange({ crop: { top: 0, right: 0, bottom: 0, left: 0 } });
+
+  const activeText = selectedTextElement?.content ?? currentText;
+  const activeFontSize = selectedTextElement?.style.fontSize ?? fontSize;
+  const activeFontFamily = selectedTextElement?.style.fontFamily ?? fontFamily;
+  const activeFontWeight = selectedTextElement?.style.fontWeight ?? fontWeight;
+  const activeColor = selectedTextElement?.style.color ?? color;
+  const activeTextShadow = selectedTextElement?.style.textShadow ?? textShadow;
   const activeTextBorderRadius =
-    selectedElement?.style.borderRadius ?? textBorderRadius;
+    selectedTextElement?.style.borderRadius ?? textBorderRadius;
   const activeTextBgColor =
-    selectedElement?.style.backgroundColor ?? textBackgroundColor;
-  const activeTextPadding = selectedElement?.style.padding ?? textPadding;
+    selectedTextElement?.style.backgroundColor ?? textBackgroundColor;
+  const activeTextPadding = selectedTextElement?.style.padding ?? textPadding;
   const activeShowTextBg =
-    selectedElement?.style.showBackground ?? showTextBackground;
+    selectedTextElement?.style.showBackground ?? showTextBackground;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,7 +107,7 @@ export function LeftPanel({
         <TabsList className="w-full grid grid-cols-2 mb-4 bg-muted/50">
           <TabsTrigger value="image">
             <ImageIcon className="w-4 h-4 mr-2" />
-            Image
+            Images
           </TabsTrigger>
           <TabsTrigger value="text">
             <Type className="w-4 h-4 mr-2" />
@@ -87,7 +123,7 @@ export function LeftPanel({
           <div className="space-y-5">
             <div className="space-y-2">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Source
+                Layers
               </Label>
               <div className="relative">
                 <Input
@@ -104,130 +140,345 @@ export function LeftPanel({
                   className="w-full border-dashed bg-transparent border-border/50 hover:bg-muted/50"
                 >
                   <label htmlFor="image-upload" className="cursor-pointer">
-                    Upload Image
+                    <Plus className="w-3.5 h-3.5 mr-2" /> Add Image
                   </label>
                 </Button>
               </div>
             </div>
 
-            <Separator className="bg-border/50" />
+            {selectedImageElement ? (
+              <>
+                <Separator className="bg-border/50" />
 
-            <div className="space-y-4">
-              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Properties
-              </Label>
+                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Properties
+                </Label>
+                <div className="space-y-4 grid grid-cols-2 gap-2">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-medium">Scale</Label>
+                      <span className="text-xs text-muted-foreground">
+                        {imgStyle.scale}%
+                      </span>
+                    </div>
+                    <Slider
+                      value={[imgStyle.scale]}
+                      onValueChange={([val]) =>
+                        onImageStyleChange({ scale: val })
+                      }
+                      min={10}
+                      max={200}
+                      step={1}
+                    />
+                  </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-medium">Scale</Label>
-                  <span className="text-xs text-muted-foreground">
-                    {userImageStyle.scale}%
-                  </span>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-medium">Opacity</Label>
+                      <span className="text-xs text-muted-foreground">
+                        {imgStyle.opacity}%
+                      </span>
+                    </div>
+                    <Slider
+                      value={[imgStyle.opacity]}
+                      onValueChange={([val]) =>
+                        onImageStyleChange({ opacity: val })
+                      }
+                      min={0}
+                      max={100}
+                      step={1}
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-medium">Blur</Label>
+                      <span className="text-xs text-muted-foreground">
+                        {imgStyle.blur}px
+                      </span>
+                    </div>
+                    <Slider
+                      value={[imgStyle.blur]}
+                      onValueChange={([val]) =>
+                        onImageStyleChange({ blur: val })
+                      }
+                      min={0}
+                      max={20}
+                      step={1}
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-medium">Noise</Label>
+                      <span className="text-xs text-muted-foreground">
+                        {imgStyle.noise}%
+                      </span>
+                    </div>
+                    <Slider
+                      value={[imgStyle.noise]}
+                      onValueChange={([val]) =>
+                        onImageStyleChange({ noise: val })
+                      }
+                      min={0}
+                      max={50}
+                      step={1}
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-medium">Roundness</Label>
+                      <span className="text-xs text-muted-foreground">
+                        {imgStyle.borderRadius}px
+                      </span>
+                    </div>
+                    <Slider
+                      value={[imgStyle.borderRadius]}
+                      onValueChange={([val]) =>
+                        onImageStyleChange({ borderRadius: val })
+                      }
+                      min={0}
+                      max={100}
+                      step={1}
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-medium">Shadow</Label>
+                      <span className="text-xs text-muted-foreground">
+                        {SHADOW_PRESETS.find((s) => s.value === imgStyle.shadow)
+                          ?.name || "None"}
+                      </span>
+                    </div>
+                    <Slider
+                      defaultValue={[0]}
+                      value={[
+                        SHADOW_PRESETS.findIndex(
+                          (s) => s.value === imgStyle.shadow
+                        ) !== -1
+                          ? SHADOW_PRESETS.findIndex(
+                              (s) => s.value === imgStyle.shadow
+                            )
+                          : 0,
+                      ]}
+                      onValueChange={([val]) => {
+                        const preset = SHADOW_PRESETS[val];
+                        if (preset)
+                          onImageStyleChange({ shadow: preset.value });
+                      }}
+                      min={0}
+                      max={SHADOW_PRESETS.length - 1}
+                      step={1}
+                    />
+                  </div>
                 </div>
-                <Slider
-                  value={[userImageStyle.scale]}
-                  onValueChange={([val]) => onImageStyleChange({ scale: val })}
-                  min={10}
-                  max={200}
-                  step={1}
-                />
-              </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-medium">Opacity</Label>
-                  <span className="text-xs text-muted-foreground">
-                    {userImageStyle.opacity}%
-                  </span>
+                <Separator className="bg-border/50" />
+
+                <div className="space-y-4">
+                  <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Transforms & Clipping
+                  </Label>
+
+                  {/* 3D Rotation Controls */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-medium flex items-center gap-2">
+                        <Rotate3d className="w-3 h-3" /> 3D Rotation
+                      </Label>
+                    </div>
+
+                    <div className="space-y-2 pt-2">
+                      <div className="grid grid-cols-3 items-center gap-2">
+                        <Label className="text-[10px] text-muted-foreground">
+                          X: {imgStyle.rotateX}°
+                        </Label>
+                        <Label className="text-[10px] text-muted-foreground">
+                          Y: {imgStyle.rotateY}°
+                        </Label>
+                        <Label className="text-[10px] text-muted-foreground">
+                          Z: {imgStyle.rotate}°
+                        </Label>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Slider
+                          value={[imgStyle.rotateX]}
+                          onValueChange={([val]) =>
+                            onImageStyleChange({ rotateX: val })
+                          }
+                          min={-180}
+                          max={180}
+                          step={1}
+                          className="py-1"
+                        />
+                        <Slider
+                          value={[imgStyle.rotateY]}
+                          onValueChange={([val]) =>
+                            onImageStyleChange({ rotateY: val })
+                          }
+                          min={-180}
+                          max={180}
+                          step={1}
+                          className="py-1"
+                        />
+                        <Slider
+                          value={[imgStyle.rotate]}
+                          onValueChange={([val]) =>
+                            onImageStyleChange({ rotate: val })
+                          }
+                          min={-180}
+                          max={180}
+                          step={1}
+                          className="py-1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Flip & Crop */}
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
+                      <Button
+                        variant={imgStyle.flipX ? "default" : "outline"}
+                        size="sm"
+                        className="flex-1"
+                        onClick={() =>
+                          onImageStyleChange({ flipX: !imgStyle.flipX })
+                        }
+                      >
+                        <FlipHorizontal className="w-4 h-4 mr-2" /> Flip X
+                      </Button>
+                      <Button
+                        variant={imgStyle.flipY ? "default" : "outline"}
+                        size="sm"
+                        className="flex-1"
+                        onClick={() =>
+                          onImageStyleChange({ flipY: !imgStyle.flipY })
+                        }
+                      >
+                        <FlipVertical className="w-4 h-4 mr-2" /> Flip Y
+                      </Button>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium flex items-center gap-2">
+                          <Scissors className="w-3 h-3" /> Manual Crop (%)
+                        </Label>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-5 w-5"
+                          onClick={resetCrop}
+                          title="Reset Crop"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] text-muted-foreground">
+                            Top
+                          </Label>
+                          <Slider
+                            value={[imgStyle.crop.top]}
+                            onValueChange={([v]) =>
+                              onImageStyleChange({
+                                crop: { ...imgStyle.crop, top: v },
+                              })
+                            }
+                            max={100}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] text-muted-foreground">
+                            Right
+                          </Label>
+                          <Slider
+                            value={[imgStyle.crop.right]}
+                            onValueChange={([v]) =>
+                              onImageStyleChange({
+                                crop: { ...imgStyle.crop, right: v },
+                              })
+                            }
+                            max={100}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] text-muted-foreground">
+                            Bottom
+                          </Label>
+                          <Slider
+                            value={[imgStyle.crop.bottom]}
+                            onValueChange={([v]) =>
+                              onImageStyleChange({
+                                crop: { ...imgStyle.crop, bottom: v },
+                              })
+                            }
+                            max={100}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] text-muted-foreground">
+                            Left
+                          </Label>
+                          <Slider
+                            value={[imgStyle.crop.left]}
+                            onValueChange={([v]) =>
+                              onImageStyleChange({
+                                crop: { ...imgStyle.crop, left: v },
+                              })
+                            }
+                            max={100}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Clipping Controls */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium flex items-center gap-2">
+                      <BoxSelect className="w-3 h-3" /> Shape Clip
+                    </Label>
+                    <Select
+                      value={imgStyle.clipPath}
+                      onValueChange={(val) =>
+                        onImageStyleChange({ clipPath: val })
+                      }
+                    >
+                      <SelectTrigger className="h-8 bg-transparent border-border/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="font-manrope">
+                        {CLIP_PATHS.map((clip) => (
+                          <SelectItem key={clip.name} value={clip.value}>
+                            {clip.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <Slider
-                  value={[userImageStyle.opacity]}
-                  onValueChange={([val]) =>
-                    onImageStyleChange({ opacity: val })
-                  }
-                  min={0}
-                  max={100}
-                  step={1}
-                />
+              </>
+            ) : (
+              <div className="text-center p-8 text-muted-foreground text-xs border-2 border-dashed rounded-lg">
+                Select an image on the canvas to edit its properties.
               </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-medium">Blur</Label>
-                  <span className="text-xs text-muted-foreground">
-                    {userImageStyle.blur}px
-                  </span>
-                </div>
-                <Slider
-                  value={[userImageStyle.blur]}
-                  onValueChange={([val]) => onImageStyleChange({ blur: val })}
-                  min={0}
-                  max={20}
-                  step={1}
-                />
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-medium">Noise</Label>
-                  <span className="text-xs text-muted-foreground">
-                    {userImageStyle.noise}%
-                  </span>
-                </div>
-                <Slider
-                  value={[userImageStyle.noise]}
-                  onValueChange={([val]) => onImageStyleChange({ noise: val })}
-                  min={0}
-                  max={50}
-                  step={1}
-                />
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-medium">Roundness</Label>
-                  <span className="text-xs text-muted-foreground">
-                    {userImageStyle.borderRadius}px
-                  </span>
-                </div>
-                <Slider
-                  value={[userImageStyle.borderRadius]}
-                  onValueChange={([val]) =>
-                    onImageStyleChange({ borderRadius: val })
-                  }
-                  min={0}
-                  max={100}
-                  step={1}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs font-medium">Shadow</Label>
-                <Select
-                  value={userImageStyle.shadow}
-                  onValueChange={(val) => onImageStyleChange({ shadow: val })}
-                >
-                  <SelectTrigger className="h-8 bg-transparent border-border/50">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="font-manrope">
-                    {SHADOW_PRESETS.map((shadow) => (
-                      <SelectItem key={shadow.name} value={shadow.value}>
-                        {shadow.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            )}
           </div>
         </TabsContent>
 
-        {/* === TEXT CONTROLS === */}
+        {/* === TEXT CONTROLS (Existing) === */}
         <TabsContent
           value="text"
           className="flex-1 flex flex-col gap-4 data-[state=inactive]:hidden pr-1 focus-visible:outline-none"
         >
+          {/* ... existing text controls ... */}
           <div className="space-y-3">
             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Content

@@ -41,10 +41,14 @@ export function RightPanel({
             {ASPECT_RATIOS.map((ratio) => (
               <SelectItem key={ratio.name} value={ratio.name} className="py-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 bg-muted border border-foreground/20 rounded-sm ${ratio.previewClass}`} />
+                  <div
+                    className={`w-8 bg-muted border border-foreground/20 rounded-sm ${ratio.previewClass}`}
+                  />
                   <div className="flex flex-col gap-0.5">
                     <span className="font-medium text-xs">{ratio.name}</span>
-                    <span className="text-[10px] text-muted-foreground">{ratio.label}</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {ratio.label}
+                    </span>
                   </div>
                 </div>
               </SelectItem>

@@ -40,13 +40,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         > */}
-          <main className="bg-background text-foreground font-space">
-            {children}
-          </main>
-          <Toaster
-            position="top-center"
-            swipeDirections={["right"]}
-          />
+        <main className="bg-background text-foreground font-space">
+          {children}
+        </main>
+        <Toaster position="top-center" swipeDirections={["right"]} />
         {/* </Provider> */}
       </body>
     </html>

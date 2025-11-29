@@ -1,3 +1,32 @@
+export interface ImageStyle {
+  scale: number;
+  borderRadius: number;
+  shadow: string;
+  blur: number;
+  opacity: number;
+  noise: number;
+  rotate: number;
+  rotateX: number;
+  rotateY: number;
+  clipPath: string;
+  flipX: boolean;
+  flipY: boolean;
+  crop: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+}
+
+// New Interface for Image Layers
+export interface ImageElement {
+  id: string;
+  src: string;
+  position: { x: number; y: number };
+  style: ImageStyle;
+}
+
 export interface TextStyle {
   fontSize: number;
   fontFamily: string;
@@ -10,16 +39,6 @@ export interface TextStyle {
   showBackground: boolean;
 }
 
-export interface ImageStyle {
-  scale: number;
-  borderRadius: number;
-  shadow: string;
-  rotate: number;
-  blur: number;
-  opacity: number;
-  noise: number;
-}
-
 export interface TextElement {
   id: string;
   content: string;
@@ -28,8 +47,10 @@ export interface TextElement {
 }
 
 export interface LeftPanelProps {
-  selectedElement: TextElement | undefined;
-  // Text State
+  selectedTextElement: TextElement | undefined;
+  selectedImageElement: ImageElement | undefined; // Changed from just 'userImageStyle'
+  
+  // Text State (Keep these or refactor to use selectedTextElement directly, keeping simple for now)
   currentText: string;
   fontSize: number;
   fontFamily: string;
@@ -40,8 +61,6 @@ export interface LeftPanelProps {
   textBackgroundColor: string;
   textPadding: number;
   showTextBackground: boolean;
-  // Image State
-  userImageStyle: ImageStyle;
   
   // Handlers
   onTextChange: (value: string) => void;
@@ -58,17 +77,6 @@ export interface LeftPanelProps {
   
   onImageStyleChange: (updates: Partial<ImageStyle>) => void;
   onImageUpload: (file: File) => void;
-}
-export interface RightPanelProps {
-  canvasBackground: string;
-  aspectRatio: string;
-  exportFormat: string;
-  exportQuality: string;
-  onCanvasBackgroundChange: (value: string) => void;
-  onAspectRatioChange: (value: string) => void;
-  onExportFormatChange: (value: string) => void;
-  onExportQualityChange: (value: string) => void;
-  onDownload: () => void;
 }
 
 
@@ -100,6 +108,15 @@ export const FONT_WEIGHTS = [
   { value: "800", label: "Extra Bold" },
 ];
 
+export const CLIP_PATHS = [
+  { name: "None", value: "none" },
+  { name: "Circle", value: "circle(50% at 50% 50%)" },
+  { name: "Ellipse", value: "ellipse(50% 50% at 50% 50%)" },
+  { name: "Triangle", value: "polygon(50% 0%, 0% 100%, 100% 100%)" },
+  { name: "Diamond", value: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" },
+  { name: "Pentagon", value: "polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)" },
+];
+
 export const SHADOW_PRESETS = [
   { name: "None", value: "none" },
   { name: "Small", value: "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
@@ -118,4 +135,20 @@ export const BACKGROUND_OPTIONS = [
   { name: "Midnight", value: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)" },
   { name: "Neon", value: "linear-gradient(135deg, #00c6ff, #0072ff)" },
   { name: "Peach", value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
+  { name: "Cosmic", value: "linear-gradient(135deg, #1a0033 0%, #330066 50%, #660099 100%)" },
+  { name: "Aurora", value: "linear-gradient(135deg, #00ff88 0%, #00ccff 50%, #0088ff 100%)" },
+  { name: "Lava", value: "linear-gradient(135deg, #ff6b00 0%, #ff0000 50%, #660000 100%)" },
+  { name: "Ocean", value: "linear-gradient(135deg, #0066cc 0%, #0099ff 50%, #00ccff 100%)" },
 ];
+
+export interface RightPanelProps {
+  canvasBackground: string;
+  aspectRatio: string;
+  exportFormat: string;
+  exportQuality: string;
+  onCanvasBackgroundChange: (value: string) => void;
+  onAspectRatioChange: (value: string) => void;
+  onExportFormatChange: (value: string) => void;
+  onExportQualityChange: (value: string) => void;
+  onDownload: () => void;
+}

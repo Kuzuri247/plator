@@ -3,16 +3,13 @@
 import { forwardRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Image as ImageIcon } from "lucide-react";
-import { TextElement, ImageStyle } from "./types";
+import { TextElement, ImageElement } from "./types";
 
 interface EditorCanvasProps {
   width: number;
   height: number;
   canvasBackground: string;
-  userImage: string | null;
-  userImageStyle: ImageStyle;
-  imagePosition: { x: number; y: number };
-  onImageMouseDown: (e: React.MouseEvent) => void;
+  imageElements: ImageElement[]; // Array of images
   onEmptyClick: () => void;
   
   textElements: TextElement[];
@@ -28,10 +25,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       width,
       height,
       canvasBackground,
-      userImage,
-      userImageStyle,
-      imagePosition,
-      onImageMouseDown,
+      imageElements,
       onEmptyClick,
       textElements,
       selectedElement,
@@ -56,46 +50,8 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
           onMouseUp={onMouseUp}
           onMouseLeave={onMouseUp}
         >
-          {/* User Image Layer - Only renders when image exists */}
-          {userImage ? (
-            <div
-              className="absolute cursor-move transition-transform duration-75 ease-linear hover:ring-1 hover:ring-white/30"
-              onMouseDown={onImageMouseDown}
-              style={{
-                left: imagePosition.x,
-                top: imagePosition.y,
-                transform: `scale(${userImageStyle.scale / 100}) rotate(${userImageStyle.rotate}deg)`,
-                borderRadius: `${userImageStyle.borderRadius}px`,
-                boxShadow: userImageStyle.shadow === 'none' ? 'none' : userImageStyle.shadow,
-                opacity: userImageStyle.opacity / 100,
-                filter: `blur(${userImageStyle.blur}px)`,
-              }}
-            >
-              {/* Noise Overlay */}
-              {userImageStyle.noise > 0 && (
-                  <div 
-                      className="absolute inset-0 z-10 pointer-events-none rounded-[inherit]"
-                      style={{
-                          opacity: userImageStyle.noise / 100,
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E")`
-                      }}
-                  />
-              )}
-
-              <img
-                src={userImage}
-                alt="User upload"
-                draggable={false}
-                className="block object-contain pointer-events-none"
-                style={{
-                  borderRadius: `${userImageStyle.borderRadius}px`,
-                  maxWidth: "none",
-                  maxHeight: "none",
-                }}
-              />
-            </div>
-          ) : (
-            /* Centered Upload Skeleton - Renders directly in flex container when no image */
+          {/* Fallback if no images */}
+          {imageElements.length === 0 && (
             <div 
               onClick={onEmptyClick}
               className="w-64 h-40 bg-background/20 backdrop-blur-sm border-2 border-dashed  border-neutral-400 rounded-lg flex flex-col items-center justify-center text-neutral-500 cursor-pointer hover:bg-background/30 hover:border-neutral-400 transition-all z-10"
@@ -105,12 +61,69 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             </div>
           )}
 
+          {/* User Image Layers */}
+          {imageElements.map((img) => (
+            <div
+              key={img.id}
+              className={`absolute cursor-move transition-transform duration-75 ease-linear hover:ring-1 hover:ring-white/30 ${
+                selectedElement === img.id ? "ring-2 ring-primary z-20" : "z-10"
+              }`}
+              onMouseDown={(e) => onElementMouseDown(e, img.id)}
+              style={{
+                left: img.position.x,
+                top: img.position.y,
+                transform: `
+                  perspective(1000px) 
+                  rotateX(${img.style.rotateX}deg) 
+                  rotateY(${img.style.rotateY}deg) 
+                  rotateZ(${img.style.rotate}deg) 
+                  scale(${img.style.scale / 100})
+                  scaleX(${img.style.flipX ? -1 : 1})
+                  scaleY(${img.style.flipY ? -1 : 1})
+                `,
+                borderRadius: `${img.style.borderRadius}px`,
+                boxShadow: img.style.shadow === 'none' ? 'none' : img.style.shadow,
+                opacity: img.style.opacity / 100,
+                filter: `blur(${img.style.blur}px)`,
+                clipPath: img.style.clipPath !== 'none' 
+                  ? img.style.clipPath 
+                  : `inset(${img.style.crop.top}% ${img.style.crop.right}% ${img.style.crop.bottom}% ${img.style.crop.left}%)`,
+              }}
+            >
+              {/* Noise Overlay */}
+              {img.style.noise > 0 && (
+                  <div 
+                      className="absolute inset-0 z-10 pointer-events-none rounded-[inherit]"
+                      style={{
+                          opacity: img.style.noise / 100,
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E")`
+                      }}
+                  />
+              )}
+
+              <img
+                src={img.src}
+                alt="Layer"
+                draggable={false}
+                className="block object-contain pointer-events-none"
+                style={{
+                  borderRadius: `${img.style.borderRadius}px`,
+                  maxWidth: "none",
+                  maxHeight: "none",
+                  clipPath: img.style.clipPath !== 'none' 
+                  ? img.style.clipPath 
+                  : `inset(${img.style.crop.top}% ${img.style.crop.right}% ${img.style.crop.bottom}% ${img.style.crop.left}%)`,
+                }}
+              />
+            </div>
+          ))}
+
           {/* Text Elements Layer */}
           {textElements.map((element) => (
             <div
               key={element.id}
               className={`absolute cursor-move select-none hover:ring-1 hover:ring-white/50 transition-shadow ${
-                selectedElement === element.id ? "ring-2 ring-primary z-50" : "z-10"
+                selectedElement === element.id ? "ring-2 ring-primary z-50" : "z-30"
               }`}
               style={{
                 left: element.position.x,
