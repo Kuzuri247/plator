@@ -9,9 +9,8 @@ interface EditorCanvasProps {
   width: number;
   height: number;
   canvasBackground: string;
-  imageElements: ImageElement[]; // Array of images
+  imageElements: ImageElement[];
   onEmptyClick: () => void;
-  
   textElements: TextElement[];
   selectedElement: string | null;
   onElementMouseDown: (e: React.MouseEvent, elementId: string) => void;
@@ -39,12 +38,11 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       <Card className="p-0 bg-transparent border-none shadow-none overflow-visible relative group/canvas">
         <div
           ref={ref}
-          className="relative overflow-hidden shadow-2xl transition-all duration-300 ease-in-out flex items-center justify-center select-none"
+          className="relative overflow-hidden transition-all duration-300 ease-in-out flex items-center justify-center select-none"
           style={{
             width: width,
             height: height,
             background: canvasBackground,
-            borderRadius: "8px",
           }}
           onMouseMove={onMouseMove}
           onMouseUp={onMouseUp}
@@ -54,7 +52,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
           {imageElements.length === 0 && (
             <div 
               onClick={onEmptyClick}
-              className="w-64 h-40 bg-background/20 backdrop-blur-sm border-2 border-dashed  border-neutral-400 rounded-lg flex flex-col items-center justify-center text-neutral-500 cursor-pointer hover:bg-background/30 hover:border-neutral-400 transition-all z-10"
+              className="w-64 h-40 bg-background/20 backdrop-blur-sm border-2 border-dashed border-neutral-400 rounded-lg flex flex-col items-center justify-center text-neutral-500 cursor-pointer hover:bg-background/30 hover:border-neutral-400 transition-all z-10"
             >
               <ImageIcon className="w-8 h-8 mb-2 opacity-50 text-neutral-400" />
               <span className="text-xs text-neutral-400 font-medium">Click to Upload</span>
@@ -110,6 +108,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
                   borderRadius: `${img.style.borderRadius}px`,
                   maxWidth: "none",
                   maxHeight: "none",
+                  // Ensure clip path works on image if parent radius doesn't cut it
                   clipPath: img.style.clipPath !== 'none' 
                   ? img.style.clipPath 
                   : `inset(${img.style.crop.top}% ${img.style.crop.right}% ${img.style.crop.bottom}% ${img.style.crop.left}%)`,
