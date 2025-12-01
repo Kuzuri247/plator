@@ -119,7 +119,7 @@ export function useEditorState() {
   };
 
   const handleTextEffect = (val: string) =>
-    selectedElementId?.startsWith("None")
+    selectedElementId?.startsWith("text")
       ? updateSelectedText({ textEffect: val })
       : setTextEffect(val);
 

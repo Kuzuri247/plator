@@ -542,24 +542,22 @@ export function LeftPanel({
                         ))}
                       </SelectContent>
                     </Select>
+                    <Select
+                      value={activeTextEffect}
+                      onValueChange={onTextEffectChange}
+                    >
+                      <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="font-manrope">
+                        {TEXT_EFFECTS.map((e) => (
+                          <SelectItem key={e.value} value={e.value}>
+                            {e.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-
-               
-                <Select
-                  value={activeTextEffect}
-                  onValueChange={onTextEffectChange}
-                >
-                  <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="font-manrope">
-                    {TEXT_EFFECTS.map((e) => (
-                      <SelectItem key={e.value} value={e.value}>
-                        {e.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">

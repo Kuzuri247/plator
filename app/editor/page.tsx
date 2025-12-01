@@ -5,12 +5,13 @@ import { Canvas } from "./components/canvas";
 import { LeftPanel } from "./components/panels/left-panel";
 import { RightPanel } from "./components/panels/right-panel";
 import { ArrowLeft, Twitter, Undo2, Redo2, RotateCcw } from "lucide-react";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useEditorState } from "./hooks/editor-state";
 import { useSelection } from "./hooks/selection";
 import { useExport } from "./hooks/export";
+import { on } from "events";
 
 export default function EditorPage() {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -36,6 +37,8 @@ export default function EditorPage() {
     textBorderRadius,
     textBackgroundColor,
     textPadding,
+    textEffect,
+    handleTextEffect,
     showTextBackground,
     history,
     historyIndex,
@@ -135,6 +138,8 @@ export default function EditorPage() {
             textShadow={textShadow}
             textBorderRadius={textBorderRadius}
             textBackgroundColor={textBackgroundColor}
+            textEffect={textEffect}
+            onTextEffectChange={handleTextEffect}
             textPadding={textPadding}
             showTextBackground={showTextBackground}
             onTextChange={handleTextChange}
@@ -150,7 +155,7 @@ export default function EditorPage() {
             onAddText={addTextElement}
             onImageStyleChange={updateSelectedImage}
             onImageUpload={handleImageUpload}
-          />
+            />
           <input
             ref={hiddenInputRef}
             type="file"

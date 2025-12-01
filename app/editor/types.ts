@@ -77,7 +77,6 @@ export interface LeftPanelProps {
   onShowTextBackgroundChange: (value: boolean) => void;
   onTextEffectChange: (value: string) => void;
   onAddText: () => void;
-
   onImageStyleChange: (updates: Partial<ImageStyle>) => void;
   onImageUpload: (file: File) => void;
 }
