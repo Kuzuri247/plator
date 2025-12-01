@@ -33,7 +33,8 @@ import {
   SHADOW_PRESETS,
   LeftPanelProps,
   CLIP_PATHS,
-} from "./types";
+  TEXT_EFFECTS,
+} from "../../types";
 
 export function LeftPanel({
   selectedTextElement,
@@ -48,6 +49,8 @@ export function LeftPanel({
   textBackgroundColor,
   textPadding,
   showTextBackground,
+  textEffect,
+  onTextEffectChange,
   onTextChange,
   onFontFamilyChange,
   onFontSizeChange,
@@ -87,6 +90,7 @@ export function LeftPanel({
   const activeFontWeight = selectedTextElement?.style.fontWeight ?? fontWeight;
   const activeColor = selectedTextElement?.style.color ?? color;
   const activeTextShadow = selectedTextElement?.style.textShadow ?? textShadow;
+  const activeTextEffect = selectedTextElement?.style.textEffect ?? textEffect;
   const activeTextBorderRadius =
     selectedTextElement?.style.borderRadius ?? textBorderRadius;
   const activeTextBgColor =
@@ -522,6 +526,7 @@ export function LeftPanel({
                         ))}
                       </SelectContent>
                     </Select>
+
                     <Select
                       value={activeFontWeight}
                       onValueChange={onFontWeightChange}
@@ -538,6 +543,23 @@ export function LeftPanel({
                       </SelectContent>
                     </Select>
                   </div>
+
+               
+                <Select
+                  value={activeTextEffect}
+                  onValueChange={onTextEffectChange}
+                >
+                  <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="font-manrope">
+                    {TEXT_EFFECTS.map((e) => (
+                      <SelectItem key={e.value} value={e.value}>
+                        {e.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -570,27 +592,6 @@ export function LeftPanel({
                       />
                     </div>
                   </div>
-
-                  {/* <div className="space-y-2">
-                    <Label className="text-xs font-medium text-muted-foreground">
-                      Text Shadow
-                    </Label>
-                    <Select
-                      value={activeTextShadow}
-                      onValueChange={onTextShadowChange}
-                    >
-                      <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
-                        <SelectValue placeholder="None" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SHADOW_PRESETS.map((s) => (
-                          <SelectItem key={s.name} value={s.value}>
-                            {s.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div> */}
                 </div>
 
                 <Separator />

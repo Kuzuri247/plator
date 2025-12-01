@@ -37,6 +37,7 @@ export interface TextStyle {
   backgroundColor: string;
   padding: number;
   showBackground: boolean;
+  textEffect: string;
 }
 
 export interface TextElement {
@@ -61,6 +62,7 @@ export interface LeftPanelProps {
   textBackgroundColor: string;
   textPadding: number;
   showTextBackground: boolean;
+  textEffect: string;
 
   // Handlers
   onTextChange: (value: string) => void;
@@ -73,6 +75,7 @@ export interface LeftPanelProps {
   onTextBackgroundColorChange: (value: string) => void;
   onTextPaddingChange: (value: number) => void;
   onShowTextBackgroundChange: (value: boolean) => void;
+  onTextEffectChange: (value: string) => void;
   onAddText: () => void;
 
   onImageStyleChange: (updates: Partial<ImageStyle>) => void;
@@ -94,7 +97,7 @@ export const FONT_FAMILIES = [
   "Arial",
   "Helvetica",
   "Impact",
-  "Courier New",
+  "Courier",
 ];
 
 export const FONT_WEIGHTS = [
@@ -106,6 +109,14 @@ export const FONT_WEIGHTS = [
   { value: "600", label: "Semi Bold" },
   { value: "bold", label: "Bold" },
   { value: "800", label: "Extra Bold" },
+];
+
+export const TEXT_EFFECTS = [
+  { name: "None", value: "none" },
+  { name: "Outline", value: "outline" },
+  { name: "Underline", value: "underline" },
+  { name: "Strikethrough", value: "line-through" },
+  { name: "Italic", value: "italic" },
 ];
 
 export const CLIP_PATHS = [
@@ -173,3 +184,19 @@ export interface RightPanelProps {
   onExportQualityChange: (value: string) => void;
   onDownload: () => void;
 }
+
+export const DEFAULT_IMAGE_STYLE: ImageStyle = {
+  scale: 100,
+  borderRadius: 0,
+  shadow: "none",
+  rotate: 0,
+  rotateX: 0,
+  rotateY: 0,
+  blur: 0,
+  opacity: 100,
+  noise: 0,
+  clipPath: "none",
+  flipX: false,
+  flipY: false,
+  crop: { top: 0, right: 0, bottom: 0, left: 0 },
+};

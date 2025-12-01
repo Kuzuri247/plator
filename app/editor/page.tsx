@@ -1,432 +1,91 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useRef } from "react";
 import { Canvas } from "./components/canvas";
-import { LeftPanel } from "./components/left-panel";
-import { RightPanel } from "./components/right-panel";
-import {
-  TextElement,
-  ImageElement,
-  ImageStyle,
-  ASPECT_RATIOS,
-} from "./components/types";
+import { LeftPanel } from "./components/panels/left-panel";
+import { RightPanel } from "./components/panels/right-panel";
 import { ArrowLeft, Twitter, Undo2, Redo2, RotateCcw } from "lucide-react";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { toast } from "sonner";
-import { toPng, toJpeg, toSvg } from "html-to-image";
-
-interface HistoryState {
-  textElements: Omit<TextElement, "position">[];
-  imageElements: Omit<ImageElement, "position">[];
-  canvasBackground: string;
-}
-
-const DEFAULT_IMAGE_STYLE: ImageStyle = {
-  scale: 100,
-  borderRadius: 0,
-  shadow: "none",
-  rotate: 0,
-  rotateX: 0,
-  rotateY: 0,
-  blur: 0,
-  opacity: 100,
-  noise: 0,
-  clipPath: "none",
-  flipX: false,
-  flipY: false,
-  crop: { top: 0, right: 0, bottom: 0, left: 0 },
-};
+import { useEditorState } from "./hooks/editor-state";
+import { useSelection } from "./hooks/selection";
+import { useExport } from "./hooks/export";
 
 export default function EditorPage() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
-  const historyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [aspectRatioName, setAspectRatioName] = useState("4:3");
-  const currentAspectRatio =
-    ASPECT_RATIOS.find((r) => r.name === aspectRatioName) || ASPECT_RATIOS[4];
-  const [canvasBackground, setCanvasBackground] = useState(
-    "linear-gradient(135deg, #0f0c29, #302b63, #24243e)"
+  const {
+    aspectRatioName,
+    setAspectRatioName,
+    currentAspectRatio,
+    canvasBackground,
+    imageElements,
+    setImageElements,
+    textElements,
+    setTextElements,
+    selectedElementId,
+    setSelectedElementId,
+    currentText,
+    fontSize,
+    fontFamily,
+    fontWeight,
+    color,
+    textShadow,
+    textBorderRadius,
+    textBackgroundColor,
+    textPadding,
+    showTextBackground,
+    history,
+    historyIndex,
+    resetCanvas,
+    addTextElement,
+    updateSelectedText,
+    handleImageUpload,
+    updateSelectedImage,
+    handleTextChange,
+    handleFontSize,
+    handleFontFamily,
+    handleFontWeight,
+    handleColor,
+    handleShadow,
+    handleTextRadius,
+    handleTextBgColor,
+    handleTextPadding,
+    handleShowTextBg,
+    handleCanvasBackgroundChange,
+    undo,
+    redo,
+  } = useEditorState();
+
+  const {
+    isDragging,
+    handleElementMouseDown,
+    handleCanvasMouseMove,
+    handleMouseUp,
+  } = useSelection(
+    canvasRef,
+    currentAspectRatio,
+    imageElements,
+    textElements,
+    setImageElements,
+    setTextElements,
+    setSelectedElementId
   );
 
-  const [imageElements, setImageElements] = useState<ImageElement[]>([]);
-  const [textElements, setTextElements] = useState<TextElement[]>([]);
-  const [selectedElementId, setSelectedElementId] = useState<string | null>(
-    null
+  const {
+    exportFormat,
+    setExportFormat,
+    exportQuality,
+    setExportQuality,
+    handleDownload,
+  } = useExport(
+    canvasRef,
+    setSelectedElementId,
+    currentAspectRatio,
+    canvasBackground
   );
-
-  // Default Text Styles
-  const [currentText, setCurrentText] = useState("Sample Text");
-  const [fontSize, setFontSize] = useState(48);
-  const [fontFamily, setFontFamily] = useState("Inter");
-  const [fontWeight, setFontWeight] = useState("400");
-  const [color, setColor] = useState("#ffffff");
-  const [textShadow, setTextShadow] = useState("none");
-  const [textBorderRadius, setTextBorderRadius] = useState(12);
-  const [textBackgroundColor, setTextBackgroundColor] = useState("#000000");
-  const [textPadding, setTextPadding] = useState(4);
-  const [showTextBackground, setShowTextBackground] = useState(true);
-
-  const [exportFormat, setExportFormat] = useState("png");
-  ///////////////////////////////////////////////////////////////////////////////////
-  const [exportQuality, setExportQuality] = useState("2");
-  ///////////////////////////////////////////////////////////////////////////////////
-
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [dragTarget, setDragTarget] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const elementsRef = useRef({ imageElements: [] as ImageElement[], textElements: [] as TextElement[] });
-
-  useEffect(() => {
-    elementsRef.current = { imageElements, textElements };
-  }, [imageElements, textElements]);
-
-  const [history, setHistory] = useState<HistoryState[]>([
-    {
-      textElements: [],
-      imageElements: [],
-      canvasBackground: "",
-    },
-  ]);
-  const [historyIndex, setHistoryIndex] = useState(0);
-
-  // --- Helper to get current visual scale of the canvas ---
-  const getCanvasScale = useCallback(() => {
-    if (!canvasRef.current) return 1;
-    const rect = canvasRef.current.getBoundingClientRect();
-    // The scale is the Visual Width / Actual Internal Width
-    return rect.width / currentAspectRatio.width;
-  }, [currentAspectRatio.width]);
-
-  const queueHistorySave = useCallback(() => {
-    if (historyTimeoutRef.current) {
-      clearTimeout(historyTimeoutRef.current);
-    }
-    historyTimeoutRef.current = setTimeout(() => {
-      const currentState: HistoryState = {
-        textElements: textElements.map(({ position, ...rest }) => rest),
-        imageElements: imageElements.map(({ position, ...rest }) => rest),
-        canvasBackground,
-      };
-      setHistory((prev) => {
-        const newHistory = prev.slice(0, historyIndex + 1);
-        newHistory.push(currentState);
-        return newHistory;
-      });
-      setHistoryIndex((prev) => prev + 1);
-    }, 2000);
-  }, [textElements, imageElements, canvasBackground, historyIndex]);
-
-  const saveHistoryImmediate = () => {
-    if (historyTimeoutRef.current) clearTimeout(historyTimeoutRef.current);
-    const currentState: HistoryState = {
-      textElements: textElements.map(({ position, ...rest }) => rest),
-      imageElements: imageElements.map(({ position, ...rest }) => rest),
-      canvasBackground,
-    };
-    const newHistory = history.slice(0, historyIndex + 1);
-    newHistory.push(currentState);
-    setHistory(newHistory);
-    setHistoryIndex(newHistory.length - 1);
-  };
-
-  const resetCanvas = () => {
-    setImageElements([]);
-    setTextElements([]);
-    setCanvasBackground("linear-gradient(135deg, #0f0c29, #302b63, #24243e)");
-    const initialState: HistoryState = {
-      textElements: [],
-      imageElements: [],
-      canvasBackground: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
-    };
-    setHistory([initialState]);
-    setHistoryIndex(0);
-    toast.success("Canvas reset!");
-  };
-
-  const addTextElement = () => {
-    const newElement: TextElement = {
-      id: `text_${Date.now()}`,
-      content: "Sample Text",
-      position: {
-        x: currentAspectRatio.width / 2 - 100,
-        y: currentAspectRatio.height / 2,
-      },
-      style: {
-        fontSize,
-        fontFamily,
-        fontWeight,
-        color,
-        textShadow,
-        borderRadius: textBorderRadius,
-        backgroundColor: textBackgroundColor,
-        padding: textPadding,
-        showBackground: showTextBackground,
-      },
-    };
-    setTextElements((prev) => [...prev, newElement]);
-    setSelectedElementId(newElement.id);
-    saveHistoryImmediate();
-  };
-
-  const updateSelectedText = (
-    updates: Partial<TextElement["style"]> | { content: string }
-  ) => {
-    if (!selectedElementId) return;
-    setTextElements((prev) =>
-      prev.map((el) => {
-        if (el.id === selectedElementId) {
-          if ("content" in updates) return { ...el, content: updates.content! };
-          return { ...el, style: { ...el.style, ...updates } };
-        }
-        return el;
-      })
-    );
-    queueHistorySave();
-  };
-
-  const handleImageUpload = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        const id = `img_${Date.now()}`;
-
-        // --- 3. CONTAIN LOGIC ---
-        const canvasW = currentAspectRatio.width;
-        const canvasH = currentAspectRatio.height;
-        const imgW = img.naturalWidth;
-        const imgH = img.naturalHeight;
-
-        // Calculate scale to fit "contain"
-        const scaleX = canvasW / imgW;
-        const scaleY = canvasH / imgH;
-        // Use 90% of the container to leave a little breathing room initially
-        const scale = Math.min(scaleX, scaleY, 1) * 90;
-
-        // Center based on the top-left 0,0 anchor
-        const x = (canvasW - imgW) / 2;
-        const y = (canvasH - imgH) / 2;
-
-        const newImage: ImageElement = {
-          id,
-          src: result,
-          position: { x, y },
-          style: { ...DEFAULT_IMAGE_STYLE, scale: Math.round(scale) }, // Apply calculated scale
-        };
-        setImageElements((prev) => [...prev, newImage]);
-        setSelectedElementId(id);
-        saveHistoryImmediate();
-      };
-      img.src = result;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const updateSelectedImage = (updates: Partial<ImageStyle>) => {
-    if (!selectedElementId) return;
-    setImageElements((prev) =>
-      prev.map((img) => {
-        if (img.id === selectedElementId) {
-          return { ...img, style: { ...img.style, ...updates } };
-        }
-        return img;
-      })
-    );
-    queueHistorySave();
-  };
-
-  const handleTextChange = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ content: val })
-      : setCurrentText(val);
-  const handleFontSize = (val: number) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ fontSize: val })
-      : setFontSize(val);
-  const handleFontFamily = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ fontFamily: val })
-      : setFontFamily(val);
-  const handleFontWeight = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ fontWeight: val })
-      : setFontWeight(val);
-  const handleColor = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ color: val })
-      : setColor(val);
-  const handleShadow = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ textShadow: val })
-      : setTextShadow(val);
-  const handleTextRadius = (val: number) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ borderRadius: val })
-      : setTextBorderRadius(val);
-  const handleTextBgColor = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ backgroundColor: val })
-      : setTextBackgroundColor(val);
-  const handleTextPadding = (val: number) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ padding: val })
-      : setTextPadding(val);
-  const handleShowTextBg = (val: boolean) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ showBackground: val })
-      : setShowTextBackground(val);
-  const handleCanvasBackgroundChange = (val: string) => {
-    setCanvasBackground(val);
-    queueHistorySave();
-  };
-
-  // --- STABILIZED DRAG START ---
-  // Wrapped in useCallback with minimal dependencies
-  const handleElementMouseDown = useCallback((e: React.MouseEvent, elementId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const scale = getCanvasScale();
-    
-    // Read from REF instead of STATE to avoid re-creating this function on every render
-    const { imageElements, textElements } = elementsRef.current;
-    
-    const element = imageElements.find(el => el.id === elementId) || textElements.find(el => el.id === elementId);
-    
-    if (!element || !canvasRef.current) return;
-
-    const canvasRect = canvasRef.current.getBoundingClientRect();
-    
-    const mouseXInCanvas = (e.clientX - canvasRect.left) / scale;
-    const mouseYInCanvas = (e.clientY - canvasRect.top) / scale;
-
-    setDragOffset({
-      x: mouseXInCanvas - element.position.x,
-      y: mouseYInCanvas - element.position.y
-    });
-    
-    setDragTarget(elementId);
-    setSelectedElementId(elementId);
-    setIsDragging(true);
-  }, [getCanvasScale]); // Only depends on getCanvasScale (which is also stable)
-
-  // --- UPDATED DRAG MOVE ---
-  const handleCanvasMouseMove = (e: React.MouseEvent) => {
-    if (!dragTarget || !canvasRef.current) return;
-
-    const scale = getCanvasScale();
-    const canvasRect = canvasRef.current.getBoundingClientRect();
-
-    // Convert screen coordinates to canvas coordinates using scale factor
-    const mouseXInCanvas = (e.clientX - canvasRect.left) / scale;
-    const mouseYInCanvas = (e.clientY - canvasRect.top) / scale;
-
-    const newX = mouseXInCanvas - dragOffset.x;
-    const newY = mouseYInCanvas - dragOffset.y;
-
-    if (dragTarget.startsWith("img")) {
-      setImageElements((prev) =>
-        prev.map((el) =>
-          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el
-        )
-      );
-    } else {
-      setTextElements((prev) =>
-        prev.map((el) =>
-          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el
-        )
-      );
-    }
-  };
-
-  const handleMouseUp = () => {
-  setDragTarget(null);
-  setIsDragging(false); // Add this
-};
-
-  const undo = () => {
-    if (historyIndex > 0) {
-      const newIndex = historyIndex - 1;
-      setHistoryIndex(newIndex);
-      applyHistoryState(history[newIndex]);
-    }
-  };
-
-  const redo = () => {
-    if (historyIndex < history.length - 1) {
-      const newIndex = historyIndex + 1;
-      setHistoryIndex(newIndex);
-      applyHistoryState(history[newIndex]);
-    }
-  };
-
-  const applyHistoryState = (state: HistoryState) => {
-    if (historyTimeoutRef.current) clearTimeout(historyTimeoutRef.current);
-    setCanvasBackground(state.canvasBackground);
-    setImageElements((current) =>
-      state.imageElements.map((histImg) => ({
-        ...histImg,
-        position: current.find((c) => c.id === histImg.id)?.position || {
-          x: 0,
-          y: 0,
-        },
-      }))
-    );
-    setTextElements((current) =>
-      state.textElements.map((histEl) => ({
-        ...histEl,
-        position: current.find((el) => el.id === histEl.id)?.position || {
-          x: 0,
-          y: 0,
-        },
-      }))
-    );
-  };
-
-  const handleDownload = async () => {
-    if (!canvasRef.current) return;
-    // De-select elements to remove selection rings/borders before capturing
-    const prevSelection = selectedElementId;
-    setSelectedElementId(null);
-
-    try {
-      const pixelRatio = parseInt(exportQuality) || 2;
-      const options = {
-        quality: 1.0,
-        pixelRatio: pixelRatio,
-        width: currentAspectRatio.width,
-        height: currentAspectRatio.height,
-        backgroundColor: canvasBackground.startsWith("#")
-          ? canvasBackground
-          : undefined,
-      };
-
-      let dataUrl;
-      if (exportFormat === "svg") {
-        dataUrl = await toSvg(canvasRef.current, options);
-      } else if (exportFormat === "jpeg") {
-        dataUrl = await toJpeg(canvasRef.current, options);
-      } else {
-        dataUrl = await toPng(canvasRef.current, options);
-      }
-
-      const link = document.createElement("a");
-      link.download = `plator-export.${exportFormat}`;
-      link.href = dataUrl;
-      link.click();
-      toast.success("Exported successfully!");
-    } catch (error) {
-      console.error("Export failed:", error);
-      toast.error("Failed to export. Please try again.");
-    } finally {
-      setSelectedElementId(prevSelection);
-    }
-  };
 
   const selectedTextElement = textElements.find(
     (t) => t.id === selectedElementId
@@ -464,7 +123,6 @@ export default function EditorPage() {
           </div>
         </div>
 
-        {/* Content Container - No scroll area here, delegated to LeftPanel */}
         <div className="flex-1 min-h-0 w-full relative">
           <LeftPanel
             selectedTextElement={selectedTextElement}
@@ -522,7 +180,7 @@ export default function EditorPage() {
               onElementMouseDown={handleElementMouseDown}
               onMouseMove={handleCanvasMouseMove}
               onMouseUp={handleMouseUp}
-              isDragging={isDragging} 
+              isDragging={isDragging}
             />
           </div>
         </div>

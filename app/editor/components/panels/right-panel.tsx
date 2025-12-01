@@ -10,9 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BACKGROUND_OPTIONS, ASPECT_RATIOS } from "./types";
+import { BACKGROUND_OPTIONS, ASPECT_RATIOS } from "../../types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { RightPanelProps } from "./types";
+import { RightPanelProps } from "../../types";
 
 export function RightPanel({
   canvasBackground,
