@@ -190,3 +190,14 @@ export const DEFAULT_IMAGE_STYLE: ImageStyle = {
   flipY: false,
   crop: { top: 0, right: 0, bottom: 0, left: 0 },
 };
+export interface RightPanelProps {
+  canvasBackground: string;
+  aspectRatio: string;
+  exportFormat: string;
+  exportQuality: string;
+  onCanvasBackgroundChange: (value: string) => void;
+  onAspectRatioChange: (value: string) => void;
+  onExportFormatChange: (value: string) => void;
+  onExportQualityChange: (value: string) => void;
+  onDownload: () => void;
+}
