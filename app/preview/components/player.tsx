@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { XPost, LinkedInPost, InstagramPost } from "@/components/posts";
@@ -94,8 +93,8 @@ export function Player({
         className={cn(
           "bg-background border-4 border-neutral-800 dark:border-neutral-700 shadow-2xl flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out",
           previewMode === "mobile"
-            ? "w-[375px] h-[750px] max-h-[85vh] rounded-[40px]"
-            : "w-full max-w-[1200px] h-[75vh] rounded-xl border-2"
+            ? "w-[375px] h-[750px] max-h-[90vh] rounded-[40px]"
+            : "w-full max-w-[1200px] h-[85vh] rounded-xl border-2"
         )}
       >
         {/* Device Status Bar / Header */}
@@ -128,15 +127,13 @@ export function Player({
               <LeftSidebarSkeleton />
 
               <div className="flex-1 max-w-2xl border-x border-border/50 min-h-full bg-background/50">
-                <div className="py-4">
-                  {renderContent()}
-                  <div className="mt-4 mx-auto max-w-2xl p-4 border-b border-border/50 opacity-30">
-                    <div className="flex gap-3">
-                      <div className="size-10 bg-muted rounded-full" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 w-1/3 bg-muted rounded" />
-                        <div className="h-20 w-full bg-muted rounded" />
-                      </div>
+                {renderContent()}
+                <div className="mt-4 mx-auto max-w-2xl p-4 border-b border-border/50 opacity-30">
+                  <div className="flex gap-3">
+                    <div className="size-10 bg-muted rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-1/3 bg-muted rounded" />
+                      <div className="h-20 w-full bg-muted rounded" />
                     </div>
                   </div>
                 </div>
