@@ -1,6 +1,7 @@
 import { useState, RefObject } from "react";
 import { toast } from "sonner";
 import { toPng, toJpeg, toSvg } from "html-to-image";
+import { useRouter } from "next/navigation";
 
 export function useExport(
   canvasRef: RefObject<HTMLDivElement | null>,
@@ -10,41 +11,72 @@ export function useExport(
 ) {
   const [exportFormat, setExportFormat] = useState("png");
   const [exportQuality, setExportQuality] = useState("2");
+  const router = useRouter();
 
-  const handleDownload = async () => {
-    if (!canvasRef.current) return;
-    // De-select elements to remove selection rings/borders before capturing
+  // Helper to generate the data URL
+  const generateImage = async () => {
+    if (!canvasRef.current) return null;
     setSelectedElementId(null);
     
+    const pixelRatio = parseInt(exportQuality) || 2;
+    const options = {
+      quality: 1.0,
+      pixelRatio: pixelRatio,
+      width: currentAspectRatio.width,
+      height: currentAspectRatio.height,
+      backgroundColor: canvasBackground.startsWith("#")
+        ? canvasBackground
+        : undefined,
+    };
+
     try {
-      const pixelRatio = parseInt(exportQuality) || 2;
-      const options = {
-        quality: 1.0,
-        pixelRatio: pixelRatio,
-        width: currentAspectRatio.width,
-        height: currentAspectRatio.height,
-        backgroundColor: canvasBackground.startsWith("#")
-          ? canvasBackground
-          : undefined,
-      };
-
-      let dataUrl;
       if (exportFormat === "svg") {
-        dataUrl = await toSvg(canvasRef.current, options);
+        return await toSvg(canvasRef.current, options);
       } else if (exportFormat === "jpeg") {
-        dataUrl = await toJpeg(canvasRef.current, options);
+        return await toJpeg(canvasRef.current, options);
       } else {
-        dataUrl = await toPng(canvasRef.current, options);
+        return await toPng(canvasRef.current, options);
       }
-
-      const link = document.createElement("a");
-      link.download = `plator-export.${exportFormat}`;
-      link.href = dataUrl;
-      link.click();
-      toast.success("Exported successfully!");
     } catch (error) {
-      console.error("Export failed:", error);
-      toast.error("Failed to export. Please try again.");
+      console.error("Export generation failed:", error);
+      toast.error("Failed to generate image.");
+      return null;
+    }
+  };
+
+  const downloadImage = (dataUrl: string) => {
+    const link = document.createElement("a");
+    link.download = `plator-export.${exportFormat}`;
+    link.href = dataUrl;
+    link.click();
+  };
+
+  const handleDownload = async () => {
+    const dataUrl = await generateImage();
+    if (dataUrl) {
+      downloadImage(dataUrl);
+      toast.success("Exported successfully!");
+    }
+  };
+
+  const handleDownloadAndPreview = async () => {
+    const dataUrl = await generateImage();
+    if (dataUrl) {
+      // 1. Download
+      downloadImage(dataUrl);
+      
+      // 2. Save for preview
+      try {
+        localStorage.setItem("plator-preview-image", dataUrl);
+        toast.success("Exported! Redirecting to preview...");
+        
+        // 3. Redirect
+        setTimeout(() => {
+            router.push("/preview");
+        }, 1000);
+      } catch (e) {
+        toast.error("Image too large for local preview storage.");
+      }
     }
   };
 
@@ -54,5 +86,6 @@ export function useExport(
     exportQuality,
     setExportQuality,
     handleDownload,
+    handleDownloadAndPreview, // Export this
   };
 }

@@ -75,6 +75,7 @@ export function LeftPanel({
   onToggleCropping,
   onTextStyleChange,
 }: LeftPanelProps) {
+  
   const imgStyle = selectedImageElement?.style || {
     scale: 100,
     opacity: 100,

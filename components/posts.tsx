@@ -13,11 +13,22 @@ import {
   BarChart2,
 } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-export const XPost = () => (
-  <div className="bg-card border-2 p-4 text-card-foreground w-full max-w-md mx-auto shadow-2xl relative z-10">
+interface PostProps {
+  caption?: string;
+  image?: string | null;
+  className?: string; // Added className prop
+}
+
+export const XPost = ({ caption, image, className }: PostProps) => (
+  <div
+    className={cn(
+      "bg-card border-2 p-4 text-card-foreground w-full max-w-md mx-auto shadow-2xl relative z-10",
+      className
+    )}
+  >
     <div className="flex gap-2">
-      {/* Left Column: Avatar */}
       <div className="shrink-0">
         <div className="w-10 h-10 bg-muted rounded-full overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
           <Image
@@ -31,9 +42,7 @@ export const XPost = () => (
         </div>
       </div>
 
-      {/* Right Column: Content */}
       <div className="flex-1 min-w-0">
-        {/* Header Row */}
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-1 text-[15px] leading-5 overflow-hidden">
             <span className="font-bold text-foreground truncate hover:underline cursor-pointer">
@@ -46,79 +55,79 @@ export const XPost = () => (
             <span className="text-muted-foreground truncate">@alexcreates</span>
             <span className="text-muted-foreground shrink-0">·</span>
             <span className="text-muted-foreground shrink-0 hover:underline cursor-pointer">
-              17h
+              Now
             </span>
           </div>
-          <div className="p-1 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors cursor-pointer -mr-2 -mt-1">
+          <div className="flex  gap-1 p-1 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors cursor-pointer -mr-2 -mt-1">
+            <Image
+              src="./grok.svg"
+              width={16}
+              height={16}
+              alt="grok"
+              className="dark:invert"
+            ></Image>
             <MoreHorizontal size={16} className="text-muted-foreground" />
           </div>
         </div>
 
-        {/* Post Text */}
         <div className="mt-0.5 mb-3 text-[15px] leading-normal font-normal font-manrope text-foreground whitespace-pre-wrap">
-          Just used PlateCreator to schedule my whole week of content. The
-          brutalist templates are literally a cheat code.
-          <br />
-          <br />
-          <span className="text-blue-500 hover:underline cursor-pointer">
-            #contentcreator
-          </span>{" "}
-          <span className="text-blue-500 hover:underline cursor-pointer">
-            #growth
-          </span>
+          {caption ||
+            "Just used PlateCreator to schedule my whole week of content. The brutalist templates are literally a cheat code."}
         </div>
 
-        {/* Post Media (Video/Image Placeholder) */}
-        <div className="rounded-2xl overflow-hidden border border-border/50 mb-3 bg-muted/20 relative h-48 w-92 flex items-center justify-center group cursor-pointer">
-          <div
-            className="absolute inset-0 opacity-50"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
-              color: "oklch(var(--border))",
-            }}
-          />
-          <ImageIcon
-            size={48}
-            className="text-muted-foreground/50 relative z-10"
-            strokeWidth={1}
-          />
-          <div className="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded font-medium z-10">
-            0:05
-          </div>
+        {/* Post Media */}
+        <div className="rounded-2xl overflow-hidden border border-border/50 mb-3 bg-muted/20 relative flex items-center justify-center group cursor-pointer">
+          {image ? (
+            <img
+              src={image}
+              alt="Post content"
+              className="w-full h-auto object-cover max-h-[500px]"
+            />
+          ) : (
+            <div className="h-48 w-full flex items-center justify-center relative">
+              <div
+                className="absolute inset-0 opacity-50"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
+                  color: "oklch(var(--border))",
+                }}
+              />
+              <ImageIcon
+                size={48}
+                className="text-muted-foreground/50 relative z-10"
+                strokeWidth={1}
+              />
+            </div>
+          )}
         </div>
 
-        {/* Action Bar */}
-        <div className="flex justify-between text-muted-foreground w-full max-w-[calc(100%-1rem)]">
-          <div className="flex items-center gap-1 group cursor-pointer transition-colors hover:text-blue-500">
+        <div className="flex justify-between text-muted-foreground gap-1 w-full max-w-[calc(100%-1rem)]">
+          <div className="flex items-center group cursor-pointer transition-colors hover:text-blue-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-blue-500/10 transition-colors">
               <MessageCircle size={18} />
             </div>
             <span className="text-xs">12</span>
           </div>
-
-          <div className="flex items-center gap-1 group cursor-pointer transition-colors hover:text-green-500">
+          <div className="flex items-center group cursor-pointer transition-colors hover:text-green-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-green-500/10 transition-colors">
               <Repeat size={18} />
             </div>
             <span className="text-xs">5</span>
           </div>
-
-          <div className="flex items-center gap-1 group cursor-pointer transition-colors hover:text-pink-500">
+          <div className="flex items-center group cursor-pointer transition-colors hover:text-pink-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-pink-500/10 transition-colors">
               <Heart size={18} />
             </div>
             <span className="text-xs">84</span>
           </div>
-
-          <div className="flex items-center gap-1 group cursor-pointer transition-colors hover:text-blue-500">
+          <div className="flex items-center group cursor-pointer transition-colors hover:text-blue-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-blue-500/10 transition-colors">
               <BarChart2 size={18} />
             </div>
             <span className="text-xs">712</span>
           </div>
-
-          <div className="flex items-center gap-3">
+          <div className="flex items-center pl-3 gap-2">
             <div className="p-1.5 -ml-1.5 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors cursor-pointer">
               <Bookmark size={18} />
             </div>
@@ -132,11 +141,15 @@ export const XPost = () => (
   </div>
 );
 
-export const LinkedInPost = () => (
-  <div className="bg-card border-2 p-6 text-card-foreground w-full max-w-md mx-auto shadow-2xl relative z-10">
+export const LinkedInPost = ({ caption, image, className }: PostProps) => (
+  <div
+    className={cn(
+      "bg-card border-2 p-6 text-card-foreground w-full max-w-md mx-auto shadow-2xl relative z-10",
+      className
+    )}
+  >
     <div className="flex justify-between items-start mb-4">
       <div className="flex gap-3">
-        {/* Added overflow-hidden here */}
         <div className="w-10 h-10 bg-muted rounded-full overflow-hidden">
           <Image
             src="/pfp1.jpg"
@@ -151,34 +164,44 @@ export const LinkedInPost = () => (
           <div className="font-bold text-[16px] font-display leading-tight font-manrope">
             Sarah Design
           </div>
-          <div className="text-neutral-500 text-[12px] font-inter">
+          <div className="text-neutral-500 text-xs font-inter">
             Product Designer
           </div>
-          <div className="text-neutral-500 text-[11px] font-sm flex font-inter">
-            3d . Edited . <Earth className="size-3.5 " />
+          <div className="text-neutral-500 text-xs font-sm flex font-inter">
+            Just now . <Earth className="size-3.5 " />
           </div>
         </div>
       </div>
       <MoreHorizontal size={20} className="text-muted-foreground" />
     </div>
-    <div className="mb-6 text-[14px] leading-relaxed font-light font-inter">
-      Consistency is the hardest part of building a personal brand.
-      <br />
-      <br />
-      Finally found a workflow that works with PlateCreator. The drag-and-drop
-      scheduler is a game changer.
-      <div className="h-42 w-full bg-muted/30 flex items-center justify-center border-2 mt-4 border-border relative overflow-hidden group">
-        <div
-          className="absolute inset-0 opacity-50 "
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
-            color: "oklch(var(--border))",
-          }}
-        />
-        <div className="relative z-10 flex flex-col items-center text-muted-foreground">
-          <ImageIcon size={32} strokeWidth={1} className="mb-2" />
-        </div>
+    <div className="mb-6 text-[14px] leading-relaxed font-light font-inter whitespace-pre-wrap">
+      {caption ||
+        "Consistency is the hardest part of building a personal brand.\n\nFinally found a workflow that works with PlateCreator."}
+
+      <div className="w-full bg-muted/30 flex items-center justify-center border-2 mt-4 border-border relative overflow-hidden group">
+        {image ? (
+          <img
+            src={image}
+            alt="Post content"
+            className="w-full h-auto object-cover"
+          />
+        ) : (
+          <div className="h-42 w-full flex items-center justify-center relative">
+            <div
+              className="absolute inset-0 opacity-50 "
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
+                color: "oklch(var(--border))",
+              }}
+            />
+            <ImageIcon
+              size={32}
+              strokeWidth={1}
+              className="text-muted-foreground relative z-10"
+            />
+          </div>
+        )}
       </div>
     </div>
     <div className="border-t border-border pt-3 flex justify-between text-muted-foreground">
@@ -210,11 +233,15 @@ export const LinkedInPost = () => (
   </div>
 );
 
-export const InstagramPost = () => (
-  <div className="bg-card border-2 text-card-foreground w-full max-w-md mx-auto shadow-2xl pb-2 relative z-10">
+export const InstagramPost = ({ caption, image, className }: PostProps) => (
+  <div
+    className={cn(
+      "bg-card border-2 text-card-foreground w-full max-w-md mx-auto shadow-2xl pb-2 relative z-10",
+      className
+    )}
+  >
     <div className="flex justify-between items-center p-3 border-b border-border">
       <div className="flex items-center gap-3">
-        {/* Added overflow-hidden here */}
         <div className="w-10 h-10 bg-muted rounded-full overflow-hidden">
           <Image
             src="/pfp3.jpg"
@@ -232,19 +259,30 @@ export const InstagramPost = () => (
       <MoreHorizontal size={16} className="text-muted-foreground" />
     </div>
 
-    {/* Reduced height from aspect-square to specific height to fit frame better */}
-    <div className="h-56 w-full bg-muted/30 flex items-center justify-center border-b border-border relative overflow-hidden group">
-      <div
-        className="absolute inset-0 opacity-50"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
-          color: "oklch(var(--border))",
-        }}
-      />
-      <div className="relative z-10 flex flex-col items-center text-muted-foreground">
-        <ImageIcon size={32} strokeWidth={1} className="mb-2" />
-      </div>
+    <div className="w-full bg-muted/30 flex items-center justify-center border-b border-border relative overflow-hidden group">
+      {image ? (
+        <img
+          src={image}
+          alt="Post content"
+          className="w-full h-auto object-cover"
+        />
+      ) : (
+        <div className="h-56 w-full flex items-center justify-center relative">
+          <div
+            className="absolute inset-0 opacity-50"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
+              color: "oklch(var(--border))",
+            }}
+          />
+          <ImageIcon
+            size={32}
+            strokeWidth={1}
+            className="text-muted-foreground relative z-10"
+          />
+        </div>
+      )}
     </div>
 
     <div className="px-4 py-2">
@@ -274,9 +312,9 @@ export const InstagramPost = () => (
         <span className="font-bold mr-2 text-foreground font-manrope">
           visual_architect
         </span>
-        <span className="font-inter">
-          Minimalist designs that convert. Built entirely in PlateCreator. Link
-          in bio.
+        <span className="font-inter whitespace-pre-wrap">
+          {caption ||
+            "Minimalist designs that convert. Built entirely in PlateCreator. Link in bio."}
         </span>
       </div>
     </div>

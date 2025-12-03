@@ -11,7 +11,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useEditorState } from "./hooks/editor-state";
 import { useSelection } from "./hooks/selection";
 import { useExport } from "./hooks/export";
-import { on } from "events";
 
 export default function EditorPage() {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -85,6 +84,7 @@ export default function EditorPage() {
     exportQuality,
     setExportQuality,
     handleDownload,
+    handleDownloadAndPreview,
   } = useExport(
     canvasRef,
     setSelectedElementId,
@@ -168,7 +168,7 @@ export default function EditorPage() {
             isCropping={isCropping}
             onToggleCropping={handleToggleCropping}
             onTextStyleChange={updateSelectedText}
-            />
+          />
           <input
             ref={hiddenInputRef}
             type="file"
@@ -258,6 +258,7 @@ export default function EditorPage() {
             onExportFormatChange={setExportFormat}
             onExportQualityChange={setExportQuality}
             onDownload={handleDownload}
+            onPreview={handleDownloadAndPreview}
           />
         </div>
       </div>

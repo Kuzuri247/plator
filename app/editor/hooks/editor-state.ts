@@ -1,12 +1,6 @@
 import { useState, useRef, useCallback } from "react";
-import { ImageElement, TextElement, ImageStyle, ASPECT_RATIOS, DEFAULT_IMAGE_STYLE } from "../types";
+import { ImageElement, TextElement, ImageStyle, ASPECT_RATIOS, DEFAULT_IMAGE_STYLE, HistoryState } from "../types";
 import { toast } from "sonner";
-
-interface HistoryState {
-  textElements: Omit<TextElement, "position">[];
-  imageElements: Omit<ImageElement, "position">[];
-  canvasBackground: string;
-}
 
 export function useEditorState() {
   const historyTimeoutRef = useRef<NodeJS.Timeout | null>(null);

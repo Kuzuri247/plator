@@ -179,6 +179,12 @@ export const BACKGROUND_OPTIONS = [
   { name: "Citrus", value: "linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%)" },
 ];
 
+export interface HistoryState {
+  textElements: Omit<TextElement, "position">[];
+  imageElements: Omit<ImageElement, "position">[];
+  canvasBackground: string;
+}
+
 export const DEFAULT_IMAGE_STYLE: ImageStyle = {
   scale: 100,
   borderRadius: 0,
@@ -204,4 +210,5 @@ export interface RightPanelProps {
   onExportFormatChange: (value: string) => void;
   onExportQualityChange: (value: string) => void;
   onDownload: () => void;
+  onPreview: () => void;
 }

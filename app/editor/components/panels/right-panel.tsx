@@ -1,7 +1,13 @@
 "use client";
 
-import { Download, LayoutTemplate } from "lucide-react";
+import { Download, LayoutTemplate, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  ButtonGroup,
+  ButtonGroupText,
+  ButtonGroupSeparator,
+} from "@/components/ui/button-group"; // Make sure to import these if you have them, otherwise standard flex
+
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -24,6 +30,7 @@ export function RightPanel({
   onExportFormatChange,
   onExportQualityChange,
   onDownload,
+  onPreview,
 }: RightPanelProps) {
   return (
     <div className="flex flex-col h-full w-full">
@@ -40,10 +47,14 @@ export function RightPanel({
             {ASPECT_RATIOS.map((ratio) => (
               <SelectItem key={ratio.name} value={ratio.name} className="py-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 bg-muted border border-foreground/20 rounded-sm ${ratio.previewClass}`} />
+                  <div
+                    className={`w-8 bg-muted border border-foreground/20 rounded-sm ${ratio.previewClass}`}
+                  />
                   <div className="flex flex-col gap-0.5">
                     <span className="font-medium text-xs">{ratio.name}</span>
-                    <span className="text-[10px] text-muted-foreground">{ratio.label}</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {ratio.label}
+                    </span>
                   </div>
                 </div>
               </SelectItem>
@@ -116,10 +127,23 @@ export function RightPanel({
           </div>
         </div>
 
-        <Button onClick={onDownload} className="w-full font-semibold shadow-lg">
-          <Download className="w-4 h-4 mr-2" />
-          Export Image
-        </Button>
+        <div className="grid grid-cols-2 gap-2 pt-1">
+          <Button
+            onClick={onDownload}
+            variant="outline"
+            className="w-full h-9 font-semibold text-xs shadow-sm truncate"
+          >
+            <Download className="w-3.5 h-3.5 mr-2 shrink-0" />
+            Download
+          </Button>
+          <Button
+            onClick={onPreview}
+            className="w-full h-9 font-semibold text-xs shadow-sm bg-primary text-primary-foreground hover:bg-primary/90 truncate"
+          >
+            <Share className="w-3.5 h-3.5 mr-2 shrink-0" />
+            Preview
+          </Button>
+        </div>
       </div>
     </div>
   );
