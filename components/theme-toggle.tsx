@@ -1,44 +1,33 @@
-import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+"use client";
+
+import { Sun, Moon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"dark" | "light">("light");
+  const [mounted, setMounted] = useState(false);
+  const { setTheme, resolvedTheme } = useTheme();
 
-  useEffect(() => {
-    const root = document.documentElement;
+  useEffect(() => setMounted(true), []);
 
-    if (root.classList.contains("dark")) {
-      setTheme("dark");
-    } else if (root.classList.contains("light")) {
-      setTheme("light");
-    } else {
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)",
-      ).matches;
-      setTheme(prefersDark ? "dark" : "light");
-    }
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove("dark", "light");
-    root.classList.add(theme);
-  }, [theme]);
+  if (!mounted) return null;
 
   return (
     <button
-      onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       className={cn(
         "text-muted-foreground hover:text-foreground p-2",
         "transition-all duration-300 ease-in-out",
-        theme === "dark" ? "rotate-0" : "rotate-180",
+        resolvedTheme === "dark" ? "rotate-180" : "rotate-0"
       )}
-      aria-label={
-        theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-      }
+      aria-label="Toggle theme"
     >
-      {theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}
+      {resolvedTheme === "dark" ? (
+        <Sun size={18} />
+      ) : (
+        <Moon size={18} />
+      )}
     </button>
   );
 }

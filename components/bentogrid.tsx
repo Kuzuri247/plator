@@ -7,7 +7,7 @@ import {
   useMotionValue,
   useTransform,
   useSpring,
-} from "framer-motion";
+} from "motion/react";
 import {
   LayoutTemplate,
   CalendarClock,
@@ -432,7 +432,6 @@ export const BentoGrid = () => {
             </div>
           </BentoCard>
 
-          {/* Tall Item: Typography (2x2) */}
           <BentoCard
             className="md:col-span-2 md:row-span-2 p-5 md:p-8 flex flex-col items-center text-center justify-between bg-card hover:border-primary/30 transition-colors"
             delay={0.1}

@@ -25,22 +25,22 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-3 text-muted-foreground text-sm font-manrope">
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Templates
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
+                <a href="/editor" className="hover:text-foreground transition-colors">
                   Editor
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Scheduling
+                <a href="/preview" className="hover:text-foreground transition-colors">
+                  Preview
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
+                <a href="/scheduler" className="hover:text-foreground transition-colors">
+                  Scheduler
+                </a>
+              </li>
+              <li>
+                <a href="#pricing" className="hover:text-foreground transition-colors">
                   Pricing
                 </a>
               </li>
@@ -69,7 +69,7 @@ export const Footer: React.FC = () => {
                 <Github size={16} /> GitHub
               </a>
               <a
-                href="#"
+                href="https://github.com/Kuzuri247"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
@@ -84,13 +84,7 @@ export const Footer: React.FC = () => {
         <div className="font-inter pt-8 flex flex-row justify-center items-center gap-6 text-muted-foreground text-xs uppercase tracking-wider">
           <span>© {new Date().getFullYear()} Plator</span>
           <span className="hidden md:block w-1 h-1 rounded-full bg-border"></span>
-          <a href="#" className="hover:text-foreground transition-colors">
-            Privacy
-          </a>
-          <span className="hidden md:block w-1 h-1 rounded-full bg-border"></span>
-          <a href="#" className="hover:text-foreground transition-colors">
-            Terms
-          </a>
+          <span>Made with ❤️ by Kuzuri247</span>
         </div>
       </div>
     </footer>

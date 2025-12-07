@@ -35,18 +35,18 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} ${space.variable} antialiased`}
       >
-        {/* <Provider
+        <Provider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        > */}
+        >
         <main className="bg-background text-foreground font-space">
           {children}
         </main>
         <Toaster position="top-center" swipeDirections={["right"]} />
         <Analytics />
-        {/* </Provider> */}
+        </Provider>
       </body>
     </html>
   );

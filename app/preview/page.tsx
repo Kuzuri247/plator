@@ -94,6 +94,7 @@ export default function PreviewPage() {
   const handlePost = async () => {
     if (!session) {
       toast.error("Please login to post");
+      handleLogin();
       return;
     }
 
@@ -201,17 +202,17 @@ export default function PreviewPage() {
         <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-border bg-card/30 flex flex-col z-20">
           {/* ... Sidebar content ... */}
           <div className="p-4 border-b border-border flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase text-muted-foreground ml-2">
+            <h2 className="text-sm font-bold uppercase ml-2">
               Configuration
             </h2>
-            <div className="flex bg-muted p-0.5 rounded-lg border border-border">
+            <div className="flex bg-muted p-0.5 rounded-lg border-2 dark:border-neutral-800">
               <button
                 onClick={() => setPreviewMode("mobile")}
                 className={cn(
                   "p-1.5 rounded-md transition-all",
                   previewMode === "mobile"
                     ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground"
                 )}
               >
                 <Smartphone size={14} />
@@ -222,7 +223,7 @@ export default function PreviewPage() {
                   "p-1.5 rounded-md transition-all",
                   previewMode === "desktop"
                     ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground"
                 )}
               >
                 <Monitor size={14} />
@@ -245,7 +246,7 @@ export default function PreviewPage() {
                           "px-3 py-2 border rounded-md text-xs transition-all flex-1 text-center font-manrope flex items-center justify-center gap-2",
                           isSelected
                             ? "bg-primary/10 border-primary text-primary font-bold shadow-sm"
-                            : "bg-background hover:bg-muted text-muted-foreground"
+                            : "bg-background hover:bg-muted border-2 dark:border-neutral-800 text-muted-foreground"
                         )}
                       >
                         {isSelected && <Check size={12} />}
@@ -303,7 +304,6 @@ export default function PreviewPage() {
                   size="sm"
                   className="h-8 text-xs font-bold"
                   onClick={handlePost}
-                  disabled={!session}
                 >
                   {!session ? (
                     <Lock size={14} className="mr-2" />

@@ -527,7 +527,7 @@ export function LeftPanel({
                       value={activeTextEffect}
                       onValueChange={(val) => onTextEffectChange(val)}
                       className={cn(
-                        "flex-wrap justify-start gap-2 border rounded-md p-1 bg-muted/20",
+                        "flex-wrap justify-start gap-2 border-2 dark:border-neutral-800 rounded-md p-1 bg-muted/20",
                         "*:rounded-md *:transition-colors *:text-muted-foreground *:hover:bg-muted",
                         " *:size-8 *:data-[state=on]:bg-primary *:data-[state=on]:text-primary-foreground"
                       )}
