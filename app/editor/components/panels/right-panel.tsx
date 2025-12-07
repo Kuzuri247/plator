@@ -138,7 +138,7 @@ export function RightPanel({
           <Button
             onClick={onDownload}
             variant="outline"
-            className="w-full h-9 font-semibold text-xs shadow-sm truncate"
+            className="w-full h-9 font-semibold text-xs shadow-sm truncate border-neutral-300 dark:border-neutral-700/95"
           >
             <Download className="w-3.5 h-3.5 mr-2 shrink-0" />
             Download

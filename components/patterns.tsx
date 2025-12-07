@@ -64,7 +64,7 @@ export const FooterPattern = () => {
   return (
     <div className="absolute inset-x-0 top-0 h-[300px] md:h-[400px] pointer-events-none overflow-hidden flex justify-center">
       <div
-        className="w-[150vw] h-full absolute top-0 bg-size-[50px_50px] opacity-70 dark:opacity-25"
+        className="w-[150vw] h-full absolute top-0 bg-size-[50px_50px] opacity-45 dark:opacity-35"
         style={{
           backgroundImage:
             "linear-gradient(to right, oklch(var(--primary)) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--primary)) 1px, transparent 1px)",

@@ -60,7 +60,7 @@ export const Pricing: React.FC = () => {
       <div className="container w-[90%] md:w-[70%] lg:w-[50%] mx-auto">
         <div className="flex flex-col items-center mb-20">
           <div className="relative mb-8">
-            <div className=" border-2 px-8 py-4 md:px-12 md:py-6 bg-background/50 backdrop-blur-xl relative z-10">
+            <div className=" border-2 dark:border-neutral-800 px-8 py-4 md:px-12 md:py-6 bg-background/50 backdrop-blur-xl relative z-10">
               <h2 className="text-3xl md:text-5xl font-bold text-foreground font-display  uppercase tracking-tighter m-0 leading-none text-center">
                 Unlock <span className="text-primary">Potential</span>
               </h2>

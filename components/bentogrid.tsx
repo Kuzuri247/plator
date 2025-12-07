@@ -164,7 +164,7 @@ export const BentoGrid = () => {
 
   const toggleStyle = (style: string) => {
     setActiveStyles((prev) =>
-      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style],
+      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
     );
   };
 
@@ -239,7 +239,7 @@ export const BentoGrid = () => {
   const calendarDays = getCalendarDays(currentMonth);
 
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">(
-    "mobile",
+    "mobile"
   );
 
   return (
@@ -260,7 +260,7 @@ export const BentoGrid = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-4 h-auto md:h-[850px]">
+        <div className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-4 h-auto md:h-[850px] *:border-2 *:dark:border-neutral-700/90">
           <BentoCard className="md:col-span-4 md:row-span-2 flex flex-col p-5 md:p-8 hover:border-primary/30 transition-colors">
             <div className="absolute top-4 right-4 md:top-6 md:right-6 max-sm:hidden">
               <div className="flex items-center gap-2 px-2 py-1 bg-background/80 backdrop-blur border-2 rounded-full">
@@ -289,9 +289,9 @@ export const BentoGrid = () => {
             </div>
 
             {/* Rotating Editor Visual */}
-            <div className="flex-1 relative bg-muted/20 border-2 overflow-hidden flex items-center justify-center min-h-[200px]">
+            <div className="flex-1 relative bg-muted/20 border-2 dark:border-neutral-800 overflow-hidden flex items-center justify-center min-h-[200px]">
               {/* Editor UI Shell */}
-              <div className="absolute inset-4 border-2 bg-card shadow-2xl flex flex-col">
+              <div className="absolute inset-4 border-2 dark:border-neutral-800 bg-card shadow-2xl flex flex-col">
                 {/* Header */}
                 <div className="h-8 border-b border-border flex items-center px-3 justify-between bg-muted/30">
                   <div className="flex gap-1.5">
@@ -452,7 +452,7 @@ export const BentoGrid = () => {
             </div>
 
             {/* Main Display */}
-            <div className="relative w-full flex-1 flex items-center justify-center bg-muted/20 border-2 mb-4 overflow-hidden min-h-[120px]">
+            <div className="relative w-full flex-1 flex items-center justify-center bg-muted/20 border-2 dark:border-neutral-800 mb-4 overflow-hidden min-h-[120px]">
               <motion.div
                 key={fontIndex}
                 initial={{ opacity: 0, y: 5 }}
@@ -470,7 +470,7 @@ export const BentoGrid = () => {
             </div>
 
             {/* Toolbar */}
-            <div className="w-full flex items-center justify-between p-2 border-2 bg-muted/30">
+            <div className="w-full flex items-center justify-between p-2 border-2 dark:border-neutral-800 bg-muted/30">
               <div className="text-[10px] text-muted-foreground uppercase tracking-wider px-2 border-r border-border min-w-[60px] text-center">
                 {fonts[fontIndex].name}
               </div>
@@ -529,7 +529,7 @@ export const BentoGrid = () => {
                 </div>
               </div>
 
-              <div className="flex items-center border-2 bg-muted/30">
+              <div className="flex items-center border-2 dark:border-neutral-800 bg-muted/30">
                 <button
                   onClick={() => handleMonthChange("down")}
                   className="p-2 hover:text-foreground text-muted-foreground transition-colors"
@@ -618,7 +618,7 @@ export const BentoGrid = () => {
                 </div>
               </div>
 
-              <div className="flex border-2 bg-muted/30 p-0.5">
+              <div className="flex border-2 dark:border-neutral-800 bg-muted/30 p-0.5">
                 <button
                   onClick={() => setPreviewMode("mobile")}
                   className={`p-2 transition-all duration-300 ${

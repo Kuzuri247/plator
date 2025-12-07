@@ -20,10 +20,10 @@ function App() {
   const handleLogin = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/preview",
+      callbackURL: "/",
     });
   };
-  
+
   const handleLogout = async () => {
     await authClient.signOut({
       fetchOptions: {
@@ -69,7 +69,7 @@ function App() {
                 variant="outline"
                 size="sm"
                 onClick={handleLogin}
-                className="gap-2 border-primary/50 text-primary hover:bg-primary/10"
+                className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/50"
               >
                 <LogIn size={12} /> Login
               </Button>
@@ -80,7 +80,7 @@ function App() {
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
-                className="gap-2 border-primary/50 text-primary hover:bg-primary/10"
+                className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/50"
               >
                 <LogOut size={12} /> Logout
               </Button>
@@ -93,7 +93,7 @@ function App() {
 
       <div
         id="features"
-        className="relative z-20 bg-background border-t border-b transition-colors duration-300"
+        className="relative z-20 bg-background border-t border-b border-neutral-300 dark:border-neutral-800 transition-colors duration-300"
       >
         <BentoGrid />
       </div>

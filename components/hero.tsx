@@ -16,16 +16,16 @@ export const Hero = () => {
 
   return (
     <section className="relative w-full md:w-[80%] mx-auto min-h-[85vh] md:min-h-[90vh] flex items-center justify-center pt-24 pb-10 bg-background">
-      <div className="relative z-10 h-full w-full flex flex-col justify-center">
+      <div className="relative z-10 h-full w-full flex flex-col justify-center ">
         {/* Cool Tech Corners */}
         <div className="absolute -top-3 -left-3 w-8 h-8 border-t-4 border-l-4 border-foreground z-30" />
         <div className="absolute -top-3 -right-3 w-8 h-8 border-t-4 border-r-4 border-foreground z-30" />
         <div className="absolute -bottom-3 -left-3 w-8 h-8 border-b-4 border-l-4 border-foreground z-30" />
         <div className="absolute -bottom-3 -right-3 w-8 h-8 border-b-4 border-r-4 border-foreground z-30" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 bg-background w-full shadow-2xl relative z-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 dark:border-neutral-700 bg-background w-full relative z-20 shadow-next dark:shadow-white/50">
           {/* Left Column: Content with Scale Pattern */}
-          <div className="relative p-6 md:p-12 lg:p-16 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-border overflow-hidden min-h-[450px] lg:min-h-[600px]">
+          <div className="relative p-6 md:p-12 lg:p-16 flex flex-col justify-center border-r-2 dark:border-r-neutral-800 overflow-hidden min-h-[450px] lg:min-h-[600px]">
             <LeftHeroPattern />
 
             <div className="relative z-10">

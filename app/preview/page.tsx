@@ -77,6 +77,7 @@ export default function PreviewPage() {
   const handlePost = async () => {
     if (!session) {
       toast.error("You must be logged in to post.");
+      handleLogin();
       return;
     }
 
@@ -103,7 +104,6 @@ export default function PreviewPage() {
       }
 
       if (url) {
-        // Open in new tab
         window.open(url, "_blank");
       }
     });
@@ -120,7 +120,7 @@ export default function PreviewPage() {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/"); // Redirect to home
+          router.push("/");
         },
       },
     });
@@ -130,14 +130,6 @@ export default function PreviewPage() {
     { id: "twitter", label: "Twitter" },
     { id: "linkedin", label: "LinkedIn" },
   ];
-
-  if (isPending) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-background text-foreground">
-        Loading...
-      </div>
-    );
-  }
 
   return (
     <div className="h-screen max-h-screen bg-background flex flex-col overflow-hidden">
@@ -160,14 +152,16 @@ export default function PreviewPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
+
           {!session && (
             <Button
               variant="outline"
               size="sm"
               onClick={handleLogin}
-              className="gap-2 border-primary/50 text-primary hover:bg-primary/10"
+              className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/50"
             >
-              <Lock size={12} /> Login with Google
+              <Lock size={12} /> Login
             </Button>
           )}
 
@@ -176,13 +170,11 @@ export default function PreviewPage() {
               onClick={handleLogout}
               variant="outline"
               size="sm"
-              className="gap-2 border-primary/50 text-primary hover:bg-primary/10"
+              className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/50"
             >
               <LogOut size={12} /> Logout
             </Button>
           )}
-
-          <ThemeToggle />
         </div>
       </header>
 
@@ -193,7 +185,7 @@ export default function PreviewPage() {
             <h2 className="text-sm font-bold uppercase text-muted-foreground ml-2">
               Configuration
             </h2>
-            <div className="flex bg-muted p-0.5 rounded-lg border border-border">
+            <div className="flex bg-muted p-0.5 rounded-lg border border-border dark:bg-neutral-800">
               <button
                 onClick={() => setPreviewMode("mobile")}
                 className={cn(
@@ -231,7 +223,7 @@ export default function PreviewPage() {
                         key={p.id}
                         onClick={() => togglePlatform(p.id)}
                         className={cn(
-                          "px-3 py-2 border rounded-md text-[13px] transition-all flex-1 text-center font-manrope flex items-center justify-center gap-2",
+                          "px-3 py-2 border dark:border-neutral-700 rounded-sm text-[13px] transition-all flex-1 text-center font-inter flex items-center justify-center gap-2",
                           isSelected
                             ? "bg-primary/10 border-primary text-primary font-bold shadow-sm"
                             : "bg-background hover:bg-muted text-muted-foreground"
@@ -291,8 +283,7 @@ export default function PreviewPage() {
                   variant="primary"
                   size="sm"
                   className="h-8 text-xs font-bold "
-                  onClick={handlePost}
-                  disabled={!session}
+                  onClick={handlePost}                
                 >
                   <Send size={14} className="mr-2" />
                   Post Now
@@ -302,7 +293,6 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Center: Preview Player */}
         <div className="flex-1 bg-muted/10 relative overflow-hidden flex items-center justify-center p-4 lg:p-0">
           <Player
             imageSrc={imageSrc}
