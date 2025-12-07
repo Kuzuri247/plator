@@ -9,20 +9,14 @@ export type Platform = "twitter" | "linkedin" | "instagram";
 export type PreviewMode = "mobile" | "desktop";
 
 interface PlayerProps {
-  imageSrc?: string | null;
+  images?: string[]; 
   caption?: string;
   platform: Platform;
   previewMode: PreviewMode;
 }
 
-<>
-  <LeftSidebarSkeleton />
-
-  <RightSidebarSkeleton />
-</>;
-
 export function Player({
-  imageSrc,
+  images = [],
   caption,
   platform,
   previewMode,
@@ -38,21 +32,21 @@ export function Player({
 
     switch (platform) {
       case "twitter":
-        return <XPost caption={caption} image={imageSrc} className={styles} />;
+        return <XPost caption={caption} images={images} className={styles} />;
       case "linkedin":
         return (
-          <LinkedInPost caption={caption} image={imageSrc} className={styles} />
+          <LinkedInPost caption={caption} images={images} className={styles} />
         );
       case "instagram":
         return (
           <InstagramPost
             caption={caption}
-            image={imageSrc}
+            images={images}
             className={styles}
           />
         );
       default:
-        return <XPost caption={caption} image={imageSrc} className={styles} />;
+        return <XPost caption={caption} images={images} className={styles} />;
     }
   };
 

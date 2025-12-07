@@ -15,13 +15,93 @@ import {
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
+const PostImages = ({ images }: { images: string[] }) => {
+  if (!images || images.length === 0) {
+    return (
+      <div className="h-48 w-full flex items-center justify-center relative bg-muted/20">
+        <div
+          className="absolute inset-0 opacity-50"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
+            color: "oklch(var(--border))",
+          }}
+        />
+        <ImageIcon
+          size={48}
+          className="text-muted-foreground/50 relative z-10"
+          strokeWidth={1}
+        />
+      </div>
+    );
+  }
+
+  const count = images.length;
+
+  if (count === 1) {
+    return (
+      <img
+        src={images[0]}
+        alt="content-1"
+        className="w-full h-auto max-h-[500px] object-cover"
+      />
+    );
+  }
+  return (
+    <div className="grid grid-cols-2 grid-rows-2 gap-0.5 h-64 w-full overflow-hidden bg-background">
+      {count === 2 && (
+        <>
+          <img
+            src={images[0]}
+            className="row-span-2 w-full h-full object-cover"
+            alt="1"
+          />
+          <img
+            src={images[1]}
+            className="row-span-2 w-full h-full object-cover"
+            alt="2"
+          />
+        </>
+      )}
+      {count === 3 && (
+        <>
+          <img
+            src={images[0]}
+            className="row-span-2 col-span-1 w-full h-full object-cover"
+            alt="1"
+          />
+          <img
+            src={images[1]}
+            className="col-span-1 row-span-1 w-full h-full object-cover"
+            alt="2"
+          />
+          <img
+            src={images[2]}
+            className="col-span-1 row-span-1 w-full h-full object-cover"
+            alt="3"
+          />
+        </>
+      )}
+      {count === 4 && (
+        <>
+          <img src={images[0]} className="w-full h-full object-cover" alt="1" />
+          <img src={images[1]} className="w-full h-full object-cover" alt="2" />
+          <img src={images[2]} className="w-full h-full object-cover" alt="3" />
+          <img src={images[3]} className="w-full h-full object-cover" alt="4" />
+        </>
+      )}
+    </div>
+  );
+};
+
+// --- Updated Interface ---
 interface PostProps {
   caption?: string;
-  image?: string | null;
-  className?: string; // Added className prop
+  images?: string[]; // Changed to array
+  className?: string;
 }
 
-export const XPost = ({ caption, image, className }: PostProps) => (
+export const XPost = ({ caption, images = [], className }: PostProps) => (
   <div
     className={cn(
       "bg-card border-2 p-4 text-card-foreground w-full max-w-md mx-auto shadow-2xl relative z-10",
@@ -60,7 +140,7 @@ export const XPost = ({ caption, image, className }: PostProps) => (
           </div>
           <div className="flex  gap-1 p-1 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors cursor-pointer -mr-2 -mt-1">
             <Image
-              src="./grok.svg"
+              src="/grok.svg"
               width={16}
               height={16}
               alt="grok"
@@ -72,34 +152,12 @@ export const XPost = ({ caption, image, className }: PostProps) => (
 
         <div className="mt-0.5 mb-3 text-[15px] leading-normal font-normal font-manrope text-foreground whitespace-pre-wrap">
           {caption ||
-            "Just used PlateCreator to schedule my whole week of content. The brutalist templates are literally a cheat code."}
+            "Just used Plator to schedule my whole week of content. The brutalist templates are literally a cheat code."}
         </div>
 
         {/* Post Media */}
         <div className="rounded-2xl overflow-hidden border border-border/50 mb-3 bg-muted/20 relative flex items-center justify-center group cursor-pointer">
-          {image ? (
-            <img
-              src={image}
-              alt="Post content"
-              className="w-full h-auto object-cover max-h-[500px]"
-            />
-          ) : (
-            <div className="h-48 w-full flex items-center justify-center relative">
-              <div
-                className="absolute inset-0 opacity-50"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
-                  color: "oklch(var(--border))",
-                }}
-              />
-              <ImageIcon
-                size={48}
-                className="text-muted-foreground/50 relative z-10"
-                strokeWidth={1}
-              />
-            </div>
-          )}
+          <PostImages images={images} />
         </div>
 
         <div className="flex justify-between text-muted-foreground gap-1 w-full max-w-[calc(100%-1rem)]">
@@ -141,7 +199,11 @@ export const XPost = ({ caption, image, className }: PostProps) => (
   </div>
 );
 
-export const LinkedInPost = ({ caption, image, className }: PostProps) => (
+export const LinkedInPost = ({
+  caption,
+  images = [],
+  className,
+}: PostProps) => (
   <div
     className={cn(
       "bg-card border-2 p-6 text-card-foreground w-full max-w-md mx-auto shadow-2xl relative z-10",
@@ -176,32 +238,10 @@ export const LinkedInPost = ({ caption, image, className }: PostProps) => (
     </div>
     <div className="mb-6 text-[14px] leading-relaxed font-light font-inter whitespace-pre-wrap">
       {caption ||
-        "Consistency is the hardest part of building a personal brand.\n\nFinally found a workflow that works with PlateCreator."}
+        "Consistency is the hardest part of building a personal brand.\n\nFinally found a workflow that works with Plator."}
 
       <div className="w-full bg-muted/30 flex items-center justify-center border-2 mt-4 border-border relative overflow-hidden group">
-        {image ? (
-          <img
-            src={image}
-            alt="Post content"
-            className="w-full h-auto object-cover"
-          />
-        ) : (
-          <div className="h-42 w-full flex items-center justify-center relative">
-            <div
-              className="absolute inset-0 opacity-50 "
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
-                color: "oklch(var(--border))",
-              }}
-            />
-            <ImageIcon
-              size={32}
-              strokeWidth={1}
-              className="text-muted-foreground relative z-10"
-            />
-          </div>
-        )}
+        <PostImages images={images} />
       </div>
     </div>
     <div className="border-t border-border pt-3 flex justify-between text-muted-foreground">
@@ -233,7 +273,11 @@ export const LinkedInPost = ({ caption, image, className }: PostProps) => (
   </div>
 );
 
-export const InstagramPost = ({ caption, image, className }: PostProps) => (
+export const InstagramPost = ({
+  caption,
+  images = [],
+  className,
+}: PostProps) => (
   <div
     className={cn(
       "bg-card border-2 text-card-foreground w-full max-w-md mx-auto shadow-2xl pb-2 relative z-10",
@@ -260,29 +304,7 @@ export const InstagramPost = ({ caption, image, className }: PostProps) => (
     </div>
 
     <div className="w-full bg-muted/30 flex items-center justify-center border-b border-border relative overflow-hidden group">
-      {image ? (
-        <img
-          src={image}
-          alt="Post content"
-          className="w-full h-auto object-cover"
-        />
-      ) : (
-        <div className="h-56 w-full flex items-center justify-center relative">
-          <div
-            className="absolute inset-0 opacity-50"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(-45deg, transparent, transparent 4px, currentColor 4px, currentColor 5px)",
-              color: "oklch(var(--border))",
-            }}
-          />
-          <ImageIcon
-            size={32}
-            strokeWidth={1}
-            className="text-muted-foreground relative z-10"
-          />
-        </div>
-      )}
+      <PostImages images={images} />
     </div>
 
     <div className="px-4 py-2">
@@ -314,7 +336,7 @@ export const InstagramPost = ({ caption, image, className }: PostProps) => (
         </span>
         <span className="font-inter whitespace-pre-wrap">
           {caption ||
-            "Minimalist designs that convert. Built entirely in PlateCreator. Link in bio."}
+            "Minimalist designs that convert. Built entirely in Plator. Link in bio."}
         </span>
       </div>
     </div>

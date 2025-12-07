@@ -7,12 +7,12 @@ import {
   Smartphone,
   Monitor,
   Upload,
-  Settings,
   Send,
   Check,
   Lock,
-  Copy,
-  LogOut, // Add Copy icon
+  LogOut,
+  X,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Player, Platform, PreviewMode } from "./components/player";
@@ -25,10 +25,11 @@ import { useRouter } from "next/navigation";
 
 export default function PreviewPage() {
   const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session } = authClient.useSession();
 
   const [caption, setCaption] = useState("");
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  // Now using array for multiple images
+  const [images, setImages] = useState<string[]>([]);
 
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([
     "twitter",
@@ -39,21 +40,43 @@ export default function PreviewPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // Check if there was an image from the editor export
     const storedImage = localStorage.getItem("plator-preview-image");
-    if (storedImage) setImageSrc(storedImage);
+    if (storedImage) {
+      setImages([storedImage]);
+    }
   }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setImageSrc(result);
-        toast.success("Image updated");
-      };
-      reader.readAsDataURL(file);
+    const files = e.target.files;
+    if (files) {
+      const newImages: string[] = [];
+      const remainingSlots = 4 - images.length;
+      const filesToProcess = Array.from(files).slice(0, remainingSlots);
+
+      if (filesToProcess.length === 0) {
+        toast.error("Maximum 4 images allowed");
+        return;
+      }
+
+      filesToProcess.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          if (result) {
+            setImages((prev) => [...prev, result]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      toast.success(`${filesToProcess.length} image(s) added`);
     }
+    // Reset input so same file can be selected again
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    setImages((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
   const togglePlatform = (p: Platform) => {
@@ -62,11 +85,12 @@ export default function PreviewPage() {
     );
   };
 
-  const copyImageToClipboard = async () => {
-    if (!imageSrc) return false;
+  // Helper to copy ONLY the FIRST image to clipboard
+  const copyFirstImageToClipboard = async () => {
+    if (images.length === 0) return false;
 
     try {
-      const response = await fetch(imageSrc);
+      const response = await fetch(images[0]);
       const blob = await response.blob();
 
       await navigator.clipboard.write([
@@ -81,16 +105,6 @@ export default function PreviewPage() {
     }
   };
 
-  const downloadImageFallback = () => {
-    if (!imageSrc) return;
-    const link = document.createElement("a");
-    link.href = imageSrc;
-    link.download = "plator-post.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const handlePost = async () => {
     if (!session) {
       toast.error("Please login to post");
@@ -103,13 +117,17 @@ export default function PreviewPage() {
       return;
     }
 
-    const copied = await copyImageToClipboard();
+    const copied = await copyFirstImageToClipboard();
 
     if (copied) {
-      toast.success("Paste Image with Ctrl+V ");
+      if (images.length > 1) {
+        toast.success("First image copied to clipboard! (Browser limit)");
+        toast.info("Please drag the other images manually.");
+      } else {
+        toast.success("Image copied to clipboard!");
+      }
     } else {
-      downloadImageFallback();
-      toast.info("Image downloaded! Drag it into the tabs.");
+      toast.error("Failed to copy image to clipboard.");
     }
 
     selectedPlatforms.forEach((p) => {
@@ -169,10 +187,6 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        <span className="text-sm font-bold font-display uppercase tracking-wide text-muted-foreground font-inter">
-          iterate on your content
-        </span>
-
         <div className="flex items-center gap-2">
           <ThemeToggle />
           {!session && (
@@ -203,12 +217,9 @@ export default function PreviewPage() {
       </header>
 
       <main className="flex-1 flex flex-col lg:flex-row min-h-0">
-        <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-border bg-card/30 flex flex-col z-20">
-          {/* ... Sidebar content ... */}
-          <div className="p-4 border-b border-border flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase ml-2">
-              Configuration
-            </h2>
+        <div className="w-full lg:w-80 border-r-2 dark:border-r-neutral-800 bg-card/30 flex flex-col z-20">
+          <div className="p-4 border-b-2 dark:border-b-neutral-800 flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase ml-2">Configuration</h2>
             <div className="flex bg-muted p-0.5 rounded-lg border-2 dark:border-neutral-800">
               <button
                 onClick={() => setPreviewMode("mobile")}
@@ -235,7 +246,7 @@ export default function PreviewPage() {
             </div>
           </div>
 
-          <div className="p-6 flex-1 overflow-y-auto space-y-6">
+          <div className="px-6 py-4 flex-1 overflow-y-auto space-y-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Select Platforms</label>
@@ -262,41 +273,56 @@ export default function PreviewPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Media</label>
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="mt-1 w-full h-32 border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all group overflow-hidden relative"
-                >
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
-                  {imageSrc ? (
-                    <img
-                      src={imageSrc}
-                      className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity"
-                    />
-                  ) : (
-                    <>
-                      <Upload
-                        size={24}
-                        className="text-muted-foreground mb-2 group-hover:text-primary transition-colors"
-                      />
-                      <span className="text-xs text-muted-foreground font-medium">
-                        Click to Upload
-                      </span>
-                    </>
+                <div className="flex justify-between items-center">
+                  <label className="text-sm font-medium">Media ({images.length}/4)</label>
+                  {images.length > 0 && (
+                    <button 
+                      onClick={() => setImages([])} 
+                      className="text-xs text-red-500 hover:underline"
+                    >
+                      Clear All
+                    </button>
                   )}
                 </div>
+                
+                <div className="grid grid-cols-2 gap-2">
+                  {images.map((img, idx) => (
+                    <div key={idx} className="relative group aspect-square rounded-md overflow-hidden border-2 dark:border-neutral-800">
+                      <img src={img} className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => removeImage(idx)}
+                        className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {images.length < 4 && (
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="aspect-square border-2 dark:border-neutral-800 border-dashed border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5 rounded-md flex flex-col items-center justify-center cursor-pointer transition-all"
+                    >
+                      <Plus size={20} className="text-muted-foreground mb-1" />
+                      <span className="text-[10px] text-muted-foreground font-medium">Add</span>
+                    </div>
+                  )}
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple 
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Caption</label>
                 <Textarea
-                  className="mt-1 w-full font-manrope min-h-[150px] bg-background border rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                  className="mt-1 w-full font-manrope min-h-[50px] bg-background rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none border-2 dark:border-neutral-800"
                   placeholder="What's on your mind?"
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
@@ -324,7 +350,7 @@ export default function PreviewPage() {
         {/* Center: Preview Player */}
         <div className="flex-1 bg-muted/10 relative overflow-hidden flex items-center justify-center p-4 lg:p-0">
           <Player
-            imageSrc={imageSrc}
+            images={images}
             caption={caption}
             platform={
               selectedPlatforms[selectedPlatforms.length - 1] || "twitter"
