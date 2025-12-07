@@ -8,8 +8,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { ReactLenis } from "lenis/react";
 import { authClient } from "@/auth-client";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Lock, LogIn, LogOut } from "lucide-react";
+import { LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function App() {
@@ -28,7 +27,7 @@ function App() {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/"); // Redirect to home
+          router.push("/");
         },
       },
     });
@@ -39,9 +38,12 @@ function App() {
       <ReactLenis root />
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md h-16 flex items-center transition-colors duration-300">
         <div className="w-[90%] md:w-[80%] mx-auto flex justify-between items-center">
-          <div className="font-bold text-xl tracking-tighter font-display uppercase flex items-center text-foreground">
+          <a
+            href="/"
+            className="font-bold text-xl tracking-tighter font-display uppercase flex items-center text-foreground"
+          >
             Pla<span className="text-primary">tor</span>
-          </div>
+          </a>
           <div className="hidden md:flex gap-8 text-xs font-medium text-muted-foreground uppercase tracking-widest">
             <a
               href="/editor"

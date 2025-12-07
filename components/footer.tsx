@@ -40,7 +40,7 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="#pricing" className="hover:text-foreground transition-colors">
+                <a href="#pricing" className="hover:text-foreground transition-colors scroll-smooth">
                   Pricing
                 </a>
               </li>

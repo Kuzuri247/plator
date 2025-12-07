@@ -119,27 +119,28 @@ export default function EditorPage() {
     <div className="flex h-screen w-full bg-background overflow-hidden">
       {/* --- LEFT PANEL --- */}
       <div className="w-80 shrink-0 border-r-2 dark:border-neutral-800 bg-card flex flex-col z-20 h-full">
-        <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center justify-between px-3 shrink-0">
+        <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center justify-between px-4 shrink-0">
           <Link href="/">
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-md"
+              className="size-8 text-muted-foreground hover:text-foreground rounded-md"
             >
-              <ArrowLeft size={16} />
+              <ArrowLeft size={20} />
             </Button>
           </Link>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground rounded-md"
-              asChild
+          <span className="text-md uppercase font-semibold pt-0.75 tracking-wider">
+            Editor
+          </span>
+          <div className="flex items-center gap-2">
+            <Link
+              href="https://x.com/kuzuri247"
+              target="_blank"
+              className="text-muted-foreground"
             >
-              <Link href="https://x.com/kuzuri247" target="_blank">
-                <Twitter size={16} />
-              </Link>
-            </Button>
+              <Twitter size={18} />
+            </Link>
+
             <ThemeToggle />
           </div>
         </div>
@@ -259,7 +260,7 @@ export default function EditorPage() {
       {/* --- RIGHT PANEL --- */}
       <div className="w-80 shrink-0 border-2 dark:border-neutral-800 bg-card flex flex-col z-20 h-full">
         <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center px-4 shrink-0 bg-transparent">
-          <span className="font-bold text-xs uppercase tracking-widest text-muted-foreground">
+          <span className="font-semibold text-md uppercase tracking-wider">
             Canvas & Export
           </span>
         </div>

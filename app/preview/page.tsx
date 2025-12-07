@@ -169,6 +169,10 @@ export default function PreviewPage() {
           </div>
         </div>
 
+        <span className="text-sm font-bold font-display uppercase tracking-wide text-muted-foreground font-inter">
+          iterate on your content
+        </span>
+
         <div className="flex items-center gap-2">
           <ThemeToggle />
           {!session && (
