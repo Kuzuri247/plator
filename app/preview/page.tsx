@@ -7,10 +7,12 @@ import {
   Smartphone,
   Monitor,
   Upload,
+  Settings,
   Send,
   Check,
   Lock,
-  LogOut,
+  Copy,
+  LogOut, // Add Copy icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Player, Platform, PreviewMode } from "./components/player";
@@ -23,7 +25,6 @@ import { useRouter } from "next/navigation";
 
 export default function PreviewPage() {
   const router = useRouter();
-
   const { data: session, isPending } = authClient.useSession();
 
   const [caption, setCaption] = useState("");
@@ -39,9 +40,7 @@ export default function PreviewPage() {
 
   useEffect(() => {
     const storedImage = localStorage.getItem("plator-preview-image");
-    if (storedImage) {
-      setImageSrc(storedImage);
-    }
+    if (storedImage) setImageSrc(storedImage);
   }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +62,26 @@ export default function PreviewPage() {
     );
   };
 
-  const downloadImage = () => {
+  const copyImageToClipboard = async () => {
+    if (!imageSrc) return false;
+
+    try {
+      const response = await fetch(imageSrc);
+      const blob = await response.blob();
+
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+      return true;
+    } catch (err) {
+      console.error("Clipboard failed:", err);
+      return false;
+    }
+  };
+
+  const downloadImageFallback = () => {
     if (!imageSrc) return;
     const link = document.createElement("a");
     link.href = imageSrc;
@@ -71,13 +89,11 @@ export default function PreviewPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.info("Image downloaded! You can now drag it into the open tabs.");
   };
 
   const handlePost = async () => {
     if (!session) {
-      toast.error("You must be logged in to post.");
-      handleLogin();
+      toast.error("Please login to post");
       return;
     }
 
@@ -86,7 +102,14 @@ export default function PreviewPage() {
       return;
     }
 
-    downloadImage();
+    const copied = await copyImageToClipboard();
+
+    if (copied) {
+      toast.success("Paste Image with Ctrl+V ");
+    } else {
+      downloadImageFallback();
+      toast.info("Image downloaded! Drag it into the tabs.");
+    }
 
     selectedPlatforms.forEach((p) => {
       let url = "";
@@ -97,9 +120,7 @@ export default function PreviewPage() {
       } else if (p === "linkedin") {
         url = `https://www.linkedin.com/feed/?shareActive=true&text=${text}`;
       } else if (p === "instagram") {
-        toast.info(
-          "Instagram does not support 1-click web posting. Use your mobile device."
-        );
+        toast.info("Instagram web posting is limited. Use mobile app.");
         return;
       }
 
@@ -133,7 +154,6 @@ export default function PreviewPage() {
 
   return (
     <div className="h-screen max-h-screen bg-background flex flex-col overflow-hidden">
-      {/* Navigation */}
       <header className="h-14 shrink-0 border-b border-border flex items-center justify-between px-4 lg:px-6 bg-background/80 backdrop-blur-md z-50">
         <div className="flex items-center gap-4">
           <Link href="/editor">
@@ -142,50 +162,49 @@ export default function PreviewPage() {
             </Button>
           </Link>
           <div className="flex flex-col">
-            <span className="text-sm font-bold font-display uppercase tracking-wide">
-              Preview & Post
-            </span>
-            <span className="text-xs text-muted-foreground font-inter">
-              Finalize Content
+            <span className="text-md font-bold font-display uppercase tracking-wide">
+              Previewer
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-
           {!session && (
             <Button
               variant="outline"
               size="sm"
               onClick={handleLogin}
-              className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/50"
+              className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/25"
             >
-              <Lock size={12} /> Login
+              Login to Post
             </Button>
           )}
 
           {session && (
             <Button
-              onClick={handleLogout}
               variant="outline"
               size="sm"
-              className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/50"
+              onClick={handleLogout}
+              className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/25"
             >
-              <LogOut size={12} /> Logout
+              <LogOut size={12} />
+              Logout
             </Button>
           )}
+
+          <div className="w-px h-4 bg-border mx-1" />
         </div>
       </header>
 
       <main className="flex-1 flex flex-col lg:flex-row min-h-0">
-        {/* Left Side: Settings */}
         <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-border bg-card/30 flex flex-col z-20">
+          {/* ... Sidebar content ... */}
           <div className="p-4 border-b border-border flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase text-muted-foreground ml-2">
               Configuration
             </h2>
-            <div className="flex bg-muted p-0.5 rounded-lg border border-border dark:bg-neutral-800">
+            <div className="flex bg-muted p-0.5 rounded-lg border border-border">
               <button
                 onClick={() => setPreviewMode("mobile")}
                 className={cn(
@@ -223,7 +242,7 @@ export default function PreviewPage() {
                         key={p.id}
                         onClick={() => togglePlatform(p.id)}
                         className={cn(
-                          "px-3 py-2 border dark:border-neutral-700 rounded-sm text-[13px] transition-all flex-1 text-center font-inter flex items-center justify-center gap-2",
+                          "px-3 py-2 border rounded-md text-xs transition-all flex-1 text-center font-manrope flex items-center justify-center gap-2",
                           isSelected
                             ? "bg-primary/10 border-primary text-primary font-bold shadow-sm"
                             : "bg-background hover:bg-muted text-muted-foreground"
@@ -272,20 +291,25 @@ export default function PreviewPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Caption</label>
                 <Textarea
-                  className="mt-1 w-full font-manrope border-neutral-300 dark:border-neutral-700 min-h-[150px] bg-background border rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                  className="mt-1 w-full font-manrope min-h-[150px] bg-background border rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
                   placeholder="What's on your mind?"
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
                 />
               </div>
-              <div className="flex items-center justify-center">
+              <div className="space-y-2 flex items-center justify-center">
                 <Button
                   variant="primary"
                   size="sm"
-                  className="h-8 text-xs font-bold "
-                  onClick={handlePost}                
+                  className="h-8 text-xs font-bold"
+                  onClick={handlePost}
+                  disabled={!session}
                 >
-                  <Send size={14} className="mr-2" />
+                  {!session ? (
+                    <Lock size={14} className="mr-2" />
+                  ) : (
+                    <Send size={14} className="mr-2" />
+                  )}
                   Post Now
                 </Button>
               </div>
@@ -293,6 +317,7 @@ export default function PreviewPage() {
           </div>
         </div>
 
+        {/* Center: Preview Player */}
         <div className="flex-1 bg-muted/10 relative overflow-hidden flex items-center justify-center p-4 lg:p-0">
           <Player
             imageSrc={imageSrc}
