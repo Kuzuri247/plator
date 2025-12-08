@@ -10,7 +10,6 @@ import {
   Send,
   Check,
   Lock,
-  LogOut,
   X,
   Plus,
 } from "lucide-react";
@@ -21,26 +20,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { authClient } from "@/auth-client";
-import { useRouter } from "next/navigation";
 
 export default function PreviewPage() {
-  const router = useRouter();
   const { data: session } = authClient.useSession();
 
   const [caption, setCaption] = useState("");
-  // Now using array for multiple images
   const [images, setImages] = useState<string[]>([]);
 
-  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([
-    "twitter",
-    "linkedin",
-  ]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([ "twitter","linkedin",]);
   const [previewMode, setPreviewMode] = useState<PreviewMode>("mobile");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Check if there was an image from the editor export
     const storedImage = localStorage.getItem("plator-preview-image");
     if (storedImage) {
       setImages([storedImage]);
@@ -71,7 +63,6 @@ export default function PreviewPage() {
       });
       toast.success(`${filesToProcess.length} image(s) added`);
     }
-    // Reset input so same file can be selected again
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -156,16 +147,6 @@ export default function PreviewPage() {
     });
   };
 
-  const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
-  };
-
   const platforms: { id: Platform; label: string }[] = [
     { id: "twitter", label: "Twitter" },
     { id: "linkedin", label: "LinkedIn" },
@@ -173,7 +154,7 @@ export default function PreviewPage() {
 
   return (
     <div className="h-screen max-h-screen bg-background flex flex-col overflow-hidden">
-      <header className="h-14 shrink-0 border-b border-border flex items-center justify-between px-4 lg:px-6 bg-background/80 backdrop-blur-md z-50">
+      <header className="h-12 shrink-0 border-b-2 dark:border-neutral-800 flex items-center justify-between px-4 lg:px-6 bg-background/80 backdrop-blur-md z-50">
         <div className="flex items-center gap-4">
           <Link href="/editor">
             <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg">
@@ -187,8 +168,37 @@ export default function PreviewPage() {
           </div>
         </div>
 
+        <span className="text-muted-foreground font-inter uppercase text-sm font-semibold">
+          Iterate before posting
+        </span>
+
         <div className="flex items-center gap-2">
           <ThemeToggle />
+
+          <div className="flex bg-muted p-0.5 rounded-lg border-2 dark:border-neutral-800">
+            <button
+              onClick={() => setPreviewMode("mobile")}
+              className={cn(
+                "p-1.5 rounded-md transition-all",
+                previewMode === "mobile"
+                  ? "bg-background text-primary shadow-sm"
+                  : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground"
+              )}
+            >
+              <Smartphone size={14} />
+            </button>
+            <button
+              onClick={() => setPreviewMode("desktop")}
+              className={cn(
+                "p-1.5 rounded-md transition-all",
+                previewMode === "desktop"
+                  ? "bg-background text-primary shadow-sm"
+                  : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground"
+              )}
+            >
+              <Monitor size={14} />
+            </button>
+          </div>
           {!session && (
             <Button
               variant="outline"
@@ -196,57 +206,15 @@ export default function PreviewPage() {
               onClick={handleLogin}
               className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/25"
             >
-              Login to Post
+              Login
             </Button>
           )}
-
-          {session && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-              className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/25"
-            >
-              <LogOut size={12} />
-              Logout
-            </Button>
-          )}
-
-          <div className="w-px h-4 bg-border mx-1" />
         </div>
       </header>
 
       <main className="flex-1 flex flex-col lg:flex-row min-h-0">
         <div className="w-full lg:w-80 border-r-2 dark:border-r-neutral-800 bg-card/30 flex flex-col z-20">
-          <div className="p-4 border-b-2 dark:border-b-neutral-800 flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase ml-2">Configuration</h2>
-            <div className="flex bg-muted p-0.5 rounded-lg border-2 dark:border-neutral-800">
-              <button
-                onClick={() => setPreviewMode("mobile")}
-                className={cn(
-                  "p-1.5 rounded-md transition-all",
-                  previewMode === "mobile"
-                    ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground"
-                )}
-              >
-                <Smartphone size={14} />
-              </button>
-              <button
-                onClick={() => setPreviewMode("desktop")}
-                className={cn(
-                  "p-1.5 rounded-md transition-all",
-                  previewMode === "desktop"
-                    ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground"
-                )}
-              >
-                <Monitor size={14} />
-              </button>
-            </div>
-          </div>
-
-          <div className="px-6 py-4 flex-1 overflow-y-auto space-y-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="px-6 py-3 flex-1 overflow-y-auto space-y-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Select Platforms</label>
@@ -274,20 +242,25 @@ export default function PreviewPage() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium">Media ({images.length}/4)</label>
+                  <label className="text-sm font-medium">
+                    Media ({images.length}/4)
+                  </label>
                   {images.length > 0 && (
-                    <button 
-                      onClick={() => setImages([])} 
+                    <button
+                      onClick={() => setImages([])}
                       className="text-xs text-red-500 hover:underline"
                     >
                       Clear All
                     </button>
                   )}
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-2">
                   {images.map((img, idx) => (
-                    <div key={idx} className="relative group aspect-square rounded-md overflow-hidden border-2 dark:border-neutral-800">
+                    <div
+                      key={idx}
+                      className="relative group aspect-square rounded-md overflow-hidden border-2 dark:border-neutral-800"
+                    >
                       <img src={img} className="w-full h-full object-cover" />
                       <button
                         onClick={() => removeImage(idx)}
@@ -297,14 +270,21 @@ export default function PreviewPage() {
                       </button>
                     </div>
                   ))}
-                  
+
                   {images.length < 4 && (
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="aspect-square border-2 dark:border-neutral-800 border-dashed border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5 rounded-md flex flex-col items-center justify-center cursor-pointer transition-all"
+                      className={cn(
+                        "border-2 dark:border-neutral-800 border-dashed border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5 rounded-md flex flex-col items-center justify-center cursor-pointer transition-all",
+                        images.length === 0
+                          ? "col-span-2 aspect-2/1"
+                          : "aspect-square"
+                      )}
                     >
                       <Plus size={20} className="text-muted-foreground mb-1" />
-                      <span className="text-[10px] text-muted-foreground font-medium">Add</span>
+                      <span className="text-[10px] text-muted-foreground font-medium">
+                        Add
+                      </span>
                     </div>
                   )}
                 </div>
@@ -313,7 +293,7 @@ export default function PreviewPage() {
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
-                  multiple 
+                  multiple
                   className="hidden"
                   onChange={handleImageUpload}
                 />

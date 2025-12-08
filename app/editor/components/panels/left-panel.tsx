@@ -4,10 +4,8 @@ import {
   Type,
   Image as ImageIcon,
   Plus,
-  BoxSelect,
   Rotate3d,
   Scissors,
-  RotateCcw,
   Highlighter,
   Underline,
   Strikethrough,
@@ -469,6 +467,7 @@ export function LeftPanel({
 
                 <Separator />
 
+
                 <div className="space-y-4">
                   <Label className="text-sm font-semibold uppercase tracking-wider">
                     Typography
@@ -684,37 +683,39 @@ export function LeftPanel({
                           />
                         </div>
                       </div>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <Label className="text-xs font-medium text-muted-foreground">
-                            Rounded
-                          </Label>
-                          <span className="text-xs text-muted-foreground font-manrope">
-                            {activeTextBorderRadius}px
-                          </span>
+                      <div className="space-y-3 grid grid-cols-2 gap-2 *:pr-2">
+                        <div>
+                          <div className="flex justify-between pb-3">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Rounded
+                            </Label>
+                            <span className="text-xs text-muted-foreground font-manrope">
+                              {activeTextBorderRadius}px
+                            </span>
+                          </div>
+                          <Slider
+                            value={[activeTextBorderRadius]}
+                            onValueChange={([v]) => onTextBorderRadiusChange(v)}
+                            min={0}
+                            max={50}
+                          />
                         </div>
-                        <Slider
-                          value={[activeTextBorderRadius]}
-                          onValueChange={([v]) => onTextBorderRadiusChange(v)}
-                          min={0}
-                          max={50}
-                        />
-                      </div>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <Label className="text-xs font-medium text-muted-foreground">
-                            Padding
-                          </Label>
-                          <span className="text-xs text-muted-foreground font-manrope">
-                            {activeTextPadding}px
-                          </span>
+                        <div>
+                          <div className="flex justify-between pb-3">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Padding
+                            </Label>
+                            <span className="text-xs text-muted-foreground font-manrope">
+                              {activeTextPadding}px
+                            </span>
+                          </div>
+                          <Slider
+                            value={[activeTextPadding]}
+                            onValueChange={([v]) => onTextPaddingChange(v)}
+                            min={0}
+                            max={30}
+                          />
                         </div>
-                        <Slider
-                          value={[activeTextPadding]}
-                          onValueChange={([v]) => onTextPaddingChange(v)}
-                          min={0}
-                          max={30}
-                        />
                       </div>
                     </div>
                   )}
