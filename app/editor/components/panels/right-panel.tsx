@@ -91,7 +91,7 @@ export function RightPanel({
           </ScrollArea>
         </div>
       </div>
-      <div className="space-y-4 p-5 border-t border-border shrink-0 bg-card z-10">
+      <div className="space-y-4 p-4 border-t-2 dark:border-neutral-800 shrink-0 bg-card z-10">
         {/* export  */}
         <Label className="text-sm font-medium">Export Settings</Label>
         <div className="flex flex-row justify-between mx-2 items-center">

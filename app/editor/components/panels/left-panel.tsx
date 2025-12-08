@@ -430,7 +430,7 @@ export function LeftPanel({
                       </div>
                     </>
                   ) : (
-                    <div className="text-center p-8 text-muted-foreground text-xs border-2 border-dashed rounded-lg">
+                    <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
                       Select an image on the canvas to edit its properties.
                     </div>
                   )}
@@ -563,7 +563,7 @@ export function LeftPanel({
                     </ToggleGroup>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-3 *:pr-4">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs font-medium text-muted-foreground">
                         Color & Size
@@ -572,7 +572,7 @@ export function LeftPanel({
                         {activeFontSize}px
                       </span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4 px-2">
                       <div className="relative group cursor-pointer">
                         <div
                           className="size-6 rounded-full border-neutral-300 dark:border-neutral-500 border-2 shadow-sm flex items-center justify-center transition-transform hover:scale-105"
@@ -603,7 +603,7 @@ export function LeftPanel({
                     3D Transforms
                   </Label>
                   <div className="space-y-2 font-manrope">
-                    <div className="grid grid-cols-3 items-center gap-2">
+                    <div className="flex justify-around px-2 items-center gap-2">
                       <Label className="text-[10px] text-muted-foreground">
                         X: {textRotateX}°
                       </Label>
@@ -614,7 +614,7 @@ export function LeftPanel({
                         Z: {textRotate}°
                       </Label>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-4 px-2">
                       <Slider
                         value={[textRotateX]}
                         onValueChange={([val]) =>
@@ -654,7 +654,7 @@ export function LeftPanel({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-semibold uppercase tracking-wider">
-                      Background Box
+                      Text Background 
                     </Label>
                     <Switch
                       checked={activeShowTextBg}
@@ -663,7 +663,7 @@ export function LeftPanel({
                   </div>
 
                   {activeShowTextBg && (
-                    <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 pl-1 font-manrope">
+                    <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 px-2 font-manrope">
                       <div className="flex items-center justify-between">
                         <Label className="text-xs font-medium text-muted-foreground">
                           Box Color
@@ -683,7 +683,7 @@ export function LeftPanel({
                           />
                         </div>
                       </div>
-                      <div className="space-y-3 grid grid-cols-2 gap-2 *:pr-2">
+                      <div className="space-y-3 grid grid-cols-2 gap-4 *:pr-2">
                         <div>
                           <div className="flex justify-between pb-3">
                             <Label className="text-xs font-medium text-muted-foreground">
