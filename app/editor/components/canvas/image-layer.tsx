@@ -118,6 +118,9 @@ export const ImageLayer = memo(
 
     const has3DRotation = img.style.rotateX !== 0 || img.style.rotateY !== 0;
 
+    const hasShapeClip = img.style.clipPath && img.style.clipPath !== "none";
+    const clipStyle = hasShapeClip ? img.style.clipPath : undefined;
+
     const { top, right, bottom, left } = img.style.crop;    
 
     const widthFactor = 100 / Math.max(1, 100 - left - right);
@@ -169,7 +172,10 @@ export const ImageLayer = memo(
              backfaceVisibility: has3DRotation ? "visible" : "hidden",
           }}
         >
-            <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
+            <div 
+                className="absolute inset-0 overflow-hidden rounded-[inherit]"
+                style={{ clipPath: clipStyle }}
+            >
                 <img
                     src={img.src}
                     alt="Layer"
