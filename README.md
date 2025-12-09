@@ -2,9 +2,9 @@
 
 **The All-in-One Content Creation & Scheduling MicroSaaS for Creators.**
 
-*(Replace this with a banner image of your application)*
+![Plator Editor](public/editor.png)
 
-Plator is a powerful web application built with **Next.js 15** that empowers social media creators to design image templates, preview them across multiple platforms (Twitter/X, LinkedIn), and schedule their posts seamlessly.
+Plator is a powerful web application built with **Next.js** that empowers social media creators to design image templates, preview them across multiple platforms (Twitter/X, LinkedIn), and schedule their posts seamlessly.
 
 ## ✨ Key Features
 
@@ -35,7 +35,7 @@ See exactly how your content will look before you post.
 
 ## 🛠️ Tech Stack
 
-  * **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
+  * **Framework:** [Next.js](https://nextjs.org/) (App Router)
   * **Language:** [TypeScript](https://www.typescriptlang.org/)
   * **Styling:** [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
   * **Authentication:** [Better Auth](https://better-auth.com/)
@@ -144,4 +144,4 @@ Contributions are welcome\! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+Distributed under the Apache 2.0 License. See LICENSE for more information.
