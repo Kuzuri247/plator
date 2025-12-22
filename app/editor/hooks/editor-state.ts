@@ -1,24 +1,20 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ImageElement, TextElement, ImageStyle, ASPECT_RATIOS, DEFAULT_IMAGE_STYLE, HistoryState } from "../types";
 import { toast } from "sonner";
 
+const savestate = "plator-editor-state";
+
 export function useEditorState() {
   const historyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const [aspectRatioName, setAspectRatioName] = useState("4:3");
-  const currentAspectRatio =
-    ASPECT_RATIOS.find((r) => r.name === aspectRatioName) || ASPECT_RATIOS[4];
   const [canvasBackground, setCanvasBackground] = useState(
     "linear-gradient(135deg, #0f0c29, #302b63, #24243e)"
   );
-
   const [imageElements, setImageElements] = useState<ImageElement[]>([]);
   const [textElements, setTextElements] = useState<TextElement[]>([]);
-  const [selectedElementId, setSelectedElementId] = useState<string | null>(
-    null
-  );
-
-  // Default Text Styles
+  const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [currentText, setCurrentText] = useState("Sample Text");
   const [fontSize, setFontSize] = useState(48);
   const [fontFamily, setFontFamily] = useState("Inter");
@@ -31,15 +27,47 @@ export function useEditorState() {
   const [showTextBackground, setShowTextBackground] = useState(true);
   const [isCropping, setIsCropping] = useState(false);
   const [textEffect, setTextEffect] = useState<string[]>([]);
-
-  const [history, setHistory] = useState<HistoryState[]>([
-    {
-      textElements: [],
-      imageElements: [],
-      canvasBackground: "",
-    },
-  ]);
+  const [history, setHistory] = useState<HistoryState[]>([{
+    textElements: [],
+    imageElements: [],
+    canvasBackground: "",
+  }]);
   const [historyIndex, setHistoryIndex] = useState(0);
+
+  const currentAspectRatio = ASPECT_RATIOS.find((r) => r.name === aspectRatioName) || ASPECT_RATIOS[4];
+
+  useEffect(() => {
+    const saved = localStorage.getItem(savestate);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.aspectRatioName) setAspectRatioName(parsed.aspectRatioName);
+        if (parsed.canvasBackground) setCanvasBackground(parsed.canvasBackground);
+        if (parsed.imageElements) setImageElements(parsed.imageElements);
+        if (parsed.textElements) setTextElements(parsed.textElements);
+
+        setHistory([{
+          textElements: parsed.textElements || [],
+          imageElements: parsed.imageElements || [],
+          canvasBackground: parsed.canvasBackground || "",
+        }]);
+      } catch (e) {
+        console.error("Failed to load editor state", e);
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    const stateToSave = {
+      aspectRatioName,
+      canvasBackground,
+      imageElements,
+      textElements,
+    };
+    localStorage.setItem(savestate, JSON.stringify(stateToSave));
+  }, [aspectRatioName, canvasBackground, imageElements, textElements, isLoaded]);
 
   const queueHistorySave = useCallback(() => {
     if (historyTimeoutRef.current) {
@@ -77,6 +105,7 @@ export function useEditorState() {
     setImageElements([]);
     setTextElements([]);
     setCanvasBackground("linear-gradient(135deg, #0f0c29, #302b63, #24243e)");
+    localStorage.removeItem(savestate);
     const initialState: HistoryState = {
       textElements: [],
       imageElements: [],
@@ -89,7 +118,6 @@ export function useEditorState() {
 
   const deleteSelectedElement = () => {
     if (!selectedElementId) return;
-
     if (selectedElementId.startsWith("text")) {
       setTextElements((prev) => prev.filter((el) => el.id !== selectedElementId));
     } else {
@@ -158,16 +186,13 @@ export function useEditorState() {
       const img = new Image();
       img.onload = () => {
         const id = `img_${Date.now()}`;
-
         const canvasW = currentAspectRatio.width;
         const canvasH = currentAspectRatio.height;
         const imgW = img.naturalWidth;
         const imgH = img.naturalHeight;
-
         const scaleX = canvasW / imgW;
         const scaleY = canvasH / imgH;
         const scale = Math.min(scaleX, scaleY, 1) * 90;
-
         const x = (canvasW - imgW) / 2;
         const y = (canvasH - imgH) / 2;
 
@@ -205,19 +230,13 @@ export function useEditorState() {
     setImageElements((current) =>
       state.imageElements.map((histImg) => ({
         ...histImg,
-        position: current.find((c) => c.id === histImg.id)?.position || {
-          x: 0,
-          y: 0,
-        },
+        position: current.find((c) => c.id === histImg.id)?.position || { x: 0, y: 0 },
       }))
     );
     setTextElements((current) =>
       state.textElements.map((histEl) => ({
         ...histEl,
-        position: current.find((el) => el.id === histEl.id)?.position || {
-          x: 0,
-          y: 0,
-        },
+        position: current.find((el) => el.id === histEl.id)?.position || { x: 0, y: 0 },
       }))
     );
   };
@@ -238,54 +257,18 @@ export function useEditorState() {
     }
   };
 
-  const handleTextChange = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ content: val })
-      : setCurrentText(val);
-  const handleFontSize = (val: number) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ fontSize: val })
-      : setFontSize(val);
-  const handleFontFamily = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ fontFamily: val })
-      : setFontFamily(val);
-  const handleFontWeight = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ fontWeight: val })
-      : setFontWeight(val);
-  const handleColor = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ color: val })
-      : setColor(val);
-  const handleShadow = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ textShadow: val })
-      : setTextShadow(val);
-  const handleTextRadius = (val: number) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ borderRadius: val })
-      : setTextBorderRadius(val);
-  const handleTextBgColor = (val: string) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ backgroundColor: val })
-      : setTextBackgroundColor(val);
-  const handleTextPadding = (val: number) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ padding: val })
-      : setTextPadding(val);
-  const handleShowTextBg = (val: boolean) =>
-    selectedElementId?.startsWith("text")
-      ? updateSelectedText({ showBackground: val })
-      : setShowTextBackground(val);
-  const handleCanvasBackgroundChange = (val: string) => {
-    setCanvasBackground(val);
-    queueHistorySave();
-  };
-  const handleSetSelectedElementId = (id: string | null) => {
-    setSelectedElementId(id);
-    setIsCropping(false);
-  };
+  const handleTextChange = (val: string) => selectedElementId?.startsWith("text") ? updateSelectedText({ content: val }) : setCurrentText(val);
+  const handleFontSize = (val: number) => selectedElementId?.startsWith("text") ? updateSelectedText({ fontSize: val }) : setFontSize(val);
+  const handleFontFamily = (val: string) => selectedElementId?.startsWith("text") ? updateSelectedText({ fontFamily: val }) : setFontFamily(val);
+  const handleFontWeight = (val: string) => selectedElementId?.startsWith("text") ? updateSelectedText({ fontWeight: val }) : setFontWeight(val);
+  const handleColor = (val: string) => selectedElementId?.startsWith("text") ? updateSelectedText({ color: val }) : setColor(val);
+  const handleShadow = (val: string) => selectedElementId?.startsWith("text") ? updateSelectedText({ textShadow: val }) : setTextShadow(val);
+  const handleTextRadius = (val: number) => selectedElementId?.startsWith("text") ? updateSelectedText({ borderRadius: val }) : setTextBorderRadius(val);
+  const handleTextBgColor = (val: string) => selectedElementId?.startsWith("text") ? updateSelectedText({ backgroundColor: val }) : setTextBackgroundColor(val);
+  const handleTextPadding = (val: number) => selectedElementId?.startsWith("text") ? updateSelectedText({ padding: val }) : setTextPadding(val);
+  const handleShowTextBg = (val: boolean) => selectedElementId?.startsWith("text") ? updateSelectedText({ showBackground: val }) : setShowTextBackground(val);
+  const handleCanvasBackgroundChange = (val: string) => { setCanvasBackground(val); queueHistorySave(); };
+  const handleSetSelectedElementId = (id: string | null) => { setSelectedElementId(id); setIsCropping(false); };
 
   return {
     aspectRatioName,

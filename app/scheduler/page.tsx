@@ -37,7 +37,7 @@ const MOCK_QUEUE = [
 export default function SchedulerPage() {
   const [content, setContent] = useState("");
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [time, setTime] = useState("09:00");
+  const [time, setTime] = useState("10:07");
   const [platforms, setPlatforms] = useState<string[]>(["twitter"]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
