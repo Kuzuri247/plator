@@ -46,6 +46,26 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       onEmptyClick();
     }, [onEmptyClick]);
 
+    const getBackgroundStyle = (
+      bg: string,
+      aspectWidth: number,
+      aspectHeight: number
+    ) => {
+      if (bg.startsWith("url(")) {
+        const isTallCanvas = aspectHeight >= aspectWidth;
+
+        return {
+          backgroundImage: bg,
+          backgroundSize: isTallCanvas ? "cover" : "contain",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        };
+      }
+      return {
+        background: bg,
+      };
+    };
+
     return (
       <Card className="p-0 bg-white border-none shadow-none overflow-visible relative group/canvas">
         <div
@@ -54,7 +74,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
           style={{
             width: width,
             height: height,
-            background: canvasBackground,
+            ...getBackgroundStyle(canvasBackground, width, height),
             transformStyle: "preserve-3d",
             perspective: "2500px",
             perspectiveOrigin: "center center",
@@ -76,7 +96,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             </div>
           )}
 
-         {imageElements.map((img) => (
+          {imageElements.map((img) => (
             <ImageLayer
               key={img.id}
               img={img}

@@ -18,6 +18,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useState } from "react";
+import { toast } from "sonner";
 
 function App() {
   const router = useRouter();
@@ -59,9 +60,12 @@ function App() {
         Preview
       </a>
       <a
-        href="/scheduler"
+        href="/"
         className="hover:text-foreground transition-colors"
-        onClick={() => setIsOpen(false)}
+        onClick={() => {
+          setIsOpen(false);
+          toast.info("Coming Soon!");
+        }}
       >
         Scheduler
       </a>
@@ -89,7 +93,7 @@ function App() {
             <div className="hidden md:block">
               <ThemeToggle />
             </div>
-            
+
             <div className="hidden md:block">
               {!session ? (
                 <Button

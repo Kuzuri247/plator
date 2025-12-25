@@ -86,6 +86,12 @@ export interface LeftPanelProps {
   onTextStyleChange: (updates: Partial<TextStyle>) => void;
 }
 
+export interface Wallpaper {
+  fileId: string;
+  name: string;
+  url: string;
+  thumbnailUrl: string;
+}
 
 export const ASPECT_RATIOS = [
   { name: "16:9", label: "YouTube / Video", width: 900, height: 506, previewClass: "aspect-video" },
@@ -146,7 +152,6 @@ export const SHADOW_PRESETS = [
   { name: "Right Bottom", value: "12px 12px 25px -5px rgb(0 0 0 / 0.7), 6px 6px 10px -5px rgb(0 0 0 / 0.06)" },
   { name: "2X-Large", value: "0 50px 50px -12px rgb(0 0 0 / 0.9)" },
 ];
-
 
 export const BACKGROUND_OPTIONS = [
   { name: "Dark", value: "#1a1a1a" },

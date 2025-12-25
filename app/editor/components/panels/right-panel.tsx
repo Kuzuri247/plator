@@ -1,6 +1,12 @@
 "use client";
 
-import { Download, LayoutTemplate, Share, Image as ImageIcon } from "lucide-react";
+import {
+  Download,
+  LayoutTemplate,
+  Share,
+  Image as ImageIcon,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,34 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BACKGROUND_OPTIONS, ASPECT_RATIOS } from "../../types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RightPanelProps } from "../../types";
-
-// Sample wallpapers - you can replace these with your actual wallpaper URLs
-const WALLPAPER_OPTIONS = [
-  {
-    name: "Gradient Sunset",
-    url: "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=800&q=80",
-  },
-  {
-    name: "Ocean Waves",
-    url: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&q=80",
-  },
-  {
-    name: "Mountain Peak",
-    url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
-  },
-  {
-    name: "Forest Path",
-    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80",
-  },
-  {
-    name: "City Lights",
-    url: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&q=80",
-  },
-  {
-    name: "Desert Dunes",
-    url: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
-  },
-];
+import { useWallpapers } from "../../hooks/use-wallpaper";
 
 export function RightPanel({
   canvasBackground,
@@ -55,9 +34,10 @@ export function RightPanel({
   onDownload,
   onPreview,
 }: RightPanelProps) {
+  const { wallpapers, loading } = useWallpapers();
+
   return (
     <div className="flex flex-col h-full w-full">
-      {/* Canvas Size Section */}
       <div className="space-y-3 p-4 shrink-0">
         <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
           <LayoutTemplate className="size-4" />
@@ -90,20 +70,17 @@ export function RightPanel({
         </Select>
       </div>
 
-      {/* Backgrounds & Wallpapers Tabs Section */}
-      <div className="flex-1 min-h-0 flex flex-col relative px-4">
-        <Tabs defaultValue="backgrounds" className="w-full h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-2 mb-3">
-            <TabsTrigger value="backgrounds">Backgrounds</TabsTrigger>
-            <TabsTrigger value="wallpapers">
-              <ImageIcon className="size-3 mr-1.5" />
-              Wallpapers
-            </TabsTrigger>
+      <div className="flex-1 min-h-0 flex flex-col relative px-4 pb-2">
+        <Tabs
+          defaultValue="backgrounds"
+          className="w-full h-full flex flex-col"
+        >
+          <TabsList className="grid w-full grid-cols-2 mb-3 shrink-0">
+            <TabsTrigger value="backgrounds">Gradients</TabsTrigger>
+            <TabsTrigger value="wallpapers">Wallpapers</TabsTrigger>
           </TabsList>
-
-          {/* Backgrounds Tab */}
-          <TabsContent value="backgrounds" className="flex-1 relative mt-0">
-            <ScrollArea className="h-[400px] w-full">
+          <TabsContent value="backgrounds" className="flex-1 mt-0 min-h-0">
+            <ScrollArea className="h-full max-h-[calc(100vh)]">
               <div className="pr-4 pb-4">
                 <div className="grid grid-cols-2 gap-3">
                   {BACKGROUND_OPTIONS.map((bg) => (
@@ -130,34 +107,48 @@ export function RightPanel({
             </ScrollArea>
           </TabsContent>
 
-          {/* Wallpapers Tab */}
-          <TabsContent value="wallpapers" className="flex-1 relative mt-0">
-            <ScrollArea className="h-[400px] w-full">
+          <TabsContent value="wallpapers" className="flex-1 mt-0 min-h-0">
+            <ScrollArea className="h-full max-h-[calc(100vh)]">
               <div className="pr-4 pb-4">
-                <div className="grid grid-cols-2 gap-3">
-                  {WALLPAPER_OPTIONS.map((wallpaper) => (
-                    <button
-                      key={wallpaper.name}
-                      onClick={() =>
-                        onCanvasBackgroundChange(`url(${wallpaper.url})`)
-                      }
-                      className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-103 focus:outline-none focus:ring-2 focus:ring-primary ${
-                        canvasBackground === `url(${wallpaper.url})`
-                          ? "border-primary shadow-md"
-                          : "border-transparent"
-                      }`}
-                    >
-                      <img
-                        src={wallpaper.url}
-                        alt={wallpaper.name}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 p-1 bg-black/50 backdrop-blur-sm text-xs text-white text-center truncate">
-                        {wallpaper.name}
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                {loading ? (
+                  <div className="flex justify-center items-center h-40">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                  </div>
+                ) : wallpapers.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-center text-muted-foreground">
+                    <ImageIcon className="h-12 w-12 mb-3 opacity-50" />
+                    <p className="text-sm font-medium">No wallpapers found</p>
+                    <p className="text-xs mt-1">
+                      Add images to ImageKit dashboard
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {wallpapers.map((wallpaper) => (
+                      <button
+                        key={wallpaper.fileId}
+                        onClick={() =>
+                          onCanvasBackgroundChange(`url(${wallpaper.url})`)
+                        }
+                        className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-103 focus:outline-none focus:ring-2 focus:ring-primary ${
+                          canvasBackground === `url(${wallpaper.url})`
+                            ? "border-primary shadow-md"
+                            : "border-transparent hover:border-primary/50"
+                        }`}
+                      >
+                        <img
+                          src={wallpaper.thumbnailUrl}
+                          alt={wallpaper.name}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 p-1 bg-black/50 backdrop-blur-sm text-xs text-white text-center truncate">
+                          {wallpaper.name}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </TabsContent>
