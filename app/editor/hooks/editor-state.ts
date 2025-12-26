@@ -10,7 +10,7 @@ export function useEditorState() {
 
   const [aspectRatioName, setAspectRatioName] = useState("4:3");
   const [canvasBackground, setCanvasBackground] = useState(
-    "linear-gradient(135deg, #0f0c29, #302b63, #24243e)"
+    "radial-gradient(at 0% 0%, #7209b7 0px, transparent 70%), radial-gradient(at 100% 0%, #9d4edd 0px, transparent 70%), radial-gradient(at 100% 100%, #e0aaff 0px, transparent 70%), radial-gradient(at 0% 100%, #c77dff 0px, transparent 70%)"
   );
   const [imageElements, setImageElements] = useState<ImageElement[]>([]);
   const [textElements, setTextElements] = useState<TextElement[]>([]);
@@ -104,12 +104,12 @@ export function useEditorState() {
   const resetCanvas = () => {
     setImageElements([]);
     setTextElements([]);
-    setCanvasBackground("linear-gradient(135deg, #0f0c29, #302b63, #24243e)");
+    setCanvasBackground("radial-gradient(at 0% 0%, #7209b7 0px, transparent 70%), radial-gradient(at 100% 0%, #9d4edd 0px, transparent 70%), radial-gradient(at 100% 100%, #e0aaff 0px, transparent 70%), radial-gradient(at 0% 100%, #c77dff 0px, transparent 70%)");
     localStorage.removeItem(savestate);
     const initialState: HistoryState = {
       textElements: [],
       imageElements: [],
-      canvasBackground: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
+      canvasBackground: "radial-gradient(at 0% 0%, #7209b7 0px, transparent 70%), radial-gradient(at 100% 0%, #9d4edd 0px, transparent 70%), radial-gradient(at 100% 100%, #e0aaff 0px, transparent 70%), radial-gradient(at 0% 100%, #c77dff 0px, transparent 70%)",
     };
     setHistory([initialState]);
     setHistoryIndex(0);

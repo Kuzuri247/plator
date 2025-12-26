@@ -13,7 +13,6 @@ export function useExport(
   const [exportQuality, setExportQuality] = useState("2");
   const router = useRouter();
 
-  // Helper to generate the data URL
   const generateImage = async () => {
     if (!canvasRef.current) return null;
     setSelectedElementId(null);
@@ -62,15 +61,12 @@ export function useExport(
   const handleDownloadAndPreview = async () => {
     const dataUrl = await generateImage();
     if (dataUrl) {
-      // 1. Download
       downloadImage(dataUrl);
       
-      // 2. Save for preview
       try {
         localStorage.setItem("plator-preview-image", dataUrl);
         toast.success("Exported! Redirecting to preview...");
         
-        // 3. Redirect
         setTimeout(() => {
             router.push("/preview");
         }, 1000);
@@ -86,6 +82,6 @@ export function useExport(
     exportQuality,
     setExportQuality,
     handleDownload,
-    handleDownloadAndPreview, // Export this
+    handleDownloadAndPreview,
   };
 }

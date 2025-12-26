@@ -93,12 +93,17 @@ export interface Wallpaper {
   thumbnailUrl: string;
 }
 
+export interface GradientColor {
+  color: string;
+  position: { x: number; y: number };
+}
+
 export const ASPECT_RATIOS = [
-  { name: "16:9", label: "YouTube / Video", width: 900, height: 506, previewClass: "aspect-video" },
-  { name: "1:1", label: "Instagram Square", width: 600, height: 600, previewClass: "aspect-square" },
-  { name: "4:5", label: "Instagram Portrait", width: 500, height: 625, previewClass: "aspect-[4/5]" },
+  { name: "16:9", label: "Video", width: 900, height: 506, previewClass: "aspect-video" },
+  { name: "1:1", label: "Square", width: 600, height: 600, previewClass: "aspect-square" },
+  { name: "4:5", label: "Portrait", width: 500, height: 625, previewClass: "aspect-[4/5]" },
   { name: "4:3", label: "Standard", width: 800, height: 600, previewClass: "aspect-[4/3]" },
-  { name: "2:1", label: "Twitter Header", width: 800, height: 400, previewClass: "aspect-[2/1]" },
+  { name: "2:1", label: "Header", width: 800, height: 400, previewClass: "aspect-[2/1]" },
 ];
 
 export const FONT_FAMILIES = [
@@ -153,35 +158,138 @@ export const SHADOW_PRESETS = [
   { name: "2X-Large", value: "0 50px 50px -12px rgb(0 0 0 / 0.9)" },
 ];
 
-export const BACKGROUND_OPTIONS = [
-  { name: "Dark", value: "#1a1a1a" },
-  { name: "Light", value: "#ffffff" },
-  { name: "Sunset", value: "linear-gradient(135deg, #ff0844 0%, #ffb199 100%)" },
-  { name: "Forest", value: "linear-gradient(135deg, #0ba360 0%, #3cba92 100%)" },
-  { name: "Midnight", value: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)" },
-  { name: "Neon", value: "linear-gradient(135deg, #00c6ff, #0072ff)" },
-  { name: "Peach", value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
-  { name: "Cosmic", value: "linear-gradient(135deg, #1a0033 0%, #330066 50%, #660099 100%)" },
-  { name: "Aurora", value: "linear-gradient(135deg, #00ff88 0%, #00ccff 50%, #0088ff 100%)" },
-  { name: "Lava", value: "linear-gradient(135deg, #ff6b00 0%, #ff0000 50%, #660000 100%)" },
-  { name: "Ocean", value: "linear-gradient(135deg, #0066cc 0%, #0099ff 50%, #00ccff 100%)" },
-  { name: "Purple Haze", value: "linear-gradient(135deg, #360033 0%, #0b8793 100%)" },
-  { name: "Miami", value: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
-  { name: "Fire", value: "linear-gradient(135deg, #f83600 0%, #f9d423 100%)" },
-  { name: "Emerald", value: "linear-gradient(135deg, #348f50 0%, #56b4d3 100%)" },
-  { name: "Rose", value: "linear-gradient(135deg, #ed4264 0%, #ffedbc 100%)" },
-  { name: "Twilight", value: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)" },
-  { name: "Ice", value: "linear-gradient(135deg, #c9ffbf 0%, #ffafbd 100%)" },
-  { name: "Candy", value: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" },
-  { name: "Berry", value: "linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%)" },
-  { name: "Tropical", value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
-  { name: "Cyber", value: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
-  { name: "Deep Ocean", value: "linear-gradient(135deg, #2e3192 0%, #1bffff 100%)" },
-  { name: "Mint", value: "linear-gradient(135deg, #00b09b 0%, #96c93d 100%)" },
-  { name: "Purple Dream", value: "linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)" },
-  { name: "Warm Flame", value: "linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)" },
-  { name: "Royal", value: "linear-gradient(135deg, #141e30 0%, #243b55 100%)" },
-  { name: "Citrus", value: "linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%)" },
+export const COLOR_PALETTES = {
+  sunset: ['#FF6B6B', '#FF8E53', '#FEE440', '#F72585', '#B5179E'],
+  ocean: ['#0077B6', '#00B4D8', '#90E0EF', '#CAF0F8', '#023E8A'],
+  forest: ['#2D6A4F', '#40916C', '#52B788', '#74C69D', '#95D5B2'],
+  purple: ['#7209B7', '#9D4EDD', '#C77DFF', '#E0AAFF', '#F72585'],
+  fire: ['#FF0000', '#FF6B35', '#F7931E', '#FDC500', '#FFFF3F'],
+  candy: ['#FF006E', '#FB5607', '#FFBE0B', '#8338EC', '#3A86FF'],
+  neon: ['#FF006E', '#FFBE0B', '#06FFA5', '#3A86FF', '#8338EC'],
+  pastel: ['#FFD6E8', '#FFADD2', '#FFC6FF', '#E7C6FF', '#C8B6FF'],
+  monochrome: ['#1a1a1a', '#2d2d2d', '#404040', '#595959', '#737373'],
+  warm: ['#FF9E00', '#FF6B35', '#F7931E', '#FDC500', '#FFBE0B'],
+  cool: ['#4361EE', '#3F37C9', '#4895EF', '#4CC9F0', '#7209B7'],
+  earth: ['#606C38', '#283618', '#BC6C25', '#DDA15E', '#FEFAE0'],
+  midnight: ['#0a0e27', '#1a1b41', '#240046', '#3c096c', '#10002b'],
+  deepSpace: ['#020202', '#090909', '#0d0d0d', '#1a1a2e', '#16213e'],
+  darkForest: ['#0b1d0e', '#1a2f1e', '#1e3a2a', '#234f3a', '#2d5f4a'],
+  darkOcean: ['#001219', '#005f73', '#0a1628', '#001d3d', '#003566'],
+  vampireBlack: ['#090909', '#131313', '#1a1a1a', '#202020', '#2b2b2b'],
+  gothicPurple: ['#1a0033', '#2d004d', '#4a0080', '#6600cc', '#33006f'],
+  bloodMoon: ['#1a0000', '#330000', '#4d0000', '#660000', '#800000'],
+  deepTeal: ['#002b36', '#073642', '#0f4c5c', '#1b6378', '#2a7a8f'],
+};
+
+export const PRESET_GRADIENTS = [
+  {
+    name: 'Aurora',
+    value: 'radial-gradient(at 0% 0%, #667eea 0px, transparent 70%), radial-gradient(at 100% 0%, #764ba2 0px, transparent 70%), radial-gradient(at 100% 100%, #f093fb 0px, transparent 70%), radial-gradient(at 0% 100%, #4facfe 0px, transparent 70%)',
+  },
+  {
+    name: 'Sunset',
+    value: 'radial-gradient(at 0% 0%, #ff6b6b 0px, transparent 70%), radial-gradient(at 100% 0%, #ff8e53 0px, transparent 70%), radial-gradient(at 100% 100%, #fee440 0px, transparent 70%), radial-gradient(at 0% 100%, #f72585 0px, transparent 70%)',
+  },
+  {
+    name: 'Ocean',
+    value: 'radial-gradient(at 0% 0%, #0077b6 0px, transparent 70%), radial-gradient(at 100% 0%, #00b4d8 0px, transparent 70%), radial-gradient(at 100% 100%, #90e0ef 0px, transparent 70%), radial-gradient(at 0% 100%, #023e8a 0px, transparent 70%)',
+  },
+  {
+    name: 'Forest',
+    value: 'radial-gradient(at 0% 0%, #2d6a4f 0px, transparent 70%), radial-gradient(at 100% 0%, #40916c 0px, transparent 70%), radial-gradient(at 100% 100%, #74c69d 0px, transparent 70%), radial-gradient(at 0% 100%, #52b788 0px, transparent 70%)',
+  },
+  {
+    name: 'Purple Dream',
+    value: 'radial-gradient(at 0% 0%, #7209b7 0px, transparent 70%), radial-gradient(at 100% 0%, #9d4edd 0px, transparent 70%), radial-gradient(at 100% 100%, #e0aaff 0px, transparent 70%), radial-gradient(at 0% 100%, #c77dff 0px, transparent 70%)',
+  },
+  {
+    name: 'Fire',
+    value: 'radial-gradient(at 0% 0%, #ff0000 0px, transparent 70%), radial-gradient(at 100% 0%, #ff6b35 0px, transparent 70%), radial-gradient(at 100% 100%, #fdc500 0px, transparent 70%), radial-gradient(at 0% 100%, #f7931e 0px, transparent 70%)',
+  },
+  {
+    name: 'Candy',
+    value: 'radial-gradient(at 0% 0%, #ff006e 0px, transparent 70%), radial-gradient(at 100% 0%, #fb5607 0px, transparent 70%), radial-gradient(at 100% 100%, #ffbe0b 0px, transparent 70%), radial-gradient(at 0% 100%, #8338ec 0px, transparent 70%)',
+  },
+  {
+    name: 'Neon',
+    value: 'radial-gradient(at 0% 0%, #ff006e 0px, transparent 70%), radial-gradient(at 100% 0%, #06ffa5 0px, transparent 70%), radial-gradient(at 100% 100%, #3a86ff 0px, transparent 70%), radial-gradient(at 0% 100%, #ffbe0b 0px, transparent 70%)',
+  },
+  {
+    name: 'Mint Fresh',
+    value: 'radial-gradient(at 0% 0%, #06ffa5 0px, transparent 70%), radial-gradient(at 100% 0%, #4cc9f0 0px, transparent 70%), radial-gradient(at 100% 100%, #90e0ef 0px, transparent 70%), radial-gradient(at 0% 100%, #52b788 0px, transparent 70%)',
+  },
+  {
+    name: 'Rose Gold',
+    value: 'radial-gradient(at 0% 0%, #ff006e 0px, transparent 70%), radial-gradient(at 100% 0%, #ffbe0b 0px, transparent 70%), radial-gradient(at 100% 100%, #ffd6e8 0px, transparent 70%), radial-gradient(at 0% 100%, #ffc6ff 0px, transparent 70%)',
+  },
+  {
+    name: 'Midnight',
+    value: 'radial-gradient(at 0% 0%, #1a1a2e 0px, transparent 70%), radial-gradient(at 100% 0%, #16213e 0px, transparent 70%), radial-gradient(at 100% 100%, #0f3460 0px, transparent 70%), radial-gradient(at 0% 100%, #533483 0px, transparent 70%)',
+  },
+  {
+    name: 'Tropical',
+    value: 'radial-gradient(at 0% 0%, #06ffa5 0px, transparent 70%), radial-gradient(at 100% 0%, #ffbe0b 0px, transparent 70%), radial-gradient(at 100% 100%, #ff006e 0px, transparent 70%), radial-gradient(at 0% 100%, #3a86ff 0px, transparent 70%)',
+  },
+  {
+    name: 'Lavender',
+    value: 'radial-gradient(at 0% 0%, #9d4edd 0px, transparent 70%), radial-gradient(at 100% 0%, #c77dff 0px, transparent 70%), radial-gradient(at 100% 100%, #e0aaff 0px, transparent 70%), radial-gradient(at 0% 100%, #7209b7 0px, transparent 70%)',
+  },
+  {
+    name: 'Coral Reef',
+    value: 'radial-gradient(at 0% 0%, #ff6b6b 0px, transparent 70%), radial-gradient(at 100% 0%, #4ecdc4 0px, transparent 70%), radial-gradient(at 100% 100%, #ffe66d 0px, transparent 70%), radial-gradient(at 0% 100%, #ff006e 0px, transparent 70%)',
+  },
+  {
+    name: 'Peachy',
+    value: 'radial-gradient(at 0% 0%, #ffadad 0px, transparent 70%), radial-gradient(at 100% 0%, #ffd6a5 0px, transparent 70%), radial-gradient(at 100% 100%, #fdffb6 0px, transparent 70%), radial-gradient(at 0% 100%, #caffbf 0px, transparent 70%)',
+  },
+  {
+    name: 'Midnight Blue',
+    value: 'radial-gradient(at 0% 0%, #0a0e27 0px, transparent 70%), radial-gradient(at 100% 0%, #1a1b41 0px, transparent 70%), radial-gradient(at 100% 100%, #3c096c 0px, transparent 70%), radial-gradient(at 0% 100%, #240046 0px, transparent 70%)',
+  },
+  {
+    name: 'Deep Space',
+    value: 'radial-gradient(at 0% 0%, #020202 0px, transparent 70%), radial-gradient(at 100% 0%, #0d0d0d 0px, transparent 70%), radial-gradient(at 100% 100%, #1a1a2e 0px, transparent 70%), radial-gradient(at 0% 100%, #16213e 0px, transparent 70%)',
+  },
+  {
+    name: 'Gothic Purple',
+    value: 'radial-gradient(at 0% 0%, #1a0033 0px, transparent 70%), radial-gradient(at 100% 0%, #2d004d 0px, transparent 70%), radial-gradient(at 100% 100%, #6600cc 0px, transparent 70%), radial-gradient(at 0% 100%, #4a0080 0px, transparent 70%)',
+  },
+  {
+    name: 'Blood Moon',
+    value: 'radial-gradient(at 0% 0%, #1a0000 0px, transparent 70%), radial-gradient(at 100% 0%, #330000 0px, transparent 70%), radial-gradient(at 100% 100%, #660000 0px, transparent 70%), radial-gradient(at 0% 100%, #4d0000 0px, transparent 70%)',
+  },
+  {
+    name: 'Dark Forest',
+    value: 'radial-gradient(at 0% 0%, #0b1d0e 0px, transparent 70%), radial-gradient(at 100% 0%, #1a2f1e 0px, transparent 70%), radial-gradient(at 100% 100%, #234f3a 0px, transparent 70%), radial-gradient(at 0% 100%, #1e3a2a 0px, transparent 70%)',
+  },
+  {
+    name: 'Dark Ocean',
+    value: 'radial-gradient(at 0% 0%, #001219 0px, transparent 70%), radial-gradient(at 100% 0%, #0a1628 0px, transparent 70%), radial-gradient(at 100% 100%, #003566 0px, transparent 70%), radial-gradient(at 0% 100%, #001d3d 0px, transparent 70%)',
+  },
+  {
+    name: 'Vampire Night',
+    value: 'radial-gradient(at 0% 0%, #090909 0px, transparent 70%), radial-gradient(at 100% 0%, #131313 0px, transparent 70%), radial-gradient(at 100% 100%, #202020 0px, transparent 70%), radial-gradient(at 0% 100%, #1a1a1a 0px, transparent 70%)',
+  },
+  {
+    name: 'Deep Teal',
+    value: 'radial-gradient(at 0% 0%, #002b36 0px, transparent 70%), radial-gradient(at 100% 0%, #073642 0px, transparent 70%), radial-gradient(at 100% 100%, #1b6378 0px, transparent 70%), radial-gradient(at 0% 100%, #0f4c5c 0px, transparent 70%)',
+  },
+  {
+    name: 'Shadow Realm',
+    value: 'radial-gradient(at 0% 0%, #0f0c29 0px, transparent 70%), radial-gradient(at 100% 0%, #302b63 0px, transparent 70%), radial-gradient(at 100% 100%, #24243e 0px, transparent 70%), radial-gradient(at 0% 100%, #1a1a2e 0px, transparent 70%)',
+  },
+  {
+    name: 'Dark Matter',
+    value: 'radial-gradient(at 0% 0%, #10002b 0px, transparent 70%), radial-gradient(at 100% 0%, #240046 0px, transparent 70%), radial-gradient(at 100% 100%, #3c096c 0px, transparent 70%), radial-gradient(at 0% 100%, #5a189a 0px, transparent 70%)',
+  },
+  {
+    name: 'Obsidian',
+    value: 'radial-gradient(at 0% 0%, #000000 0px, transparent 70%), radial-gradient(at 100% 0%, #0d0d0d 0px, transparent 70%), radial-gradient(at 100% 100%, #1a1a1a 0px, transparent 70%), radial-gradient(at 0% 100%, #262626 0px, transparent 70%)',
+  },
+  {
+    name: 'Abyss',
+    value: 'radial-gradient(at 0% 0%, #001219 0px, transparent 70%), radial-gradient(at 100% 0%, #005f73 0px, transparent 70%), radial-gradient(at 100% 100%, #0a1628 0px, transparent 70%), radial-gradient(at 0% 100%, #003566 0px, transparent 70%)',
+  },
 ];
 
 export interface HistoryState {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Wallpaper } from "../types";
 
-export function useWallpapers() {
+export function Wallpapers() {
   const [wallpapers, setWallpapers] = useState<Wallpaper[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

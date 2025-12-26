@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   Smartphone,
   Monitor,
-  Upload,
   Send,
   Check,
   Lock,
