@@ -105,7 +105,7 @@ export const XPost = ({ caption, images = [], className }: PostProps) => (
   <div
     className={cn(
       "bg-card border-2 p-4 text-card-foreground w-full max-w-md mx-auto shadow-2xl relative z-10",
-      className
+      className,
     )}
   >
     <div className="flex gap-2">
@@ -207,7 +207,7 @@ export const LinkedInPost = ({
   <div
     className={cn(
       "bg-card border-2 p-6 text-card-foreground w-full max-w-md mx-auto shadow-2xl relative z-10",
-      className
+      className,
     )}
   >
     <div className="flex justify-between items-start mb-4">
@@ -281,7 +281,7 @@ export const InstagramPost = ({
   <div
     className={cn(
       "bg-card border-2 text-card-foreground w-full max-w-md mx-auto shadow-2xl pb-2 relative z-10",
-      className
+      className,
     )}
   >
     <div className="flex justify-between items-center p-3 border-b border-border">

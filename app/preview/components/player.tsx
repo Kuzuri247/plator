@@ -9,7 +9,7 @@ export type Platform = "twitter" | "linkedin" | "instagram";
 export type PreviewMode = "mobile" | "desktop";
 
 interface PlayerProps {
-  images?: string[]; 
+  images?: string[];
   caption?: string;
   platform: Platform;
   previewMode: PreviewMode;
@@ -39,11 +39,7 @@ export function Player({
         );
       case "instagram":
         return (
-          <InstagramPost
-            caption={caption}
-            images={images}
-            className={styles}
-          />
+          <InstagramPost caption={caption} images={images} className={styles} />
         );
       default:
         return <XPost caption={caption} images={images} className={styles} />;
@@ -59,7 +55,7 @@ export function Player({
           "bg-background border-4 border-neutral-800 dark:border-neutral-700 shadow-2xl flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out",
           previewMode === "mobile"
             ? "w-[375px] h-[750px] max-h-[90vh] rounded-[40px]"
-            : "w-full max-w-[1200px] h-[85vh] rounded-xl border-2"
+            : "w-full max-w-[1200px] h-[85vh] rounded-xl border-2",
         )}
       >
         <div className="h-8 border-b border-border bg-muted/50 flex px-4 gap-2 relative z-10 justify-center items-center shrink-0">

@@ -25,22 +25,34 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-3 text-muted-foreground text-sm font-manrope">
               <li>
-                <a href="/editor" className="hover:text-foreground transition-colors">
+                <a
+                  href="/editor"
+                  className="hover:text-foreground transition-colors"
+                >
                   Editor
                 </a>
               </li>
               <li>
-                <a href="/preview" className="hover:text-foreground transition-colors">
+                <a
+                  href="/preview"
+                  className="hover:text-foreground transition-colors"
+                >
                   Preview
                 </a>
               </li>
               <li>
-                <a href="/scheduler" className="hover:text-foreground transition-colors">
+                <a
+                  href="/scheduler"
+                  className="hover:text-foreground transition-colors"
+                >
                   Scheduler
                 </a>
               </li>
               <li>
-                <a href="#pricing" className="hover:text-foreground transition-colors scroll-smooth">
+                <a
+                  href="#pricing"
+                  className="hover:text-foreground transition-colors scroll-smooth"
+                >
                   Pricing
                 </a>
               </li>

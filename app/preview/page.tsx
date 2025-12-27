@@ -26,7 +26,10 @@ export default function PreviewPage() {
   const [caption, setCaption] = useState("");
   const [images, setImages] = useState<string[]>([]);
 
-  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([ "twitter","linkedin",]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([
+    "twitter",
+    "linkedin",
+  ]);
   const [previewMode, setPreviewMode] = useState<PreviewMode>("mobile");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,7 +74,7 @@ export default function PreviewPage() {
 
   const togglePlatform = (p: Platform) => {
     setSelectedPlatforms((prev) =>
-      prev.includes(p) ? prev.filter((item) => item !== p) : [...prev, p]
+      prev.includes(p) ? prev.filter((item) => item !== p) : [...prev, p],
     );
   };
 
@@ -181,7 +184,7 @@ export default function PreviewPage() {
                 "p-1.5 rounded-md transition-all",
                 previewMode === "mobile"
                   ? "bg-background text-primary shadow-sm"
-                  : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground"
+                  : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground",
               )}
             >
               <Smartphone size={14} />
@@ -192,7 +195,7 @@ export default function PreviewPage() {
                 "p-1.5 rounded-md transition-all",
                 previewMode === "desktop"
                   ? "bg-background text-primary shadow-sm"
-                  : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground"
+                  : "text-muted-foreground dark:bg-neutral-900 hover:text-foreground",
               )}
             >
               <Monitor size={14} />
@@ -228,7 +231,7 @@ export default function PreviewPage() {
                           "px-3 py-2 border rounded-md text-xs transition-all flex-1 text-center font-manrope flex items-center justify-center gap-2",
                           isSelected
                             ? "bg-primary/10 border-primary text-primary font-bold shadow-sm"
-                            : "bg-background hover:bg-muted border-2 dark:border-neutral-800 text-muted-foreground"
+                            : "bg-background hover:bg-muted border-2 dark:border-neutral-800 text-muted-foreground",
                         )}
                       >
                         {isSelected && <Check size={12} />}
@@ -277,7 +280,7 @@ export default function PreviewPage() {
                         "border-2 dark:border-neutral-800 border-dashed border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5 rounded-md flex flex-col items-center justify-center cursor-pointer transition-all",
                         images.length === 0
                           ? "col-span-2 aspect-2/1"
-                          : "aspect-square"
+                          : "aspect-square",
                       )}
                     >
                       <Plus size={20} className="text-muted-foreground mb-1" />

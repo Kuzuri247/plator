@@ -12,7 +12,7 @@ export const CustomAnalogClock = ({
   const [hours, minutes] = time.split(":").map(Number);
   const clockRef = useRef<HTMLDivElement>(null);
   const [draggingHand, setDraggingHand] = useState<"hour" | "minute" | null>(
-    null
+    null,
   );
 
   const isPm = hours >= 12;
@@ -44,7 +44,7 @@ export const CustomAnalogClock = ({
         setTime(
           `${hours.toString().padStart(2, "0")}:${newMinutes
             .toString()
-            .padStart(2, "0")}`
+            .padStart(2, "0")}`,
         );
       } else {
         let h12 = Math.round((angleDeg / 360) * 12);
@@ -57,11 +57,11 @@ export const CustomAnalogClock = ({
         setTime(
           `${newHour24.toString().padStart(2, "0")}:${minutes
             .toString()
-            .padStart(2, "0")}`
+            .padStart(2, "0")}`,
         );
       }
     },
-    [hours, minutes, isPm, setTime]
+    [hours, minutes, isPm, setTime],
   );
 
   const handlePointerDown =
@@ -95,7 +95,7 @@ export const CustomAnalogClock = ({
     setTime(
       `${newHours.toString().padStart(2, "0")}:${minutes
         .toString()
-        .padStart(2, "0")}`
+        .padStart(2, "0")}`,
     );
   };
 
@@ -111,7 +111,7 @@ export const CustomAnalogClock = ({
             key={i}
             className={cn(
               "absolute bg-muted-foreground/30 rounded-full origin-center",
-              i % 3 === 0 ? "w-1 h-4" : "w-1 h-2"
+              i % 3 === 0 ? "w-1 h-4" : "w-1 h-2",
             )}
             style={{
               transform: `rotate(${i * 30}deg) translateY(-90px)`,
@@ -126,7 +126,7 @@ export const CustomAnalogClock = ({
             "absolute top-1/2 left-1/2 w-2 h-16 -translate-x-1/2 -translate-y-1/2 origin-bottom z-20",
             draggingHand === "hour"
               ? "cursor-grabbing"
-              : "cursor-grab transition-transform duration-150 ease-out"
+              : "cursor-grab transition-transform duration-150 ease-out",
           )}
           style={{
             transform: `translate(1%, -50%) rotate(${hourRotation}deg)`,
@@ -142,7 +142,7 @@ export const CustomAnalogClock = ({
             "absolute top-1/2 left-1/2 w-1 h-20 -translate-x-1/2 -translate-y-1/2 origin-bottom z-10",
             draggingHand === "minute"
               ? "cursor-grabbing"
-              : "cursor-grab transition-transform duration-150 ease-out"
+              : "cursor-grab transition-transform duration-150 ease-out",
           )}
           style={{
             transform: `translate(-1%, -50%) rotate(${minuteRotation}deg)`,
@@ -168,7 +168,9 @@ export const CustomAnalogClock = ({
           variant="outline"
           size="sm"
           onClick={toggleAmPm}
-          className={cn("w-12 h-10 font-bold border-2 transition-all rounded-sm")}
+          className={cn(
+            "w-12 h-10 font-bold border-2 transition-all rounded-sm",
+          )}
         >
           {isPm ? "PM" : "AM"}
         </Button>

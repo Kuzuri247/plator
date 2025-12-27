@@ -7,7 +7,7 @@ export function useExport(
   canvasRef: RefObject<HTMLDivElement | null>,
   setSelectedElementId: (id: string | null) => void,
   currentAspectRatio: { width: number; height: number },
-  canvasBackground: string
+  canvasBackground: string,
 ) {
   const [exportFormat, setExportFormat] = useState("png");
   const [exportQuality, setExportQuality] = useState("2");
@@ -16,7 +16,7 @@ export function useExport(
   const generateImage = async () => {
     if (!canvasRef.current) return null;
     setSelectedElementId(null);
-    
+
     const pixelRatio = parseInt(exportQuality) || 2;
     const options = {
       quality: 1.0,
@@ -62,13 +62,13 @@ export function useExport(
     const dataUrl = await generateImage();
     if (dataUrl) {
       downloadImage(dataUrl);
-      
+
       try {
         localStorage.setItem("plator-preview-image", dataUrl);
         toast.success("Exported! Redirecting to preview...");
-        
+
         setTimeout(() => {
-            router.push("/preview");
+          router.push("/preview");
         }, 1000);
       } catch (e) {
         toast.error("Image too large for local preview storage.");

@@ -52,14 +52,14 @@ export default function SchedulerPage() {
 
   const togglePlatform = (p: string) => {
     setPlatforms((prev) =>
-      prev.includes(p) ? prev.filter((item) => item !== p) : [...prev, p]
+      prev.includes(p) ? prev.filter((item) => item !== p) : [...prev, p],
     );
   };
 
   const handleSchedule = async () => {
     if (!content) {
       toast.error(
-        "No content to schedule! Draft something in the Previewer first."
+        "No content to schedule! Draft something in the Previewer first.",
       );
       return;
     }
@@ -180,7 +180,7 @@ export default function SchedulerPage() {
                       "w-full py-3 rounded-sm border text-md uppercase tracking-wide flex items-center justify-center gap-3 transition-all",
                       isActive
                         ? "bg-primary text-primary-foreground font-bold border-primary shadow-md scale-[1.02]"
-                        : "bg-background hover:bg-muted text-muted-foreground font-semibold border-border"
+                        : "bg-background hover:bg-muted text-muted-foreground font-semibold border-border",
                     )}
                   >
                     {p === "twitter" ? (
@@ -188,7 +188,7 @@ export default function SchedulerPage() {
                         size={18}
                         className={cn(
                           "transition-transform",
-                          isActive ? "scale-105" : "scale-100"
+                          isActive ? "scale-105" : "scale-100",
                         )}
                       />
                     ) : (
@@ -196,7 +196,7 @@ export default function SchedulerPage() {
                         size={18}
                         className={cn(
                           "transition-transform",
-                          isActive ? "scale-105" : "scale-100"
+                          isActive ? "scale-105" : "scale-100",
                         )}
                       />
                     )}

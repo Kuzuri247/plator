@@ -164,7 +164,7 @@ export const BentoGrid = () => {
 
   const toggleStyle = (style: string) => {
     setActiveStyles((prev) =>
-      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
+      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style],
     );
   };
 
@@ -239,7 +239,7 @@ export const BentoGrid = () => {
   const calendarDays = getCalendarDays(currentMonth);
 
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">(
-    "mobile"
+    "mobile",
   );
 
   return (

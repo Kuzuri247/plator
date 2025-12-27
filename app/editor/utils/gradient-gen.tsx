@@ -1,9 +1,12 @@
 import { COLOR_PALETTES } from "../types";
 
 export function generateRandomGradient(): string {
-  const paletteNames = Object.keys(COLOR_PALETTES) as Array<keyof typeof COLOR_PALETTES>;
-  
-  const randomPalette = paletteNames[Math.floor(Math.random() * paletteNames.length)];
+  const paletteNames = Object.keys(COLOR_PALETTES) as Array<
+    keyof typeof COLOR_PALETTES
+  >;
+
+  const randomPalette =
+    paletteNames[Math.floor(Math.random() * paletteNames.length)];
   const colors = COLOR_PALETTES[randomPalette];
 
   const numColors = 3 + Math.floor(Math.random() * 2);
@@ -33,7 +36,7 @@ export function createMeshGradient(colors: string[]): string {
 }
 
 export function generatePaletteGradient(
-  paletteName: keyof typeof COLOR_PALETTES
+  paletteName: keyof typeof COLOR_PALETTES,
 ): string {
   const colors = COLOR_PALETTES[paletteName];
   const numColors = 3 + Math.floor(Math.random() * 2);

@@ -12,39 +12,39 @@ Plator is a powerful web application built with **Next.js** that empowers social
 
 A fully functional browser-based graphic editor.
 
-  * **Layer Management:** Drag, drop, and reorder text and image layers.
-  * **Smart Cropping:** Crop images with an intuitive UI and dashed border guides.
-  * **Customization:** Adjust fonts, colors, shadows, borders, and apply noise/blur effects.
-  * **Interactivity:** Resize, rotate, and position elements freely on the canvas.
+- **Layer Management:** Drag, drop, and reorder text and image layers.
+- **Smart Cropping:** Crop images with an intuitive UI and dashed border guides.
+- **Customization:** Adjust fonts, colors, shadows, borders, and apply noise/blur effects.
+- **Interactivity:** Resize, rotate, and position elements freely on the canvas.
 
 ### 2\. 📱 Cross-Platform Preview
 
 See exactly how your content will look before you post.
 
-  * **Live Preview:** Toggle between **Mobile** and **Desktop** views.
-  * **Multi-Platform Support:** tailored previews for **Twitter (X)**, **LinkedIn**, and **Instagram**.
-  * **Auto-Generated Snippets:** Visualizes text wrapping, hashtags, and media placement.
+- **Live Preview:** Toggle between **Mobile** and **Desktop** views.
+- **Multi-Platform Support:** tailored previews for **Twitter (X)**, **LinkedIn**, and **Instagram**.
+- **Auto-Generated Snippets:** Visualizes text wrapping, hashtags, and media placement.
 
 ### 3\. 🚀 Seamless Publishing
 
-  * **One-Click Share:** Uses browser intents to open pre-filled compose windows for Twitter and LinkedIn simultaneously.
-  * **Smart Clipboard:** Automatically copies your generated image to the clipboard for easy pasting.
-  * **Authentication:** Secure Google Login powered by **Better Auth**.
+- **One-Click Share:** Uses browser intents to open pre-filled compose windows for Twitter and LinkedIn simultaneously.
+- **Smart Clipboard:** Automatically copies your generated image to the clipboard for easy pasting.
+- **Authentication:** Secure Google Login powered by **Better Auth**.
 
------
+---
 
 ## 🛠️ Tech Stack
 
-  * **Framework:** [Next.js](https://nextjs.org/) (App Router)
-  * **Language:** [TypeScript](https://www.typescriptlang.org/)
-  * **Styling:** [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
-  * **Authentication:** [Better Auth](https://better-auth.com/)
-  * **Database:** [PostgreSQL](https://www.postgresql.org/) (via Neon/Supabase)
-  * **ORM:** [Prisma](https://www.prisma.io/)
-  * **Icons:** [Lucide React](https://lucide.dev/)
-  * **State Management:** React Hooks & URL State
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
+- **Authentication:** [Better Auth](https://better-auth.com/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/) (via Neon/Supabase)
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **State Management:** React Hooks & URL State
 
------
+---
 
 ## 🚀 Getting Started
 
@@ -52,8 +52,8 @@ Follow these steps to run Plator locally.
 
 ### Prerequisites
 
-  * Node.js 18+ or Bun
-  * PostgreSQL Database URL
+- Node.js 18+ or Bun
+- PostgreSQL Database URL
 
 ### 1\. Clone the Repository
 
@@ -107,7 +107,7 @@ npm run dev
 
 Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) with your browser to see the result.
 
------
+---
 
 ## 📂 Project Structure
 
@@ -127,8 +127,7 @@ Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:30
 └── public/            # Static assets
 ```
 
-
------
+---
 
 ## 🤝 Contributing
 
@@ -140,7 +139,7 @@ Contributions are welcome\! Please feel free to submit a Pull Request.
 4.  Push to the branch (`git push origin feature/AmazingFeature`)
 5.  Open a Pull Request
 
------
+---
 
 ## 📄 License
 

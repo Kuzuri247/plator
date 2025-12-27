@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "plater",
+      "name": "plator",
       "dependencies": {
         "@hookform/resolvers": "^5.2.2",
         "@imagekit/next": "^2.1.3",

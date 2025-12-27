@@ -14,9 +14,9 @@ export function Wallpapers() {
         setLoading(true);
         const response = await fetch("/api/imagekit/wallpapers");
         const data = await response.json();
-        
+
         console.log("API Response:", data);
-        
+
         if (Array.isArray(data)) {
           setWallpapers(data);
         } else if (data.wallpapers && Array.isArray(data.wallpapers)) {

@@ -46,10 +46,10 @@ export default function EditorPage() {
     textBackgroundColor,
     textPadding,
     textEffect,
-    handleTextEffect,
     showTextBackground,
     history,
     historyIndex,
+    handleTextEffect,
     resetCanvas,
     deleteSelectedElement,
     addTextElement,
@@ -83,7 +83,7 @@ export default function EditorPage() {
     textElements,
     setImageElements,
     setTextElements,
-    setSelectedElementId
+    setSelectedElementId,
   );
 
   const {
@@ -97,14 +97,14 @@ export default function EditorPage() {
     canvasRef,
     setSelectedElementId,
     currentAspectRatio,
-    canvasBackground
+    canvasBackground,
   );
 
   const selectedTextElement = textElements.find(
-    (t) => t.id === selectedElementId
+    (t) => t.id === selectedElementId,
   );
   const selectedImageElement = imageElements.find(
-    (i) => i.id === selectedElementId
+    (i) => i.id === selectedElementId,
   );
 
   const handleToggleCropping = () => {

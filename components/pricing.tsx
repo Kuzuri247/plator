@@ -237,7 +237,6 @@ export const Pricing: React.FC = () => {
                     toast.success("UPI ID copied to clipboard");
                   }}
                 >
-                  
                   <Coffee size={16} className="mr-2 text-[#FBBC05]" />
                   Copy UPI ID
                 </Button>

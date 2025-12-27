@@ -40,7 +40,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       isCropping,
       onCropChange,
     },
-    ref
+    ref,
   ) => {
     const handleEmptyClick = useCallback(() => {
       onEmptyClick();
@@ -49,7 +49,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
     const getBackgroundStyle = (
       bg: string,
       aspectWidth: number,
-      aspectHeight: number
+      aspectHeight: number,
     ) => {
       if (bg.startsWith("url(")) {
         const isTallCanvas = aspectHeight >= aspectWidth;
@@ -119,7 +119,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
         </div>
       </Card>
     );
-  }
+  },
 );
 
 Canvas.displayName = "Canvas";

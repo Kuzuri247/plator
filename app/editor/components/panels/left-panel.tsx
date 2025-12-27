@@ -286,7 +286,7 @@ export function LeftPanel({
                             </Label>
                             <span className="text-xs text-muted-foreground">
                               {SHADOW_PRESETS.find(
-                                (s) => s.value === imgStyle.shadow
+                                (s) => s.value === imgStyle.shadow,
                               )?.name || "None"}
                             </span>
                           </div>
@@ -294,10 +294,10 @@ export function LeftPanel({
                             defaultValue={[0]}
                             value={[
                               SHADOW_PRESETS.findIndex(
-                                (s) => s.value === imgStyle.shadow
+                                (s) => s.value === imgStyle.shadow,
                               ) !== -1
                                 ? SHADOW_PRESETS.findIndex(
-                                    (s) => s.value === imgStyle.shadow
+                                    (s) => s.value === imgStyle.shadow,
                                   )
                                 : 0,
                             ]}
@@ -467,7 +467,6 @@ export function LeftPanel({
 
                 <Separator />
 
-
                 <div className="space-y-4">
                   <Label className="text-sm font-semibold uppercase tracking-wider">
                     Typography
@@ -528,7 +527,7 @@ export function LeftPanel({
                       className={cn(
                         "flex-wrap justify-start gap-2 border-2 dark:border-neutral-800 rounded-md p-1 bg-muted/20",
                         "*:rounded-md *:transition-colors *:text-muted-foreground *:hover:bg-muted",
-                        " *:size-8 *:data-[state=on]:bg-primary *:data-[state=on]:text-primary-foreground"
+                        " *:size-8 *:data-[state=on]:bg-primary *:data-[state=on]:text-primary-foreground",
                       )}
                     >
                       <ToggleGroupItem value="outline" aria-label="Outline">
@@ -654,7 +653,7 @@ export function LeftPanel({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-semibold uppercase tracking-wider">
-                      Text Background 
+                      Text Background
                     </Label>
                     <Switch
                       checked={activeShowTextBg}

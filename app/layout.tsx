@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 import { Provider } from "@/components/provider";
 
 const manrope = Manrope({
@@ -41,11 +41,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-        <main className="bg-background text-foreground font-space">
-          {children}
-        </main>
-        <Toaster position="top-center" swipeDirections={["right"]} />
-        <Analytics />
+          <main className="bg-background text-foreground font-space">
+            {children}
+          </main>
+          <Toaster position="top-center" swipeDirections={["right"]} />
+          <Analytics />
         </Provider>
       </body>
     </html>

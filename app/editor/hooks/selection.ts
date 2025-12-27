@@ -8,7 +8,7 @@ export function useSelection(
   textElements: TextElement[],
   setImageElements: React.Dispatch<React.SetStateAction<ImageElement[]>>,
   setTextElements: React.Dispatch<React.SetStateAction<TextElement[]>>,
-  setSelectedElementId: (id: string | null) => void
+  setSelectedElementId: (id: string | null) => void,
 ) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [dragTarget, setDragTarget] = useState<string | null>(null);
@@ -47,7 +47,13 @@ export function useSelection(
       setSelectedElementId(elementId);
       setIsDragging(true);
     },
-    [getCanvasScale, imageElements, textElements, canvasRef, setSelectedElementId]
+    [
+      getCanvasScale,
+      imageElements,
+      textElements,
+      canvasRef,
+      setSelectedElementId,
+    ],
   );
 
   const handleCanvasMouseMove = (e: React.MouseEvent) => {
@@ -65,14 +71,14 @@ export function useSelection(
     if (dragTarget.startsWith("img")) {
       setImageElements((prev) =>
         prev.map((el) =>
-          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el
-        )
+          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el,
+        ),
       );
     } else {
       setTextElements((prev) =>
         prev.map((el) =>
-          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el
-        )
+          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el,
+        ),
       );
     }
   };

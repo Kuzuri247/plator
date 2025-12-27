@@ -18,12 +18,12 @@ export async function GET() {
 
     const wallpapers = files.map((file: any) => {
       const cleanName = file.name
-        .replace(/\.[^/.]+$/, '') 
-        .replace(/[-_]/g, ' ')
-        .split(' ')
+        .replace(/\.[^/.]+$/, "")
+        .replace(/[-_]/g, " ")
+        .split(" ")
         .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-        
+        .join(" ");
+
       return {
         fileId: file.fileId,
         name: cleanName,
@@ -37,7 +37,7 @@ export async function GET() {
     console.error("Error fetching wallpapers:", error);
     return NextResponse.json(
       { error: error.message || "Failed to fetch wallpapers" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
