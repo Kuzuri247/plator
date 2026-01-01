@@ -93,6 +93,13 @@ export interface Wallpaper {
   thumbnailUrl: string;
 }
 
+export interface Meme {
+  fileId: string;
+  name: string;
+  url: string;
+  thumbnailUrl: string;
+}
+
 export interface GradientColor {
   color: string;
   position: { x: number; y: number };
@@ -241,16 +248,6 @@ export const COLOR_PALETTES = {
 };
 
 export const PRESET_GRADIENTS = [
-  {
-    name: "Aurora",
-    value:
-      "radial-gradient(at 0% 0%, #667eea 0px, transparent 70%), radial-gradient(at 100% 0%, #764ba2 0px, transparent 70%), radial-gradient(at 100% 100%, #f093fb 0px, transparent 70%), radial-gradient(at 0% 100%, #4facfe 0px, transparent 70%)",
-  },
-  {
-    name: "Sunset",
-    value:
-      "radial-gradient(at 0% 0%, #ff6b6b 0px, transparent 70%), radial-gradient(at 100% 0%, #ff8e53 0px, transparent 70%), radial-gradient(at 100% 100%, #fee440 0px, transparent 70%), radial-gradient(at 0% 100%, #f72585 0px, transparent 70%)",
-  },
   {
     name: "Ocean",
     value:

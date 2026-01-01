@@ -1,30 +1,30 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Wallpaper } from "../types";
+import { Meme } from "../types";
 
-interface UseWallpapersOptions {
+interface UseMemesOptions {
   limit?: number;
   enableCache?: boolean;
   cacheTime?: number;
 }
 
-const wallpaperCache: {
-  data: Wallpaper[] | null;
+const memeCache: {
+  data: Meme[] | null;
   timestamp: number | null;
 } = {
   data: null,
   timestamp: null,
 };
 
-export function Wallpapers(options: UseWallpapersOptions = {}) {
+export function Memes(options: UseMemesOptions = {}) {
   const {
-    limit = 50,
+    limit = 20,
     enableCache = true,
     cacheTime = 5 * 60 * 1000,
   } = options;
 
-  const [wallpapers, setWallpapers] = useState<Wallpaper[]>([]);
+  const [memes, setMemes] = useState<Meme[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
@@ -32,16 +32,16 @@ export function Wallpapers(options: UseWallpapersOptions = {}) {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const isCacheValid = useCallback(() => {
-    if (!enableCache || !wallpaperCache.data || !wallpaperCache.timestamp) {
+    if (!enableCache || !memeCache.data || !memeCache.timestamp) {
       return false;
     }
-    return Date.now() - wallpaperCache.timestamp < cacheTime;
+    return Date.now() - memeCache.timestamp < cacheTime;
   }, [enableCache, cacheTime]);
 
-  const fetchWallpapers = useCallback(
+  const fetchMemes = useCallback(
     async (pageNum: number, append: boolean = false) => {
       if (pageNum === 1 && isCacheValid()) {
-        setWallpapers(wallpaperCache.data!);
+        setMemes(memeCache.data!);
         setLoading(false);
         return;
       }
@@ -57,7 +57,7 @@ export function Wallpapers(options: UseWallpapersOptions = {}) {
         setError(null);
 
         const response = await fetch(
-          `/api/imagekit/wallpapers?page=${pageNum}&limit=${limit}`,
+          `/api/imagekit/memes?page=${pageNum}&limit=${limit}`,
           {
             signal: abortControllerRef.current.signal,
           }
@@ -69,36 +69,36 @@ export function Wallpapers(options: UseWallpapersOptions = {}) {
 
         const data = await response.json();
 
-        let newWallpapers: Wallpaper[] = [];
+        let newMemes: Meme[] = [];
         if (Array.isArray(data)) {
-          newWallpapers = data;
-        } else if (data.wallpapers && Array.isArray(data.wallpapers)) {
-          newWallpapers = data.wallpapers;
+          newMemes = data;
+        } else if (data.memes && Array.isArray(data.memes)) {
+          newMemes = data.memes;
         }
 
-        setHasMore(newWallpapers.length === limit);
+        setHasMore(newMemes.length === limit);
 
         if (append) {
-          setWallpapers((prev) => [...prev, ...newWallpapers]);
+          setMemes((prev) => [...prev, ...newMemes]);
         } else {
-          setWallpapers(newWallpapers);
+          setMemes(newMemes);
           if (enableCache && pageNum === 1) {
-            wallpaperCache.data = newWallpapers;
-            wallpaperCache.timestamp = Date.now();
+            memeCache.data = newMemes;
+            memeCache.timestamp = Date.now();
           }
         }
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") {
           return;
         }
-        console.error("Failed to fetch wallpapers:", err);
+        console.error("Failed to fetch memes:", err);
         setError(err instanceof Error ? err.message : "Unknown error");
-        setWallpapers(append ? wallpapers : []);
+        setMemes(append ? memes : []);
       } finally {
         setLoading(false);
       }
     },
-    [limit, isCacheValid, enableCache, wallpapers]
+    [limit, isCacheValid, enableCache, memes]
   );
 
   const loadMore = useCallback(() => {
@@ -108,14 +108,14 @@ export function Wallpapers(options: UseWallpapersOptions = {}) {
   }, [loading, hasMore]);
 
   const refresh = useCallback(() => {
-    wallpaperCache.data = null;
-    wallpaperCache.timestamp = null;
+    memeCache.data = null;
+    memeCache.timestamp = null;
     setPage(1);
-    fetchWallpapers(1, false);
-  }, [fetchWallpapers]);
+    fetchMemes(1, false);
+  }, [fetchMemes]);
 
   useEffect(() => {
-    fetchWallpapers(page, page > 1);
+    fetchMemes(page, page > 1);
 
     return () => {
       if (abortControllerRef.current) {
@@ -124,5 +124,5 @@ export function Wallpapers(options: UseWallpapersOptions = {}) {
     };
   }, [page]);
 
-  return { wallpapers, loading, error, hasMore, loadMore, refresh };
+  return { memes, loading, error, hasMore, loadMore, refresh };
 }

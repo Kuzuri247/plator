@@ -12,6 +12,7 @@ export async function GET() {
     const files = await imagekit.listFiles({
       limit: 100,
       fileType: "image",
+      path: "/wallpapers",
     });
 
     console.log(`Found ${files.length} images`);

@@ -1,12 +1,13 @@
+// app/editor/components/panels/right-panel.tsx
 "use client";
 
 import {
   Download,
-  LayoutTemplate,
-  Share,
   Image as ImageIcon,
   Loader2,
   Sparkles,
+  Share,
+  Laugh,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -22,7 +23,9 @@ import { PRESET_GRADIENTS, ASPECT_RATIOS } from "../../types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RightPanelProps } from "../../types";
 import { Wallpapers } from "../../hooks/wallpaper";
+import { Memes } from "../../hooks/memes";
 import { generateRandomGradient } from "../../utils/gradient-gen";
+import { useRef, useCallback } from "react";
 
 export function RightPanel({
   canvasBackground,
@@ -36,12 +39,47 @@ export function RightPanel({
   onDownload,
   onPreview,
 }: RightPanelProps) {
-  const { wallpapers, loading } = Wallpapers();
+  const {
+    wallpapers,
+    loading: wallpapersLoading,
+    hasMore: wallpapersHasMore,
+    loadMore: loadMoreWallpapers,
+  } = Wallpapers({ limit: 20 });
+
+  const {
+    memes,
+    loading: memesLoading,
+    hasMore: memesHasMore,
+    loadMore: loadMoreMemes,
+  } = Memes({ limit: 20 });
+
+  const wallpaperScrollRef = useRef<HTMLDivElement>(null);
+  const memeScrollRef = useRef<HTMLDivElement>(null);
 
   const handleRandomGradient = () => {
     const randomGradient = generateRandomGradient();
     onCanvasBackgroundChange(randomGradient);
   };
+
+  const handleWallpaperScroll = useCallback(() => {
+    const scrollArea = wallpaperScrollRef.current;
+    if (!scrollArea || wallpapersLoading || !wallpapersHasMore) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = scrollArea;
+    if (scrollHeight - scrollTop <= clientHeight * 1.5) {
+      loadMoreWallpapers();
+    }
+  }, [wallpapersLoading, wallpapersHasMore, loadMoreWallpapers]);
+
+  const handleMemeScroll = useCallback(() => {
+    const scrollArea = memeScrollRef.current;
+    if (!scrollArea || memesLoading || !memesHasMore) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = scrollArea;
+    if (scrollHeight - scrollTop <= clientHeight * 1.5) {
+      loadMoreMemes();
+    }
+  }, [memesLoading, memesHasMore, loadMoreMemes]);
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -62,7 +100,7 @@ export function RightPanel({
                   />
                   <div className="flex flex-row gap-2">
                     <span className="font-medium text-sm">{ratio.name}</span>
-                    <span className="text-sm font-semibold  text-muted-foreground">
+                    <span className="text-sm font-semibold text-muted-foreground">
                       {ratio.label}
                     </span>
                   </div>
@@ -78,9 +116,16 @@ export function RightPanel({
           defaultValue="backgrounds"
           className="w-full h-full flex flex-col"
         >
-          <TabsList className="grid w-full grid-cols-2 mb-3 shrink-0">
-            <TabsTrigger value="backgrounds">Gradients</TabsTrigger>
-            <TabsTrigger value="wallpapers">Wallpapers</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 mb-3 shrink-0 gap-1">
+            <TabsTrigger value="backgrounds" className="text-xs">
+              Gradients
+            </TabsTrigger>
+            <TabsTrigger value="wallpapers" className="text-xs">
+              Wallpapers
+            </TabsTrigger>
+            <TabsTrigger value="memes" className="text-xs">
+              Memes
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="backgrounds" className="flex-1 mt-0 min-h-0">
@@ -112,7 +157,7 @@ export function RightPanel({
                         className="absolute inset-0"
                         style={{ background: bg.value }}
                       />
-                      <div className="absolute bottom-0 left-0 right-0 p-px bg-black/50 text-white backdrop-blur-[2px] text-[11px]  text-center truncate">
+                      <div className="absolute bottom-0 left-0 right-0 p-px bg-black/50 text-white backdrop-blur-[2px] text-[11px] text-center truncate">
                         {bg.name}
                       </div>
                     </button>
@@ -123,44 +168,102 @@ export function RightPanel({
           </TabsContent>
 
           <TabsContent value="wallpapers" className="flex-1 mt-0 min-h-0">
-            <ScrollArea className="h-full max-h-[calc(80vh)]">
+            <ScrollArea
+              className="h-full max-h-[calc(80vh)]"
+              onScroll={handleWallpaperScroll}
+            >
               <div className="pr-3 pl-1 pb-4">
-                {loading ? (
-                  <div className="flex justify-center items-center h-40">
-                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                  </div>
-                ) : wallpapers.length === 0 ? (
+                {wallpapers.length === 0 && !wallpapersLoading ? (
                   <div className="flex flex-col items-center justify-center h-40 text-center text-muted-foreground">
                     <ImageIcon className="h-12 w-12 mb-3 opacity-50" />
                     <p className="text-sm font-medium">No wallpapers found</p>
                     <p className="text-xs mt-1">Contact me on Socials</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
-                    {wallpapers.map((wallpaper) => (
-                      <button
-                        key={wallpaper.fileId}
-                        onClick={() =>
-                          onCanvasBackgroundChange(`url(${wallpaper.url})`)
-                        }
-                        className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-103 focus:outline-none focus:ring-2 focus:ring-primary ${
-                          canvasBackground === `url(${wallpaper.url})`
-                            ? "border-primary shadow-md ring-2 ring-primary/30"
-                            : "border-transparent hover:border-primary/50"
-                        }`}
-                      >
-                        <img
-                          src={wallpaper.thumbnailUrl}
-                          alt={wallpaper.name}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 p-px bg-black/50 text-white backdrop-blur-[2px] text-[11px]  text-center truncate">
-                          {wallpaper.name}
-                        </div>
-                      </button>
-                    ))}
+                  <>
+                    <div className="grid grid-cols-2 gap-3">
+                      {wallpapers.map((wallpaper) => (
+                        <button
+                          key={wallpaper.fileId}
+                          onClick={() =>
+                            onCanvasBackgroundChange(`url(${wallpaper.url})`)
+                          }
+                          className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-103 focus:outline-none focus:ring-2 focus:ring-primary ${
+                            canvasBackground === `url(${wallpaper.url})`
+                              ? "border-primary shadow-md ring-2 ring-primary/30"
+                              : "border-transparent hover:border-primary/50"
+                          }`}
+                        >
+                          <img
+                            src={wallpaper.thumbnailUrl}
+                            alt={wallpaper.name}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 p-px bg-black/50 text-white backdrop-blur-[2px] text-[11px] text-center truncate">
+                            {wallpaper.name}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                    {wallpapersLoading && (
+                      <div className="flex justify-center items-center py-4">
+                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </ScrollArea>
+          </TabsContent>
+
+          <TabsContent value="memes" className="flex-1 mt-0 min-h-0">
+            <ScrollArea
+              className="h-full max-h-[calc(80vh)]"
+              onScroll={handleMemeScroll}
+            >
+              <div className="pr-3 pl-1 pb-4">
+                {memes.length === 0 && !memesLoading ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-center text-muted-foreground">
+                    <Laugh className="h-12 w-12 mb-3 opacity-50" />
+                    <p className="text-sm font-medium">No memes found</p>
+                    <p className="text-xs mt-1">Contact me on Socials</p>
                   </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-3">
+                      {memes.map((meme) => (
+                        <button
+                          key={meme.fileId}
+                          onClick={() =>
+                            onCanvasBackgroundChange(`url(${meme.url})`)
+                          }
+                          className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-103 focus:outline-none focus:ring-2 focus:ring-primary ${
+                            canvasBackground === `url(${meme.url})`
+                              ? "border-primary shadow-md ring-2 ring-primary/30"
+                              : "border-transparent hover:border-primary/50"
+                          }`}
+                        >
+                          <img
+                            src={meme.thumbnailUrl}
+                            alt={meme.name}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 p-px bg-black/50 text-white backdrop-blur-[2px] text-[11px] text-center truncate">
+                            {meme.name}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                    {memesLoading && (
+                      <div className="flex justify-center items-center py-4">
+                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </ScrollArea>
