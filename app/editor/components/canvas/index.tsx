@@ -1,3 +1,4 @@
+// app/editor/components/canvas/index.tsx
 "use client";
 
 import { forwardRef, useCallback } from "react";
@@ -70,6 +71,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       <Card className="p-0 bg-white border-none shadow-none overflow-visible relative group/canvas">
         <div
           ref={ref}
+          data-canvas="true"
           className="relative overflow-hidden transition-all duration-300 ease-in-out flex items-center justify-center select-none"
           style={{
             width: width,
@@ -78,7 +80,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             transformStyle: "preserve-3d",
             perspective: "2500px",
             perspectiveOrigin: "center center",
-            contain: "layout style",
+            contain: "layout style paint",
           }}
           onMouseMove={onMouseMove}
           onMouseUp={onMouseUp}

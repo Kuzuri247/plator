@@ -1,3 +1,4 @@
+// app/editor/hooks/export.ts
 import { useState, RefObject } from "react";
 import { toast } from "sonner";
 import { toPng, toJpeg, toSvg } from "html-to-image";
@@ -18,6 +19,9 @@ export function useExport(
     setSelectedElementId(null);
 
     const pixelRatio = parseInt(exportQuality) || 2;
+    
+    await new Promise(resolve => setTimeout(resolve, 150));
+
     const options = {
       quality: 1.0,
       pixelRatio: pixelRatio,
@@ -25,14 +29,29 @@ export function useExport(
       height: currentAspectRatio.height,
       backgroundColor: canvasBackground.startsWith("#")
         ? canvasBackground
-        : undefined,
+        : "transparent",
+      cacheBust: true,
+      skipAutoScale: false,
+      includeQueryParams: true,
+      filter: (node: HTMLElement) => {
+        return true;
+      },
+      style: {
+        transform: 'scale(1)',
+        transformOrigin: 'top left',
+      },
     };
 
     try {
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      
       if (exportFormat === "svg") {
         return await toSvg(canvasRef.current, options);
       } else if (exportFormat === "jpeg") {
-        return await toJpeg(canvasRef.current, options);
+        return await toJpeg(canvasRef.current, {
+          ...options,
+          quality: 0.99,
+        });
       } else {
         return await toPng(canvasRef.current, options);
       }
