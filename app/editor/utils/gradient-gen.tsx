@@ -1,4 +1,4 @@
-import { COLOR_PALETTES } from "../types";
+import { COLOR_PALETTES } from "../values";
 
 export function generateRandomGradient(): string {
   const paletteNames = Object.keys(COLOR_PALETTES) as Array<

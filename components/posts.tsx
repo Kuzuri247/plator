@@ -40,9 +40,12 @@ const PostImages = ({ images }: { images: string[] }) => {
 
   if (count === 1) {
     return (
-      <img
+      <Image
         src={images[0]}
         alt="content-1"
+        width={0}
+        height={0}
+        sizes="100vw"
         className="w-full h-auto max-h-[500px] object-cover"
       />
     );
@@ -51,43 +54,95 @@ const PostImages = ({ images }: { images: string[] }) => {
     <div className="grid grid-cols-2 grid-rows-2 gap-0.5 h-64 w-full overflow-hidden bg-background">
       {count === 2 && (
         <>
-          <img
-            src={images[0]}
-            className="row-span-2 w-full h-full object-cover"
-            alt="1"
-          />
-          <img
-            src={images[1]}
-            className="row-span-2 w-full h-full object-cover"
-            alt="2"
-          />
+          <div className="row-span-2 relative w-full h-full">
+            <Image
+              src={images[0]}
+              alt="1"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+          <div className="row-span-2 relative w-full h-full">
+            <Image
+              src={images[1]}
+              alt="2"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
         </>
       )}
       {count === 3 && (
         <>
-          <img
-            src={images[0]}
-            className="row-span-2 col-span-1 w-full h-full object-cover"
-            alt="1"
-          />
-          <img
-            src={images[1]}
-            className="col-span-1 row-span-1 w-full h-full object-cover"
-            alt="2"
-          />
-          <img
-            src={images[2]}
-            className="col-span-1 row-span-1 w-full h-full object-cover"
-            alt="3"
-          />
+          <div className="row-span-2 col-span-1 relative w-full h-full">
+            <Image
+              src={images[0]}
+              alt="1"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+          <div className="col-span-1 row-span-1 relative w-full h-full">
+            <Image
+              src={images[1]}
+              alt="2"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 50vw, 25vw"
+            />
+          </div>
+          <div className="col-span-1 row-span-1 relative w-full h-full">
+            <Image
+              src={images[2]}
+              alt="3"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 50vw, 25vw"
+            />
+          </div>
         </>
       )}
       {count === 4 && (
         <>
-          <img src={images[0]} className="w-full h-full object-cover" alt="1" />
-          <img src={images[1]} className="w-full h-full object-cover" alt="2" />
-          <img src={images[2]} className="w-full h-full object-cover" alt="3" />
-          <img src={images[3]} className="w-full h-full object-cover" alt="4" />
+          <div className="relative w-full h-full">
+            <Image
+              src={images[0]}
+              alt="1"
+              fill
+              className="object-cover"
+              sizes="25vw"
+            />
+          </div>
+          <div className="relative w-full h-full">
+            <Image
+              src={images[1]}
+              alt="2"
+              fill
+              className="object-cover"
+              sizes="25vw"
+            />
+          </div>
+          <div className="relative w-full h-full">
+            <Image
+              src={images[2]}
+              alt="3"
+              fill
+              className="object-cover"
+              sizes="25vw"
+            />
+          </div>
+          <div className="relative w-full h-full">
+            <Image
+              src={images[3]}
+              alt="4"
+              fill
+              className="object-cover"
+              sizes="25vw"
+            />
+          </div>
         </>
       )}
     </div>
@@ -110,14 +165,12 @@ export const XPost = ({ caption, images = [], className }: PostProps) => (
   >
     <div className="flex gap-2">
       <div className="shrink-0">
-        <div className="w-10 h-10 bg-muted rounded-full overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+        <div className="w-10 h-10 bg-muted rounded-full overflow-hidden cursor-pointer hover:opacity-90 transition-opacity relative">
           <Image
             src="/pfp2.jpg"
             alt="avatar"
-            width={45}
-            height={45}
-            className="rounded-full"
-            style={{ objectFit: "cover" }}
+            fill
+            className="object-cover"
           />
         </div>
       </div>
@@ -138,14 +191,14 @@ export const XPost = ({ caption, images = [], className }: PostProps) => (
               Now
             </span>
           </div>
-          <div className="flex  gap-1 p-1 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors cursor-pointer -mr-2 -mt-1">
+          <div className="flex gap-1 p-1 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors cursor-pointer -mr-2 -mt-1">
             <Image
               src="/grok.svg"
               width={16}
               height={16}
               alt="grok"
               className="dark:invert"
-            ></Image>
+            />
             <MoreHorizontal size={16} className="text-muted-foreground" />
           </div>
         </div>
@@ -212,14 +265,12 @@ export const LinkedInPost = ({
   >
     <div className="flex justify-between items-start mb-4">
       <div className="flex gap-3">
-        <div className="w-10 h-10 bg-muted rounded-full overflow-hidden">
+        <div className="w-10 h-10 bg-muted rounded-full overflow-hidden relative">
           <Image
             src="/pfp1.jpg"
             alt="avatar"
-            width={45}
-            height={45}
-            className="rounded-full"
-            style={{ cursor: "pointer", objectFit: "cover" }}
+            fill
+            className="object-cover"
           />
         </div>
         <div>
@@ -286,14 +337,12 @@ export const InstagramPost = ({
   >
     <div className="flex justify-between items-center p-3 border-b border-border">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-muted rounded-full overflow-hidden">
+        <div className="w-10 h-10 bg-muted rounded-full overflow-hidden relative">
           <Image
             src="/pfp3.jpg"
             alt="avatar"
-            width={45}
-            height={45}
-            className="rounded-full"
-            style={{ cursor: "pointer", objectFit: "contain" }}
+            fill
+            className="object-contain"
           />
         </div>{" "}
         <span className="text-xs font-bold font-display font-manrope">

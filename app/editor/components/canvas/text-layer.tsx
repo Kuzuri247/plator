@@ -68,13 +68,12 @@ export const TextLayer = memo(
           willChange:
             isSelected || isDragging ? "transform, left, top" : undefined,
           transformStyle: "preserve-3d",
-          // Update transform to support 3D
           transform: `
             perspective(${has3DRotation ? 1000 : 700}px)
             rotateX(${element.style.rotateX || 0}deg)
             rotateY(${element.style.rotateY || 0}deg)
             rotateZ(${element.style.rotate || 0}deg)
-            translateZ(${isSelected ? 30 : 10}px)
+            translateZ(${isSelected ? 20 : 10}px)
           `,
           fontSize: element.style.fontSize,
           fontFamily: element.style.fontFamily,
@@ -87,7 +86,7 @@ export const TextLayer = memo(
           borderRadius: `${element.style.borderRadius}px`,
           padding: `${element.style.padding}px`,
           lineHeight: 1.2,
-          backfaceVisibility: "visible", // Often better for 3D text
+          backfaceVisibility: "visible",
           contain: "layout style paint",
           filter: isSelected ? "brightness(1.03)" : "none",
           ...getEffectStyles(),
@@ -97,7 +96,6 @@ export const TextLayer = memo(
       </div>
     );
   },
-  // ... (keep comparison function)
   (prev, next) => {
     return (
       prev.element.id === next.element.id &&
@@ -108,6 +106,6 @@ export const TextLayer = memo(
       prev.isSelected === next.isSelected &&
       prev.isDragging === next.isDragging
     );
-  },
+  }
 );
 TextLayer.displayName = "TextLayer";

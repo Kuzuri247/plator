@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -85,8 +87,10 @@ export const Navbar = () => {
           <NavLinks />
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="hidden md:block">
             <ThemeToggle />
+          </div>
 
           <div className="hidden md:block">
             {!session ? (
@@ -114,7 +118,7 @@ export const Navbar = () => {
             <ThemeToggle />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="w-8 h-8">
                   <Menu size={20} />
                 </Button>
               </SheetTrigger>
@@ -126,7 +130,7 @@ export const Navbar = () => {
                 </SheetHeader>
                 <div className="flex flex-col gap-6 text-lg font-medium text-muted-foreground">
                   <NavLinks />
-                  <div className="pt-6 border-t border-border">
+                  <div className="pt-6 border-t border-border mt-auto">
                     {!session ? (
                       <Button
                         variant="outline"

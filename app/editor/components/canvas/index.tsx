@@ -1,28 +1,11 @@
-// app/editor/components/canvas/index.tsx
 "use client";
 
 import { forwardRef, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Image as ImageIcon } from "lucide-react";
-import { TextElement, ImageElement } from "../../types";
 import { ImageLayer } from "./image-layer";
 import { TextLayer } from "./text-layer";
-
-interface EditorCanvasProps {
-  width: number;
-  height: number;
-  canvasBackground: string;
-  imageElements: ImageElement[];
-  onEmptyClick: () => void;
-  textElements: TextElement[];
-  selectedElement: string | null;
-  onElementMouseDown: (e: React.MouseEvent, elementId: string) => void;
-  onMouseMove: (e: React.MouseEvent) => void;
-  onMouseUp: () => void;
-  isDragging: boolean;
-  isCropping: boolean;
-  onCropChange: (id: string, newCrop: any) => void;
-}
+import { EditorCanvasProps } from "../../types";
 
 export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
   (
@@ -89,10 +72,10 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
           {imageElements.length === 0 && (
             <div
               onClick={handleEmptyClick}
-              className="w-64 h-40 bg-background/20 backdrop-blur-sm border-2 border-dashed border-neutral-400 rounded-lg flex flex-col items-center justify-center text-neutral-500 cursor-pointer hover:bg-background/30 hover:border-neutral-400 transition-all z-10"
+              className="group w-52 h-32 border-2 border-dashed border-white hover:border-white/70 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:backdrop-blur-xs  transition-all z-10"
             >
-              <ImageIcon className="w-8 h-8 mb-2 opacity-50 text-neutral-400" />
-              <span className="text-xs text-neutral-400 font-medium">
+              <ImageIcon className="size-8 mb-2 text-white group-hover:text-white/70" />
+              <span className="text-sm text-white font-medium font-inter group-hover:text-white/70">
                 Click to Upload
               </span>
             </div>

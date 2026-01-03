@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useRef } from "react";
+import React, { memo, useRef, useMemo } from "react";
 import { ImageElement } from "../../types";
 
 type CropPosition =
@@ -13,7 +13,6 @@ type CropPosition =
   | "bottom-left"
   | "bottom-right";
 
-// Helper for crop handles
 const CropHandle = ({
   position,
   onMouseDown,
@@ -68,6 +67,31 @@ const CropHandle = ({
   );
 };
 
+const createNoiseImage = () => {
+  if (typeof window === "undefined") return "";
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) return "";
+
+  const imageData = ctx.createImageData(canvas.width, canvas.height);
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const value = Math.floor(Math.random() * 255);
+    data[i] = value;
+    data[i + 1] = value;
+    data[i + 2] = value;
+    data[i + 3] = 255;
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+  return canvas.toDataURL("image/png");
+};
+
 export const ImageLayer = memo(
   ({
     img,
@@ -89,6 +113,8 @@ export const ImageLayer = memo(
   }) => {
     const layerRef = useRef<HTMLDivElement>(null);
     const ghostRef = useRef<HTMLImageElement>(null);
+
+    const noiseImage = useMemo(() => createNoiseImage(), []);
 
     const handleCropStart = (e: React.MouseEvent, side: CropPosition) => {
       e.preventDefault();
@@ -226,7 +252,7 @@ export const ImageLayer = memo(
                 className="absolute inset-0 z-10 pointer-events-none mix-blend-overlay"
                 style={{
                   opacity: img.style.noise / 100,
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='4' seed='15' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                  backgroundImage: `url("${noiseImage}")`,
                   backgroundRepeat: "repeat",
                 }}
               />

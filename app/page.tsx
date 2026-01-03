@@ -1,5 +1,3 @@
-"use client";
-
 import { Hero } from "@/components/hero";
 import { BentoGrid } from "@/components/bentogrid";
 import { Footer } from "@/components/footer";

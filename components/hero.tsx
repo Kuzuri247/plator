@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "motion/react";
@@ -15,17 +17,15 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section className="relative w-full md:w-[80%] mx-auto min-h-[85vh] md:min-h-[90vh] flex items-center justify-center pt-24 pb-10 bg-background">
+    <section className="relative w-[90%] md:w-[80%] mx-auto min-h-auto md:min-h-[90vh] flex items-center justify-center pt-24 pb-12 md:pb-10 bg-background">
       <div className="relative z-10 h-full w-full flex flex-col justify-center ">
-        {/* Cool Tech Corners */}
-        <div className="absolute -top-3 -left-3 w-8 h-8 border-t-4 border-l-4 border-foreground z-30" />
-        <div className="absolute -top-3 -right-3 w-8 h-8 border-t-4 border-r-4 border-foreground z-30" />
-        <div className="absolute -bottom-3 -left-3 w-8 h-8 border-b-4 border-l-4 border-foreground z-30" />
-        <div className="absolute -bottom-3 -right-3 w-8 h-8 border-b-4 border-r-4 border-foreground z-30" />
+        <div className="absolute -top-3 -left-3 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 border-foreground z-30" />
+        <div className="absolute -top-3 -right-3 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 border-foreground z-30" />
+        <div className="absolute -bottom-3 -left-3 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 border-foreground z-30" />
+        <div className="absolute -bottom-3 -right-3 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 border-foreground z-30" />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 dark:border-neutral-700 bg-background w-full relative z-20 shadow-next dark:shadow-white/50">
-          {/* Left Column: Content with Scale Pattern */}
-          <div className="relative p-6 md:p-12 lg:p-16 flex flex-col justify-center border-r-2 dark:border-r-neutral-800 overflow-hidden min-h-[450px] lg:min-h-[600px]">
+          <div className="relative p-6 md:p-12 lg:p-16 flex flex-col justify-center border-r-0 lg:border-r-2 border-b-2 lg:border-b-0 dark:border-neutral-800 overflow-hidden min-h-[400px] lg:min-h-[600px]">
             <LeftHeroPattern />
 
             <div className="relative z-10">
@@ -33,7 +33,7 @@ export const Hero = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
-                className="inline-block mb-6 px-3 py-1 border border-border text-muted-foreground text-xs uppercase tracking-widest bg-background/50 backdrop-blur-sm"
+                className="inline-block mb-4 md:mb-6 px-3 py-1 border border-border text-muted-foreground text-[10px] md:text-xs uppercase tracking-widest bg-background/50 backdrop-blur-sm"
               >
                 v1.0 Released
               </motion.div>
@@ -42,7 +42,7 @@ export const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 tracking-tighter leading-[0.9] text-foreground font-display uppercase"
+                className="text-4xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6 tracking-tighter leading-[0.9] text-foreground font-display uppercase"
               >
                 Everything
                 <br />
@@ -53,7 +53,7 @@ export const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-base md:text-lg text-muted-foreground mb-10 leading-relaxed max-w-md font-light font-manrope"
+                className="text-sm md:text-lg text-muted-foreground mb-8 md:mb-10 leading-relaxed max-w-md font-light font-manrope"
               >
                 Transform content creation with meme templates, stylish text
                 integration, and smart post scheduling.
@@ -67,7 +67,7 @@ export const Hero = () => {
                 <Button
                   size="md"
                   variant="primary"
-                  className="bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out"
+                  className="bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out w-full md:w-auto"
                   onClick={() => (window.location.href = "/editor")}
                 >
                   Start Creating Free
@@ -76,12 +76,10 @@ export const Hero = () => {
             </div>
           </div>
 
-          {/* Right Column: Rotating Social Mocks */}
-          <div className="relative min-h-[400px] lg:min-h-[600px] bg-background flex items-center justify-center overflow-hidden p-6 md:p-8">
-            {/* Simple Grid Background for Right Column */}
+          <div className="relative min-h-[350px] lg:min-h-[600px] bg-background flex items-center justify-center overflow-hidden p-6 md:p-8">
             <RightHeroPattern />
 
-            <div className="relative z-10 w-full max-w-md flex flex-col items-center">
+            <div className="relative z-10 w-full max-w-md flex flex-col items-center transform scale-90 sm:scale-100 origin-center">
               <AnimatePresence mode="wait">
                 {activeSlide === 0 && (
                   <motion.div

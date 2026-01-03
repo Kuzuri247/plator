@@ -3,10 +3,10 @@ import {
   ImageElement,
   TextElement,
   ImageStyle,
-  ASPECT_RATIOS,
   DEFAULT_IMAGE_STYLE,
   HistoryState,
 } from "../types";
+import { ASPECT_RATIOS } from "../values";
 import { toast } from "sonner";
 
 const savestate = "plator-editor-state";

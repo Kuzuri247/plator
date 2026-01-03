@@ -1,4 +1,3 @@
-// app/editor/components/panels/right-panel.tsx
 "use client";
 
 import {
@@ -19,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PRESET_GRADIENTS, ASPECT_RATIOS } from "../../types";
+import { PRESET_GRADIENTS, ASPECT_RATIOS } from "../../values";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RightPanelProps } from "../../types";
 import { Wallpapers } from "../../hooks/wallpaper";

@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Meme } from "../types";
-
-interface UseMemesOptions {
-  limit?: number;
-  enableCache?: boolean;
-  cacheTime?: number;
-}
+import { Meme, MemesOptions } from "../types";
 
 const memeCache: {
   data: Meme[] | null;
@@ -17,7 +11,7 @@ const memeCache: {
   timestamp: null,
 };
 
-export function Memes(options: UseMemesOptions = {}) {
+export function Memes(options: MemesOptions = {}) {
   const {
     limit = 20,
     enableCache = true,

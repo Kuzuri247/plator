@@ -32,13 +32,8 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
-import {
-  FONT_FAMILIES,
-  FONT_WEIGHTS,
-  SHADOW_PRESETS,
-  LeftPanelProps,
-  CLIP_PATHS,
-} from "../../types";
+import { LeftPanelProps } from "../../types";
+import { FONT_FAMILIES, FONT_WEIGHTS, SHADOW_PRESETS, CLIP_PATHS } from "../../values";
 import { cn } from "@/lib/utils";
 
 export function LeftPanel({
@@ -254,7 +249,7 @@ export function LeftPanel({
                               onImageStyleChange({ noise: val })
                             }
                             min={0}
-                            max={50}
+                            max={100}
                             step={1}
                           />
                         </div>
@@ -286,7 +281,7 @@ export function LeftPanel({
                             </Label>
                             <span className="text-xs text-muted-foreground">
                               {SHADOW_PRESETS.find(
-                                (s) => s.value === imgStyle.shadow,
+                                (s) => s.value === imgStyle.shadow
                               )?.name || "None"}
                             </span>
                           </div>
@@ -294,10 +289,10 @@ export function LeftPanel({
                             defaultValue={[0]}
                             value={[
                               SHADOW_PRESETS.findIndex(
-                                (s) => s.value === imgStyle.shadow,
+                                (s) => s.value === imgStyle.shadow
                               ) !== -1
                                 ? SHADOW_PRESETS.findIndex(
-                                    (s) => s.value === imgStyle.shadow,
+                                    (s) => s.value === imgStyle.shadow
                                   )
                                 : 0,
                             ]}
@@ -527,7 +522,7 @@ export function LeftPanel({
                       className={cn(
                         "flex-wrap justify-start gap-2 border-2 dark:border-neutral-800 rounded-md p-1 bg-muted/20",
                         "*:rounded-md *:transition-colors *:text-muted-foreground *:hover:bg-muted",
-                        " *:size-8 *:data-[state=on]:bg-primary *:data-[state=on]:text-primary-foreground",
+                        " *:size-8 *:data-[state=on]:bg-primary *:data-[state=on]:text-primary-foreground"
                       )}
                     >
                       <ToggleGroupItem value="outline" aria-label="Outline">
