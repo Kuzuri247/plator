@@ -33,7 +33,12 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
 import { LeftPanelProps } from "../../types";
-import { FONT_FAMILIES, FONT_WEIGHTS, SHADOW_PRESETS, CLIP_PATHS } from "../../values";
+import {
+  FONT_FAMILIES,
+  FONT_WEIGHTS,
+  SHADOW_PRESETS,
+  CLIP_PATHS,
+} from "../../values";
 import { cn } from "@/lib/utils";
 
 export function LeftPanel({
@@ -475,15 +480,23 @@ export function LeftPanel({
                       <span className="text-[13px] font-medium text-muted-foreground col-start-1 flex items-center">
                         Family
                       </span>
-                      <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope ">
+                      <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
                         <div className="flex items-center gap-2">
                           <SelectValue className="" />
                         </div>
                       </SelectTrigger>
-                      <SelectContent className="font-manrope text-xs">
+                      <SelectContent className="font-manrope text-xs max-h-50">
                         {FONT_FAMILIES.map((f) => (
                           <SelectItem key={f} value={f}>
-                            {f}
+                            {f === "Space Grotesk"
+                              ? "Space"
+                              : f === "Playfair Display"
+                              ? "Playfair"
+                              : f === "Montserrat"
+                              ? "Moserrat"
+                              : f === "Instrument Serif"
+                              ? "Ins Serif"
+                              : f}
                           </SelectItem>
                         ))}
                       </SelectContent>

@@ -90,7 +90,7 @@ export function RightPanel({
           >
             <SelectValue placeholder="Select Size" />
           </SelectTrigger>
-          <SelectContent className="font-manrope">
+          <SelectContent className="font-manrope max-h-66">
             {ASPECT_RATIOS.map((ratio) => (
               <SelectItem key={ratio.name} value={ratio.name} className="py-3">
                 <div className="flex items-center gap-3">

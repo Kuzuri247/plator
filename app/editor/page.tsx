@@ -258,7 +258,7 @@ export default function EditorPage() {
       </div>
 
       {/* --- RIGHT PANEL --- */}
-      <div className="w-80 shrink-0 border-2 dark:border-neutral-800 bg-card flex flex-col z-20 h-full">
+      <div className="w-80 shrink-0 border-l-2 dark:border-neutral-800 bg-card flex flex-col z-20 h-full">
         <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center px-4 shrink-0 bg-transparent">
           <span className="font-semibold text-md uppercase tracking-wider">
             Canvas & Export

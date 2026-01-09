@@ -8,6 +8,12 @@
   --font-inter: var(--font-inter);
   --font-manrope: var(--font-manrope);
   --font-space: var(--font-space);
+  --font-roboto: var(--font-roboto);
+  --font-instrument: var(--font-instrument);
+  --font-poppins: var(--font-poppins);
+  --font-playfair: var(--font-playfair);
+  --font-oswald: var(--font-oswald);
+  --font-montserrat: var(--font-montserrat);
 
   --color-background: oklch(var(--background));
   --color-surface: oklch(var(--surface));

@@ -1,12 +1,19 @@
 
 
 export const ASPECT_RATIOS = [
-  {
+ {
     name: "16:9",
     label: "Video",
     width: 900,
     height: 506,
     previewClass: "aspect-video",
+  },
+  {
+    name: "9:16",
+    label: "Story",
+    width: 506,
+    height: 900,
+    previewClass: "aspect-[9/16]",
   },
   {
     name: "1:1",
@@ -17,7 +24,7 @@ export const ASPECT_RATIOS = [
   },
   {
     name: "4:5",
-    label: "Portrait",
+    label: "Social",
     width: 500,
     height: 625,
     previewClass: "aspect-[4/5]",
@@ -30,19 +37,60 @@ export const ASPECT_RATIOS = [
     previewClass: "aspect-[4/3]",
   },
   {
+    name: "3:4",
+    label: "Portrait",
+    width: 600,
+    height: 800,
+    previewClass: "aspect-[3/4]",
+  },
+  {
     name: "2:1",
     label: "Header",
     width: 800,
     height: 400,
     previewClass: "aspect-[2/1]",
   },
+  {
+    name: "3:2",
+    label: "Landscape",
+    width: 900,
+    height: 600,
+    previewClass: "aspect-[3/2]",
+  },
+  {
+    name: "2:3",
+    label: "Pinterest",
+    width: 600,
+    height: 900,
+    previewClass: "aspect-[2/3]",
+  },
+  {
+    name: "21:9",
+    label: "Cinematic",
+    width: 1000,
+    height: 428,
+    previewClass: "aspect-[21/9]",
+  },
+  {
+    name: "3:1",
+    label: "Banner",
+    width: 900,
+    height: 300,
+    previewClass: "aspect-[3/1]",
+  },
 ];
 
 export const FONT_FAMILIES = [
   "Inter",
   "Manrope",
+  "Space Grotesk",
+  "Roboto",
+  "Instrument Serif",
+  "Poppins",
+  "Playfair Display",
+  "Oswald",
+  "Montserrat",
   "Arial",
-  "Helvetica",
   "Impact",
   "Courier",
 ];
