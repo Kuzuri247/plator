@@ -21,8 +21,12 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  trustedOrigins: ["https://plator.fun", "https://plator.vercel.app", "http://localhost:3000"],
-  socialProviders: {
+  trustedOrigins: [
+    "https://plator.vercel.app",
+    "http://localhost:3000",
+    "https://plator.fun",
+    "https://www.plator.fun"
+  ], socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
