@@ -8,12 +8,12 @@ export const TextLayer = memo(
     element,
     isSelected,
     isDragging,
-    onMouseDown,
+    onPointerDown,
   }: {
     element: TextElement;
     isSelected: boolean;
     isDragging: boolean;
-    onMouseDown: (e: React.MouseEvent, id: string) => void;
+    onPointerDown: (e: React.PointerEvent, id: string) => void;
   }) => {
     const getEffectStyles = () => {
       const effects = element.style.textEffect || [];
@@ -58,10 +58,10 @@ export const TextLayer = memo(
 
     return (
       <div
-        className={`absolute cursor-move select-none hover:ring-1 hover:ring-white/50 transition-all ${
+        className={`absolute cursor-move select-none hover:ring-1 hover:ring-white/50 transition-all touch-none ${
           isDragging ? "duration-0" : "duration-100"
         } ${isSelected ? "ring-2 ring-primary z-50" : "z-30"}`}
-        onMouseDown={(e) => onMouseDown(e, element.id)}
+        onPointerDown={(e) => onPointerDown(e, element.id)}
         style={{
           left: element.position.x,
           top: element.position.y,

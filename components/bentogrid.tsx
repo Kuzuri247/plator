@@ -164,7 +164,7 @@ export const BentoGrid = () => {
 
   const toggleStyle = (style: string) => {
     setActiveStyles((prev) =>
-      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style],
+      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
     );
   };
 
@@ -239,15 +239,15 @@ export const BentoGrid = () => {
   const calendarDays = getCalendarDays(currentMonth);
 
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">(
-    "mobile",
+    "mobile"
   );
 
   return (
     <section className="w-full relative bg-background py-10 md:py-20">
       <BentoPattern />
 
-      <div className="container w-[90%] md:w-[80%] lg:w-[75%] mx-auto relative z-20">
-        <div className="mb-10 md:mb-16 max-w-2xl">
+      <div className="container w-[95%] md:w-[80%] lg:w-[75%] mx-auto relative z-20">
+        <div className="mb-10 md:mb-16 max-sm:ml-4 max-w-2xl">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground font-display uppercase tracking-tight">
             Features for
             <br />
@@ -288,11 +288,8 @@ export const BentoGrid = () => {
               </p>
             </div>
 
-            {/* Rotating Editor Visual */}
             <div className="flex-1 relative bg-muted/20 border-2 dark:border-neutral-800 overflow-hidden flex items-center justify-center min-h-[200px]">
-              {/* Editor UI Shell */}
               <div className="absolute inset-4 border-2 dark:border-neutral-800 bg-card shadow-2xl flex flex-col">
-                {/* Header */}
                 <div className="h-8 border-b border-border flex items-center px-3 justify-between bg-muted/30">
                   <div className="flex gap-1.5">
                     <div className="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
@@ -370,7 +367,6 @@ export const BentoGrid = () => {
                         exit={{ opacity: 0 }}
                         className="relative w-3/4 h-3/4 flex items-center justify-center bg-black border border-neutral-800 overflow-hidden"
                       >
-                        {/* Image Background - Always dark for 'magic' effect */}
                         <img
                           src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1000&auto=format&fit=crop"
                           className="absolute inset-0 w-full h-full object-cover opacity-40"
@@ -395,7 +391,6 @@ export const BentoGrid = () => {
                   </AnimatePresence>
                 </div>
 
-                {/* Footer Tools */}
                 <div className="h-10 border-t border-border flex items-center justify-around text-muted-foreground bg-muted/30">
                   <div
                     className={`flex items-center gap-1 transition-colors ${
@@ -450,7 +445,6 @@ export const BentoGrid = () => {
               </p>
             </div>
 
-            {/* Main Display */}
             <div className="relative w-full flex-1 flex items-center justify-center bg-muted/20 border-2 dark:border-neutral-800 mb-4 overflow-hidden min-h-[120px]">
               <motion.div
                 key={fontIndex}
@@ -468,7 +462,6 @@ export const BentoGrid = () => {
               </motion.div>
             </div>
 
-            {/* Toolbar */}
             <div className="w-full flex items-center justify-between p-2 border-2 dark:border-neutral-800 bg-muted/30">
               <div className="text-[10px] text-muted-foreground uppercase tracking-wider px-2 border-r border-border min-w-[60px] text-center">
                 {fonts[fontIndex].name}
@@ -508,7 +501,6 @@ export const BentoGrid = () => {
             </div>
           </BentoCard>
 
-          {/* --- CARD 3: Smart Scheduler (3x2) --- */}
           <BentoCard
             className="md:col-span-3 md:row-span-2 p-5 md:p-8 flex flex-col bg-card hover:border-primary/30 transition-colors"
             delay={0.2}
@@ -547,7 +539,6 @@ export const BentoGrid = () => {
               </div>
             </div>
 
-            {/* Calendar Visual */}
             <div className="flex-1 border-2 bg-muted/10 p-2 md:p-4 relative overflow-hidden flex flex-col min-h-[200px]">
               <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--border)/0.2)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--border)/0.2)_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none" />
 
@@ -562,7 +553,6 @@ export const BentoGrid = () => {
                 ))}
 
                 {calendarDays.map((day, i) => {
-                  // Simple deterministic logic for demo
                   const isScheduled =
                     day.current && (day.num * (currentMonth + 2)) % 5 === 0;
 
@@ -597,7 +587,6 @@ export const BentoGrid = () => {
             </div>
           </BentoCard>
 
-          {/* --- CARD 4: Cross-Platform Preview (3x2) --- */}
           <BentoCard
             className="md:col-span-3 md:row-span-2 p-5 md:p-8 flex flex-col bg-card hover:border-primary/30 transition-colors"
             delay={0.3}
@@ -641,7 +630,6 @@ export const BentoGrid = () => {
               </div>
             </div>
 
-            {/* Preview Area */}
             <div className="flex-1 bg-muted/20 border-2 flex items-center justify-center relative overflow-hidden py-6 perspective-container min-h-[250px]">
               <TiltCard className="w-full h-full flex items-center justify-center">
                 <AnimatePresence mode="wait">
@@ -657,7 +645,6 @@ export const BentoGrid = () => {
                     className="bg-background border-2 shadow-2xl flex flex-col overflow-hidden relative group/device mx-auto"
                     style={{ backfaceVisibility: "hidden" }}
                   >
-                    {/* Mock Header */}
                     <div className="h-6 border-b border-border bg-muted/50 flex items-center px-2 gap-2 relative z-10 justify-between">
                       <div className="flex gap-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-red-500/50"></div>
@@ -666,7 +653,6 @@ export const BentoGrid = () => {
                       <Wifi size={8} className="text-muted-foreground" />
                     </div>
 
-                    {/* Mock Content with Infinite Scroll */}
                     <motion.div
                       className="flex-1 p-3 space-y-4"
                       animate={{ y: [-10, -50, -10] }}
@@ -676,7 +662,6 @@ export const BentoGrid = () => {
                         ease: "easeInOut",
                       }}
                     >
-                      {/* Post 1 */}
                       <div className="flex gap-2 items-center opacity-80">
                         <div className="w-6 h-6 rounded-full bg-muted"></div>
                         <div className="space-y-1">
@@ -691,7 +676,6 @@ export const BentoGrid = () => {
                         />
                       </div>
 
-                      {/* Post 2 */}
                       <div className="flex gap-2 items-center opacity-60 pt-2 border-t border-border">
                         <div className="w-6 h-6 rounded-full bg-muted"></div>
                         <div className="space-y-1">
@@ -703,11 +687,9 @@ export const BentoGrid = () => {
                         <div className="w-[90%] h-1.5 bg-muted rounded"></div>
                       </div>
 
-                      {/* Post 3 */}
                       <div className="w-full aspect-square bg-muted/30 rounded border-2 mt-2"></div>
                     </motion.div>
 
-                    {/* Reflection Effect */}
                     <div className="absolute inset-0 bg-linear-to-tr from-white/5 to-transparent pointer-events-none z-20"></div>
                   </motion.div>
                 </AnimatePresence>

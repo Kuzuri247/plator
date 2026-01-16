@@ -15,52 +15,52 @@ type CropPosition =
 
 const CropHandle = ({
   position,
-  onMouseDown,
+  onPointerDown,
 }: {
   position: CropPosition;
-  onMouseDown: (e: React.MouseEvent) => void;
+  onPointerDown: (e: React.PointerEvent) => void;
 }) => {
   let cursorClass = "";
   let positionClass = "";
 
   const baseClass =
-    "absolute z-50 flex items-center justify-center pointer-events-auto";
+    "absolute z-50 flex items-center justify-center pointer-events-auto touch-none";
 
   if (position === "top") {
     cursorClass = "cursor-ns-resize";
-    positionClass = "top-0 left-0 right-0 h-1.5 -translate-y-1/2";
+    positionClass = "top-0 left-0 right-0 h-4 -translate-y-1/2"; // Increased hit area for touch
   } else if (position === "bottom") {
     cursorClass = "cursor-ns-resize";
-    positionClass = "bottom-0 left-0 right-0 h-1.5 translate-y-1/2";
+    positionClass = "bottom-0 left-0 right-0 h-4 translate-y-1/2";
   } else if (position === "left") {
     cursorClass = "cursor-ew-resize";
-    positionClass = "left-0 top-0 bottom-0 w-1.5 -translate-x-1/2";
+    positionClass = "left-0 top-0 bottom-0 w-4 -translate-x-1/2";
   } else if (position === "right") {
     cursorClass = "cursor-ew-resize";
-    positionClass = "right-0 top-0 bottom-0 w-1.5 translate-x-1/2";
+    positionClass = "right-0 top-0 bottom-0 w-4 translate-x-1/2";
   } else if (position === "top-left") {
     cursorClass = "cursor-nwse-resize";
     positionClass =
-      "top-0 left-0 w-3 h-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white";
+      "top-0 left-0 w-5 h-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-primary";
   } else if (position === "top-right") {
     cursorClass = "cursor-nesw-resize";
     positionClass =
-      "top-0 right-0 w-3 h-3 translate-x-1/2 -translate-y-1/2 rounded-full border border-white";
+      "top-0 right-0 w-5 h-5 translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-primary";
   } else if (position === "bottom-left") {
     cursorClass = "cursor-nesw-resize";
     positionClass =
-      "bottom-0 left-0 w-3 h-3 -translate-x-1/2 translate-y-1/2 rounded-full border border-white";
+      "bottom-0 left-0 w-5 h-5 -translate-x-1/2 translate-y-1/2 rounded-full border border-white bg-primary";
   } else if (position === "bottom-right") {
     cursorClass = "cursor-nwse-resize";
     positionClass =
-      "bottom-0 right-0 w-3 h-3 translate-x-1/2 translate-y-1/2 rounded-full border border-white";
+      "bottom-0 right-0 w-5 h-5 translate-x-1/2 translate-y-1/2 rounded-full border border-white bg-primary";
   }
 
   return (
     <div
-      onMouseDown={(e) => {
+      onPointerDown={(e) => {
         e.stopPropagation();
-        onMouseDown(e);
+        onPointerDown(e);
       }}
       className={`${baseClass} ${positionClass} ${cursorClass}`}
     />
@@ -98,17 +98,17 @@ export const ImageLayer = memo(
     isSelected,
     isDragging,
     isCropping,
-    onMouseDown,
+    onPointerDown,
     onCropChange,
   }: {
     img: ImageElement;
     isSelected: boolean;
     isDragging: boolean;
     isCropping: boolean;
-    onMouseDown: (e: React.MouseEvent, id: string) => void;
+    onPointerDown: (e: React.PointerEvent, id: string) => void;
     onCropChange: (
       id: string,
-      newCrop: { top: number; right: number; bottom: number; left: number },
+      newCrop: { top: number; right: number; bottom: number; left: number }
     ) => void;
   }) => {
     const layerRef = useRef<HTMLDivElement>(null);
@@ -116,9 +116,10 @@ export const ImageLayer = memo(
 
     const noiseImage = useMemo(() => createNoiseImage(), []);
 
-    const handleCropStart = (e: React.MouseEvent, side: CropPosition) => {
+    const handleCropStart = (e: React.PointerEvent, side: CropPosition) => {
       e.preventDefault();
       e.stopPropagation();
+      (e.target as Element).setPointerCapture(e.pointerId);
 
       const startX = e.clientX;
       const startY = e.clientY;
@@ -127,7 +128,7 @@ export const ImageLayer = memo(
       const rect = ghostRef.current?.getBoundingClientRect();
       if (!rect) return;
 
-      const handleMove = (moveEvent: MouseEvent) => {
+      const handleMove = (moveEvent: PointerEvent) => {
         const deltaX = moveEvent.clientX - startX;
         const deltaY = moveEvent.clientY - startY;
 
@@ -139,54 +140,54 @@ export const ImageLayer = memo(
         if (side.includes("left")) {
           newCrop.left = Math.min(
             Math.max(0, startCrop.left + deltaPctX),
-            100 - newCrop.right - 5,
+            100 - newCrop.right - 5
           );
         }
         if (side.includes("right")) {
           newCrop.right = Math.min(
             Math.max(0, startCrop.right - deltaPctX),
-            100 - newCrop.left - 5,
+            100 - newCrop.left - 5
           );
         }
         if (side.includes("top")) {
           newCrop.top = Math.min(
             Math.max(0, startCrop.top + deltaPctY),
-            100 - newCrop.bottom - 5,
+            100 - newCrop.bottom - 5
           );
         }
         if (side.includes("bottom")) {
           newCrop.bottom = Math.min(
             Math.max(0, startCrop.bottom - deltaPctY),
-            100 - newCrop.top - 5,
+            100 - newCrop.top - 5
           );
         }
 
         onCropChange(img.id, newCrop);
       };
 
-      const handleUp = () => {
-        document.removeEventListener("mousemove", handleMove);
-        document.removeEventListener("mouseup", handleUp);
+      const handleUp = (upEvent: PointerEvent) => {
+        (upEvent.target as Element).releasePointerCapture(upEvent.pointerId);
+        document.removeEventListener("pointermove", handleMove);
+        document.removeEventListener("pointerup", handleUp);
       };
 
-      document.addEventListener("mousemove", handleMove);
-      document.addEventListener("mouseup", handleUp);
+      document.addEventListener("pointermove", handleMove);
+      document.addEventListener("pointerup", handleUp);
     };
 
     const has3DRotation = img.style.rotateX !== 0 || img.style.rotateY !== 0;
-
     const hasShapeClip = img.style.clipPath && img.style.clipPath !== "none";
     const clipStyle = hasShapeClip ? img.style.clipPath : undefined;
-
     const { top, right, bottom, left } = img.style.crop;
-
     const widthFactor = 100 / Math.max(1, 100 - left - right);
     const heightFactor = 100 / Math.max(1, 100 - top - bottom);
 
     return (
       <div
         ref={layerRef}
-        className={`absolute transition-transform ${isDragging ? "duration-0" : "duration-100"} ease-out`}
+        className={`absolute transition-transform ${
+          isDragging ? "duration-0" : "duration-100"
+        } ease-out touch-none`}
         style={{
           left: img.position.x,
           top: img.position.y,
@@ -215,17 +216,19 @@ export const ImageLayer = memo(
         />
 
         <div
-          className={`absolute pointer-events-auto cursor-move
+          className={`absolute pointer-events-auto cursor-move touch-none
             ${isSelected && !isCropping ? "ring-2 ring-primary z-20" : "z-10"} 
             ${isCropping ? "z-50 ring-1 ring-dashed ring-primary/50" : ""}
           `}
-          onMouseDown={(e) => !isCropping && onMouseDown(e, img.id)}
+          onPointerDown={(e) => !isCropping && onPointerDown(e, img.id)}
           style={{
             inset: `${top}% ${right}% ${bottom}% ${left}%`,
             borderRadius: `${img.style.borderRadius}px`,
             boxShadow: img.style.shadow === "none" ? "none" : img.style.shadow,
             opacity: img.style.opacity / 100,
-            filter: `blur(${img.style.blur}px) ${isSelected ? "brightness(1.03)" : ""}`,
+            filter: `blur(${img.style.blur}px) ${
+              isSelected ? "brightness(1.03)" : ""
+            }`,
             backfaceVisibility: has3DRotation ? "visible" : "hidden",
           }}
         >
@@ -246,7 +249,6 @@ export const ImageLayer = memo(
               }}
             />
 
-            {/* noise  */}
             {img.style.noise > 0 && (
               <div
                 className="absolute inset-0 z-10 pointer-events-none mix-blend-overlay"
@@ -262,46 +264,39 @@ export const ImageLayer = memo(
           {isCropping && isSelected && (
             <>
               <div className="absolute inset-0 border-dashed border-4 border-primary pointer-events-none" />
-
-              {/* Edge Handles */}
+              {/* Handles using Pointer Events */}
               <CropHandle
                 position="top"
-                onMouseDown={(e) => handleCropStart(e, "top")}
+                onPointerDown={(e) => handleCropStart(e, "top")}
               />
               <CropHandle
                 position="bottom"
-                onMouseDown={(e) => handleCropStart(e, "bottom")}
+                onPointerDown={(e) => handleCropStart(e, "bottom")}
               />
               <CropHandle
                 position="left"
-                onMouseDown={(e) => handleCropStart(e, "left")}
+                onPointerDown={(e) => handleCropStart(e, "left")}
               />
               <CropHandle
                 position="right"
-                onMouseDown={(e) => handleCropStart(e, "right")}
+                onPointerDown={(e) => handleCropStart(e, "right")}
               />
-
-              {/* Corner Handles */}
               <CropHandle
                 position="top-left"
-                onMouseDown={(e) => handleCropStart(e, "top-left")}
+                onPointerDown={(e) => handleCropStart(e, "top-left")}
               />
               <CropHandle
                 position="top-right"
-                onMouseDown={(e) => handleCropStart(e, "top-right")}
+                onPointerDown={(e) => handleCropStart(e, "top-right")}
               />
               <CropHandle
                 position="bottom-left"
-                onMouseDown={(e) => handleCropStart(e, "bottom-left")}
+                onPointerDown={(e) => handleCropStart(e, "bottom-left")}
               />
               <CropHandle
                 position="bottom-right"
-                onMouseDown={(e) => handleCropStart(e, "bottom-right")}
+                onPointerDown={(e) => handleCropStart(e, "bottom-right")}
               />
-
-              <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/75 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap pointer-events-none backdrop-blur-sm z-50">
-                Drag edges or corners to crop
-              </div>
             </>
           )}
         </div>
@@ -318,6 +313,6 @@ export const ImageLayer = memo(
       prev.isDragging === next.isDragging &&
       prev.isCropping === next.isCropping
     );
-  },
+  }
 );
 ImageLayer.displayName = "ImageLayer";

@@ -74,10 +74,10 @@ export interface EditorCanvasProps {
   selectedElement: string | null;
   isDragging: boolean;
   isCropping: boolean;
-  onElementMouseDown: (e: React.MouseEvent, elementId: string) => void;
+  onElementMouseDown: (e: React.PointerEvent, elementId: string) => void;
   onEmptyClick: () => void;
-  onMouseMove: (e: React.MouseEvent) => void;
-  onMouseUp: () => void;
+  onMouseMove: (e: React.PointerEvent) => void;
+  onMouseUp: (e: React.PointerEvent) => void;
   onCropChange: (id: string, newCrop: any) => void;
 }
 
@@ -144,7 +144,6 @@ export interface HistoryState {
   imageElements: Omit<ImageElement, "position">[];
   canvasBackground: string;
 }
-
 
 export interface RightPanelProps {
   canvasBackground: string;

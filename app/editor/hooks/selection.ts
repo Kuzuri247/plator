@@ -20,8 +20,8 @@ export function useSelection(
     return rect.width / currentAspectRatio.width;
   }, [canvasRef, currentAspectRatio.width]);
 
-  const handleElementMouseDown = useCallback(
-    (e: React.MouseEvent, elementId: string) => {
+  const handleElementPointerDown = useCallback(
+    (e: React.PointerEvent, elementId: string) => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -35,8 +35,11 @@ export function useSelection(
 
       const canvasRect = canvasRef.current.getBoundingClientRect();
 
-      const mouseXInCanvas = (e.clientX - canvasRect.left) / scale;
-      const mouseYInCanvas = (e.clientY - canvasRect.top) / scale;
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+
+      const mouseXInCanvas = (clientX - canvasRect.left) / scale;
+      const mouseYInCanvas = (clientY - canvasRect.top) / scale;
 
       setDragOffset({
         x: mouseXInCanvas - element.position.x,
@@ -46,6 +49,9 @@ export function useSelection(
       setDragTarget(elementId);
       setSelectedElementId(elementId);
       setIsDragging(true);
+
+      // Important: Capture the pointer so we keep receiving events even if we drag fast/outside
+      (e.target as Element).setPointerCapture(e.pointerId);
     },
     [
       getCanvasScale,
@@ -56,14 +62,18 @@ export function useSelection(
     ],
   );
 
-  const handleCanvasMouseMove = (e: React.MouseEvent) => {
+  const handleCanvasPointerMove = (e: React.PointerEvent) => {
     if (!dragTarget || !canvasRef.current) return;
+    e.preventDefault();
 
     const scale = getCanvasScale();
     const canvasRect = canvasRef.current.getBoundingClientRect();
 
-    const mouseXInCanvas = (e.clientX - canvasRect.left) / scale;
-    const mouseYInCanvas = (e.clientY - canvasRect.top) / scale;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    const mouseXInCanvas = (clientX - canvasRect.left) / scale;
+    const mouseYInCanvas = (clientY - canvasRect.top) / scale;
 
     const newX = mouseXInCanvas - dragOffset.x;
     const newY = mouseYInCanvas - dragOffset.y;
@@ -83,17 +93,20 @@ export function useSelection(
     }
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = (e: React.PointerEvent) => {
     setDragTarget(null);
     setIsDragging(false);
+    if (e.target instanceof Element && e.target.hasPointerCapture(e.pointerId)) {
+      e.target.releasePointerCapture(e.pointerId);
+    }
   };
 
   return {
     dragOffset,
     dragTarget,
     isDragging,
-    handleElementMouseDown,
-    handleCanvasMouseMove,
-    handleMouseUp,
+    handleElementPointerDown,
+    handleCanvasPointerMove,
+    handlePointerUp,
   };
 }

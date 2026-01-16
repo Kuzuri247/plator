@@ -17,15 +17,15 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section className="relative w-[90%] md:w-[80%] mx-auto min-h-auto md:min-h-[90vh] flex items-center justify-center pt-24 pb-12 md:pb-10 bg-background">
+    <section className="relative w-[95%] md:w-[80%] mx-auto min-h-auto md:min-h-[90vh] flex items-center justify-center pt-22 pb-12 md:pb-10 bg-background">
       <div className="relative z-10 h-full w-full flex flex-col justify-center ">
-        <div className="absolute -top-3 -left-3 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 border-foreground z-30" />
-        <div className="absolute -top-3 -right-3 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 border-foreground z-30" />
-        <div className="absolute -bottom-3 -left-3 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 border-foreground z-30" />
-        <div className="absolute -bottom-3 -right-3 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 border-foreground z-30" />
+        <div className="absolute max-sm:hidden -top-3 -left-3 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 border-foreground z-30" />
+        <div className="absolute max-sm:hidden -top-3 -right-3 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 border-foreground z-30" />
+        <div className="absolute max-sm:hidden -bottom-3 -left-3 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 border-foreground z-30" />
+        <div className="absolute max-sm:hidden -bottom-3 -right-3 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 border-foreground z-30" />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 dark:border-neutral-700 bg-background w-full relative z-20 shadow-next dark:shadow-white/50">
-          <div className="relative p-6 md:p-12 lg:p-16 flex flex-col justify-center border-r-0 lg:border-r-2 border-b-2 lg:border-b-0 dark:border-neutral-800 overflow-hidden min-h-[400px] lg:min-h-[600px]">
+          <div className="relative p-6 md:p-12 xl:p-16 flex flex-col justify-center border-r-0 lg:border-r-2 border-b-2 lg:border-b-0 dark:border-neutral-800 overflow-hidden min-h-[400px] lg:min-h-[600px]">
             <LeftHeroPattern />
 
             <div className="relative z-10">
@@ -42,7 +42,7 @@ export const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6 tracking-tighter leading-[0.9] text-foreground font-display uppercase"
+                className="text-4xl md:text-5xl xl:text-7xl font-bold mb-4 md:mb-6 tracking-tighter leading-[0.9] text-foreground font-display uppercase"
               >
                 Everything
                 <br />
@@ -76,7 +76,7 @@ export const Hero = () => {
             </div>
           </div>
 
-          <div className="relative min-h-[350px] lg:min-h-[600px] bg-background flex items-center justify-center overflow-hidden p-6 md:p-8">
+          <div className="relative min-h-[350px] lg:min-h-[600px] bg-background flex items-center justify-center overflow-hidden p-6 max-sm:p-0 md:p-8">
             <RightHeroPattern />
 
             <div className="relative z-10 w-full max-w-md flex flex-col items-center transform scale-90 sm:scale-100 origin-center">

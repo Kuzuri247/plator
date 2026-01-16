@@ -18,7 +18,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       textElements,
       selectedElement,
       onElementMouseDown,
-      onMouseMove,
+      onMouseMove,       
       onMouseUp,
       isDragging,
       isCropping,
@@ -51,11 +51,11 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
     };
 
     return (
-      <Card className="p-0 bg-white border-none shadow-none overflow-visible relative group/canvas">
+      <Card className="p-0 bg-white border-none shadow-none overflow-visible relative group/canvas touch-none">
         <div
           ref={ref}
           data-canvas="true"
-          className="relative overflow-hidden transition-all duration-300 ease-in-out flex items-center justify-center select-none"
+          className="relative overflow-hidden transition-all duration-300 ease-in-out flex items-center justify-center select-none touch-none"
           style={{
             width: width,
             height: height,
@@ -65,9 +65,9 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             perspectiveOrigin: "center center",
             contain: "layout style paint",
           }}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onMouseLeave={onMouseUp}
+          onPointerMove={onMouseMove as any}
+          onPointerUp={onMouseUp as any}
+          onPointerLeave={onMouseUp as any}
         >
           {imageElements.length === 0 && (
             <div
@@ -87,7 +87,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
               img={img}
               isSelected={selectedElement === img.id}
               isDragging={isDragging && selectedElement === img.id}
-              onMouseDown={onElementMouseDown}
+              onPointerDown={onElementMouseDown as any}
               isCropping={isCropping && selectedElement === img.id}
               onCropChange={onCropChange}
             />
@@ -98,7 +98,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
               element={element}
               isSelected={selectedElement === element.id}
               isDragging={isDragging && selectedElement === element.id}
-              onMouseDown={onElementMouseDown}
+              onPointerDown={onElementMouseDown as any}
             />
           ))}
         </div>
