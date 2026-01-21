@@ -9,11 +9,13 @@ export const TextLayer = memo(
     isSelected,
     isDragging,
     onPointerDown,
+    isLocked,
   }: {
     element: TextElement;
     isSelected: boolean;
     isDragging: boolean;
-    onPointerDown: (e: React.PointerEvent, id: string) => void;
+    onPointerDown?: (e: React.PointerEvent, id: string) => void;
+    isLocked: boolean;
   }) => {
     const getEffectStyles = () => {
       const effects = element.style.textEffect || [];
@@ -58,11 +60,20 @@ export const TextLayer = memo(
 
     return (
       <div
-        className={`absolute cursor-move select-none hover:ring-1 hover:ring-white/50 transition-all touch-none ${
+        className={`absolute select-none hover:ring-1 hover:ring-white/50 transition-all touch-none ${
           isDragging ? "duration-0" : "duration-100"
-        } ${isSelected ? "ring-2 ring-primary z-50" : "z-30"}`}
-        onPointerDown={(e) => onPointerDown(e, element.id)}
+        } ${
+          isLocked ? "cursor-default" : "cursor-move"
+        } ${
+          isSelected ? "ring-2 ring-primary" : ""
+        }`}
+        onPointerDown={(e) => {
+          if (!isLocked && onPointerDown) {
+            onPointerDown(e, element.id);
+          }
+        }}
         style={{
+          pointerEvents: isLocked ? "none" : "auto",
           left: element.position.x,
           top: element.position.y,
           willChange:
@@ -83,6 +94,9 @@ export const TextLayer = memo(
           backgroundColor: element.style.showBackground
             ? element.style.backgroundColor
             : "transparent",
+          boxShadow: element.style.showBackground
+            ? element.style.backgroundShadow
+            : "none",
           borderRadius: `${element.style.borderRadius}px`,
           padding: `${element.style.padding}px`,
           lineHeight: 1.2,

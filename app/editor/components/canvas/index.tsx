@@ -13,12 +13,11 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       width,
       height,
       canvasBackground,
-      imageElements,
+      elements,
       onEmptyClick,
-      textElements,
-      selectedElement,
+      selectedElementId,
       onElementMouseDown,
-      onMouseMove,       
+      onMouseMove,
       onMouseUp,
       isDragging,
       isCropping,
@@ -50,6 +49,8 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       };
     };
 
+    const visibleElements = elements.filter((el) => el.isVisible);
+
     return (
       <Card className="p-0 bg-white border-none shadow-none overflow-visible relative group/canvas touch-none">
         <div
@@ -69,10 +70,11 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
           onPointerUp={onMouseUp as any}
           onPointerLeave={onMouseUp as any}
         >
-          {imageElements.length === 0 && (
+          {/* Show placeholder if no elements AND background is not an image */}
+          {elements.length === 0 && !canvasBackground.includes("url(") && (
             <div
               onClick={handleEmptyClick}
-              className="group w-52 h-32 border-2 border-dashed border-white hover:border-white/70 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:backdrop-blur-xs  transition-all z-10"
+              className="group w-52 h-32 border-2 border-dashed border-white hover:border-white/70 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:backdrop-blur-xs transition-all z-10"
             >
               <ImageIcon className="size-8 mb-2 text-white group-hover:text-white/70" />
               <span className="text-sm text-white font-medium font-inter group-hover:text-white/70">
@@ -81,26 +83,42 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             </div>
           )}
 
-          {imageElements.map((img) => (
-            <ImageLayer
-              key={img.id}
-              img={img}
-              isSelected={selectedElement === img.id}
-              isDragging={isDragging && selectedElement === img.id}
-              onPointerDown={onElementMouseDown as any}
-              isCropping={isCropping && selectedElement === img.id}
-              onCropChange={onCropChange}
-            />
-          ))}
-          {textElements.map((element) => (
-            <TextLayer
-              key={element.id}
-              element={element}
-              isSelected={selectedElement === element.id}
-              isDragging={isDragging && selectedElement === element.id}
-              onPointerDown={onElementMouseDown as any}
-            />
-          ))}
+          {visibleElements.map((el, index) => {
+            const isSelected = selectedElementId === el.id;
+            const zIndex = index + 1;
+            const wrapperStyle = {
+              zIndex,
+            };
+
+            if (el.type === "image") {
+              return (
+                <div key={el.id} style={wrapperStyle}>
+                  <ImageLayer
+                    img={el}
+                    isSelected={isSelected}
+                    isDragging={isDragging && isSelected}
+                    onPointerDown={el.isLocked ? undefined : (onElementMouseDown as any)}
+                    isCropping={isCropping && isSelected}
+                    onCropChange={onCropChange}
+                    isLocked={el.isLocked}
+                  />
+                </div>
+              );
+            } else if (el.type === "text") {
+              return (
+                <div key={el.id} style={wrapperStyle}>
+                  <TextLayer
+                    element={el}
+                    isSelected={isSelected}
+                    isDragging={isDragging && isSelected}
+                    onPointerDown={el.isLocked ? undefined : (onElementMouseDown as any)}
+                    isLocked={el.isLocked}
+                  />
+                </div>
+              );
+            }
+            return null;
+          })}
         </div>
       </Card>
     );

@@ -1,13 +1,11 @@
 import { useState, useCallback, RefObject } from "react";
-import { ImageElement, TextElement } from "../types";
+import { CanvasElement } from "../types";
 
 export function useSelection(
   canvasRef: RefObject<HTMLDivElement | null>,
   currentAspectRatio: { width: number },
-  imageElements: ImageElement[],
-  textElements: TextElement[],
-  setImageElements: React.Dispatch<React.SetStateAction<ImageElement[]>>,
-  setTextElements: React.Dispatch<React.SetStateAction<TextElement[]>>,
+  elements: CanvasElement[],
+  updateElement: (id: string, updates: Partial<CanvasElement>) => void,
   setSelectedElementId: (id: string | null) => void,
 ) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -26,10 +24,7 @@ export function useSelection(
       e.stopPropagation();
 
       const scale = getCanvasScale();
-
-      const element =
-        imageElements.find((el) => el.id === elementId) ||
-        textElements.find((el) => el.id === elementId);
+      const element = elements.find((el) => el.id === elementId);
 
       if (!element || !canvasRef.current) return;
 
@@ -50,13 +45,11 @@ export function useSelection(
       setSelectedElementId(elementId);
       setIsDragging(true);
 
-      // Important: Capture the pointer so we keep receiving events even if we drag fast/outside
       (e.target as Element).setPointerCapture(e.pointerId);
     },
     [
       getCanvasScale,
-      imageElements,
-      textElements,
+      elements,
       canvasRef,
       setSelectedElementId,
     ],
@@ -78,19 +71,7 @@ export function useSelection(
     const newX = mouseXInCanvas - dragOffset.x;
     const newY = mouseYInCanvas - dragOffset.y;
 
-    if (dragTarget.startsWith("img")) {
-      setImageElements((prev) =>
-        prev.map((el) =>
-          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el,
-        ),
-      );
-    } else {
-      setTextElements((prev) =>
-        prev.map((el) =>
-          el.id === dragTarget ? { ...el, position: { x: newX, y: newY } } : el,
-        ),
-      );
-    }
+    updateElement(dragTarget, { position: { x: newX, y: newY } });
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
@@ -102,8 +83,6 @@ export function useSelection(
   };
 
   return {
-    dragOffset,
-    dragTarget,
     isDragging,
     handleElementPointerDown,
     handleCanvasPointerMove,

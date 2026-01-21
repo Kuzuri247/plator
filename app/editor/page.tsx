@@ -18,84 +18,53 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useEditorState } from "./hooks/editor-state";
+import { useStore } from "./store/use-store";
 import { useSelection } from "./hooks/selection";
 import { useExport } from "./hooks/export";
+import { DEFAULT_IMAGE_STYLE, ImageElement } from "./types";
 
 export default function EditorPage() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
-  // State for Custom Mobile Drawers
   const [showLeftPanel, setShowLeftPanel] = useState(false);
   const [showRightPanel, setShowRightPanel] = useState(false);
 
-  // State for Dynamic Canvas Scaling
   const [canvasScale, setCanvasScale] = useState(1);
 
   const {
-    aspectRatioName,
-    setAspectRatioName,
-    currentAspectRatio,
+    aspectRatio,
+    setAspectRatio,
+    setCustomSize,
     canvasBackground,
-    imageElements,
-    setImageElements,
-    textElements,
-    setTextElements,
-    isCropping,
-    setIsCropping,
+    setBackground,
+    elements,
     selectedElementId,
-    setSelectedElementId,
-    currentText,
-    fontSize,
-    fontFamily,
-    fontWeight,
-    color,
-    textShadow,
-    textBorderRadius,
-    textBackgroundColor,
-    textPadding,
-    textEffect,
-    showTextBackground,
-    history,
-    historyIndex,
-    handleTextEffect,
-    resetCanvas,
-    deleteSelectedElement,
-    addTextElement,
-    updateSelectedText,
-    handleImageUpload,
-    updateSelectedImage,
-    handleTextChange,
-    handleFontSize,
-    handleFontFamily,
-    handleFontWeight,
-    handleColor,
-    handleShadow,
-    handleTextRadius,
-    handleTextBgColor,
-    handleTextPadding,
-    handleShowTextBg,
-    handleCanvasBackgroundChange,
+    selectElement,
+    updateElement,
+    addElement,
+    removeElement,
+    isCropping,
+    setCropping,
     undo,
     redo,
-  } = useEditorState();
+    reset,
+    history,
+    historyIndex,
+  } = useStore();
 
-  // Updated Hook Return (Pointer Events)
   const {
     isDragging,
-    handleElementPointerDown, // New name
-    handleCanvasPointerMove,  // New name
-    handlePointerUp,          // New name
+    handleElementPointerDown,
+    handleCanvasPointerMove,
+    handlePointerUp,
   } = useSelection(
     canvasRef,
-    currentAspectRatio,
-    imageElements,
-    textElements,
-    setImageElements,
-    setTextElements,
-    setSelectedElementId
+    aspectRatio,
+    elements,
+    updateElement,
+    selectElement,
   );
 
   const {
@@ -105,87 +74,72 @@ export default function EditorPage() {
     setExportQuality,
     handleDownload,
     handleDownloadAndPreview,
-  } = useExport(
-    canvasRef,
-    setSelectedElementId,
-    currentAspectRatio,
-    canvasBackground
-  );
+  } = useExport(canvasRef, selectElement, aspectRatio, canvasBackground);
 
-  const selectedTextElement = textElements.find(
-    (t) => t.id === selectedElementId
-  );
-  const selectedImageElement = imageElements.find(
-    (i) => i.id === selectedElementId
-  );
+  const handleImageUpload = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        const id = `img_${Date.now()}`;
+        const canvasW = aspectRatio.width;
+        const canvasH = aspectRatio.height;
+        const imgW = img.naturalWidth;
+        const imgH = img.naturalHeight;
+        const scaleX = canvasW / imgW;
+        const scaleY = canvasH / imgH;
+        const scale = Math.min(scaleX, scaleY, 1) * 90;
+        const x = (canvasW - imgW) / 2;
+        const y = (canvasH - imgH) / 2;
 
-  const handleToggleCropping = () => {
-    setIsCropping(!isCropping);
+        const newImage: ImageElement = {
+          id,
+          type: "image",
+          name: "Image Layer",
+          src: result,
+          position: { x, y },
+          style: { ...DEFAULT_IMAGE_STYLE, scale: Math.round(scale) },
+          isVisible: true,
+          isLocked: false,
+        };
+        addElement(newImage);
+      };
+      img.src = result;
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleCropChange = (id: string, newCrop: any) => {
-    updateSelectedImage({ crop: newCrop });
+    updateElement(id, { crop: newCrop });
   };
 
-  // --- Dynamic Scaling Logic ---
   useEffect(() => {
     const calculateScale = () => {
       if (!containerRef.current) return;
       const containerWidth = containerRef.current.clientWidth;
       const containerHeight = containerRef.current.clientHeight;
-      const padding = 32; 
+      const padding = 32;
       const availableWidth = containerWidth - padding;
       const availableHeight = containerHeight - padding;
-      const scaleX = availableWidth / currentAspectRatio.width;
-      const scaleY = availableHeight / currentAspectRatio.height;
+      const scaleX = availableWidth / aspectRatio.width;
+      const scaleY = availableHeight / aspectRatio.height;
       const newScale = Math.min(scaleX, scaleY, 1);
       setCanvasScale(newScale);
     };
     calculateScale();
     window.addEventListener("resize", calculateScale);
     return () => window.removeEventListener("resize", calculateScale);
-  }, [currentAspectRatio]);
-
-  const leftPanelProps = {
-    selectedTextElement,
-    selectedImageElement,
-    currentText,
-    fontSize,
-    fontFamily,
-    fontWeight,
-    color,
-    textShadow,
-    textBorderRadius,
-    textBackgroundColor,
-    textEffect,
-    onTextEffectChange: handleTextEffect,
-    textPadding,
-    showTextBackground,
-    onTextChange: handleTextChange,
-    onFontFamilyChange: handleFontFamily,
-    onFontSizeChange: handleFontSize,
-    onFontWeightChange: handleFontWeight,
-    onColorChange: handleColor,
-    onTextShadowChange: handleShadow,
-    onTextBorderRadiusChange: handleTextRadius,
-    onTextBackgroundColorChange: handleTextBgColor,
-    onTextPaddingChange: handleTextPadding,
-    onShowTextBackgroundChange: handleShowTextBg,
-    onAddText: addTextElement,
-    onImageStyleChange: updateSelectedImage,
-    onImageUpload: handleImageUpload,
-    isCropping,
-    onToggleCropping: handleToggleCropping,
-    onTextStyleChange: updateSelectedText,
-  };
+  }, [aspectRatio]);
 
   const rightPanelProps = {
     canvasBackground,
-    aspectRatio: aspectRatioName,
+    aspectRatio: aspectRatio.name,
     exportFormat,
     exportQuality,
-    onCanvasBackgroundChange: handleCanvasBackgroundChange,
-    onAspectRatioChange: setAspectRatioName,
+    onCanvasBackgroundChange: setBackground,
+    onAspectRatioChange: setAspectRatio,
+    onSetCustomCanvasSize: setCustomSize,
     onExportFormatChange: setExportFormat,
     onExportQualityChange: setExportQuality,
     onDownload: handleDownload,
@@ -239,7 +193,11 @@ export default function EditorPage() {
             </div>
           </div>
           <div className="flex-1 min-h-0 relative">
-            <LeftPanel {...leftPanelProps} />
+            <LeftPanel
+              onImageUpload={handleImageUpload}
+              isCropping={isCropping}
+              onToggleCropping={() => setCropping(!isCropping)}
+            />
           </div>
         </div>
       )}
@@ -290,7 +248,11 @@ export default function EditorPage() {
           </div>
         </div>
         <div className="flex-1 min-h-0 w-full relative">
-          <LeftPanel {...leftPanelProps} />
+          <LeftPanel
+            onImageUpload={handleImageUpload}
+            isCropping={isCropping}
+            onToggleCropping={() => setCropping(!isCropping)}
+          />
         </div>
       </div>
 
@@ -306,33 +268,32 @@ export default function EditorPage() {
 
       <div className="flex-1 relative bg-muted/20 flex flex-col min-w-0 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-20 pointer-events-none bg-[radial-gradient(#ababab_2px,transparent_1px)] bg-size-[20px_20px]" />
-        
-        <div 
+
+        <div
           ref={containerRef}
           className="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden z-10 w-full h-full relative"
         >
-          <div 
-            style={{ 
+          <div
+            style={{
               transform: `scale(${canvasScale})`,
-              width: currentAspectRatio.width,
-              height: currentAspectRatio.height,
-              transition: 'transform 0.1s ease-out',
-              touchAction: 'none', 
+              width: aspectRatio.width,
+              height: aspectRatio.height,
+              transition: "transform 0.1s ease-out",
+              touchAction: "none",
             }}
             className="origin-center shadow-2xl relative"
           >
             <Canvas
               ref={canvasRef}
-              width={currentAspectRatio.width}
-              height={currentAspectRatio.height}
+              width={aspectRatio.width}
+              height={aspectRatio.height}
               canvasBackground={canvasBackground}
-              imageElements={imageElements}
+              elements={elements}
               onEmptyClick={() => hiddenInputRef.current?.click()}
-              textElements={textElements}
-              selectedElement={selectedElementId}
-              onElementMouseDown={handleElementPointerDown} 
-              onMouseMove={handleCanvasPointerMove}         
-              onMouseUp={handlePointerUp}                   
+              selectedElementId={selectedElementId}
+              onElementMouseDown={handleElementPointerDown}
+              onMouseMove={handleCanvasPointerMove}
+              onMouseUp={handlePointerUp}
               isDragging={isDragging}
               isCropping={isCropping}
               onCropChange={handleCropChange}
@@ -340,8 +301,7 @@ export default function EditorPage() {
           </div>
         </div>
 
-        {/* Floating Action Buttons - Hidden when sidebars are open */}
-        {(!showLeftPanel && !showRightPanel) && (
+        {!showLeftPanel && !showRightPanel && (
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-6 flex items-center gap-2 z-50 animate-in fade-in zoom-in duration-300">
             <div className="bg-background/80 backdrop-blur border-2 rounded-full p-1 shadow-lg flex items-center gap-1">
               <Button
@@ -364,7 +324,9 @@ export default function EditorPage() {
               </Button>
               <div className="w-px h-6 bg-neutral-400 dark:bg-neutral-700 mx-1" />
               <Button
-                onClick={deleteSelectedElement}
+                onClick={() =>
+                  selectedElementId && removeElement(selectedElementId)
+                }
                 disabled={!selectedElementId}
                 variant="ghost"
                 size="icon"
@@ -373,7 +335,7 @@ export default function EditorPage() {
                 <Trash2 size={18} />
               </Button>
               <Button
-                onClick={resetCanvas}
+                onClick={reset}
                 variant="ghost"
                 size="icon"
                 className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-destructive hover:text-red-500"

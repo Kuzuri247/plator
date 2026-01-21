@@ -100,16 +100,18 @@ export const ImageLayer = memo(
     isCropping,
     onPointerDown,
     onCropChange,
+    isLocked,
   }: {
     img: ImageElement;
     isSelected: boolean;
     isDragging: boolean;
     isCropping: boolean;
-    onPointerDown: (e: React.PointerEvent, id: string) => void;
+    onPointerDown?: (e: React.PointerEvent, id: string) => void;
     onCropChange: (
       id: string,
       newCrop: { top: number; right: number; bottom: number; left: number }
     ) => void;
+    isLocked: boolean;
   }) => {
     const layerRef = useRef<HTMLDivElement>(null);
     const ghostRef = useRef<HTMLImageElement>(null);
@@ -216,12 +218,16 @@ export const ImageLayer = memo(
         />
 
         <div
-          className={`absolute pointer-events-auto cursor-move touch-none
-            ${isSelected && !isCropping ? "ring-2 ring-primary z-20" : "z-10"} 
-            ${isCropping ? "z-50 ring-1 ring-dashed ring-primary/50" : ""}
+          className={`absolute pointer-events-auto touch-none
+            ${
+              isLocked ? "cursor-default" : "cursor-move"
+            } ${
+              isSelected && !isCropping ? "ring-2 ring-primary" : ""
+            } ${isCropping ? "ring-1 ring-dashed ring-primary/50" : ""}
           `}
-          onPointerDown={(e) => !isCropping && onPointerDown(e, img.id)}
+          onPointerDown={(e) => !isCropping && !isLocked && onPointerDown?.(e, img.id)}
           style={{
+            pointerEvents: isLocked ? "none" : "auto",
             inset: `${top}% ${right}% ${bottom}% ${left}%`,
             borderRadius: `${img.style.borderRadius}px`,
             boxShadow: img.style.shadow === "none" ? "none" : img.style.shadow,

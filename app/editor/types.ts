@@ -37,9 +37,13 @@ export const DEFAULT_IMAGE_STYLE: ImageStyle = {
 
 export interface ImageElement {
   id: string;
+  type: "image";
+  name: string;
   src: string;
   position: { x: number; y: number };
   style: ImageStyle;
+  isVisible: boolean;
+  isLocked: boolean;
 }
 
 export interface TextStyle {
@@ -52,6 +56,7 @@ export interface TextStyle {
   backgroundColor: string;
   padding: number;
   showBackground: boolean;
+  backgroundShadow: string;
   textEffect: string[];
   rotate: number;
   rotateX: number;
@@ -60,18 +65,23 @@ export interface TextStyle {
 
 export interface TextElement {
   id: string;
+  type: "text";
+  name: string;
   content: string;
   position: { x: number; y: number };
   style: TextStyle;
+  isVisible: boolean;
+  isLocked: boolean;
 }
+
+export type CanvasElement = ImageElement | TextElement;
 
 export interface EditorCanvasProps {
   width: number;
   height: number;
   canvasBackground: string;
-  imageElements: ImageElement[];
-  textElements: TextElement[];
-  selectedElement: string | null;
+  elements: CanvasElement[];
+  selectedElementId: string | null;
   isDragging: boolean;
   isCropping: boolean;
   onElementMouseDown: (e: React.PointerEvent, elementId: string) => void;
@@ -82,36 +92,9 @@ export interface EditorCanvasProps {
 }
 
 export interface LeftPanelProps {
-  selectedTextElement: TextElement | undefined;
-  selectedImageElement: ImageElement | undefined;
-  currentText: string;
-  fontSize: number;
-  fontFamily: string;
-  fontWeight: string;
-  color: string;
-  textShadow: string;
-  textBorderRadius: number;
-  textBackgroundColor: string;
-  textPadding: number;
-  showTextBackground: boolean;
-  textEffect: string[];
   isCropping: boolean;
-  onTextChange: (value: string) => void;
-  onFontFamilyChange: (value: string) => void;
-  onFontSizeChange: (value: number) => void;
-  onFontWeightChange: (value: string) => void;
-  onColorChange: (value: string) => void;
-  onTextShadowChange: (value: string) => void;
-  onTextBorderRadiusChange: (value: number) => void;
-  onTextBackgroundColorChange: (value: string) => void;
-  onTextPaddingChange: (value: number) => void;
-  onShowTextBackgroundChange: (value: boolean) => void;
-  onTextEffectChange: (value: string[]) => void;
-  onAddText: () => void;
-  onImageStyleChange: (updates: Partial<ImageStyle>) => void;
-  onImageUpload: (file: File) => void;
   onToggleCropping: () => void;
-  onTextStyleChange: (updates: Partial<TextStyle>) => void;
+  onImageUpload: (file: File) => void;
 }
 
 export interface Wallpaper {
@@ -140,20 +123,11 @@ export interface GradientColor {
 }
 
 export interface HistoryState {
-  textElements: Omit<TextElement, "position">[];
-  imageElements: Omit<ImageElement, "position">[];
+  elements: CanvasElement[];
   canvasBackground: string;
 }
 
 export interface RightPanelProps {
-  canvasBackground: string;
-  aspectRatio: string;
-  exportFormat: string;
-  exportQuality: string;
-  onCanvasBackgroundChange: (value: string) => void;
-  onAspectRatioChange: (value: string) => void;
-  onExportFormatChange: (value: string) => void;
-  onExportQualityChange: (value: string) => void;
   onDownload: () => void;
   onPreview: () => void;
 }

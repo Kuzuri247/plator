@@ -14,6 +14,7 @@ import {
   ALargeSmall,
   Ghost,
   Crop,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +33,7 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
-import { LeftPanelProps } from "../../types";
+import { LeftPanelProps, ImageElement, TextElement } from "../../types";
 import {
   FONT_FAMILIES,
   FONT_WEIGHTS,
@@ -40,112 +41,115 @@ import {
   CLIP_PATHS,
 } from "../../values";
 import { cn } from "@/lib/utils";
+import { useStore } from "../../store/use-store";
+import { LayerPanel } from "./layer-panel";
 
 export function LeftPanel({
-  selectedTextElement,
-  selectedImageElement,
-  currentText,
-  fontSize,
-  fontFamily,
-  fontWeight,
-  color,
-  textShadow,
-  textBorderRadius,
-  textBackgroundColor,
-  textPadding,
-  showTextBackground,
-  textEffect,
-  onTextEffectChange,
-  onTextChange,
-  onFontFamilyChange,
-  onFontSizeChange,
-  onFontWeightChange,
-  onColorChange,
-  onTextShadowChange,
-  onTextBorderRadiusChange,
-  onTextBackgroundColorChange,
-  onTextPaddingChange,
-  onShowTextBackgroundChange,
-  onAddText,
-  onImageStyleChange,
   onImageUpload,
   isCropping,
   onToggleCropping,
-  onTextStyleChange,
 }: LeftPanelProps) {
-  const imgStyle = selectedImageElement?.style || {
-    scale: 100,
-    opacity: 100,
-    blur: 0,
-    noise: 0,
-    borderRadius: 0,
-    shadow: "none",
-    rotate: 0,
-    rotateX: 0,
-    rotateY: 0,
-    clipPath: "none",
-    flipX: false,
-    flipY: false,
-    crop: { top: 0, right: 0, bottom: 0, left: 0 },
+  const { elements, selectedElementId, addElement, updateElement } = useStore();
+
+  const selectedElement = elements.find((el) => el.id === selectedElementId);
+
+  // Helper to safely access style properties since selectedElement can be Text or Image
+  const getStyle = (key: string, defaultVal: any) => {
+    if (selectedElement && "style" in selectedElement) {
+      return (selectedElement.style as any)[key] ?? defaultVal;
+    }
+    return defaultVal;
   };
 
-  const resetCrop = () =>
-    onImageStyleChange({ crop: { top: 0, right: 0, bottom: 0, left: 0 } });
-
-  const textRotate = selectedTextElement?.style.rotate || 0;
-  const textRotateX = selectedTextElement?.style.rotateX || 0;
-  const textRotateY = selectedTextElement?.style.rotateY || 0;
-
-  const activeText = selectedTextElement?.content ?? currentText;
-  const activeFontSize = selectedTextElement?.style.fontSize ?? fontSize;
-  const activeFontFamily = selectedTextElement?.style.fontFamily ?? fontFamily;
-  const activeFontWeight = selectedTextElement?.style.fontWeight ?? fontWeight;
-  const activeColor = selectedTextElement?.style.color ?? color;
-  const activeTextShadow = selectedTextElement?.style.textShadow ?? textShadow;
-  const activeTextBorderRadius =
-    selectedTextElement?.style.borderRadius ?? textBorderRadius;
-  const activeTextBgColor =
-    selectedTextElement?.style.backgroundColor ?? textBackgroundColor;
-  const activeTextPadding = selectedTextElement?.style.padding ?? textPadding;
-  const activeShowTextBg =
-    selectedTextElement?.style.showBackground ?? showTextBackground;
-  const activeTextEffect = selectedTextElement
-    ? selectedTextElement.style.textEffect || []
-    : textEffect || [];
+  const handleAddText = () => {
+    addElement({
+      id: `text_${Date.now()}`,
+      type: "text",
+      name: "New Text",
+      content: "Sample Text",
+      position: { x: 100, y: 100 },
+      style: {
+        fontSize: 48,
+        fontFamily: "Inter",
+        fontWeight: "400",
+        color: "#ffffff",
+        textShadow: "none",
+        borderRadius: 0,
+        backgroundColor: "#000000",
+        padding: 4,
+        showBackground: false,
+        backgroundShadow: "none",
+        textEffect: [],
+        rotate: 0,
+        rotateX: 0,
+        rotateY: 0,
+      },
+      isVisible: true,
+      isLocked: false,
+    });
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) onImageUpload(file);
   };
 
+  const updateSelected = (updates: any) => {
+    if (selectedElementId) {
+      updateElement(selectedElementId, updates);
+    }
+  };
+
+  const imgStyle =
+    selectedElement?.type === "image"
+      ? (selectedElement as ImageElement).style
+      : null;
+  const textStyle =
+    selectedElement?.type === "text"
+      ? (selectedElement as TextElement).style
+      : null;
+
   return (
     <div className="flex flex-col h-full w-full">
-      <Tabs defaultValue="image" className="w-full flex-1 flex flex-col h-full">
-        <div className="px-4 pt-4 shrink-0">
-          <TabsList className="w-full grid grid-cols-2 dark:bg-neutral-800">
+      <Tabs
+        defaultValue="layers"
+        className="w-full flex-1 flex flex-col h-full"
+      >
+        <div className="px-3 pt-4 shrink-0">
+          <TabsList className="w-full grid grid-cols-3 dark:bg-neutral-800">
             <TabsTrigger value="image">
-              <ImageIcon className="size-4 mr-2 " />
-              Images
+              <ImageIcon className="size-4" />
+              Image
             </TabsTrigger>
             <TabsTrigger value="text">
-              <Type className="size-4 mr-2 " />
+              <Type className="size-4" />
               Text
+            </TabsTrigger>
+            <TabsTrigger value="layers">
+              <Layers className="size-4" />
+              Layers
             </TabsTrigger>
           </TabsList>
         </div>
 
         <div className="flex-1 min-h-0 relative">
           <TabsContent
+            value="layers"
+            className="absolute inset-0 data-[state=inactive]:hidden mt-0"
+          >
+            <LayerPanel />
+          </TabsContent>
+
+          <TabsContent
             value="image"
             className="absolute inset-0 data-[state=inactive]:hidden focus-visible:outline-none mt-0"
           >
-            {/* Image Panel Content (omitted for brevity, unchanged) */}
             <ScrollArea className="h-full w-full">
               <div className="p-4 flex flex-col gap-6 pb-20">
                 <div className="space-y-5">
                   <div className="space-y-2">
                     <Label className="text-sm font-semibold uppercase tracking-wider">
-                      Layers
+                      Upload
                     </Label>
                     <div className="relative">
                       <Input
@@ -159,7 +163,7 @@ export function LeftPanel({
                         asChild
                         variant="outline"
                         size="sm"
-                        className="w-full border-dashed  bg-transparent border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
+                        className="w-full border-dashed bg-transparent border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
                       >
                         <label
                           htmlFor="image-upload"
@@ -171,7 +175,7 @@ export function LeftPanel({
                     </div>
                   </div>
 
-                  {selectedImageElement ? (
+                  {selectedElement?.type === "image" && imgStyle ? (
                     <>
                       <Separator />
 
@@ -191,7 +195,7 @@ export function LeftPanel({
                           <Slider
                             value={[imgStyle.scale]}
                             onValueChange={([val]) =>
-                              onImageStyleChange({ scale: val })
+                              updateSelected({ scale: val })
                             }
                             min={10}
                             max={200}
@@ -211,7 +215,7 @@ export function LeftPanel({
                           <Slider
                             value={[imgStyle.opacity]}
                             onValueChange={([val]) =>
-                              onImageStyleChange({ opacity: val })
+                              updateSelected({ opacity: val })
                             }
                             min={0}
                             max={100}
@@ -231,7 +235,7 @@ export function LeftPanel({
                           <Slider
                             value={[imgStyle.blur]}
                             onValueChange={([val]) =>
-                              onImageStyleChange({ blur: val })
+                              updateSelected({ blur: val })
                             }
                             min={0}
                             max={20}
@@ -251,7 +255,7 @@ export function LeftPanel({
                           <Slider
                             value={[imgStyle.noise]}
                             onValueChange={([val]) =>
-                              onImageStyleChange({ noise: val })
+                              updateSelected({ noise: val })
                             }
                             min={0}
                             max={100}
@@ -271,7 +275,7 @@ export function LeftPanel({
                           <Slider
                             value={[imgStyle.borderRadius]}
                             onValueChange={([val]) =>
-                              onImageStyleChange({ borderRadius: val })
+                              updateSelected({ borderRadius: val })
                             }
                             min={0}
                             max={100}
@@ -286,7 +290,7 @@ export function LeftPanel({
                             </Label>
                             <span className="text-xs text-muted-foreground">
                               {SHADOW_PRESETS.find(
-                                (s) => s.value === imgStyle.shadow
+                                (s) => s.value === imgStyle.shadow,
                               )?.name || "None"}
                             </span>
                           </div>
@@ -294,17 +298,17 @@ export function LeftPanel({
                             defaultValue={[0]}
                             value={[
                               SHADOW_PRESETS.findIndex(
-                                (s) => s.value === imgStyle.shadow
+                                (s) => s.value === imgStyle.shadow,
                               ) !== -1
                                 ? SHADOW_PRESETS.findIndex(
-                                    (s) => s.value === imgStyle.shadow
+                                    (s) => s.value === imgStyle.shadow,
                                   )
                                 : 0,
                             ]}
                             onValueChange={([val]) => {
                               const preset = SHADOW_PRESETS[val];
                               if (preset)
-                                onImageStyleChange({ shadow: preset.value });
+                                updateSelected({ shadow: preset.value });
                             }}
                             min={0}
                             max={SHADOW_PRESETS.length - 1}
@@ -320,7 +324,6 @@ export function LeftPanel({
                           Transforms & Clipping
                         </Label>
 
-                        {/* 3D Rotation Controls */}
                         <div className="space-y-3 font-manrope">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium flex items-center gap-2">
@@ -329,14 +332,14 @@ export function LeftPanel({
                           </div>
 
                           <div className="space-y-2 pt-2">
-                            <div className="flex justify-around px-2 items-center gap-2">
-                              <Label className="text-[10px] text-muted-foreground">
+                            <div className="grid grid-cols-3 px-2 items-center gap-2 justify-center">
+                              <Label className="text-[10px] text-muted-foreground flex justify-center">
                                 X: {imgStyle.rotateX}°
                               </Label>
-                              <Label className="text-[10px] text-muted-foreground">
+                              <Label className="text-[10px] text-muted-foreground flex justify-center">
                                 Y: {imgStyle.rotateY}°
                               </Label>
-                              <Label className="text-[10px] text-muted-foreground">
+                              <Label className="text-[10px] text-muted-foreground flex justify-center">
                                 Z: {imgStyle.rotate}°
                               </Label>
                             </div>
@@ -345,7 +348,7 @@ export function LeftPanel({
                               <Slider
                                 value={[imgStyle.rotateX]}
                                 onValueChange={([val]) =>
-                                  onImageStyleChange({ rotateX: val })
+                                  updateSelected({ rotateX: val })
                                 }
                                 min={-180}
                                 max={180}
@@ -355,7 +358,7 @@ export function LeftPanel({
                               <Slider
                                 value={[imgStyle.rotateY]}
                                 onValueChange={([val]) =>
-                                  onImageStyleChange({ rotateY: val })
+                                  updateSelected({ rotateY: val })
                                 }
                                 min={-180}
                                 max={180}
@@ -365,7 +368,7 @@ export function LeftPanel({
                               <Slider
                                 value={[imgStyle.rotate]}
                                 onValueChange={([val]) =>
-                                  onImageStyleChange({ rotate: val })
+                                  updateSelected({ rotate: val })
                                 }
                                 min={-180}
                                 max={180}
@@ -382,7 +385,7 @@ export function LeftPanel({
                             <Select
                               value={imgStyle.clipPath}
                               onValueChange={(val) =>
-                                onImageStyleChange({ clipPath: val })
+                                updateSelected({ clipPath: val })
                               }
                             >
                               <span className="text-xs font-medium text-muted-foreground flex justify-center items-center">
@@ -431,7 +434,7 @@ export function LeftPanel({
                     </>
                   ) : (
                     <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
-                      Select an image on the canvas to edit its properties.
+                      Select an image layer to edit properties.
                     </div>
                   )}
                 </div>
@@ -439,6 +442,7 @@ export function LeftPanel({
             </ScrollArea>
           </TabsContent>
 
+          {/* --- TEXT TAB --- */}
           <TabsContent
             value="text"
             className="absolute inset-0 data-[state=inactive]:hidden focus-visible:outline-none mt-0"
@@ -449,14 +453,19 @@ export function LeftPanel({
                   <Label className="text-sm font-semibold uppercase tracking-wider">
                     Content
                   </Label>
-                  <Textarea
-                    value={activeText}
-                    onChange={(e) => onTextChange(e.target.value)}
-                    className="min-h-8 resize-none bg-transparent placeholder:font-inter"
-                    placeholder="Type text here..."
-                  />
+                  {selectedElement?.type === "text" && textStyle ? (
+                    <Textarea
+                      value={(selectedElement as TextElement).content}
+                      onChange={(e) =>
+                        updateSelected({ content: e.target.value })
+                      }
+                      className="min-h-8 resize-none bg-transparent placeholder:font-inter"
+                      placeholder="Type text here..."
+                    />
+                  ) : null}
+
                   <Button
-                    onClick={onAddText}
+                    onClick={handleAddText}
                     variant="outline"
                     size="sm"
                     className="w-full bg-transparent border-dashed border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
@@ -467,266 +476,325 @@ export function LeftPanel({
 
                 <Separator />
 
-                <div className="space-y-4">
-                  <Label className="text-sm font-semibold uppercase tracking-wider">
-                    Typography
-                  </Label>
-
-                  <div className="grid grid-cols-6 w-fit">
-                    <Select
-                      value={activeFontFamily}
-                      onValueChange={onFontFamilyChange}
-                    >
-                      <span className="text-[13px] font-medium text-muted-foreground col-start-1 flex items-center">
-                        Family
-                      </span>
-                      <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
-                        <div className="flex items-center gap-2">
-                          <SelectValue className="" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent className="font-manrope text-xs max-h-50">
-                        {FONT_FAMILIES.map((f) => (
-                          <SelectItem key={f} value={f}>
-                            {f === "Space Grotesk"
-                              ? "Space"
-                              : f === "Playfair Display"
-                              ? "Playfair"
-                              : f === "Montserrat"
-                              ? "Moserrat"
-                              : f === "Instrument Serif"
-                              ? "Ins Serif"
-                              : f}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={activeFontWeight}
-                      onValueChange={onFontWeightChange}
-                    >
-                      <span className="text-[13px] font-medium text-muted-foreground w-fit col-start-4 flex items-center">
-                        Weight
-                      </span>
-                      <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
-                        <div className="flex items-center gap-2">
-                          <SelectValue />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent className="font-manrope">
-                        {FONT_WEIGHTS.map((w) => (
-                          <SelectItem key={w.value} value={w.value}>
-                            {w.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-xs font-medium text-muted-foreground">
-                      Text Effects
-                    </Label>
-                    <ToggleGroup
-                      type="multiple"
-                      value={activeTextEffect}
-                      onValueChange={(val) => onTextEffectChange(val)}
-                      className={cn(
-                        "flex-wrap justify-start gap-2 border-2 dark:border-neutral-800 rounded-md p-1 bg-muted/20",
-                        "*:rounded-md *:transition-colors *:text-muted-foreground *:hover:bg-muted",
-                        " *:size-8 *:data-[state=on]:bg-primary *:data-[state=on]:text-primary-foreground"
-                      )}
-                    >
-                      <ToggleGroupItem value="outline" aria-label="Outline">
-                        <Highlighter className="size-4" />
-                      </ToggleGroupItem>
-                      <ToggleGroupItem value="underline" aria-label="Underline">
-                        <Underline className="size-4" />
-                      </ToggleGroupItem>
-                      <ToggleGroupItem
-                        value="line-through"
-                        aria-label="Strikethrough"
-                      >
-                        <Strikethrough className="size-4" />
-                      </ToggleGroupItem>
-                      <ToggleGroupItem value="italic" aria-label="Italic">
-                        <Italic className="size-4" />
-                      </ToggleGroupItem>
-
-                      {/* NEW BUTTONS */}
-                      <ToggleGroupItem value="uppercase" aria-label="Uppercase">
-                        <CaseUpper className="size-4" />
-                      </ToggleGroupItem>
-                      <ToggleGroupItem
-                        value="small-caps"
-                        aria-label="Small Caps"
-                      >
-                        <ALargeSmall className="size-4" />
-                      </ToggleGroupItem>
-                      <ToggleGroupItem value="blur" aria-label="Blur">
-                        <Ghost className="size-4" />
-                      </ToggleGroupItem>
-                    </ToggleGroup>
-                  </div>
-
-                  <div className="space-y-3 *:pr-4">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-xs font-medium text-muted-foreground">
-                        Color & Size
+                {selectedElement?.type === "text" && textStyle ? (
+                  <>
+                    <div className="space-y-4">
+                      <Label className="text-sm font-semibold uppercase tracking-wider">
+                        Typography
                       </Label>
-                      <span className="text-xs text-muted-foreground font-manrope">
-                        {activeFontSize}px
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4 px-2">
-                      <div className="relative group cursor-pointer">
-                        <div
-                          className="size-6 rounded-full border-neutral-300 dark:border-neutral-500 border-2 shadow-sm flex items-center justify-center transition-transform hover:scale-105"
-                          style={{ backgroundColor: activeColor }}
-                        />
-                        <Input
-                          type="color"
-                          value={activeColor}
-                          onChange={(e) => onColorChange(e.target.value)}
-                          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                        />
+
+                      <div className="grid grid-cols-6 w-fit">
+                        <Select
+                          value={textStyle.fontFamily}
+                          onValueChange={(val) =>
+                            updateSelected({ fontFamily: val })
+                          }
+                        >
+                          <span className="text-[13px] font-medium text-muted-foreground col-start-1 flex items-center">
+                            Family
+                          </span>
+                          <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
+                            <div className="flex items-center gap-2">
+                              <SelectValue className="" />
+                            </div>
+                          </SelectTrigger>
+                          <SelectContent className="font-manrope text-xs max-h-50">
+                            {FONT_FAMILIES.map((f) => (
+                              <SelectItem key={f} value={f}>
+                                {f === "Space Grotesk"
+                                  ? "Space"
+                                  : f === "Playfair Display"
+                                    ? "Playfair"
+                                    : f === "Montserrat"
+                                      ? "Moserrat"
+                                      : f === "Instrument Serif"
+                                        ? "Ins Serif"
+                                        : f}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select
+                          value={textStyle.fontWeight}
+                          onValueChange={(val) =>
+                            updateSelected({ fontWeight: val })
+                          }
+                        >
+                          <span className="text-[13px] font-medium text-muted-foreground w-fit col-start-4 flex items-center">
+                            Weight
+                          </span>
+                          <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
+                            <div className="flex items-center gap-2">
+                              <SelectValue />
+                            </div>
+                          </SelectTrigger>
+                          <SelectContent className="font-manrope">
+                            {FONT_WEIGHTS.map((w) => (
+                              <SelectItem key={w.value} value={w.value}>
+                                {w.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <Slider
-                        value={[activeFontSize]}
-                        onValueChange={([v]) => onFontSizeChange(v)}
-                        min={12}
-                        max={80}
-                        className="flex-1"
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                <Separator />
-
-                <div className="space-y-4">
-                  <Label className="text-sm font-semibold uppercase tracking-wider">
-                    3D Transforms
-                  </Label>
-                  <div className="space-y-2 font-manrope">
-                    <div className="flex justify-around px-2 items-center gap-2">
-                      <Label className="text-[10px] text-muted-foreground">
-                        X: {textRotateX}°
-                      </Label>
-                      <Label className="text-[10px] text-muted-foreground">
-                        Y: {textRotateY}°
-                      </Label>
-                      <Label className="text-[10px] text-muted-foreground">
-                        Z: {textRotate}°
-                      </Label>
-                    </div>
-                    <div className="flex gap-4 px-2">
-                      <Slider
-                        value={[textRotateX]}
-                        onValueChange={([val]) =>
-                          onTextStyleChange({ rotateX: val })
-                        }
-                        min={-180}
-                        max={180}
-                        step={1}
-                        className="py-1"
-                      />
-                      <Slider
-                        value={[textRotateY]}
-                        onValueChange={([val]) =>
-                          onTextStyleChange({ rotateY: val })
-                        }
-                        min={-180}
-                        max={180}
-                        step={1}
-                        className="py-1"
-                      />
-                      <Slider
-                        value={[textRotate]}
-                        onValueChange={([val]) =>
-                          onTextStyleChange({ rotate: val })
-                        }
-                        min={-180}
-                        max={180}
-                        step={1}
-                        className="py-1"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold uppercase tracking-wider">
-                      Text Background
-                    </Label>
-                    <Switch
-                      checked={activeShowTextBg}
-                      onCheckedChange={onShowTextBackgroundChange}
-                    />
-                  </div>
-
-                  {activeShowTextBg && (
-                    <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 px-2 font-manrope">
-                      <div className="flex items-center justify-between">
+                      <div className="space-y-2">
                         <Label className="text-xs font-medium text-muted-foreground">
-                          Box Color
+                          Text Effects
                         </Label>
-                        <div className="relative size-6 rounded-md overflow-hidden border-2 border-neutral-300 dark:border-neutral-500">
-                          <div
-                            className="absolute inset-0"
-                            style={{ backgroundColor: activeTextBgColor }}
-                          />
-                          <Input
-                            type="color"
-                            value={activeTextBgColor}
-                            onChange={(e) =>
-                              onTextBackgroundColorChange(e.target.value)
-                            }
-                            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                          />
-                        </div>
+                        <ToggleGroup
+                          type="multiple"
+                          value={textStyle.textEffect}
+                          onValueChange={(val) =>
+                            updateSelected({ textEffect: val })
+                          }
+                          className={cn(
+                            "flex-wrap justify-start gap-2 border-2 dark:border-neutral-800 rounded-md p-1 bg-muted/20",
+                            "*:rounded-md *:transition-colors *:text-muted-foreground *:hover:bg-muted",
+                            " *:size-8 *:data-[state=on]:bg-primary *:data-[state=on]:text-primary-foreground",
+                          )}
+                        >
+                          <ToggleGroupItem value="outline" aria-label="Outline">
+                            <Highlighter className="size-4" />
+                          </ToggleGroupItem>
+                          <ToggleGroupItem
+                            value="underline"
+                            aria-label="Underline"
+                          >
+                            <Underline className="size-4" />
+                          </ToggleGroupItem>
+                          <ToggleGroupItem
+                            value="line-through"
+                            aria-label="Strikethrough"
+                          >
+                            <Strikethrough className="size-4" />
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="italic" aria-label="Italic">
+                            <Italic className="size-4" />
+                          </ToggleGroupItem>
+                          <ToggleGroupItem
+                            value="uppercase"
+                            aria-label="Uppercase"
+                          >
+                            <CaseUpper className="size-4" />
+                          </ToggleGroupItem>
+                          <ToggleGroupItem
+                            value="small-caps"
+                            aria-label="Small Caps"
+                          >
+                            <ALargeSmall className="size-4" />
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="blur" aria-label="Blur">
+                            <Ghost className="size-4" />
+                          </ToggleGroupItem>
+                        </ToggleGroup>
                       </div>
-                      <div className="space-y-3 grid grid-cols-2 gap-4 *:pr-2">
-                        <div>
-                          <div className="flex justify-between pb-3">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Rounded
-                            </Label>
-                            <span className="text-xs text-muted-foreground font-manrope">
-                              {activeTextBorderRadius}px
-                            </span>
-                          </div>
-                          <Slider
-                            value={[activeTextBorderRadius]}
-                            onValueChange={([v]) => onTextBorderRadiusChange(v)}
-                            min={0}
-                            max={50}
-                          />
+
+                      <div className="space-y-3 *:pr-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-medium text-muted-foreground">
+                            Color & Size
+                          </Label>
+                          <span className="text-xs text-muted-foreground font-manrope">
+                            {textStyle.fontSize}px
+                          </span>
                         </div>
-                        <div>
-                          <div className="flex justify-between pb-3">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Padding
-                            </Label>
-                            <span className="text-xs text-muted-foreground font-manrope">
-                              {activeTextPadding}px
-                            </span>
+                        <div className="flex items-center gap-4 px-2">
+                          <div className="relative group cursor-pointer">
+                            <div
+                              className="size-6 rounded-full border-neutral-300 dark:border-neutral-500 border-2 shadow-sm flex items-center justify-center transition-transform hover:scale-105"
+                              style={{ backgroundColor: textStyle.color }}
+                            />
+                            <Input
+                              type="color"
+                              value={textStyle.color}
+                              onChange={(e) =>
+                                updateSelected({ color: e.target.value })
+                              }
+                              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                            />
                           </div>
                           <Slider
-                            value={[activeTextPadding]}
-                            onValueChange={([v]) => onTextPaddingChange(v)}
-                            min={0}
-                            max={30}
+                            value={[textStyle.fontSize]}
+                            onValueChange={([v]) =>
+                              updateSelected({ fontSize: v })
+                            }
+                            min={12}
+                            max={80}
+                            className="flex-1"
                           />
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
+
+                    <Separator />
+
+                    <div className="space-y-4">
+                      <Label className="text-sm font-semibold uppercase tracking-wider">
+                        3D Transforms
+                      </Label>
+                      <div className="space-y-2 font-manrope">
+                        <div className="grid grid-cols-3 px-2 items-center gap-2 justify-center">
+                          <Label className="text-[10px] text-muted-foreground flex justify-center">
+                            X: {textStyle.rotateX}°
+                          </Label>
+                          <Label className="text-[10px] text-muted-foreground flex justify-center">
+                            Y: {textStyle.rotateY}°
+                          </Label>
+                          <Label className="text-[10px] text-muted-foreground flex justify-center">
+                            Z: {textStyle.rotate}°
+                          </Label>
+                        </div>
+                        <div className="flex gap-4 px-2">
+                          <Slider
+                            value={[textStyle.rotateX]}
+                            onValueChange={([val]) =>
+                              updateSelected({ rotateX: val })
+                            }
+                            min={-180}
+                            max={180}
+                            step={1}
+                            className="py-1"
+                          />
+                          <Slider
+                            value={[textStyle.rotateY]}
+                            onValueChange={([val]) =>
+                              updateSelected({ rotateY: val })
+                            }
+                            min={-180}
+                            max={180}
+                            step={1}
+                            className="py-1"
+                          />
+                          <Slider
+                            value={[textStyle.rotate]}
+                            onValueChange={([val]) =>
+                              updateSelected({ rotate: val })
+                            }
+                            min={-180}
+                            max={180}
+                            step={1}
+                            className="py-1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm font-semibold uppercase tracking-wider">
+                          Text Background
+                        </Label>
+                        <Switch
+                          checked={textStyle.showBackground}
+                          onCheckedChange={(val) =>
+                            updateSelected({ showBackground: val })
+                          }
+                        />
+                      </div>
+
+                      {textStyle.showBackground && (
+                        <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 px-2 font-manrope">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Box Color
+                            </Label>
+                            <div className="relative size-6 rounded-md overflow-hidden border-2 border-neutral-300 dark:border-neutral-500">
+                              <div
+                                className="absolute inset-0"
+                                style={{
+                                  backgroundColor: textStyle.backgroundColor,
+                                }}
+                              />
+                              <Input
+                                type="color"
+                                value={textStyle.backgroundColor}
+                                onChange={(e) =>
+                                  updateSelected({
+                                    backgroundColor: e.target.value,
+                                  })
+                                }
+                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-3 grid grid-cols-2 gap-2 *:pr-2">
+                            <div>
+                              <div className="flex justify-between pb-3">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Rounded
+                                </Label>
+                                <span className="text-xs text-muted-foreground font-manrope">
+                                  {textStyle.borderRadius}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[textStyle.borderRadius]}
+                                onValueChange={([v]) =>
+                                  updateSelected({ borderRadius: v })
+                                }
+                                min={0}
+                                max={50}
+                              />
+                            </div>
+                            <div>
+                              <div className="flex justify-between pb-3">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Padding
+                                </Label>
+                                <span className="text-xs text-muted-foreground font-manrope">
+                                  {textStyle.padding}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[textStyle.padding]}
+                                onValueChange={([v]) =>
+                                  updateSelected({ padding: v })
+                                }
+                                min={0}
+                                max={30}
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-muted-foreground flex justify-center pb-3">
+                                {SHADOW_PRESETS.find(
+                                  (s) => s.value === textStyle.backgroundShadow,
+                                )?.name || "None"}
+                              </Label>
+                              <Slider
+                                defaultValue={[0]}
+                                value={[
+                                  SHADOW_PRESETS.findIndex(
+                                    (s) => s.value === textStyle.backgroundShadow,
+                                  ) !== -1
+                                    ? SHADOW_PRESETS.findIndex(
+                                        (s) => s.value === textStyle.backgroundShadow,
+                                      )
+                                    : 0,
+                                ]}
+                                onValueChange={([val]) => {
+                                  const preset = SHADOW_PRESETS[val];
+                                  if (preset)
+                                    updateSelected({ backgroundShadow: preset.value });
+                                }}
+                                min={0}
+                                max={SHADOW_PRESETS.length - 1}
+                                step={1}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
+                    Select a text layer to edit properties.
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </TabsContent>
