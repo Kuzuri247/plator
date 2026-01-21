@@ -49,17 +49,23 @@ export function LeftPanel({
   isCropping,
   onToggleCropping,
 }: LeftPanelProps) {
-  const { elements, selectedElementId, addElement, updateElement } = useStore();
+  const {
+    elements,
+    selectedElementId,
+    addElement,
+    updateElement,
+    activeTab,
+    setActiveTab,
+  } = useStore();
 
   const selectedElement = elements.find((el) => el.id === selectedElementId);
 
-  // Helper to safely access style properties since selectedElement can be Text or Image
-  const getStyle = (key: string, defaultVal: any) => {
-    if (selectedElement && "style" in selectedElement) {
-      return (selectedElement.style as any)[key] ?? defaultVal;
-    }
-    return defaultVal;
-  };
+  // const getStyle = (key: string, defaultVal: any) => {
+  //   if (selectedElement && "style" in selectedElement) {
+  //     return (selectedElement.style as any)[key] ?? defaultVal;
+  //   }
+  //   return defaultVal;
+  // };
 
   const handleAddText = () => {
     addElement({
@@ -112,7 +118,8 @@ export function LeftPanel({
   return (
     <div className="flex flex-col h-full w-full">
       <Tabs
-        defaultValue="layers"
+        value={activeTab}
+        onValueChange={setActiveTab}
         className="w-full flex-1 flex flex-col h-full"
       >
         <div className="px-3 pt-4 shrink-0">
@@ -324,6 +331,7 @@ export function LeftPanel({
                           Transforms & Clipping
                         </Label>
 
+                        {/* 3D Rotation Controls */}
                         <div className="space-y-3 font-manrope">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium flex items-center gap-2">
@@ -379,7 +387,6 @@ export function LeftPanel({
                           </div>
                         </div>
 
-                        {/* Flip & Crop */}
                         <div className="grid grid-cols-3 relative">
                           <div className="flex col-span-2 items-center justify-normal gap-3">
                             <Select
@@ -434,7 +441,11 @@ export function LeftPanel({
                     </>
                   ) : (
                     <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
-                      Select an image layer to edit properties.
+                      {activeTab === "image" &&
+                      selectedElement?.type !== "image" &&
+                      elements.some((e) => e.type === "image")
+                        ? "An image layer was previously selected. Select it again from Layers to edit."
+                        : "Select an image layer to edit properties."}
                     </div>
                   )}
                 </div>
@@ -721,7 +732,7 @@ export function LeftPanel({
                               />
                             </div>
                           </div>
-                          <div className="space-y-3 grid grid-cols-2 gap-2 *:pr-2">
+                          <div className="space-y-3 grid grid-cols-2 gap-4 *:pr-2">
                             <div>
                               <div className="flex justify-between pb-3">
                                 <Label className="text-xs font-medium text-muted-foreground">
@@ -758,27 +769,38 @@ export function LeftPanel({
                                 max={30}
                               />
                             </div>
-                            <div>
-                              <Label className="text-xs font-medium text-muted-foreground flex justify-center pb-3">
-                                {SHADOW_PRESETS.find(
-                                  (s) => s.value === textStyle.backgroundShadow,
-                                )?.name || "None"}
-                              </Label>
+                            <div className="col-span-2">
+                              <div className="flex justify-between">
+                                <Label className="text-xs font-medium text-muted-foreground flex justify-center pb-3">
+                                  Shadow
+                                </Label>
+                                <span className="text-xs text-muted-foreground font-manrope">
+                                  {SHADOW_PRESETS.find(
+                                    (s) =>
+                                      s.value === textStyle.backgroundShadow,
+                                  )?.name || "None"}
+                                </span>
+                              </div>
                               <Slider
                                 defaultValue={[0]}
                                 value={[
                                   SHADOW_PRESETS.findIndex(
-                                    (s) => s.value === textStyle.backgroundShadow,
+                                    (s) =>
+                                      s.value === textStyle.backgroundShadow,
                                   ) !== -1
                                     ? SHADOW_PRESETS.findIndex(
-                                        (s) => s.value === textStyle.backgroundShadow,
+                                        (s) =>
+                                          s.value ===
+                                          textStyle.backgroundShadow,
                                       )
                                     : 0,
                                 ]}
                                 onValueChange={([val]) => {
                                   const preset = SHADOW_PRESETS[val];
                                   if (preset)
-                                    updateSelected({ backgroundShadow: preset.value });
+                                    updateSelected({
+                                      backgroundShadow: preset.value,
+                                    });
                                 }}
                                 min={0}
                                 max={SHADOW_PRESETS.length - 1}
@@ -792,7 +814,11 @@ export function LeftPanel({
                   </>
                 ) : (
                   <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
-                    Select a text layer to edit properties.
+                    {activeTab === "text" &&
+                    selectedElement?.type !== "text" &&
+                    elements.some((e) => e.type === "text")
+                      ? "A text layer was previously selected. Select it again from Layers to edit."
+                      : "Select a text layer to edit properties."}
                   </div>
                 )}
               </div>

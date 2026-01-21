@@ -48,14 +48,14 @@ export function LayerPanel() {
               <div
                 key={element.id}
                 className={cn(
-                  "group flex items-center gap-2 p-2 rounded-md border transition-all hover:bg-muted/50",
+                  "group flex items-center gap-2 p-2 rounded-md border transition-all hover:bg-muted/50 dark:hover:border-yellow-700 hover:border-yellow-400",
                   selectedElementId === element.id
-                    ? "border-primary/50 bg-primary/5 shadow-sm"
-                    : "border-transparent bg-card",
+                    ? "border-primary dark:border-primary/50 bg-primary/5 shadow-sm"
+                    : "border-neutral-300 dark:border-neutral-700 bg-card",
                 )}
                 onClick={() => selectElement(element.id)}
               >
-                <div className="p-2 rounded-md bg-muted text-muted-foreground">
+                <div className="p-2 rounded-md bg-muted text-muted-foreground border-neutral-300 dark:border-neutral-700">
                   {element.type === "text" ? (
                     <Type size={14} />
                   ) : (
@@ -68,8 +68,8 @@ export function LayerPanel() {
                     {element.name ||
                       (element.type === "text" ? "Text Layer" : "Image Layer")}
                   </span>
-                  <span className="text-[10px] text-muted-foreground truncate opacity-50">
-                    {element.id.slice(0, 8)}...
+                  <span className="text-[10px] text-muted-foreground truncate opacity-70">
+                    {element.id.slice(0, 16)}...
                   </span>
                 </div>
 

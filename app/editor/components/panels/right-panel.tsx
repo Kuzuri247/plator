@@ -25,19 +25,24 @@ import { Wallpapers } from "../../hooks/wallpaper";
 import { Memes } from "../../hooks/memes";
 import { generateRandomGradient } from "../../utils/gradient-gen";
 import { useRef, useCallback } from "react";
+import { useStore } from "../../store/use-store";
 
 export function RightPanel({
-  canvasBackground,
-  aspectRatio,
-  exportFormat,
-  exportQuality,
-  onCanvasBackgroundChange,
-  onAspectRatioChange,
-  onExportFormatChange,
-  onExportQualityChange,
   onDownload,
   onPreview,
 }: RightPanelProps) {
+  const {
+    aspectRatio,
+    canvasBackground,
+    exportFormat,
+    exportQuality,
+    setAspectRatio,
+    setBackground,
+    setCustomSize,
+    setExportFormat,
+    setExportQuality
+  } = useStore();
+
   const {
     wallpapers,
     loading: wallpapersLoading,
@@ -57,7 +62,7 @@ export function RightPanel({
 
   const handleRandomGradient = () => {
     const randomGradient = generateRandomGradient();
-    onCanvasBackgroundChange(randomGradient);
+    setBackground(randomGradient);
   };
 
   const handleWallpaperScroll = useCallback(() => {
@@ -83,7 +88,7 @@ export function RightPanel({
   return (
     <div className="flex flex-col h-full w-full">
       <div className="space-y-3 p-4 shrink-0">
-        <Select value={aspectRatio} onValueChange={onAspectRatioChange}>
+        <Select value={aspectRatio.name} onValueChange={setAspectRatio}>
           <SelectTrigger
             data-size="md"
             className="h-14 py-2 h-lg w-full bg-background/50 font-manrope"
@@ -145,7 +150,7 @@ export function RightPanel({
                   {PRESET_GRADIENTS.map((bg) => (
                     <button
                       key={bg.name}
-                      onClick={() => onCanvasBackgroundChange(bg.value)}
+                      onClick={() => setBackground(bg.value)}
                       className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-103 focus:outline-none focus:ring-2 focus:ring-primary ${
                         canvasBackground === bg.value
                           ? "border-primary shadow-md ring-2 ring-primary/30"
@@ -185,7 +190,7 @@ export function RightPanel({
                         <button
                           key={wallpaper.fileId}
                           onClick={() =>
-                            onCanvasBackgroundChange(`url(${wallpaper.url})`)
+                            setBackground(`url(${wallpaper.url})`)
                           }
                           className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-103 focus:outline-none focus:ring-2 focus:ring-primary ${
                             canvasBackground === `url(${wallpaper.url})`
@@ -235,9 +240,14 @@ export function RightPanel({
                       {memes.map((meme) => (
                         <button
                           key={meme.fileId}
-                          onClick={() =>
-                            onCanvasBackgroundChange(`url(${meme.url})`)
-                          }
+                          onClick={() => {
+                            const img = new Image();
+                            img.src = meme.url;
+                            img.onload = () => {
+                              setCustomSize(img.naturalWidth, img.naturalHeight);
+                              setBackground(`url(${meme.url})`);
+                            };
+                          }}
                           className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-103 focus:outline-none focus:ring-2 focus:ring-primary ${
                             canvasBackground === `url(${meme.url})`
                               ? "border-primary shadow-md ring-2 ring-primary/30"
@@ -278,7 +288,7 @@ export function RightPanel({
               Format
             </Label>
             <div className="flex gap-3">
-              <Select value={exportFormat} onValueChange={onExportFormatChange}>
+              <Select value={exportFormat} onValueChange={setExportFormat}>
                 <SelectTrigger className="h-8 bg-transparent font-manrope">
                   <SelectValue />
                 </SelectTrigger>
@@ -297,7 +307,7 @@ export function RightPanel({
             <div className="flex gap-3">
               <Select
                 value={exportQuality}
-                onValueChange={onExportQualityChange}
+                onValueChange={setExportQuality}
               >
                 <SelectTrigger className="h-8 bg-transparent font-manrope">
                   <SelectValue />

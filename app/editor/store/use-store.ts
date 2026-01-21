@@ -1,37 +1,6 @@
-
 import { create } from "zustand";
-import { CanvasElement, HistoryState, ImageElement, TextElement, DEFAULT_IMAGE_STYLE } from "../types";
+import { EditorState, CanvasElement } from "../types";
 import { ASPECT_RATIOS } from "../values";
-
-interface EditorState {
-  aspectRatio: typeof ASPECT_RATIOS[0];
-  canvasBackground: string;
-  elements: CanvasElement[];
-  selectedElementId: string | null;
-  isCropping: boolean;
-
-  history: HistoryState[];
-  historyIndex: number;
-
-  setAspectRatio: (name: string) => void;
-  setCustomSize: (width: number, height: number) => void;
-  setBackground: (bg: string) => void;
-
-  addElement: (element: CanvasElement) => void;
-  updateElement: (id: string, updates: Partial<CanvasElement> | Partial<ImageElement["style"]> | Partial<TextElement["style"]>) => void;
-  removeElement: (id: string) => void;
-
-  reorderElement: (id: string, direction: "up" | "down" | "top" | "bottom") => void;
-  toggleVisibility: (id: string) => void;
-  toggleLock: (id: string) => void;
-
-  selectElement: (id: string | null) => void;
-  setCropping: (isCropping: boolean) => void;
-
-  undo: () => void;
-  redo: () => void;
-  reset: () => void;
-}
 
 const DEFAULT_BG = "radial-gradient(at 0% 0%, #7209b7 0px, transparent 70%), radial-gradient(at 100% 0%, #9d4edd 0px, transparent 70%), radial-gradient(at 100% 100%, #e0aaff 0px, transparent 70%), radial-gradient(at 0% 100%, #c77dff 0px, transparent 70%)";
 
@@ -41,6 +10,11 @@ export const useStore = create<EditorState>((set, get) => ({
   elements: [],
   selectedElementId: null,
   isCropping: false,
+  activeTab: "layers",
+  lastSelectedTextId: null,
+  lastSelectedImageId: null,
+  exportFormat: "png",
+  exportQuality: "2",
   history: [{ elements: [], canvasBackground: DEFAULT_BG }],
   historyIndex: 0,
 
@@ -75,6 +49,35 @@ export const useStore = create<EditorState>((set, get) => ({
     });
   },
 
+  setExportFormat: (format) => set({ exportFormat: format }),
+  setExportQuality: (quality) => set({ exportQuality: quality }),
+
+  setActiveTab: (tab) => {
+    set((state) => {
+      let newSelectedId = state.selectedElementId;
+
+      if (tab === "text") {
+        const currentIsText = state.elements.find(el => el.id === state.selectedElementId)?.type === "text";
+        if (!currentIsText && state.lastSelectedTextId) {
+          if (state.elements.find(el => el.id === state.lastSelectedTextId)) {
+            newSelectedId = state.lastSelectedTextId;
+          }
+        }
+      }
+
+      if (tab === "image") {
+        const currentIsImage = state.elements.find(el => el.id === state.selectedElementId)?.type === "image";
+        if (!currentIsImage && state.lastSelectedImageId) {
+          if (state.elements.find(el => el.id === state.lastSelectedImageId)) {
+            newSelectedId = state.lastSelectedImageId;
+          }
+        }
+      }
+
+      return { activeTab: tab, selectedElementId: newSelectedId };
+    });
+  },
+
   addElement: (element) => {
     set((state) => {
       const newElements = [...state.elements, element];
@@ -85,6 +88,9 @@ export const useStore = create<EditorState>((set, get) => ({
       return {
         elements: newElements,
         selectedElementId: element.id,
+        activeTab: element.type === "text" ? "text" : "image",
+        lastSelectedTextId: element.type === "text" ? element.id : state.lastSelectedTextId,
+        lastSelectedImageId: element.type === "image" ? element.id : state.lastSelectedImageId,
         history: newHistory,
         historyIndex: newHistory.length - 1,
       };
@@ -97,25 +103,15 @@ export const useStore = create<EditorState>((set, get) => ({
         if (el.id !== id) return el;
 
         if ("style" in el && !("type" in updates)) {
-
-          if (el.type === 'text' || el.type === 'image') {
-            const rootKeys = ['name', 'position', 'content', 'src', 'isVisible', 'isLocked'];
-            const newStyle = { ...el.style };
-            const newRoot = { ...el };
-
-            Object.keys(updates).forEach(key => {
-              if (rootKeys.includes(key)) {
-                (newRoot as any)[key] = (updates as any)[key];
-              } else {
-                (newStyle as any)[key] = (updates as any)[key];
-              }
-            });
-            return { ...newRoot, style: newStyle };
-          }
+          const styleUpdates = updates as any;
+          const newStyle = { ...el.style, ...styleUpdates };
+          const newRoot = { ...el, ...updates, style: newStyle };
+          return newRoot;
         }
         return { ...el, ...updates };
-      }) as CanvasElement[];
-      return { elements: newElements };
+      });
+
+      return { elements: newElements as CanvasElement[] };
     });
   },
 
@@ -130,6 +126,8 @@ export const useStore = create<EditorState>((set, get) => ({
         elements: newElements,
         selectedElementId: null,
         isCropping: false,
+        lastSelectedTextId: state.lastSelectedTextId === id ? null : state.lastSelectedTextId,
+        lastSelectedImageId: state.lastSelectedImageId === id ? null : state.lastSelectedImageId,
         history: newHistory,
         historyIndex: newHistory.length - 1,
       };
@@ -178,7 +176,25 @@ export const useStore = create<EditorState>((set, get) => ({
     }));
   },
 
-  selectElement: (id) => set({ selectedElementId: id, isCropping: false }),
+  selectElement: (id) => {
+    set((state) => {
+      const element = state.elements.find(el => el.id === id);
+      let newTab = state.activeTab;
+
+      if (element && state.activeTab !== "layers") {
+        newTab = element.type === "text" ? "text" : "image";
+      }
+
+      return {
+        selectedElementId: id,
+        isCropping: false,
+        lastSelectedTextId: element?.type === "text" ? id : state.lastSelectedTextId,
+        lastSelectedImageId: element?.type === "image" ? id : state.lastSelectedImageId,
+        activeTab: newTab
+      };
+    });
+  },
+
   setCropping: (val) => set({ isCropping: val }),
 
   undo: () => {
@@ -213,7 +229,9 @@ export const useStore = create<EditorState>((set, get) => ({
       canvasBackground: DEFAULT_BG,
       history: [{ elements: [], canvasBackground: DEFAULT_BG }],
       historyIndex: 0,
-      selectedElementId: null
+      selectedElementId: null,
+      lastSelectedImageId: null,
+      lastSelectedTextId: null
     })
   }
 }));

@@ -1,3 +1,5 @@
+import { ASPECT_RATIOS } from "./values";
+
 export interface ImageStyle {
   scale: number;
   borderRadius: number;
@@ -89,6 +91,39 @@ export interface EditorCanvasProps {
   onMouseMove: (e: React.PointerEvent) => void;
   onMouseUp: (e: React.PointerEvent) => void;
   onCropChange: (id: string, newCrop: any) => void;
+}
+
+export interface EditorState {
+  aspectRatio: typeof ASPECT_RATIOS[0];
+  canvasBackground: string;
+  elements: CanvasElement[];
+  selectedElementId: string | null;
+  isCropping: boolean;
+  exportFormat: string;
+  exportQuality: string;
+  historyIndex: number;
+  history: HistoryState[];
+  activeTab: string;
+  lastSelectedTextId: string | null;
+  lastSelectedImageId: string | null;
+
+  setActiveTab: (tab: string) => void;
+  setAspectRatio: (name: string) => void;
+  setCustomSize: (width: number, height: number) => void;
+  setBackground: (bg: string) => void;
+  setExportFormat: (format: string) => void;
+  setExportQuality: (quality: string) => void;
+  addElement: (element: CanvasElement) => void;
+  updateElement: (id: string, updates: Partial<CanvasElement> | Partial<ImageElement["style"]> | Partial<TextElement["style"]>) => void;
+  removeElement: (id: string) => void;
+  reorderElement: (id: string, direction: "up" | "down" | "top" | "bottom") => void;
+  toggleVisibility: (id: string) => void;
+  toggleLock: (id: string) => void;
+  selectElement: (id: string | null) => void;
+  setCropping: (isCropping: boolean) => void;
+  undo: () => void;
+  redo: () => void;
+  reset: () => void;
 }
 
 export interface LeftPanelProps {

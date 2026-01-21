@@ -35,10 +35,7 @@ export default function EditorPage() {
 
   const {
     aspectRatio,
-    setAspectRatio,
-    setCustomSize,
     canvasBackground,
-    setBackground,
     elements,
     selectedElementId,
     selectElement,
@@ -50,8 +47,8 @@ export default function EditorPage() {
     undo,
     redo,
     reset,
-    history,
     historyIndex,
+    history,
   } = useStore();
 
   const {
@@ -67,14 +64,10 @@ export default function EditorPage() {
     selectElement,
   );
 
-  const {
-    exportFormat,
-    setExportFormat,
-    exportQuality,
-    setExportQuality,
-    handleDownload,
-    handleDownloadAndPreview,
-  } = useExport(canvasRef, selectElement, aspectRatio, canvasBackground);
+  const { handleDownload, handleDownloadAndPreview } = useExport(
+    canvasRef,
+    selectElement,
+  );
 
   const handleImageUpload = (file: File) => {
     const reader = new FileReader();
@@ -131,20 +124,6 @@ export default function EditorPage() {
     window.addEventListener("resize", calculateScale);
     return () => window.removeEventListener("resize", calculateScale);
   }, [aspectRatio]);
-
-  const rightPanelProps = {
-    canvasBackground,
-    aspectRatio: aspectRatio.name,
-    exportFormat,
-    exportQuality,
-    onCanvasBackgroundChange: setBackground,
-    onAspectRatioChange: setAspectRatio,
-    onSetCustomCanvasSize: setCustomSize,
-    onExportFormatChange: setExportFormat,
-    onExportQualityChange: setExportQuality,
-    onDownload: handleDownload,
-    onPreview: handleDownloadAndPreview,
-  };
 
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden flex-col md:flex-row">
@@ -217,7 +196,10 @@ export default function EditorPage() {
             </Button>
           </div>
           <div className="flex-1 min-h-0 relative">
-            <RightPanel {...rightPanelProps} />
+            <RightPanel
+              onDownload={handleDownload}
+              onPreview={handleDownloadAndPreview}
+            />
           </div>
         </div>
       )}
@@ -354,7 +336,10 @@ export default function EditorPage() {
           </span>
         </div>
         <div className="flex-1 min-h-0 w-full relative">
-          <RightPanel {...rightPanelProps} />
+          <RightPanel
+            onDownload={handleDownload}
+            onPreview={handleDownloadAndPreview}
+          />
         </div>
       </div>
     </div>

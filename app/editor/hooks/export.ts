@@ -1,16 +1,20 @@
-import { useState, RefObject } from "react";
+import { RefObject } from "react";
 import { toast } from "sonner";
 import { toPng, toJpeg, toSvg } from "html-to-image";
 import { useRouter } from "next/navigation";
+import { useStore } from "../store/use-store";
 
 export function useExport(
   canvasRef: RefObject<HTMLDivElement | null>,
   setSelectedElementId: (id: string | null) => void,
-  currentAspectRatio: { width: number; height: number },
-  canvasBackground: string,
 ) {
-  const [exportFormat, setExportFormat] = useState("png");
-  const [exportQuality, setExportQuality] = useState("2");
+  const { 
+    aspectRatio, 
+    canvasBackground, 
+    exportFormat, 
+    exportQuality 
+  } = useStore();
+  
   const router = useRouter();
 
   const generateImage = async () => {
@@ -22,8 +26,8 @@ export function useExport(
     const options = {
       quality: 1.0,
       pixelRatio: pixelRatio,
-      width: currentAspectRatio.width,
-      height: currentAspectRatio.height,
+      width: aspectRatio.width,
+      height: aspectRatio.height,
       cacheBust: true,
       skipAutoScale: false,
       backgroundColor: canvasBackground.startsWith("#")
@@ -45,8 +49,8 @@ export function useExport(
       if (exportFormat === "svg") {
         return await toSvg(canvasRef.current, {
           ...options,
-          width: currentAspectRatio.width,
-          height: currentAspectRatio.height,
+          width: aspectRatio.width,
+          height: aspectRatio.height,
           pixelRatio: 1,
         });
       } else if (exportFormat === "jpeg") {
@@ -120,10 +124,6 @@ export function useExport(
   };
 
   return {
-    exportFormat,
-    setExportFormat,
-    exportQuality,
-    setExportQuality,
     handleDownload,
     handleDownloadAndPreview,
   };
