@@ -5,12 +5,12 @@ import { ASPECT_RATIOS } from "../values";
 const DEFAULT_BG = "radial-gradient(at 0% 0%, #7209b7 0px, transparent 70%), radial-gradient(at 100% 0%, #9d4edd 0px, transparent 70%), radial-gradient(at 100% 100%, #e0aaff 0px, transparent 70%), radial-gradient(at 0% 100%, #c77dff 0px, transparent 70%)";
 
 export const useStore = create<EditorState>((set, get) => ({
-  aspectRatio: ASPECT_RATIOS.find((r) => r.name === "4:3") || ASPECT_RATIOS[4],
+  aspectRatio: ASPECT_RATIOS.find((r) => r.name === "16:9") || ASPECT_RATIOS[0],
   canvasBackground: DEFAULT_BG,
   elements: [],
   selectedElementId: null,
   isCropping: false,
-  activeTab: "layers",
+  activeTab: "image",
   lastSelectedTextId: null,
   lastSelectedImageId: null,
   exportFormat: "png",
