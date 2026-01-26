@@ -50,7 +50,17 @@ export const useStore = create<EditorState>((set, get) => ({
   },
 
   setElements: (elements) => {
-    set({ elements });
+    set((state) => {
+      const newHistory = [
+        ...state.history.slice(0, state.historyIndex + 1),
+        { elements, canvasBackground: state.canvasBackground },
+      ];
+      return {
+        elements,
+        history: newHistory,
+        historyIndex: newHistory.length - 1,
+      };
+    });
   },
 
   setExportFormat: (format) => set({ exportFormat: format }),
