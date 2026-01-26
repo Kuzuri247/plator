@@ -110,7 +110,8 @@ const SortableLayer = memo(function SortableLayer({
       if (e.key === "ArrowUp" || e.key === "ArrowDown") {
         e.preventDefault();
         e.stopPropagation();
-        // In the display, layers are reversed, so ArrowUp moves down in elements array
+        // Layers are displayed in reverse order (last element first)
+        // ArrowUp visually moves layer up, which corresponds to "up" in the elements array
         const direction = e.key === "ArrowUp" ? "up" : "down";
         reorderElement(element.id, direction);
       }
@@ -215,7 +216,7 @@ const SortableLayer = memo(function SortableLayer({
         onKeyDown={handleKeyDown}
         tabIndex={0}
         role="button"
-        aria-label={`Reorder ${element.name || (element.type === "text" ? "Text Layer" : "Image Layer")}. Use arrow keys to move up or down, or drag with mouse.`}
+        aria-label={`Reorder ${element.name || (element.type === "text" ? "Text Layer" : "Image Layer")}`}
       >
         <GripVertical size={16} />
       </div>
