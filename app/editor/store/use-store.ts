@@ -49,6 +49,20 @@ export const useStore = create<EditorState>((set, get) => ({
     });
   },
 
+  setElements: (elements) => {
+    set((state) => {
+      const newHistory = [
+        ...state.history.slice(0, state.historyIndex + 1),
+        { elements, canvasBackground: state.canvasBackground },
+      ];
+      return {
+        elements,
+        history: newHistory,
+        historyIndex: newHistory.length - 1,
+      };
+    });
+  },
+
   setExportFormat: (format) => set({ exportFormat: format }),
   setExportQuality: (quality) => set({ exportQuality: quality }),
 
@@ -131,32 +145,6 @@ export const useStore = create<EditorState>((set, get) => ({
         history: newHistory,
         historyIndex: newHistory.length - 1,
       };
-    });
-  },
-
-  reorderElement: (id, direction) => {
-    set((state) => {
-      const index = state.elements.findIndex((el) => el.id === id);
-      if (index === -1) return {};
-
-      const newElements = [...state.elements];
-      const element = newElements[index];
-
-      if (direction === "up" && index < newElements.length - 1) {
-        newElements[index] = newElements[index + 1];
-        newElements[index + 1] = element;
-      } else if (direction === "down" && index > 0) {
-        newElements[index] = newElements[index - 1];
-        newElements[index - 1] = element;
-      } else if (direction === "top") {
-        newElements.splice(index, 1);
-        newElements.push(element);
-      } else if (direction === "bottom") {
-        newElements.splice(index, 1);
-        newElements.unshift(element);
-      }
-
-      return { elements: newElements };
     });
   },
 
