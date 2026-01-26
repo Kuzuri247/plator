@@ -49,6 +49,10 @@ export const useStore = create<EditorState>((set, get) => ({
     });
   },
 
+  setElements: (elements) => {
+    set({ elements });
+  },
+
   setExportFormat: (format) => set({ exportFormat: format }),
   setExportQuality: (quality) => set({ exportQuality: quality }),
 

@@ -124,6 +124,7 @@ export interface EditorState {
   undo: () => void;
   redo: () => void;
   reset: () => void;
+  setElements: (elements: CanvasElement[]) => void;
 }
 
 export interface LeftPanelProps {
