@@ -100,9 +100,23 @@ const SortableLayer = memo(function SortableLayer({
     toggleVisibility,
     toggleLock,
     removeElement,
+    reorderElement,
   } = useStore();
 
   const controls = useDragControls();
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+        e.stopPropagation();
+        // In the display, layers are reversed, so ArrowUp moves down in elements array
+        const direction = e.key === "ArrowUp" ? "up" : "down";
+        reorderElement(element.id, direction);
+      }
+    },
+    [element.id, reorderElement]
+  );
 
   return (
     <Reorder.Item
@@ -196,8 +210,12 @@ const SortableLayer = memo(function SortableLayer({
       </div>
 
       <div
-        className="p-1.5 rounded-md text-muted-foreground cursor-grab active:cursor-grabbing hover:bg-muted/50 transition-colors ml-1 touch-none"
+        className="p-1.5 rounded-md text-muted-foreground cursor-grab active:cursor-grabbing hover:bg-muted/50 transition-colors ml-1 touch-none focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-muted"
         onPointerDown={(e) => controls.start(e)}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="button"
+        aria-label={`Reorder ${element.name || (element.type === "text" ? "Text Layer" : "Image Layer")}. Use arrow keys to move up or down, or drag with mouse.`}
       >
         <GripVertical size={16} />
       </div>
