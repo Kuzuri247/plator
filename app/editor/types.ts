@@ -116,7 +116,6 @@ export interface EditorState {
   addElement: (element: CanvasElement) => void;
   updateElement: (id: string, updates: Partial<CanvasElement> | Partial<ImageElement["style"]> | Partial<TextElement["style"]>) => void;
   removeElement: (id: string) => void;
-  reorderElement: (id: string, direction: "up" | "down" | "top" | "bottom") => void;
   toggleVisibility: (id: string) => void;
   toggleLock: (id: string) => void;
   selectElement: (id: string | null) => void;
