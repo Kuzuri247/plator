@@ -138,32 +138,6 @@ export const useStore = create<EditorState>((set, get) => ({
     });
   },
 
-  reorderElement: (id, direction) => {
-    set((state) => {
-      const index = state.elements.findIndex((el) => el.id === id);
-      if (index === -1) return {};
-
-      const newElements = [...state.elements];
-      const element = newElements[index];
-
-      if (direction === "up" && index < newElements.length - 1) {
-        newElements[index] = newElements[index + 1];
-        newElements[index + 1] = element;
-      } else if (direction === "down" && index > 0) {
-        newElements[index] = newElements[index - 1];
-        newElements[index - 1] = element;
-      } else if (direction === "top") {
-        newElements.splice(index, 1);
-        newElements.push(element);
-      } else if (direction === "bottom") {
-        newElements.splice(index, 1);
-        newElements.unshift(element);
-      }
-
-      return { elements: newElements };
-    });
-  },
-
   toggleVisibility: (id) => {
     set((state) => ({
       elements: state.elements.map((el) =>
