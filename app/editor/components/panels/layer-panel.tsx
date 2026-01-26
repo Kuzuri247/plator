@@ -25,6 +25,8 @@ export function LayerPanel() {
 
   const isDraggingRef = useRef(false);
 
+  // Capture latest values in refs to avoid recreating callbacks
+  // This pattern is updated during render (not in useEffect) to ensure synchronous access
   const latestDisplayElements = useRef<CanvasElement[]>([]);
   latestDisplayElements.current = displayElements;
 
