@@ -28,6 +28,9 @@ export function LayerPanel() {
   const latestDisplayElements = useRef<CanvasElement[]>([]);
   latestDisplayElements.current = displayElements;
 
+  const setElementsRef = useRef(setElements);
+  setElementsRef.current = setElements;
+
   useEffect(() => {
     if (!isDraggingRef.current) {
       setDisplayElements([...elements].reverse());
@@ -44,8 +47,8 @@ export function LayerPanel() {
 
   const handleDragEnd = useCallback(() => {
     isDraggingRef.current = false;
-    setElements([...latestDisplayElements.current].reverse());
-  }, [setElements]);
+    setElementsRef.current([...latestDisplayElements.current].reverse());
+  }, []);
 
   return (
     <div className="flex flex-col h-full w-full">
