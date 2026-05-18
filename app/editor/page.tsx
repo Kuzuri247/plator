@@ -291,18 +291,20 @@ export default function EditorPage() {
                 disabled={historyIndex <= 0}
                 variant="ghost"
                 size="icon"
+                title="Undo"
                 className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700"
               >
-                <Undo2 />
+                <Undo2 size={18} />
               </Button>
               <Button
                 onClick={redo}
                 disabled={historyIndex >= history.length - 1}
                 variant="ghost"
                 size="icon"
+                title="Redo"
                 className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700"
               >
-                <Redo2 />
+                <Redo2 size={18} />
               </Button>
               <div className="w-px h-6 bg-neutral-400 dark:bg-neutral-700 mx-1" />
               <Button
@@ -312,6 +314,7 @@ export default function EditorPage() {
                 disabled={!selectedElementId}
                 variant="ghost"
                 size="icon"
+                title="Delete Element"
                 className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-muted-foreground hover:text-destructive"
               >
                 <Trash2 size={18} />
@@ -320,9 +323,10 @@ export default function EditorPage() {
                 onClick={reset}
                 variant="ghost"
                 size="icon"
+                title="Clear Canvas"
                 className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-destructive hover:text-red-500"
               >
-                <RotateCcw />
+                <RotateCcw size={18} />
               </Button>
             </div>
           </div>

@@ -65,8 +65,48 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Plator",
-  description: "Create. Schedule. Dominate.",
+  title: {
+    default: "Plator - Content Creation & Scheduling MicroSaaS",
+    template: "%s | Plator",
+  },
+  description: "The ultimate tool for creators. Design beautiful templates, preview across platforms, and schedule posts seamlessly.",
+  keywords: ["content creation", "social media", "scheduling", "design", "twitter", "linkedin"],
+  authors: [{ name: "Kuzuri247" }],
+  creator: "Plator",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://plator.vercel.app",
+    title: "Plator - Content Creation & Scheduling",
+    description: "Design beautiful templates, preview across platforms, and schedule your social media posts seamlessly.",
+    siteName: "Plator",
+    images: [
+      {
+        url: "/og-image.png", // Ensure you add this image to public folder
+        width: 1200,
+        height: 630,
+        alt: "Plator - Content Creation & Scheduling",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Plator - Content Creation & Scheduling",
+    description: "Design beautiful templates, preview across platforms, and schedule your social media posts seamlessly.",
+    creator: "@kuzuri247",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({

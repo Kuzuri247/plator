@@ -78,7 +78,7 @@ export default function PreviewPage() {
     );
   };
 
-  // Helper to copy ONLY the FIRST image to clipboard
+  // Helper to copy ONLY the FIRST image to clipboard, with a fallback to download
   const copyFirstImageToClipboard = async () => {
     if (images.length === 0) return false;
 
@@ -93,8 +93,21 @@ export default function PreviewPage() {
       ]);
       return true;
     } catch (err) {
-      console.error("Clipboard failed:", err);
-      return false;
+      console.error("Clipboard failed, attempting to download instead:", err);
+      // Fallback: Download the image
+      try {
+        const link = document.createElement("a");
+        link.href = images[0];
+        link.download = `plator-export-${Date.now()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.info("Clipboard access denied. Image downloaded instead.");
+        return true; // We consider it a "success" in terms of getting the image to the user
+      } catch (downloadErr) {
+        console.error("Download fallback failed:", downloadErr);
+        return false;
+      }
     }
   };
 
