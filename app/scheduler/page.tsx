@@ -235,9 +235,19 @@ export default function SchedulerPage() {
 
           <div className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-thin scrollbar-thumb-border hover:scrollbar-thumb-primary/50">
             {MOCK_QUEUE.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-muted-foreground/50">
-                <CalendarClock size={48} className="mb-4 opacity-20" />
-                <p className="text-sm">Queue is empty</p>
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 animate-in fade-in zoom-in duration-500">
+                <div className="w-20 h-20 bg-muted/30 rounded-full flex items-center justify-center mb-6 border-2 border-dashed dark:border-neutral-800">
+                  <CalendarClock size={32} className="text-muted-foreground/50" />
+                </div>
+                <h3 className="text-lg font-display font-bold mb-2">No Scheduled Posts</h3>
+                <p className="text-sm text-muted-foreground max-w-[250px] mb-6 font-manrope">
+                  Your queue is currently empty. Design a new post in the editor to get started.
+                </p>
+                <Link href="/editor">
+                  <Button variant="outline" className="gap-2 border-primary/20 hover:bg-primary/5 hover:text-primary transition-colors">
+                    <Pencil size={14} /> Go to Editor
+                  </Button>
+                </Link>
               </div>
             ) : (
               MOCK_QUEUE.map((post) => (
