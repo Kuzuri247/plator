@@ -46,6 +46,7 @@ export interface ImageElement {
   style: ImageStyle;
   isVisible: boolean;
   isLocked: boolean;
+  dither?: DitherConfig;
 }
 
 export interface TextStyle {
@@ -124,6 +125,7 @@ export interface EditorState {
   redo: () => void;
   reset: () => void;
   setElements: (elements: CanvasElement[]) => void;
+  setDitherConfig: (layerId: string, config: Partial<DitherConfig>) => void;
 }
 
 export interface LeftPanelProps {
@@ -166,3 +168,13 @@ export interface RightPanelProps {
   onDownload: () => void;
   onPreview: () => void;
 }
+
+export interface DitherConfig {
+  enabled: boolean;
+  ditherType: number; // 0: Bayer 2x2, 1: Bayer 4x4, 2: Bayer 8x8, 3: Random
+  pixelSize: number;
+  colorSteps: number;
+  colorFront: string; // Hex string e.g. "#ffffff"
+  colorBack: string;  // Hex string e.g. "#000000"
+}
+
