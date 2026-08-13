@@ -1,4 +1,11 @@
-
+export const DEFAULT_DITHER_CONFIG = {
+  enabled: false,
+  ditherType: 1, // Bayer 4x4 default
+  pixelSize: 4,
+  colorSteps: 4,
+  colorFront: "#ffffff",
+  colorBack: "#000000",
+};
 
 export const ASPECT_RATIOS = [
  {

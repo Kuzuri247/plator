@@ -221,5 +221,30 @@ export const useStore = create<EditorState>((set, get) => ({
       lastSelectedImageId: null,
       lastSelectedTextId: null
     })
+  },
+
+  setDitherConfig: (layerId, config) => {
+    set((state) => {
+      const newElements = state.elements.map((el) => {
+        if (el.id !== layerId) return el;
+        if (el.type !== "image") return el;
+
+        const currentDither = el.dither || { enabled: false, ditherType: 1, pixelSize: 4, colorSteps: 4, colorFront: "#ffffff", colorBack: "#000000" };
+        const newDither = { ...currentDither, ...config };
+
+        return { ...el, dither: newDither };
+      });
+
+      const newHistory = [
+        ...state.history.slice(0, state.historyIndex + 1),
+        { elements: newElements, canvasBackground: state.canvasBackground },
+      ];
+
+      return {
+        elements: newElements as CanvasElement[],
+        history: newHistory,
+        historyIndex: newHistory.length - 1,
+      };
+    });
   }
 }));

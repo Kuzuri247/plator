@@ -1,7 +1,8 @@
 "use client";
 
-import React, { memo, useRef, useMemo } from "react";
+import React, { memo, useRef, useMemo, useEffect, useState } from "react";
 import { ImageElement } from "../../types";
+import { applyDitherToCanvas } from "../../utils/dither-engine";
 
 type CropPosition =
   | "top"
@@ -92,6 +93,15 @@ const createNoiseImage = () => {
   return canvas.toDataURL("image/png");
 };
 
+function hexToRgbNormalized(hex: string): [number, number, number] {
+  const num = parseInt(hex.replace("#", ""), 16);
+  return [
+    ((num >> 16) & 255) / 255,
+    ((num >> 8) & 255) / 255,
+    (num & 255) / 255,
+  ];
+}
+
 export const ImageLayer = memo(
   ({
     img,
@@ -115,8 +125,47 @@ export const ImageLayer = memo(
   }) => {
     const layerRef = useRef<HTMLDivElement>(null);
     const ghostRef = useRef<HTMLImageElement>(null);
+    const [processedImage, setProcessedImage] = useState<string | null>(null);
 
     const noiseImage = useMemo(() => createNoiseImage(), []);
+
+    useEffect(() => {
+      if (!img.dither?.enabled) {
+        setProcessedImage(null);
+        return;
+      }
+
+      const ditherConfig = img.dither;
+
+      const processImage = async () => {
+        const originalImage = new Image();
+        originalImage.crossOrigin = "anonymous";
+        originalImage.src = img.src;
+
+        originalImage.onload = () => {
+          try {
+            const processedCanvas = applyDitherToCanvas(originalImage, {
+              ditherType: ditherConfig.ditherType,
+              pixelSize: ditherConfig.pixelSize,
+              colorSteps: ditherConfig.colorSteps,
+              colorFront: hexToRgbNormalized(ditherConfig.colorFront),
+              colorBack: hexToRgbNormalized(ditherConfig.colorBack),
+            });
+            setProcessedImage(processedCanvas.toDataURL());
+          } catch (error) {
+            console.error("Dither processing failed:", error);
+            setProcessedImage(null);
+          }
+        };
+
+        originalImage.onerror = () => {
+          console.error("Failed to load image for dithering");
+          setProcessedImage(null);
+        };
+      };
+
+      processImage();
+    }, [img.src, img.dither]);
 
     const handleCropStart = (e: React.PointerEvent, side: CropPosition) => {
       e.preventDefault();
@@ -243,7 +292,7 @@ export const ImageLayer = memo(
             style={{ clipPath: clipStyle }}
           >
             <img
-              src={img.src}
+              src={processedImage || img.src}
               alt="Layer"
               draggable={false}
               className="block object-contain pointer-events-none max-w-none max-h-none absolute"
@@ -315,6 +364,7 @@ export const ImageLayer = memo(
       prev.img.position.x === next.img.position.x &&
       prev.img.position.y === next.img.position.y &&
       prev.img.style === next.img.style &&
+      JSON.stringify(prev.img.dither) === JSON.stringify(next.img.dither) &&
       prev.isSelected === next.isSelected &&
       prev.isDragging === next.isDragging &&
       prev.isCropping === next.isCropping

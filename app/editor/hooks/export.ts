@@ -8,11 +8,11 @@ export function useExport(
   canvasRef: RefObject<HTMLDivElement | null>,
   setSelectedElementId: (id: string | null) => void,
 ) {
-  const { 
-    aspectRatio, 
-    canvasBackground, 
-    exportFormat, 
-    exportQuality 
+  const {
+    aspectRatio,
+    canvasBackground,
+    exportFormat,
+    exportQuality,
   } = useStore();
   
   const router = useRouter();

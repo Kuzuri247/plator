@@ -56,6 +56,7 @@ export function LeftPanel({
     updateElement,
     activeTab,
     setActiveTab,
+    setDitherConfig,
   } = useStore();
 
   const selectedElement = elements.find((el) => el.id === selectedElementId);
@@ -109,6 +110,10 @@ export function LeftPanel({
   const imgStyle =
     selectedElement?.type === "image"
       ? (selectedElement as ImageElement).style
+      : null;
+  const imgElement =
+    selectedElement?.type === "image"
+      ? (selectedElement as ImageElement)
       : null;
   const textStyle =
     selectedElement?.type === "text"
@@ -436,6 +441,122 @@ export function LeftPanel({
                               </p>
                             )}
                           </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="space-y-4">
+                        <Label className="text-sm font-semibold uppercase tracking-wider">
+                          Dither Effect
+                        </Label>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Enable Dither
+                            </Label>
+                            <Switch
+                              checked={imgElement?.dither?.enabled || false}
+                              onCheckedChange={(enabled) =>
+                                setDitherConfig(selectedElementId!, { enabled })
+                              }
+                            />
+                          </div>
+
+                          {imgElement?.dither?.enabled && (
+                            <div className="space-y-3">
+                              <div className="space-y-2">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Pattern Type
+                                </Label>
+                                <Select
+                                  value={String(imgElement?.dither?.ditherType || 1)}
+                                  onValueChange={(val) =>
+                                    setDitherConfig(selectedElementId!, { ditherType: Number(val) })
+                                  }
+                                >
+                                  <SelectTrigger className="h-8">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="0">Bayer 2x2</SelectItem>
+                                    <SelectItem value="1">Bayer 4x4</SelectItem>
+                                    <SelectItem value="2">Bayer 8x8</SelectItem>
+                                    <SelectItem value="3">Random Noise</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Pixel Size
+                                  </Label>
+                                  <span className="text-xs text-muted-foreground">
+                                    {imgElement?.dither?.pixelSize || 4}px
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[imgElement?.dither?.pixelSize || 4]}
+                                  onValueChange={([pixelSize]) =>
+                                    setDitherConfig(selectedElementId!, { pixelSize })
+                                  }
+                                  min={1}
+                                  max={16}
+                                  step={1}
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Color Steps
+                                  </Label>
+                                  <span className="text-xs text-muted-foreground">
+                                    {imgElement?.dither?.colorSteps || 4}
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[imgElement?.dither?.colorSteps || 4]}
+                                  onValueChange={([colorSteps]) =>
+                                    setDitherConfig(selectedElementId!, { colorSteps })
+                                  }
+                                  min={2}
+                                  max={16}
+                                  step={1}
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-2">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Foreground
+                                  </Label>
+                                  <input
+                                    type="color"
+                                    value={imgElement?.dither?.colorFront || "#ffffff"}
+                                    onChange={(e) =>
+                                      setDitherConfig(selectedElementId!, { colorFront: e.target.value })
+                                    }
+                                    className="w-full h-8 rounded border cursor-pointer"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Background
+                                  </Label>
+                                  <input
+                                    type="color"
+                                    value={imgElement?.dither?.colorBack || "#000000"}
+                                    onChange={(e) =>
+                                      setDitherConfig(selectedElementId!, { colorBack: e.target.value })
+                                    }
+                                    className="w-full h-8 rounded border cursor-pointer"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </>
