@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { XPost, LinkedInPost, InstagramPost } from "./posts";
@@ -35,7 +36,7 @@ export const Hero = () => {
                 transition={{ duration: 0.6 }}
                 className="inline-block mb-4 md:mb-6 px-3 py-1 border border-border text-muted-foreground text-[10px] md:text-xs uppercase tracking-widest bg-background/50 backdrop-blur-sm"
               >
-                v1.0 Released
+                v2.0 WebGL Studio
               </motion.div>
 
               <motion.h1
@@ -44,9 +45,9 @@ export const Hero = () => {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-4xl md:text-5xl xl:text-7xl font-bold mb-4 md:mb-6 tracking-tighter leading-[0.9] text-foreground font-display uppercase"
               >
-                Everything
+                Create
                 <br />
-                <span className="text-primary/95">In A Plate</span>
+                <span className="text-primary/95">Beyond Static</span>
               </motion.h1>
 
               <motion.p
@@ -55,8 +56,8 @@ export const Hero = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-sm md:text-lg text-muted-foreground mb-8 md:mb-10 leading-relaxed max-w-md font-light font-manrope"
               >
-                Transform content creation with meme templates, stylish text
-                integration, and smart post scheduling.
+                Design captivating visual assets with real-time WebGL mesh gradients,
+                animated noise shaders, studio textures, and instant MP4/GIF export.
               </motion.p>
 
               <motion.div
@@ -64,14 +65,15 @@ export const Hero = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <Button
-                  size="md"
-                  variant="primary"
-                  className="bg-primary/80 hover:bg-primary hover:scale-103 transition-transform duration-300 ease-in-out w-full md:w-auto"
-                  onClick={() => (window.location.href = "/editor")}
-                >
-                  Start Creating Free
-                </Button>
+                <Link href="/editor">
+                  <Button
+                    size="lg"
+                    variant="primary"
+                    className="h-14 px-8 text-base font-bold uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-300 ease-in-out shadow-2xl cursor-pointer w-full md:w-auto"
+                  >
+                    Open Editor ⚡
+                  </Button>
+                </Link>
               </motion.div>
             </div>
           </div>

@@ -34,23 +34,15 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="/preview"
+                  href="/#features"
                   className="hover:text-foreground transition-colors"
                 >
-                  Preview
+                  Features
                 </a>
               </li>
               <li>
                 <a
-                  href="/scheduler"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Scheduler
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#pricing"
+                  href="/#pricing"
                   className="hover:text-foreground transition-colors scroll-smooth"
                 >
                   Pricing

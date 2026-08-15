@@ -1,4 +1,10 @@
-import { COLOR_PALETTES } from "../values";
+import { MESH_PALETTES, COLOR_PALETTES } from "../values";
+
+export function generateRandomMeshColors(): string[] {
+  const palette =
+    MESH_PALETTES[Math.floor(Math.random() * MESH_PALETTES.length)];
+  return [...palette.colors];
+}
 
 export function generateRandomGradient(): string {
   const paletteNames = Object.keys(COLOR_PALETTES) as Array<
@@ -33,13 +39,4 @@ export function createMeshGradient(colors: string[]): string {
   });
 
   return gradientStops.join(", ");
-}
-
-export function generatePaletteGradient(
-  paletteName: keyof typeof COLOR_PALETTES,
-): string {
-  const colors = COLOR_PALETTES[paletteName];
-  const numColors = 3 + Math.floor(Math.random() * 2);
-  const selectedColors = colors.slice(0, numColors);
-  return createMeshGradient(selectedColors);
 }

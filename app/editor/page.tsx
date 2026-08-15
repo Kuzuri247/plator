@@ -14,6 +14,7 @@ import {
   Menu,
   Settings2,
   X,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -30,12 +31,13 @@ export default function EditorPage() {
 
   const [showLeftPanel, setShowLeftPanel] = useState(false);
   const [showRightPanel, setShowRightPanel] = useState(false);
-
   const [canvasScale, setCanvasScale] = useState(1);
 
   const {
     aspectRatio,
     canvasBackground,
+    meshConfig,
+    overlayConfig,
     elements,
     selectedElementId,
     selectElement,
@@ -61,13 +63,11 @@ export default function EditorPage() {
     aspectRatio,
     elements,
     updateElement,
-    selectElement,
+    selectElement
   );
 
-  const { handleDownload, handleDownloadAndPreview } = useExport(
-    canvasRef,
-    selectElement,
-  );
+  const { handleDownload, isExporting, exportProgress, exportStatus } =
+    useExport(canvasRef, selectElement);
 
   const handleImageUpload = (file: File) => {
     const reader = new FileReader();
@@ -127,6 +127,7 @@ export default function EditorPage() {
 
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden flex-col md:flex-row">
+      {/* Mobile Top Header */}
       <div className="md:hidden h-14 border-b dark:border-neutral-800 bg-card flex items-center justify-between px-4 shrink-0 z-30 relative">
         <div className="flex items-center gap-2">
           <Link href="/">
@@ -143,7 +144,7 @@ export default function EditorPage() {
             <Menu size={20} />
           </Button>
         </div>
-        <span className="font-semibold text-sm">Plator Editor</span>
+        <span className="font-semibold text-sm">Plator WebGL Studio</span>
         <Button
           variant="ghost"
           size="icon"
@@ -154,11 +155,12 @@ export default function EditorPage() {
         </Button>
       </div>
 
+      {/* Mobile Left Drawer */}
       {showLeftPanel && (
         <div className="fixed inset-0 z-40 bg-background flex flex-col md:hidden animate-in slide-in-from-left duration-200">
           <div className="h-14 border-b dark:border-neutral-800 flex items-center justify-between px-4 shrink-0">
             <span className="font-semibold text-md uppercase tracking-wider">
-              Editor
+              Layer Tools
             </span>
             <div className="flex items-center gap-2">
               <ThemeToggle />
@@ -181,11 +183,12 @@ export default function EditorPage() {
         </div>
       )}
 
+      {/* Mobile Right Drawer */}
       {showRightPanel && (
         <div className="fixed inset-0 z-40 bg-background flex flex-col md:hidden animate-in slide-in-from-right duration-200">
           <div className="h-14 border-b dark:border-neutral-800 flex items-center justify-between px-4 shrink-0">
             <span className="font-semibold text-md uppercase tracking-wider">
-              Canvas & Export
+              Studio & Export
             </span>
             <Button
               variant="ghost"
@@ -196,14 +199,12 @@ export default function EditorPage() {
             </Button>
           </div>
           <div className="flex-1 min-h-0 relative">
-            <RightPanel
-              onDownload={handleDownload}
-              onPreview={handleDownloadAndPreview}
-            />
+            <RightPanel onDownload={handleDownload} />
           </div>
         </div>
       )}
 
+      {/* Desktop Left Sidebar */}
       <div className="hidden md:flex w-80 shrink-0 border-r-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
         <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center justify-between px-4 shrink-0">
           <Link href="/">
@@ -215,16 +216,16 @@ export default function EditorPage() {
               <ArrowLeft size={20} />
             </Button>
           </Link>
-          <span className="text-md uppercase font-semibold pt-0.75 tracking-wider">
-            Editor
+          <span className="text-sm uppercase font-bold pt-0.5 tracking-wider font-display">
+            Plator Studio
           </span>
           <div className="flex items-center gap-2">
             <Link
               href="https://x.com/kuzuri247"
               target="_blank"
-              className="text-muted-foreground"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Twitter size={18} />
+              <Twitter size={16} />
             </Link>
             <ThemeToggle />
           </div>
@@ -248,6 +249,7 @@ export default function EditorPage() {
         className="hidden"
       />
 
+      {/* Main Workspace Area */}
       <div className="flex-1 relative bg-muted/20 flex flex-col min-w-0 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-20 pointer-events-none bg-[radial-gradient(#ababab_2px,transparent_1px)] bg-size-[20px_20px]" />
 
@@ -263,13 +265,15 @@ export default function EditorPage() {
               transition: "transform 0.1s ease-out",
               touchAction: "none",
             }}
-            className="origin-center shadow-2xl relative"
+            className="origin-center shadow-2xl relative rounded-lg overflow-visible"
           >
             <Canvas
               ref={canvasRef}
               width={aspectRatio.width}
               height={aspectRatio.height}
               canvasBackground={canvasBackground}
+              meshConfig={meshConfig}
+              overlayConfig={overlayConfig}
               elements={elements}
               onEmptyClick={() => hiddenInputRef.current?.click()}
               selectedElementId={selectedElementId}
@@ -283,18 +287,19 @@ export default function EditorPage() {
           </div>
         </div>
 
+        {/* Floating Quick Action Toolbar */}
         {!showLeftPanel && !showRightPanel && (
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-6 flex items-center gap-2 z-50 animate-in fade-in zoom-in duration-300">
-            <div className="bg-background/80 backdrop-blur border-2 rounded-full p-1 shadow-lg flex items-center gap-1">
+            <div className="bg-background/85 backdrop-blur-md border-2 border-border rounded-full p-1 shadow-xl flex items-center gap-1">
               <Button
                 onClick={undo}
                 disabled={historyIndex <= 0}
                 variant="ghost"
                 size="icon"
                 title="Undo"
-                className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700"
+                className="rounded-full w-8 h-8 hover:bg-muted"
               >
-                <Undo2 size={18} />
+                <Undo2 size={16} />
               </Button>
               <Button
                 onClick={redo}
@@ -302,11 +307,11 @@ export default function EditorPage() {
                 variant="ghost"
                 size="icon"
                 title="Redo"
-                className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700"
+                className="rounded-full w-8 h-8 hover:bg-muted"
               >
-                <Redo2 size={18} />
+                <Redo2 size={16} />
               </Button>
-              <div className="w-px h-6 bg-neutral-400 dark:bg-neutral-700 mx-1" />
+              <div className="w-px h-5 bg-border mx-1" />
               <Button
                 onClick={() =>
                   selectedElementId && removeElement(selectedElementId)
@@ -315,35 +320,67 @@ export default function EditorPage() {
                 variant="ghost"
                 size="icon"
                 title="Delete Element"
-                className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-muted-foreground hover:text-destructive"
+                className="rounded-full w-8 h-8 hover:bg-muted text-muted-foreground hover:text-destructive"
               >
-                <Trash2 size={18} />
+                <Trash2 size={16} />
               </Button>
               <Button
                 onClick={reset}
                 variant="ghost"
                 size="icon"
-                title="Clear Canvas"
-                className="rounded-full w-8 h-8 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-destructive hover:text-red-500"
+                title="Reset All"
+                className="rounded-full w-8 h-8 hover:bg-muted text-destructive hover:text-red-500"
               >
-                <RotateCcw size={18} />
+                <RotateCcw size={16} />
               </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Export Progress Modal Overlay */}
+        {isExporting && (
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div className="bg-card border-2 border-border shadow-2xl rounded-2xl p-6 max-w-sm w-full space-y-4 text-center animate-in zoom-in-95 duration-200">
+              <div className="flex justify-center">
+                <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <Loader2 className="size-6 animate-spin" />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <h3 className="font-bold text-base uppercase tracking-wide">
+                  Exporting Asset
+                </h3>
+                <p className="text-xs text-muted-foreground">{exportStatus}</p>
+              </div>
+
+              {exportProgress > 0 && (
+                <div className="space-y-1.5">
+                  <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                    <div
+                      className="bg-primary h-full transition-all duration-200"
+                      style={{ width: `${exportProgress}%` }}
+                    />
+                  </div>
+                  <div className="text-right text-[10px] font-mono text-muted-foreground">
+                    {exportProgress}%
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
 
-      <div className="hidden md:flex w-80 shrink-0 border-l-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
+      {/* Desktop Right Sidebar */}
+      <div className="hidden md:flex w-84 shrink-0 border-l-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
         <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center px-4 shrink-0 bg-transparent">
-          <span className="font-semibold text-md uppercase tracking-wider">
-            Canvas & Export
+          <span className="font-bold text-xs uppercase tracking-wider text-muted-foreground font-display">
+            Canvas & Shaders
           </span>
         </div>
         <div className="flex-1 min-h-0 w-full relative">
-          <RightPanel
-            onDownload={handleDownload}
-            onPreview={handleDownloadAndPreview}
-          />
+          <RightPanel onDownload={handleDownload} />
         </div>
       </div>
     </div>

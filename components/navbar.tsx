@@ -9,11 +9,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useState } from "react";
-import { LogIn, LogOut, Menu } from "lucide-react";
-import { authClient } from "@/auth-client";
+import { Menu, Sparkles } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
-import { toast } from "sonner";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -21,34 +19,13 @@ import { Label } from "@radix-ui/react-label";
 
 const NAV_ITEMS = [
   { name: "Editor", href: "/editor" },
-  { name: "Preview", href: "/preview" },
-  { name: "Scheduler", href: "/scheduler", disabled: true },
+  { name: "Features", href: "/#features" },
+  { name: "Pricing", href: "/#pricing" },
 ];
 
 export const Navbar = () => {
-  const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-
-  const { data: session } = authClient.useSession();
-
-  const handleLogin = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/",
-    });
-  };
-
-  const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-          router.refresh();
-        },
-      },
-    });
-  };
 
   return (
     <motion.nav
@@ -70,13 +47,7 @@ export const Navbar = () => {
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.name}
-              href={item.disabled ? "#" : item.href}
-              onClick={(e) => {
-                if (item.disabled) {
-                  e.preventDefault();
-                  toast.info("Coming Soon!");
-                }
-              }}
+              href={item.href}
               className={cn(
                 "transition-colors hover:text-primary",
                 pathname === item.href
@@ -95,25 +66,15 @@ export const Navbar = () => {
           </div>
 
           <div className="hidden md:block">
-            {!session ? (
+            <Link href="/editor">
               <Button
-                variant="outline"
+                variant="primary"
                 size="sm"
-                onClick={handleLogin}
-                className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/50"
+                className="gap-2 font-semibold uppercase tracking-wider text-xs bg-primary hover:bg-primary/90 text-primary-foreground shadow-next"
               >
-                <LogIn size={12} /> Login
+                <Sparkles size={14} /> Open Editor
               </Button>
-            ) : (
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="gap-2 border-neutral-400 dark:border-neutral-700 text-yellow-500 dark:text-yellow-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/15 shadow-next dark:shadow-white/50"
-              >
-                <LogOut size={12} /> Logout
-              </Button>
-            )}
+            </Link>
           </div>
 
           <div className="md:hidden flex items-center gap-2">
@@ -144,15 +105,8 @@ export const Navbar = () => {
                       transition={{ delay: 0.1 + index * 0.1 }}
                     >
                       <Link
-                        href={item.disabled ? "#" : item.href}
-                        onClick={(e) => {
-                          if (item.disabled) {
-                            e.preventDefault();
-                            toast.info("Coming Soon!");
-                          } else {
-                            setIsOpen(false);
-                          }
-                        }}
+                        href={item.href}
+                        onClick={() => setIsOpen(false)}
                         className={cn(
                           "flex items-center w-full p-2 rounded-md text-lg font-semibold font-manrope transition-all",
                           pathname === item.href
@@ -166,31 +120,16 @@ export const Navbar = () => {
                   ))}
                 </div>
 
-                {/* Mobile Auth Button */}
+                {/* Mobile CTA */}
                 <div className="p-6 border-t border-border bg-muted/20 font-space">
-                  {!session ? (
+                  <Link href="/editor" onClick={() => setIsOpen(false)}>
                     <Button
-                      variant="outline"
-                      className="w-full justify-center gap-3 h-11 text-md font-medium shadow-sm"
-                      onClick={() => {
-                        handleLogin();
-                        setIsOpen(false);
-                      }}
+                      variant="primary"
+                      className="w-full justify-center gap-3 h-11 text-md font-semibold bg-primary text-primary-foreground shadow-sm uppercase tracking-wide"
                     >
-                      <LogIn size={16} /> Login
+                      <Sparkles size={16} /> Open Editor
                     </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      className="w-full justify-center gap-3 h-11 text-md font-medium shadow-sm"
-                      onClick={() => {
-                        handleLogout();
-                        setIsOpen(false);
-                      }}
-                    >
-                      <LogOut size={16} /> Logout
-                    </Button>
-                  )}
+                  </Link>
                 </div>
               </SheetContent>
             </Sheet>
@@ -199,4 +138,4 @@ export const Navbar = () => {
       </div>
     </motion.nav>
   );
-};
+};

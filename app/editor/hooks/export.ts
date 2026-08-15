@@ -1,23 +1,46 @@
-import { RefObject } from "react";
+"use client";
+
+import { RefObject, useState } from "react";
 import { toast } from "sonner";
 import { toPng, toJpeg, toSvg } from "html-to-image";
-import { useRouter } from "next/navigation";
 import { useStore } from "../store/use-store";
+import { recordCanvasToWebM } from "../utils/canvas-recorder";
+import { transcodeToMp4, transcodeToGif } from "../utils/ffmpeg-service";
 
 export function useExport(
   canvasRef: RefObject<HTMLDivElement | null>,
-  setSelectedElementId: (id: string | null) => void,
+  setSelectedElementId: (id: string | null) => void
 ) {
   const {
     aspectRatio,
     canvasBackground,
     exportFormat,
     exportQuality,
+    exportDuration,
+    exportFps,
   } = useStore();
-  
-  const router = useRouter();
 
-  const generateImage = async () => {
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
+  const [exportStatus, setExportStatus] = useState<string>("");
+
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = url;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const downloadDataUrl = (dataUrl: string, filename: string) => {
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = dataUrl;
+    link.click();
+  };
+
+  const generateStaticImage = async () => {
     if (!canvasRef.current) return null;
     setSelectedElementId(null);
 
@@ -25,7 +48,7 @@ export function useExport(
 
     const options = {
       quality: 1.0,
-      pixelRatio: pixelRatio,
+      pixelRatio,
       width: aspectRatio.width,
       height: aspectRatio.height,
       cacheBust: true,
@@ -45,86 +68,107 @@ export function useExport(
       },
     };
 
-    try {
-      if (exportFormat === "svg") {
-        return await toSvg(canvasRef.current, {
-          ...options,
-          width: aspectRatio.width,
-          height: aspectRatio.height,
-          pixelRatio: 1,
-        });
-      } else if (exportFormat === "jpeg") {
-        return await toJpeg(canvasRef.current, {
-          ...options,
-          quality: 1.0,
-        });
-      } else {
-        return await toPng(canvasRef.current, options);
-      }
-    } catch (error) {
-      console.error("Export generation failed:", error);
-      
-      try {
-        toast.info("Retrying with compatibility mode...");
-        const fallbackOptions = {
-          ...options,
-          pixelRatio: Math.max(1, pixelRatio - 1),
-          cacheBust: true,
-        };
-        
-        if (exportFormat === "svg") {
-          return await toSvg(canvasRef.current, {
-            ...fallbackOptions,
-            pixelRatio: 1,
-          });
-        } else if (exportFormat === "jpeg") {
-          return await toJpeg(canvasRef.current, fallbackOptions);
-        } else {
-          return await toPng(canvasRef.current, fallbackOptions);
-        }
-      } catch (fallbackError) {
-        console.error("Fallback export also failed:", fallbackError);
-        toast.error("Failed to generate image.");
-        return null;
-      }
+    if (exportFormat === "svg") {
+      return await toSvg(canvasRef.current, {
+        ...options,
+        width: aspectRatio.width,
+        height: aspectRatio.height,
+        pixelRatio: 1,
+      });
+    } else if (exportFormat === "jpeg") {
+      return await toJpeg(canvasRef.current, options);
+    } else {
+      return await toPng(canvasRef.current, options);
     }
-  };
-
-  const downloadImage = (dataUrl: string) => {
-    const link = document.createElement("a");
-    link.download = `plator-export.${exportFormat}`;
-    link.href = dataUrl;
-    link.click();
   };
 
   const handleDownload = async () => {
-    const dataUrl = await generateImage();
-    if (dataUrl) {
-      downloadImage(dataUrl);
-      toast.success("Exported successfully!");
+    if (isExporting) return;
+    if (!canvasRef.current) {
+      toast.error("Canvas element not found.");
+      return;
     }
-  };
 
-  const handleDownloadAndPreview = async () => {
-    const dataUrl = await generateImage();
-    if (dataUrl) {
-      downloadImage(dataUrl);
+    setSelectedElementId(null);
+    setIsExporting(true);
+    setExportProgress(0);
 
-      try {
-        localStorage.setItem("plator-preview-image", dataUrl);
-        toast.success("Exported! Redirecting to preview...");
+    const toastId = toast.loading(`Preparing ${exportFormat.toUpperCase()} export...`);
 
-        setTimeout(() => {
-          router.push("/preview");
-        }, 1000);
-      } catch (e) {
-        toast.error("Image too large for local preview storage.");
+    try {
+      if (exportFormat === "mp4" || exportFormat === "gif" || exportFormat === "webm") {
+        setExportStatus("Recording canvas stream...");
+        toast.loading(`Capturing ${exportDuration}s 60fps canvas stream...`, {
+          id: toastId,
+        });
+
+        const webmBlob = await recordCanvasToWebM(canvasRef.current, {
+          durationSeconds: exportDuration || 3,
+          fps: exportFps || 60,
+          onProgress: (pct) => {
+            setExportProgress(Math.round(pct * 0.5)); // 0 - 50% for recording
+          },
+        });
+
+        if (exportFormat === "webm") {
+          downloadBlob(webmBlob, `plator-animation-${Date.now()}.webm`);
+          toast.success("WebM exported successfully!", { id: toastId });
+          return;
+        }
+
+        if (exportFormat === "mp4") {
+          setExportStatus("Encoding H.264 MP4 with FFmpeg WASM...");
+          toast.loading("Transcoding to MP4 with FFmpeg WASM...", { id: toastId });
+
+          const mp4Blob = await transcodeToMp4(webmBlob, (ffmpegPct) => {
+            setExportProgress(50 + Math.round(ffmpegPct * 0.5));
+          });
+
+          downloadBlob(mp4Blob, `plator-animation-${Date.now()}.mp4`);
+          toast.success("MP4 video exported successfully!", { id: toastId });
+          return;
+        }
+
+        if (exportFormat === "gif") {
+          setExportStatus("Generating 2-pass palette optimized GIF...");
+          toast.loading("Generating optimized looping GIF...", { id: toastId });
+
+          const gifBlob = await transcodeToGif(webmBlob, (ffmpegPct) => {
+            setExportProgress(50 + Math.round(ffmpegPct * 0.5));
+          });
+
+          downloadBlob(gifBlob, `plator-animation-${Date.now()}.gif`);
+          toast.success("GIF exported successfully!", { id: toastId });
+          return;
+        }
+      } else {
+        // Static image export (PNG, JPEG, SVG)
+        setExportStatus("Rendering high-resolution image...");
+        const dataUrl = await generateStaticImage();
+        if (dataUrl) {
+          downloadDataUrl(dataUrl, `plator-export-${Date.now()}.${exportFormat}`);
+          toast.success(`${exportFormat.toUpperCase()} exported successfully!`, {
+            id: toastId,
+          });
+        }
       }
+    } catch (error: any) {
+      console.error("Export failed:", error);
+      toast.error(
+        `Export failed: ${error?.message || "Unknown error occurred"}`,
+        { id: toastId }
+      );
+    } finally {
+      setIsExporting(false);
+      setExportProgress(0);
+      setExportStatus("");
     }
   };
 
   return {
     handleDownload,
-    handleDownloadAndPreview,
+    isExporting,
+    exportProgress,
+    exportStatus,
   };
 }
