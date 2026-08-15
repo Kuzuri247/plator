@@ -192,6 +192,7 @@ export interface EditorState {
   reset: () => void;
   setElements: (elements: CanvasElement[]) => void;
   setDitherConfig: (layerId: string, config: Partial<DitherConfig>) => void;
+
 }
 
 export interface LeftPanelProps {
