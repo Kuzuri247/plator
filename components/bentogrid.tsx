@@ -159,7 +159,7 @@ export const BentoGrid = () => {
     { name: "Inter", class: "font-sans" },
     { name: "Grotesk", class: "font-display" },
     { name: "Serif", class: "font-serif" },
-    { name: "Mono", class: "font-mono" },
+    { name: "Mono", class: "font-manrope" },
   ];
 
   const toggleStyle = (style: string) => {
@@ -268,7 +268,7 @@ export const BentoGrid = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
                 </span>
-                <span className="text-[10px] font-mono text-success uppercase tracking-wider">
+                <span className="text-[10px] font-manrope text-success uppercase tracking-wider">
                   System Online
                 </span>
               </div>
@@ -393,9 +393,8 @@ export const BentoGrid = () => {
 
                 <div className="h-10 border-t border-border flex items-center justify-around text-muted-foreground bg-muted/30">
                   <div
-                    className={`flex items-center gap-1 transition-colors ${
-                      editorStep === 0 ? "text-primary" : ""
-                    }`}
+                    className={`flex items-center gap-1 transition-colors ${editorStep === 0 ? "text-primary" : ""
+                      }`}
                   >
                     <Edit3 size={10} />
                     <span className="text-[8px] uppercase hidden sm:inline font-manrope">
@@ -403,9 +402,8 @@ export const BentoGrid = () => {
                     </span>
                   </div>
                   <div
-                    className={`flex items-center gap-1 transition-colors ${
-                      editorStep === 1 ? "text-primary" : ""
-                    }`}
+                    className={`flex items-center gap-1 transition-colors ${editorStep === 1 ? "text-primary" : ""
+                      }`}
                   >
                     <Move size={10} />
                     <span className="text-[8px] uppercase hidden sm:inline font-manrope">
@@ -413,9 +411,8 @@ export const BentoGrid = () => {
                     </span>
                   </div>
                   <div
-                    className={`flex items-center gap-1 transition-colors ${
-                      editorStep === 2 ? "text-primary" : ""
-                    }`}
+                    className={`flex items-center gap-1 transition-colors ${editorStep === 2 ? "text-primary" : ""
+                      }`}
                   >
                     <Sparkles size={10} />
                     <span className="text-[8px] uppercase hidden sm:inline font-manrope">
@@ -450,9 +447,8 @@ export const BentoGrid = () => {
                 key={fontIndex}
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`text-3xl lg:text-4xl text-foreground transition-all duration-200 ${
-                  fonts[fontIndex].class
-                } 
+                className={`text-3xl lg:text-4xl text-foreground transition-all duration-200 ${fonts[fontIndex].class
+                  } 
                     ${activeStyles.includes("bold") ? "font-bold" : ""} 
                     ${activeStyles.includes("italic") ? "italic" : ""} 
                     ${activeStyles.includes("underline") ? "underline" : ""}
@@ -469,31 +465,28 @@ export const BentoGrid = () => {
               <div className="flex gap-1">
                 <button
                   onClick={() => toggleStyle("bold")}
-                  className={`p-1.5 rounded transition-colors ${
-                    activeStyles.includes("bold")
+                  className={`p-1.5 rounded transition-colors ${activeStyles.includes("bold")
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-muted"
-                  }`}
+                    }`}
                 >
                   <Bold size={12} />
                 </button>
                 <button
                   onClick={() => toggleStyle("italic")}
-                  className={`p-1.5 rounded transition-colors ${
-                    activeStyles.includes("italic")
+                  className={`p-1.5 rounded transition-colors ${activeStyles.includes("italic")
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-muted"
-                  }`}
+                    }`}
                 >
                   <Italic size={12} />
                 </button>
                 <button
                   onClick={() => toggleStyle("underline")}
-                  className={`p-1.5 rounded transition-colors ${
-                    activeStyles.includes("underline")
+                  className={`p-1.5 rounded transition-colors ${activeStyles.includes("underline")
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-muted"
-                  }`}
+                    }`}
                 >
                   <Underline size={12} />
                 </button>
@@ -527,7 +520,7 @@ export const BentoGrid = () => {
                 >
                   <ChevronDown size={14} className="rotate-90" />
                 </button>
-                <div className="px-3 py-1 text-xs font-mono text-foreground border-x border-border min-w-[70px] md:min-w-20 text-center">
+                <div className="px-3 py-1 text-xs font-manrope text-foreground border-x border-border min-w-[70px] md:min-w-20 text-center">
                   {months[currentMonth].substring(0, 3)}
                 </div>
                 <button
@@ -546,7 +539,7 @@ export const BentoGrid = () => {
                 {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
                   <div
                     key={i}
-                    className="text-[10px] text-muted-foreground text-center py-1 font-mono"
+                    className="text-[10px] text-muted-foreground text-center py-1 font-manrope"
                   >
                     {d}
                   </div>
@@ -561,18 +554,16 @@ export const BentoGrid = () => {
                       key={i}
                       className={`
                            flex items-center justify-center relative group/day transition-colors min-h-6 rounded-sm
-                           ${
-                             day.current
-                               ? "bg-transparent text-muted-foreground hover:bg-muted"
-                               : "bg-transparent text-muted-foreground/20"
-                           }
+                           ${day.current
+                          ? "bg-transparent text-muted-foreground hover:bg-muted"
+                          : "bg-transparent text-muted-foreground/20"
+                        }
                            ${day.current && i % 2 !== 0 ? "bg-muted/20" : ""}
                         `}
                     >
                       <span
-                        className={`text-[10px] ${
-                          isScheduled ? "font-bold text-foreground" : ""
-                        }`}
+                        className={`text-[10px] ${isScheduled ? "font-bold text-foreground" : ""
+                          }`}
                       >
                         {day.num}
                       </span>
@@ -609,21 +600,19 @@ export const BentoGrid = () => {
               <div className="flex border-2 dark:border-neutral-800 bg-muted/30 p-0.5">
                 <button
                   onClick={() => setPreviewMode("mobile")}
-                  className={`p-2 transition-all duration-300 ${
-                    previewMode === "mobile"
+                  className={`p-2 transition-all duration-300 ${previewMode === "mobile"
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
-                  }`}
+                    }`}
                 >
                   <Smartphone size={14} />
                 </button>
                 <button
                   onClick={() => setPreviewMode("desktop")}
-                  className={`p-2 transition-all duration-300 ${
-                    previewMode === "desktop"
+                  className={`p-2 transition-all duration-300 ${previewMode === "desktop"
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
-                  }`}
+                    }`}
                 >
                   <Monitor size={14} />
                 </button>

@@ -8,7 +8,9 @@ export interface ImageStyle {
   shadow: string;
   blur: number;
   opacity: number;
-  noise: number;
+  brightness?: number;
+  contrast?: number;
+  saturate?: number;
   rotate: number;
   rotateX: number;
   rotateY: number;
@@ -34,7 +36,9 @@ export const DEFAULT_IMAGE_STYLE: ImageStyle = {
   rotateY: 0,
   blur: 0,
   opacity: 100,
-  noise: 0,
+  brightness: 100,
+  contrast: 100,
+  saturate: 100,
   clipPath: "none",
   flipX: false,
   flipY: false,

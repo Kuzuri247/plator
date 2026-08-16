@@ -68,31 +68,6 @@ const CropHandle = ({
   );
 };
 
-const createNoiseImage = () => {
-  if (typeof window === "undefined") return "";
-
-  const canvas = document.createElement("canvas");
-  canvas.width = 128;
-  canvas.height = 128;
-  const ctx = canvas.getContext("2d");
-
-  if (!ctx) return "";
-
-  const imageData = ctx.createImageData(canvas.width, canvas.height);
-  const data = imageData.data;
-
-  for (let i = 0; i < data.length; i += 4) {
-    const value = Math.floor(Math.random() * 255);
-    data[i] = value;
-    data[i + 1] = value;
-    data[i + 2] = value;
-    data[i + 3] = 255;
-  }
-
-  ctx.putImageData(imageData, 0, 0);
-  return canvas.toDataURL("image/png");
-};
-
 function hexToRgbNormalized(hex: string): [number, number, number] {
   const num = parseInt(hex.replace("#", ""), 16);
   return [
@@ -126,8 +101,6 @@ export const ImageLayer = memo(
     const layerRef = useRef<HTMLDivElement>(null);
     const ghostRef = useRef<HTMLImageElement>(null);
     const [processedImage, setProcessedImage] = useState<string | null>(null);
-
-    const noiseImage = useMemo(() => createNoiseImage(), []);
 
     useEffect(() => {
       if (!img.dither?.enabled) {
@@ -300,9 +273,11 @@ export const ImageLayer = memo(
               ? `blur(${img.style.glassBlur || 16}px) saturate(180%)`
               : undefined,
             opacity: img.style.opacity / 100,
-            filter: `blur(${img.style.blur}px) ${
-              isSelected ? "brightness(1.03)" : ""
-            }`,
+            filter: `blur(${img.style.blur || 0}px) brightness(${
+              (img.style.brightness ?? 100) / 100
+            }) contrast(${(img.style.contrast ?? 100) / 100}) saturate(${
+              (img.style.saturate ?? 100) / 100
+            })`,
             backfaceVisibility: has3DRotation ? "visible" : "hidden",
           }}
         >
@@ -322,17 +297,6 @@ export const ImageLayer = memo(
                 top: `${-top * heightFactor}%`,
               }}
             />
-
-            {img.style.noise > 0 && (
-              <div
-                className="absolute inset-0 z-10 pointer-events-none mix-blend-overlay"
-                style={{
-                  opacity: img.style.noise / 100,
-                  backgroundImage: `url("${noiseImage}")`,
-                  backgroundRepeat: "repeat",
-                }}
-              />
-            )}
           </div>
 
           {isCropping && isSelected && (

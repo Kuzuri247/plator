@@ -276,7 +276,7 @@ export default function EditorPage() {
                 <span className="text-[11px] font-medium text-muted-foreground">
                   {aspectRatio.label}
                 </span>
-                <span className="text-[10px] font-mono text-muted-foreground/80 hidden sm:inline">
+                <span className="text-[10px] font-manrope text-muted-foreground/80 hidden sm:inline">
                   ({aspectRatio.width}×{aspectRatio.height})
                 </span>
               </div>
@@ -304,7 +304,7 @@ export default function EditorPage() {
                           {ratio.label}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-muted-foreground">
+                      <span className="text-[10px] font-manrope text-muted-foreground">
                         {ratio.width} × {ratio.height}
                       </span>
                     </div>
@@ -424,7 +424,7 @@ export default function EditorPage() {
                       style={{ width: `${exportProgress}%` }}
                     />
                   </div>
-                  <div className="text-right text-[10px] font-mono text-muted-foreground">
+                  <div className="text-right text-[10px] font-manrope text-muted-foreground">
                     {exportProgress}%
                   </div>
                 </div>

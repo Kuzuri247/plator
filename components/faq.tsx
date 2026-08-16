@@ -39,7 +39,7 @@ export function FAQ() {
   return (
     <section id="faq" className="py-20 px-4 max-w-4xl mx-auto">
       <div className="text-center max-w-xl mx-auto mb-12">
-        <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2">
+        <div className="text-xs font-manrope uppercase tracking-wider text-muted-foreground mb-2">
           Documentation & FAQ
         </div>
         <h2 className="text-3xl font-semibold tracking-[-0.02em] text-foreground mb-3">

@@ -12,9 +12,9 @@ import {
   Italic,
   CaseUpper,
   ALargeSmall,
-  Ghost,
   Crop,
   Layers,
+  ArrowLeftRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -185,6 +185,7 @@ export function LeftPanel({
                         Properties
                       </Label>
                       <div className="space-y-4 grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
+                        {/* Scale */}
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium text-muted-foreground">
@@ -205,6 +206,7 @@ export function LeftPanel({
                           />
                         </div>
 
+                        {/* Opacity */}
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium text-muted-foreground">
@@ -225,6 +227,70 @@ export function LeftPanel({
                           />
                         </div>
 
+                        {/* Brightness */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Brightness
+                            </Label>
+                            <span className="text-xs text-muted-foreground">
+                              {imgStyle.brightness ?? 100}%
+                            </span>
+                          </div>
+                          <Slider
+                            value={[imgStyle.brightness ?? 100]}
+                            onValueChange={([val]) =>
+                              updateSelected({ brightness: val })
+                            }
+                            min={20}
+                            max={180}
+                            step={1}
+                          />
+                        </div>
+
+                        {/* Contrast */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Contrast
+                            </Label>
+                            <span className="text-xs text-muted-foreground">
+                              {imgStyle.contrast ?? 100}%
+                            </span>
+                          </div>
+                          <Slider
+                            value={[imgStyle.contrast ?? 100]}
+                            onValueChange={([val]) =>
+                              updateSelected({ contrast: val })
+                            }
+                            min={20}
+                            max={180}
+                            step={1}
+                          />
+                        </div>
+
+                        {/* Saturation */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Saturation
+                            </Label>
+                            <span className="text-xs text-muted-foreground">
+                              {imgStyle.saturate ?? 100}%
+                            </span>
+                          </div>
+                          <Slider
+                            value={[imgStyle.saturate ?? 100]}
+                            onValueChange={([val]) =>
+                              updateSelected({ saturate: val })
+                            }
+                            min={0}
+                            max={200}
+                            step={1}
+                          />
+                        </div>
+
+                        {/* Blur */}
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium text-muted-foreground">
@@ -245,26 +311,7 @@ export function LeftPanel({
                           />
                         </div>
 
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Noise
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {imgStyle.noise}%
-                            </span>
-                          </div>
-                          <Slider
-                            value={[imgStyle.noise]}
-                            onValueChange={([val]) =>
-                              updateSelected({ noise: val })
-                            }
-                            min={0}
-                            max={100}
-                            step={1}
-                          />
-                        </div>
-
+                        {/* Roundness */}
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium text-muted-foreground">
@@ -285,6 +332,7 @@ export function LeftPanel({
                           />
                         </div>
 
+                        {/* Shadow */}
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium text-muted-foreground">
@@ -415,8 +463,8 @@ export function LeftPanel({
                               <button
                                 onClick={onToggleCropping}
                                 className={`h-8.5 w-22 mr-2 rounded-xs text-xs flex items-center justify-center border-2 transition-colors ${isCropping
-                                    ? "bg-primary dark:bg-primary/90 text-primary-foreground border-dashed border-3 border-black"
-                                    : "bg-transparent text-muted-foreground border-dashed border-neutral-300 dark:border-neutral-700"
+                                  ? "bg-primary dark:bg-primary/90 text-primary-foreground border-dashed border-3 border-black"
+                                  : "bg-transparent text-muted-foreground border-dashed border-neutral-300 dark:border-neutral-700"
                                   }`}
                               >
                                 <Crop className="size-3 mr-1.5" />
@@ -450,35 +498,144 @@ export function LeftPanel({
 
                         {imgElement?.dither?.enabled && (
                           <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
-                            <div className="space-y-2">
-                              <Label className="text-xs font-medium text-muted-foreground">
-                                Pattern Type
-                              </Label>
-                              <Select
-                                value={String(imgElement?.dither?.ditherType ?? 1)}
-                                onValueChange={(val) =>
-                                  setDitherConfig(selectedElementId!, { ditherType: Number(val) })
-                                }
-                              >
-                                <SelectTrigger className="h-8">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="0">Bayer 2x2</SelectItem>
-                                  <SelectItem value="1">Bayer 4x4</SelectItem>
-                                  <SelectItem value="2">Bayer 8x8</SelectItem>
-                                  <SelectItem value="3">Random Noise</SelectItem>
-                                </SelectContent>
-                              </Select>
+                            {/* Row 1: Pattern Dropdown (Left) + Swatches & Swap (Right) */}
+                            <div className="grid grid-cols-12 gap-2 items-end">
+                              <div className="col-span-5 pr-1 space-y-1.5 min-w-0">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Pattern Type
+                                </Label>
+                                <Select
+                                  value={String(imgElement?.dither?.ditherType ?? 1)}
+                                  onValueChange={(val) =>
+                                    setDitherConfig(selectedElementId!, { ditherType: Number(val) })
+                                  }
+                                >
+                                  <SelectTrigger className="h-8 w-full">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="0">Bayer 2x2</SelectItem>
+                                    <SelectItem value="1">Bayer 4x4</SelectItem>
+                                    <SelectItem value="2">Bayer 8x8</SelectItem>
+                                    <SelectItem value="3">Noise</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <div className="col-span-7 flex items-center justify-end gap-1.5 pb-0.5">
+                                {/* Foreground Color */}
+                                <div className="flex flex-col items-center gap-1">
+                                  <Label className="text-xs mb-1.5 font-medium text-muted-foreground">
+                                    BG color
+                                  </Label>
+                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                    <div
+                                      className="absolute inset-0"
+                                      style={{
+                                        backgroundColor: imgElement?.dither?.colorFront || "#ffffff",
+                                      }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={imgElement?.dither?.colorFront || "#ffffff"}
+                                      onChange={(e) =>
+                                        setDitherConfig(selectedElementId!, { colorFront: e.target.value })
+                                      }
+                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                      title="Foreground Color"
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Invert / Swap Button */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const currentFront = imgElement?.dither?.colorFront || "#ffffff";
+                                    const currentBack = imgElement?.dither?.colorBack || "#000000";
+                                    setDitherConfig(selectedElementId!, {
+                                      colorFront: currentBack,
+                                      colorBack: currentFront,
+                                    });
+                                  }}
+                                  className="size-7 flex items-center justify-center rounded-md border border-border/70 hover:border-primary text-muted-foreground hover:text-foreground mt-6 transition-colors cursor-pointer bg-background/50 hover:bg-muted/50 shadow-xs"
+                                  title="Swap Foreground & Background Colors"
+                                >
+                                  <ArrowLeftRight className="size-3" />
+                                </button>
+
+                                {/* Background Color */}
+                                <div className="flex flex-col items-center gap-1">
+                                  <Label className="text-xs mb-1.5 font-medium text-muted-foreground">
+                                    FG color
+                                  </Label>
+                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                    <div
+                                      className="absolute inset-0"
+                                      style={{
+                                        backgroundColor: imgElement?.dither?.colorBack || "#000000",
+                                      }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={imgElement?.dither?.colorBack || "#000000"}
+                                      onChange={(e) =>
+                                        setDitherConfig(selectedElementId!, { colorBack: e.target.value })
+                                      }
+                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                      title="Background Color"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2 *:pr-1">
+                            {/* Row 2: Quick Palette Presets */}
+                            <div className="space-y-1.5 pt-0.5">
+                              <Label className="text-[11px] font-medium text-muted-foreground">
+                                Color Presets
+                              </Label>
+                              <div className="grid grid-cols-3 gap-1.5">
+                                {[
+                                  { name: "Mono", front: "#ffffff", back: "#000000" },
+                                  { name: "GameBoy", front: "#9bbc0f", back: "#0f380f" },
+                                  { name: "Cyber", front: "#00dfd8", back: "#ff007f" },
+                                  { name: "Matrix", front: "#00ff66", back: "#0a1a0f" },
+                                  { name: "Amber", front: "#ffb000", back: "#1a0f00" },
+                                  { name: "Sepia", front: "#f4ecd8", back: "#3d2b1f" },
+                                ].map((pal) => (
+                                  <button
+                                    key={pal.name}
+                                    type="button"
+                                    onClick={() =>
+                                      setDitherConfig(selectedElementId!, {
+                                        colorFront: pal.front,
+                                        colorBack: pal.back,
+                                      })
+                                    }
+                                    className="group relative flex flex-col items-center p-1 rounded-md border border-border/70 hover:border-primary/80 transition-all hover:scale-105 bg-background/50 cursor-pointer shadow-xs"
+                                    title={pal.name}
+                                  >
+                                    <div className="flex h-3.5 w-full rounded-xs overflow-hidden mb-1 shadow-2xs">
+                                      <div className="flex-1 h-full" style={{ backgroundColor: pal.front }} />
+                                      <div className="flex-1 h-full" style={{ backgroundColor: pal.back }} />
+                                    </div>
+                                    <span className="text-[9px] font-medium text-muted-foreground group-hover:text-foreground truncate block">
+                                      {pal.name}
+                                    </span>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Row 3: Pixel Size & Color Steps Sliders */}
+                            <div className="grid grid-cols-2 gap-2 *:pr-1 pt-0.5">
                               <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                   <Label className="text-xs font-medium text-muted-foreground">
                                     Pixel Size
                                   </Label>
-                                  <span className="text-xs font-mono text-muted-foreground">
+                                  <span className="text-xs font-manrope text-muted-foreground">
                                     {imgElement?.dither?.pixelSize ?? 4}px
                                   </span>
                                 </div>
@@ -498,7 +655,7 @@ export function LeftPanel({
                                   <Label className="text-xs font-medium text-muted-foreground">
                                     Color Steps
                                   </Label>
-                                  <span className="text-xs font-mono text-muted-foreground">
+                                  <span className="text-xs font-manrope text-muted-foreground">
                                     {imgElement?.dither?.colorSteps ?? 4}
                                   </span>
                                 </div>
@@ -511,62 +668,6 @@ export function LeftPanel({
                                   max={16}
                                   step={1}
                                 />
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-2 *:pr-1">
-                              <div className="space-y-2">
-                                <Label className="text-xs font-medium text-muted-foreground">
-                                  Foreground
-                                </Label>
-                                <div className="flex items-center gap-2">
-                                  <div className="relative size-7 rounded-md overflow-hidden border-2 border-neutral-300 dark:border-neutral-700 shrink-0">
-                                    <div
-                                      className="absolute inset-0"
-                                      style={{
-                                        backgroundColor: imgElement?.dither?.colorFront || "#ffffff",
-                                      }}
-                                    />
-                                    <input
-                                      type="color"
-                                      value={imgElement?.dither?.colorFront || "#ffffff"}
-                                      onChange={(e) =>
-                                        setDitherConfig(selectedElementId!, { colorFront: e.target.value })
-                                      }
-                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                    />
-                                  </div>
-                                  <span className="text-[11px] font-mono text-muted-foreground uppercase">
-                                    {imgElement?.dither?.colorFront || "#ffffff"}
-                                  </span>
-                                </div>
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label className="text-xs font-medium text-muted-foreground">
-                                  Background
-                                </Label>
-                                <div className="flex items-center gap-2">
-                                  <div className="relative size-7 rounded-md overflow-hidden border-2 border-neutral-300 dark:border-neutral-700 shrink-0">
-                                    <div
-                                      className="absolute inset-0"
-                                      style={{
-                                        backgroundColor: imgElement?.dither?.colorBack || "#000000",
-                                      }}
-                                    />
-                                    <input
-                                      type="color"
-                                      value={imgElement?.dither?.colorBack || "#000000"}
-                                      onChange={(e) =>
-                                        setDitherConfig(selectedElementId!, { colorBack: e.target.value })
-                                      }
-                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                    />
-                                  </div>
-                                  <span className="text-[11px] font-mono text-muted-foreground uppercase">
-                                    {imgElement?.dither?.colorBack || "#000000"}
-                                  </span>
-                                </div>
                               </div>
                             </div>
                           </div>
@@ -636,7 +737,7 @@ export function LeftPanel({
                           }
                         >
                           <span className="text-[13px] font-medium text-muted-foreground col-start-1 flex items-center">
-                            Family
+                            Font
                           </span>
                           <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
                             <div className="flex items-center gap-2">
@@ -667,7 +768,7 @@ export function LeftPanel({
                           }
                         >
                           <span className="text-[13px] font-medium text-muted-foreground w-fit col-start-4 flex items-center">
-                            Weight
+                            Wgt.
                           </span>
                           <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
                             <div className="flex items-center gap-2">
@@ -840,73 +941,43 @@ export function LeftPanel({
                       </div>
 
                       {textStyle.showBackground && (
-                        <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 px-2 font-manrope">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Box Color
-                            </Label>
-                            <div className="relative size-6 rounded-md overflow-hidden border-2 border-neutral-300 dark:border-neutral-500">
-                              <div
-                                className="absolute inset-0"
-                                style={{
-                                  backgroundColor: textStyle.backgroundColor,
-                                }}
-                              />
-                              <Input
-                                type="color"
-                                value={textStyle.backgroundColor}
-                                onChange={(e) =>
-                                  updateSelected({
-                                    backgroundColor: e.target.value,
-                                  })
-                                }
-                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-3 grid grid-cols-2 gap-4 *:pr-2">
-                            <div>
-                              <div className="flex justify-between pb-3">
-                                <Label className="text-xs font-medium text-muted-foreground">
-                                  Rounded
-                                </Label>
-                                <span className="text-xs text-muted-foreground font-manrope">
-                                  {textStyle.borderRadius}px
-                                </span>
+                        <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
+                          {/* Row 1: Box Color & Shadow */}
+                          <div className="grid grid-cols-2 gap-2 items-center *:pr-1">
+                            <div className="flex items-center justify-between">
+                              <Label className="text-xs font-medium text-muted-foreground">
+                                Background
+                              </Label>
+                              <div className="flex items-center gap-2">
+                                <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      backgroundColor: textStyle.backgroundColor,
+                                    }}
+                                  />
+                                  <input
+                                    type="color"
+                                    value={textStyle.backgroundColor}
+                                    onChange={(e) =>
+                                      updateSelected({
+                                        backgroundColor: e.target.value,
+                                      })
+                                    }
+                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                    title="Box Background Color"
+                                  />
+                                </div>
+
                               </div>
-                              <Slider
-                                value={[textStyle.borderRadius]}
-                                onValueChange={([v]) =>
-                                  updateSelected({ borderRadius: v })
-                                }
-                                min={0}
-                                max={50}
-                              />
                             </div>
-                            <div>
-                              <div className="flex justify-between pb-3">
+
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
                                 <Label className="text-xs font-medium text-muted-foreground">
-                                  Padding
-                                </Label>
-                                <span className="text-xs text-muted-foreground font-manrope">
-                                  {textStyle.padding}px
-                                </span>
-                              </div>
-                              <Slider
-                                value={[textStyle.padding]}
-                                onValueChange={([v]) =>
-                                  updateSelected({ padding: v })
-                                }
-                                min={0}
-                                max={30}
-                              />
-                            </div>
-                            <div className="col-span-2">
-                              <div className="flex justify-between">
-                                <Label className="text-xs font-medium text-muted-foreground flex justify-center pb-3">
                                   Shadow
                                 </Label>
-                                <span className="text-xs text-muted-foreground font-manrope">
+                                <span className="text-xs text-muted-foreground">
                                   {SHADOW_PRESETS.find(
                                     (s) =>
                                       s.value === textStyle.backgroundShadow,
@@ -936,6 +1007,49 @@ export function LeftPanel({
                                 }}
                                 min={0}
                                 max={SHADOW_PRESETS.length - 1}
+                                step={1}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Row 2: Padding & Roundness */}
+                          <div className="grid grid-cols-2 gap-2 font-semibold *:pr-1">
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Padding
+                                </Label>
+                                <span className="text-xs text-muted-foreground">
+                                  {textStyle.padding}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[textStyle.padding]}
+                                onValueChange={([v]) =>
+                                  updateSelected({ padding: v })
+                                }
+                                min={0}
+                                max={30}
+                                step={1}
+                              />
+                            </div>
+
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Roundness
+                                </Label>
+                                <span className="text-xs text-muted-foreground">
+                                  {textStyle.borderRadius}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[textStyle.borderRadius]}
+                                onValueChange={([v]) =>
+                                  updateSelected({ borderRadius: v })
+                                }
+                                min={0}
+                                max={50}
                                 step={1}
                               />
                             </div>

@@ -148,7 +148,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-semibold uppercase tracking-wider">
-                      Color Palettes
+                      Palette Combinations
                     </Label>
                     <Button
                       onClick={handleRandomMesh}
@@ -192,7 +192,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                 {/* Section 2: Custom Mesh Nodes */}
                 <div className="space-y-3">
                   <Label className="text-sm font-semibold uppercase tracking-wider">
-                    Custom Mesh Nodes (5 Colors)
+                    Color Palette
                   </Label>
                   <div className="flex items-center justify-between gap-1">
                     {meshConfig.colors.map((color, idx) => (
@@ -214,7 +214,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
                           />
                         </div>
-                        <span className="text-[10px] font-mono text-muted-foreground">
+                        <span className="text-[10px] font-manrope text-muted-foreground">
                           #{idx + 1}
                         </span>
                       </div>
@@ -228,7 +228,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                      <Sliders className="size-3.5" /> Fluid Motion
+                      Fluid Motion
                     </Label>
                     <div className="flex items-center gap-2">
                       <span className="text-[11px] font-medium text-muted-foreground">
@@ -245,11 +245,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
 
                   <div className="grid grid-cols-2 gap-3 font-semibold font-manrope *:pr-1">
                     <div
-                      className={`space-y-3 ${
-                        !meshConfig.isAnimating
-                          ? "opacity-40 pointer-events-none"
-                          : ""
-                      }`}
+                      className={`space-y-3 ${!meshConfig.isAnimating
+                        ? "opacity-40 pointer-events-none"
+                        : ""
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <Label className="text-xs font-medium text-muted-foreground">
@@ -339,7 +338,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-semibold uppercase tracking-wider">
-                      Real-Time Dither Shader
+                      Background Dither
                     </Label>
                     <Switch
                       checked={meshConfig.ditherEnabled}
@@ -402,7 +401,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           <Label className="text-xs font-medium text-muted-foreground">
                             Pixel Size
                           </Label>
-                          <span className="text-xs font-mono text-muted-foreground">
+                          <span className="text-xs font-manrope text-muted-foreground">
                             {meshConfig.ditherPixelSize}px
                           </span>
                         </div>
@@ -433,7 +432,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                 {/* Vector Patterns */}
                 <div className="space-y-3">
                   <Label className="text-sm font-semibold uppercase tracking-wider">
-                    Vector Patterns (SVG)
+                    Patterns
                   </Label>
                   <div className="grid grid-cols-3 gap-2 font-manrope">
                     {(
@@ -451,11 +450,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                         onClick={() =>
                           setOverlayConfig({ pattern: p.id })
                         }
-                        className={`p-2 rounded-lg border text-xs font-medium text-center transition-all cursor-pointer ${
-                          overlayConfig.pattern === p.id
-                            ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
-                            : "border-border/70 hover:border-border text-muted-foreground"
-                        }`}
+                        className={`p-2 rounded-lg border text-xs font-medium text-center transition-all cursor-pointer ${overlayConfig.pattern === p.id
+                          ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
+                          : "border-border/70 hover:border-border text-muted-foreground"
+                          }`}
                       >
                         {p.name}
                       </button>
@@ -490,7 +488,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                 {/* Studio Textures */}
                 <div className="space-y-3">
                   <Label className="text-sm font-semibold uppercase tracking-wider">
-                    Studio Texture Layer
+                    Texture Layer
                   </Label>
                   <div className="grid grid-cols-2 gap-2 font-manrope">
                     {(
@@ -506,11 +504,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                         onClick={() =>
                           setOverlayConfig({ texture: t.id })
                         }
-                        className={`p-2.5 rounded-lg border text-xs font-medium text-center transition-all cursor-pointer ${
-                          overlayConfig.texture === t.id
-                            ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
-                            : "border-border/70 hover:border-border text-muted-foreground"
-                        }`}
+                        className={`p-2.5 rounded-lg border text-xs font-medium text-center transition-all cursor-pointer ${overlayConfig.texture === t.id
+                          ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
+                          : "border-border/70 hover:border-border text-muted-foreground"
+                          }`}
                       >
                         {t.name}
                       </button>
@@ -553,21 +550,19 @@ export function RightPanel({ onDownload }: RightPanelProps) {
               <div className="grid grid-cols-2 gap-1 bg-muted/60 p-1 rounded-lg shrink-0">
                 <button
                   onClick={() => setPictureSubTab("wallpapers")}
-                  className={`py-1.5 rounded text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                    pictureSubTab === "wallpapers"
-                      ? "bg-background text-foreground shadow-xs font-bold"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={`py-1.5 rounded text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer ${pictureSubTab === "wallpapers"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
+                    }`}
                 >
                   <ImageIcon className="size-3.5" /> Wallpapers
                 </button>
                 <button
                   onClick={() => setPictureSubTab("memes")}
-                  className={`py-1.5 rounded text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                    pictureSubTab === "memes"
-                      ? "bg-background text-foreground shadow-xs font-bold"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={`py-1.5 rounded text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer ${pictureSubTab === "memes"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
+                    }`}
                 >
                   <Laugh className="size-3.5" /> Memes
                 </button>
@@ -652,7 +647,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
       <div className="p-4 border-t-2 dark:border-neutral-800 shrink-0 bg-card z-10 space-y-3">
         <div className="flex items-center justify-between">
           <Label className="text-sm font-semibold uppercase tracking-wider flex items-center gap-1.5">
-            <Film className="size-3.5 text-primary" /> Export 
+            <Film className="size-3.5 text-primary" /> Export
           </Label>
           <span className="text-[10px] font-semibold text-primary uppercase tracking-wide">
             {isVideoFormat ? "WASM Video" : "Hi-Res Snapshot"}
@@ -666,11 +661,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
               <button
                 key={fmt}
                 onClick={() => setExportFormat(fmt)}
-                className={`py-1 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
-                  exportFormat === fmt
-                    ? "bg-primary text-primary-foreground shadow-xs scale-102"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`py-1 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${exportFormat === fmt
+                  ? "bg-primary text-primary-foreground shadow-xs scale-102"
+                  : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 {fmt}
               </button>
@@ -684,7 +678,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
             <div>
               <div className="flex justify-between text-[11px] font-medium mb-1">
                 <span>Duration</span>
-                <span className="font-mono text-primary font-bold">
+                <span className="font-manrope text-primary font-bold">
                   {exportDuration}s
                 </span>
               </div>
@@ -700,7 +694,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
             <div>
               <div className="flex justify-between text-[11px] font-medium mb-1">
                 <span>Framerate</span>
-                <span className="font-mono text-primary font-bold">
+                <span className="font-manrope text-primary font-bold">
                   {exportFps} FPS
                 </span>
               </div>
@@ -728,11 +722,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                 <button
                   key={q}
                   onClick={() => setExportQuality(q)}
-                  className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${
-                    exportQuality === q
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-muted-foreground"
-                  }`}
+                  className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${exportQuality === q
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground"
+                    }`}
                 >
                   {q}x
                 </button>
