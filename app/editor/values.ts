@@ -195,6 +195,34 @@ export const CLIP_PATHS = [
     name: "Pentagon",
     value: "polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)",
   },
+  {
+    name: "Hexagon",
+    value: "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+  },
+  {
+    name: "Octagon",
+    value: "polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)",
+  },
+  {
+    name: "Star",
+    value: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
+  },
+  {
+    name: "Message",
+    value: "polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%)",
+  },
+];
+
+export const TRANSFORM_3D_PRESETS = [
+  { id: "flat", name: "Flat", rotateX: 0, rotateY: 0, rotate: 0 },
+  { id: "tilt-left", name: "Tilt Left", rotateX: 10, rotateY: -20, rotate: 2 },
+  { id: "tilt-right", name: "Tilt Right", rotateX: 10, rotateY: 20, rotate: -2 },
+  { id: "isometric-l", name: "Isometric Left", rotateX: 30, rotateY: -30, rotate: 0 },
+  { id: "isometric-r", name: "Isometric Right", rotateX: 30, rotateY: 30, rotate: 0 },
+  { id: "top-down", name: "Top Down", rotateX: 35, rotateY: 0, rotate: 0 },
+  { id: "front-tilt", name: "Front Tilt", rotateX: -20, rotateY: 0, rotate: 0 },
+  { id: "dramatic", name: "Dramatic", rotateX: 25, rotateY: -35, rotate: 10 },
+  { id: "floating", name: "Floating", rotateX: 15, rotateY: -15, rotate: 5 },
 ];
 
 export const SHADOW_PRESETS = [

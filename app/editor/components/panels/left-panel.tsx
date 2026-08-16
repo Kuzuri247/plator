@@ -5,14 +5,12 @@ import {
   Image as ImageIcon,
   Plus,
   Rotate3d,
-  Scissors,
   Highlighter,
   Underline,
   Strikethrough,
   Italic,
   CaseUpper,
   ALargeSmall,
-  Crop,
   Layers,
   ArrowLeftRight,
 } from "lucide-react";
@@ -43,6 +41,7 @@ import {
   FONT_WEIGHTS,
   SHADOW_PRESETS,
   CLIP_PATHS,
+  TRANSFORM_3D_PRESETS,
 } from "../../values";
 import { cn } from "@/lib/utils";
 import { useStore } from "../../store/use-store";
@@ -179,7 +178,7 @@ export function LeftPanel({
             <ScrollArea className="h-full w-full">
               <div className="p-4 flex flex-col gap-6 pb-20">
                 <div className="space-y-5">
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <Label className="text-sm font-semibold uppercase tracking-wider">
                       Upload
                     </Label>
@@ -195,13 +194,13 @@ export function LeftPanel({
                         asChild
                         variant="outline"
                         size="sm"
-                        className="w-full border-dashed bg-transparent border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
+                        className="w-full rounded-sm border-dashed bg-transparent border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
                       >
                         <label
                           htmlFor="image-upload"
                           className="cursor-pointer"
                         >
-                          <Plus className="w-3.5 h-3.5 mr-2" /> Add Image
+                          <Plus className="w-3.5 h-3.5 mr-2" /> Add Image Layer
                         </label>
                       </Button>
                     </div>
@@ -405,7 +404,7 @@ export function LeftPanel({
                         </Label>
 
                         {/* 3D Rotation Controls */}
-                        <div className="space-y-3 font-manrope">
+                        <div className="space-y-3 font-manrope font-semibold">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium flex items-center gap-2">
                               <Rotate3d className="size-3" /> 3D Rotation
@@ -413,7 +412,7 @@ export function LeftPanel({
                           </div>
 
                           <div className="space-y-2 pt-2">
-                            <div className="grid grid-cols-3 px-2 items-center gap-2 justify-center">
+                            <div className="grid grid-cols-3 gap-2 items-center justify-center">
                               <Label className="text-[10px] text-muted-foreground flex justify-center">
                                 X: {imgStyle.rotateX}°
                               </Label>
@@ -425,7 +424,7 @@ export function LeftPanel({
                               </Label>
                             </div>
 
-                            <div className="flex gap-4 px-2">
+                            <div className="grid grid-cols-3 gap-2">
                               <Slider
                                 value={[imgStyle.rotateX]}
                                 onValueChange={([val]) =>
@@ -460,26 +459,28 @@ export function LeftPanel({
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-3 relative">
-                          <div className="flex col-span-2 items-center justify-normal gap-3">
+                        {/* Row: Clip Path & 3D Preset Dropdowns */}
+                        <div className="grid grid-cols-2 gap-6 font-manrope font-semibold pr-2">
+                          {/* 1. Clip Path */}
+                          <div className="space-y-1.5 min-w-0">
+                            <Label className="text-xs font-medium text-muted-foreground truncate block">
+                              Clip Path
+                            </Label>
                             <Select
-                              value={imgStyle.clipPath}
+                              value={imgStyle.clipPath || "none"}
                               onValueChange={(val) =>
                                 updateSelected({ clipPath: val })
                               }
                             >
-                              <span className="text-xs font-medium text-muted-foreground flex justify-center items-center">
-                                <Scissors className="size-3 mr-1.5" />
-                                Clip Path
-                              </span>
-                              <SelectTrigger className="h-8 bg-transparent ">
+                              <SelectTrigger className="h-8 w-full text-xs">
                                 <SelectValue />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="text-xs max-h-56">
                                 {CLIP_PATHS.map((clip) => (
                                   <SelectItem
                                     key={clip.name}
                                     value={clip.value}
+                                    className="text-xs py-1.5 cursor-pointer"
                                   >
                                     {clip.name}
                                   </SelectItem>
@@ -488,25 +489,49 @@ export function LeftPanel({
                             </Select>
                           </div>
 
-                          <div className="relative col-span-1 text-muted-foreground">
-                            <div className="flex items-center justify-end">
-                              <button
-                                onClick={onToggleCropping}
-                                className={`h-8.5 w-22 mr-2 rounded-xs text-xs flex items-center justify-center border-2 transition-colors ${isCropping
-                                  ? "bg-primary dark:bg-primary/90 text-primary-foreground border-dashed border-3 border-black"
-                                  : "bg-transparent text-muted-foreground border-dashed border-neutral-300 dark:border-neutral-700"
-                                  }`}
-                              >
-                                <Crop className="size-3 mr-1.5" />
-                                {isCropping ? "Done" : "Crop"}
-                              </button>
-                            </div>
-
-                            {isCropping && (
-                              <p className="absolute left-0 mt-1 text-[11px] text-muted-foreground font-inter">
-                                Once done click the button again
-                              </p>
-                            )}
+                          {/* 2. 3D Preset */}
+                          <div className="space-y-1.5 min-w-0">
+                            <Label className="text-xs font-medium text-muted-foreground truncate block">
+                              3D Preset
+                            </Label>
+                            <Select
+                              value={
+                                TRANSFORM_3D_PRESETS.find(
+                                  (p) =>
+                                    p.id !== "custom" &&
+                                    p.rotateX === imgStyle.rotateX &&
+                                    p.rotateY === imgStyle.rotateY &&
+                                    p.rotate === imgStyle.rotate
+                                )?.id || "custom"
+                              }
+                              onValueChange={(presetId) => {
+                                const preset = TRANSFORM_3D_PRESETS.find(
+                                  (p) => p.id === presetId
+                                );
+                                if (preset && preset.id !== "custom") {
+                                  updateSelected({
+                                    rotateX: preset.rotateX,
+                                    rotateY: preset.rotateY,
+                                    rotate: preset.rotate,
+                                  });
+                                }
+                              }}
+                            >
+                              <SelectTrigger className="h-8 w-full text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="text-xs max-h-56">
+                                {TRANSFORM_3D_PRESETS.map((preset) => (
+                                  <SelectItem
+                                    key={preset.id}
+                                    value={preset.id}
+                                    className="text-xs py-1.5 cursor-pointer"
+                                  >
+                                    {preset.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </div>
                         </div>
                       </div>
@@ -744,7 +769,7 @@ export function LeftPanel({
                     onClick={handleAddText}
                     variant="outline"
                     size="sm"
-                    className="w-full bg-transparent border-dashed border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
+                    className="w-full bg-transparent border-dashed rounded-sm border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
                   >
                     <Plus className="w-3.5 h-3.5 mr-2" /> Add Text Layer
                   </Button>
@@ -989,6 +1014,51 @@ export function LeftPanel({
                             className="py-1"
                           />
                         </div>
+
+                        {/* 3D Preset for Text */}
+                        <div className="space-y-1.5 min-w-0 pt-1">
+                          <Label className="text-xs font-medium text-muted-foreground">
+                            3D Preset
+                          </Label>
+                          <Select
+                            value={
+                              TRANSFORM_3D_PRESETS.find(
+                                (p) =>
+                                  p.id !== "custom" &&
+                                  p.rotateX === textStyle.rotateX &&
+                                  p.rotateY === textStyle.rotateY &&
+                                  p.rotate === textStyle.rotate
+                              )?.id || "custom"
+                            }
+                            onValueChange={(presetId) => {
+                              const preset = TRANSFORM_3D_PRESETS.find(
+                                (p) => p.id === presetId
+                              );
+                              if (preset && preset.id !== "custom") {
+                                updateSelected({
+                                  rotateX: preset.rotateX,
+                                  rotateY: preset.rotateY,
+                                  rotate: preset.rotate,
+                                });
+                              }
+                            }}
+                          >
+                            <SelectTrigger className="h-8 w-full text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="text-xs max-h-56">
+                              {TRANSFORM_3D_PRESETS.map((preset) => (
+                                <SelectItem
+                                  key={preset.id}
+                                  value={preset.id}
+                                  className="text-xs py-1.5 cursor-pointer"
+                                >
+                                  {preset.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                     </div>
 
@@ -1014,7 +1084,7 @@ export function LeftPanel({
                             <div className="space-y-3">
                               <div className="flex items-center justify-between">
                                 <Label className="text-xs font-medium text-muted-foreground">
-                                  Color
+                                  Background 
                                 </Label>
                               </div>
                               <div className="flex items-center gap-2 h-8">

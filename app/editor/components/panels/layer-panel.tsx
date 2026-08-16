@@ -10,6 +10,7 @@ import {
   Type,
   Image as ImageIcon,
   GripVertical,
+  Crop,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -103,6 +104,8 @@ const SortableLayer = memo(function SortableLayer({
     toggleVisibility,
     toggleLock,
     removeElement,
+    isCropping,
+    setCropping,
   } = useStore();
 
   const controls = useDragControls();
@@ -153,6 +156,29 @@ const SortableLayer = memo(function SortableLayer({
           selectedElementId === element.id && "opacity-100",
         )}
       >
+        {element.type === "image" && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "h-6 w-6",
+              isCropping && selectedElementId === element.id && "text-primary bg-primary/10",
+            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              selectElement(element.id);
+              setCropping(selectedElementId === element.id ? !isCropping : true);
+            }}
+            title={
+              isCropping && selectedElementId === element.id
+                ? "Finish Cropping"
+                : "Crop Layer"
+            }
+          >
+            <Crop size={12} />
+          </Button>
+        )}
+
         <Button
           variant="ghost"
           size="icon"
