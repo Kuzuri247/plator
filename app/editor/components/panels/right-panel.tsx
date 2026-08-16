@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import {
   Download,
   Image as ImageIcon,
@@ -75,6 +75,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
     loadMore: loadMoreMemes,
   } = Memes({ limit: 20 });
 
+  const [pictureSubTab, setPictureSubTab] = useState<"wallpapers" | "memes">(
+    "wallpapers"
+  );
+
   const wallpaperScrollRef = useRef<HTMLDivElement>(null);
   const memeScrollRef = useRef<HTMLDivElement>(null);
 
@@ -148,18 +152,15 @@ export function RightPanel({ onDownload }: RightPanelProps) {
       {/* Main Studio Tabs */}
       <div className="flex-1 min-h-0 flex flex-col relative px-4 pb-2">
         <Tabs defaultValue="shaders" className="w-full h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-4 mb-3 shrink-0 gap-1 bg-muted/60">
+          <TabsList className="grid w-full grid-cols-3 mb-3 shrink-0 gap-1 bg-muted/60">
             <TabsTrigger value="shaders" className="text-[11px] px-1">
               <Zap className="size-3 mr-1" /> Mesh
             </TabsTrigger>
             <TabsTrigger value="overlays" className="text-[11px] px-1">
               <Layers className="size-3 mr-1" /> Texture
             </TabsTrigger>
-            <TabsTrigger value="wallpapers" className="text-[11px] px-1">
-              <ImageIcon className="size-3 mr-1" /> Photo
-            </TabsTrigger>
-            <TabsTrigger value="memes" className="text-[11px] px-1">
-              <Laugh className="size-3 mr-1" /> Memes
+            <TabsTrigger value="pictures" className="text-[11px] px-1">
+              <ImageIcon className="size-3 mr-1" /> Pictures
             </TabsTrigger>
           </TabsList>
 
@@ -191,7 +192,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                         setBackground("mesh");
                         setMeshConfig({ colors: [...pal.colors] });
                       }}
-                      className="group relative rounded-lg p-1.5 border border-border/70 hover:border-primary/80 transition-all text-left bg-background/50 hover:scale-[1.02]"
+                      className="group relative rounded-lg p-1.5 border border-border/70 hover:border-primary/80 transition-all text-center bg-background/50 hover:scale-[1.02]"
                     >
                       <div className="flex h-5 w-full rounded overflow-hidden mb-1 shadow-xs">
                         {pal.colors.map((c, i) => (
@@ -202,7 +203,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           />
                         ))}
                       </div>
-                      <span className="text-[10px] font-medium text-foreground truncate block">
+                      <span className="text-[10px] font-medium text-foreground truncate block text-center">
                         {pal.name}
                       </span>
                     </button>
@@ -236,8 +237,6 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                   </div>
                 </div>
 
-                {/* Motion & Shader Controls */}
-                {/* Motion & Shader Controls */}
                 <div className="space-y-3 pt-2 border-t border-border/50">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
@@ -256,11 +255,19 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                     </div>
                   </div>
 
-                  {meshConfig.isAnimating && (
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between text-xs font-medium">
-                        <span>Flow Speed</span>
-                        <span className="font-mono text-muted-foreground">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div
+                      className={`space-y-2 ${
+                        !meshConfig.isAnimating
+                          ? "opacity-40 pointer-events-none"
+                          : ""
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium text-muted-foreground">
+                          Flow Speed
+                        </Label>
+                        <span className="text-xs font-mono text-muted-foreground">
                           {meshConfig.speed.toFixed(1)}x
                         </span>
                       </div>
@@ -269,65 +276,72 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                         min={1}
                         max={30}
                         step={1}
+                        disabled={!meshConfig.isAnimating}
                         onValueChange={([val]) =>
                           setMeshConfig({ speed: val / 10 })
                         }
                       />
                     </div>
-                  )}
 
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-medium">
-                      <span>Liquid Distortion</span>
-                      <span className="font-mono text-muted-foreground">
-                        {meshConfig.noiseIntensity}%
-                      </span>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium text-muted-foreground">
+                          Distortion
+                        </Label>
+                        <span className="text-xs font-mono text-muted-foreground">
+                          {meshConfig.noiseIntensity}%
+                        </span>
+                      </div>
+                      <Slider
+                        value={[meshConfig.noiseIntensity]}
+                        min={0}
+                        max={100}
+                        step={1}
+                        onValueChange={([val]) =>
+                          setMeshConfig({ noiseIntensity: val })
+                        }
+                      />
                     </div>
-                    <Slider
-                      value={[meshConfig.noiseIntensity]}
-                      min={0}
-                      max={100}
-                      step={1}
-                      onValueChange={([val]) =>
-                        setMeshConfig({ noiseIntensity: val })
-                      }
-                    />
-                  </div>
 
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-medium">
-                      <span>Mesh Zoom / Scale</span>
-                      <span className="font-mono text-muted-foreground">
-                        {meshConfig.noiseScale.toFixed(1)}
-                      </span>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium text-muted-foreground">
+                          Mesh Scale
+                        </Label>
+                        <span className="text-xs font-mono text-muted-foreground">
+                          {meshConfig.noiseScale.toFixed(1)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[meshConfig.noiseScale * 10]}
+                        min={5}
+                        max={40}
+                        step={1}
+                        onValueChange={([val]) =>
+                          setMeshConfig({ noiseScale: val / 10 })
+                        }
+                      />
                     </div>
-                    <Slider
-                      value={[meshConfig.noiseScale * 10]}
-                      min={5}
-                      max={40}
-                      step={1}
-                      onValueChange={([val]) =>
-                        setMeshConfig({ noiseScale: val / 10 })
-                      }
-                    />
-                  </div>
 
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-medium">
-                      <span>Micro Noise Grain</span>
-                      <span className="font-mono text-muted-foreground">
-                        {meshConfig.noiseGrain || 0}%
-                      </span>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium text-muted-foreground">
+                          Noise Grain
+                        </Label>
+                        <span className="text-xs font-mono text-muted-foreground">
+                          {meshConfig.noiseGrain || 0}%
+                        </span>
+                      </div>
+                      <Slider
+                        value={[meshConfig.noiseGrain || 0]}
+                        min={0}
+                        max={100}
+                        step={1}
+                        onValueChange={([val]) =>
+                          setMeshConfig({ noiseGrain: val })
+                        }
+                      />
                     </div>
-                    <Slider
-                      value={[meshConfig.noiseGrain || 0]}
-                      min={0}
-                      max={100}
-                      step={1}
-                      onValueChange={([val]) =>
-                        setMeshConfig({ noiseGrain: val })
-                      }
-                    />
                   </div>
                 </div>
 
@@ -365,7 +379,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                               <SelectItem value="0">Bayer 2x2</SelectItem>
                               <SelectItem value="1">Bayer 4x4</SelectItem>
                               <SelectItem value="2">Bayer 8x8</SelectItem>
-                              <SelectItem value="3">Blue / Random</SelectItem>
+                              <SelectItem value="3">Random</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -528,77 +542,100 @@ export function RightPanel({ onDownload }: RightPanelProps) {
             </ScrollArea>
           </TabsContent>
 
-          {/* TAB 3: Wallpapers */}
-          <TabsContent value="wallpapers" className="flex-1 mt-0 min-h-0">
-            <ScrollArea
-              className="h-full max-h-[calc(55vh)] pr-2"
-              onScroll={handleWallpaperScroll}
-            >
-              <div className="grid grid-cols-2 gap-2 pb-4">
-                {wallpapers.map((w) => (
-                  <button
-                    key={w.fileId}
-                    onClick={() => setBackground(`url(${w.url})`)}
-                    className="relative aspect-video rounded-lg overflow-hidden border border-border/60 hover:border-primary transition-all hover:scale-102"
-                  >
-                    <img
-                      src={w.thumbnailUrl}
-                      alt={w.name}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                    <div className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] p-1 truncate text-center backdrop-blur-xs">
-                      {w.name}
-                    </div>
-                  </button>
-                ))}
-                {wallpapersLoading && (
-                  <div className="col-span-2 py-4 flex justify-center">
-                    <Loader2 className="size-5 animate-spin text-primary" />
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </TabsContent>
+          {/* TAB 3: Pictures (Wallpapers & Memes) */}
+          <TabsContent value="pictures" className="flex-1 mt-0 min-h-0 flex flex-col">
+            {/* Sub-tab Pill Switcher */}
+            <div className="grid grid-cols-2 gap-1 bg-muted/60 p-1 rounded-lg mb-2.5 shrink-0">
+              <button
+                onClick={() => setPictureSubTab("wallpapers")}
+                className={`py-1 rounded text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${
+                  pictureSubTab === "wallpapers"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <ImageIcon className="size-3" /> Wallpapers
+              </button>
+              <button
+                onClick={() => setPictureSubTab("memes")}
+                className={`py-1 rounded text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${
+                  pictureSubTab === "memes"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Laugh className="size-3" /> Memes
+              </button>
+            </div>
 
-          {/* TAB 4: Memes */}
-          <TabsContent value="memes" className="flex-1 mt-0 min-h-0">
-            <ScrollArea
-              className="h-full max-h-[calc(55vh)] pr-2"
-              onScroll={handleMemeScroll}
-            >
-              <div className="grid grid-cols-2 gap-2 pb-4">
-                {memes.map((meme) => (
-                  <button
-                    key={meme.fileId}
-                    onClick={() => {
-                      const img = new Image();
-                      img.src = meme.url;
-                      img.onload = () => {
-                        setCustomSize(img.naturalWidth, img.naturalHeight);
-                        setBackground(`url(${meme.url})`);
-                      };
-                    }}
-                    className="relative aspect-video rounded-lg overflow-hidden border border-border/60 hover:border-primary transition-all hover:scale-102"
-                  >
-                    <img
-                      src={meme.thumbnailUrl}
-                      alt={meme.name}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                    <div className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] p-1 truncate text-center backdrop-blur-xs">
-                      {meme.name}
+            {pictureSubTab === "wallpapers" ? (
+              <ScrollArea
+                className="h-full max-h-[calc(55vh)] pr-2"
+                onScroll={handleWallpaperScroll}
+              >
+                <div className="grid grid-cols-2 gap-2 pb-4">
+                  {wallpapers.map((w) => (
+                    <button
+                      key={w.fileId}
+                      onClick={() => setBackground(`url(${w.url})`)}
+                      className="relative aspect-video rounded-lg overflow-hidden border border-border/60 hover:border-primary transition-all hover:scale-102"
+                    >
+                      <img
+                        src={w.thumbnailUrl}
+                        alt={w.name}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] p-1 truncate text-center backdrop-blur-xs">
+                        {w.name}
+                      </div>
+                    </button>
+                  ))}
+                  {wallpapersLoading && (
+                    <div className="col-span-2 py-4 flex justify-center">
+                      <Loader2 className="size-5 animate-spin text-primary" />
                     </div>
-                  </button>
-                ))}
-                {memesLoading && (
-                  <div className="col-span-2 py-4 flex justify-center">
-                    <Loader2 className="size-5 animate-spin text-primary" />
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
+                  )}
+                </div>
+              </ScrollArea>
+            ) : (
+              <ScrollArea
+                className="h-full max-h-[calc(55vh)] pr-2"
+                onScroll={handleMemeScroll}
+              >
+                <div className="grid grid-cols-2 gap-2 pb-4">
+                  {memes.map((meme) => (
+                    <button
+                      key={meme.fileId}
+                      onClick={() => {
+                        const img = new Image();
+                        img.src = meme.url;
+                        img.onload = () => {
+                          setCustomSize(img.naturalWidth, img.naturalHeight);
+                          setBackground(`url(${meme.url})`);
+                        };
+                      }}
+                      className="relative aspect-video rounded-lg overflow-hidden border border-border/60 hover:border-primary transition-all hover:scale-102"
+                    >
+                      <img
+                        src={meme.thumbnailUrl}
+                        alt={meme.name}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] p-1 truncate text-center backdrop-blur-xs">
+                        {meme.name}
+                      </div>
+                    </button>
+                  ))}
+                  {memesLoading && (
+                    <div className="col-span-2 py-4 flex justify-center">
+                      <Loader2 className="size-5 animate-spin text-primary" />
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            )}
           </TabsContent>
         </Tabs>
       </div>

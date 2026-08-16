@@ -6,7 +6,6 @@ import { LeftPanel } from "./components/panels/left-panel";
 import { RightPanel } from "./components/panels/right-panel";
 import {
   ArrowLeft,
-  Twitter,
   Undo2,
   Redo2,
   RotateCcw,
@@ -16,6 +15,7 @@ import {
   X,
   Loader2,
 } from "lucide-react";
+import { XIcon } from "@/components/icons/x-icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -205,8 +205,8 @@ export default function EditorPage() {
       )}
 
       {/* Desktop Left Sidebar */}
-      <div className="hidden md:flex w-80 shrink-0 border-r-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
-        <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center justify-between px-4 shrink-0">
+      <div className="hidden md:flex w-72 shrink-0 border-r-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
+        <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center justify-between px-3 shrink-0">
           <Link href="/">
             <Button
               variant="ghost"
@@ -219,13 +219,13 @@ export default function EditorPage() {
           <span className="text-sm uppercase font-bold pt-0.5 tracking-wider font-display">
             Plator Studio
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Link
               href="https://x.com/kuzuri247"
               target="_blank"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors p-1"
             >
-              <Twitter size={16} />
+              <XIcon className="size-4" />
             </Link>
             <ThemeToggle />
           </div>
@@ -373,7 +373,7 @@ export default function EditorPage() {
       </div>
 
       {/* Desktop Right Sidebar */}
-      <div className="hidden md:flex w-84 shrink-0 border-l-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
+      <div className="hidden md:flex w-76 shrink-0 border-l-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
         <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center px-4 shrink-0 bg-transparent">
           <span className="font-bold text-xs uppercase tracking-wider text-muted-foreground font-display">
             Canvas & Shaders

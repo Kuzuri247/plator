@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import {
   WebGLMeshRenderer,
   MeshShaderUniforms,
@@ -61,11 +61,11 @@ export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
         [number, number, number],
         [number, number, number]
       ] = [
-        hexToRgb01(meshColors[0] || "#ff007f"),
-        hexToRgb01(meshColors[1] || "#7928ca"),
-        hexToRgb01(meshColors[2] || "#0070f3"),
-        hexToRgb01(meshColors[3] || "#00dfd8"),
-        hexToRgb01(meshColors[4] || "#ff007f"),
+        hexToRgb01(meshColors[0] || "#09090b"),
+        hexToRgb01(meshColors[1] || "#18181b"),
+        hexToRgb01(meshColors[2] || "#3f3f46"),
+        hexToRgb01(meshColors[3] || "#71717a"),
+        hexToRgb01(meshColors[4] || "#e4e4e7"),
       ];
 
       return {
