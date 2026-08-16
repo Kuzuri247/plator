@@ -52,8 +52,8 @@ export function LayerPanel() {
 
   return (
     <div className="flex flex-col h-full w-full">
-      <div className="px-4 py-3 border-b dark:border-neutral-800">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="p-4 border-b dark:border-neutral-800">
+        <h3 className="text-sm font-semibold uppercase tracking-wider">
           Layers ({elements.length})
         </h3>
       </div>

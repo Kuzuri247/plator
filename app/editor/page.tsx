@@ -23,6 +23,14 @@ import { useStore } from "./store/use-store";
 import { useSelection } from "./hooks/selection";
 import { useExport } from "./hooks/export";
 import { DEFAULT_IMAGE_STYLE, ImageElement } from "./types";
+import { ASPECT_RATIOS } from "./values";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function EditorPage() {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -35,6 +43,7 @@ export default function EditorPage() {
 
   const {
     aspectRatio,
+    setAspectRatio,
     canvasBackground,
     meshConfig,
     overlayConfig,
@@ -253,6 +262,59 @@ export default function EditorPage() {
       <div className="flex-1 relative bg-muted/20 flex flex-col min-w-0 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-20 pointer-events-none bg-[radial-gradient(#ababab_2px,transparent_1px)] bg-size-[20px_20px]" />
 
+        {/* Floating Canvas Resolution Dropdown (Top-Right) */}
+        <div className="absolute top-3 right-2 z-40 animate-in fade-in slide-in-from-top-2 duration-300">
+          <Select value={aspectRatio.name} onValueChange={setAspectRatio}>
+            <SelectTrigger className="h-8 px-2.5 gap-2 bg-background/80 dark:bg-card/85 backdrop-blur-md border border-border/80 shadow-md hover:border-primary/60 hover:bg-background/95 rounded-lg text-xs font-manrope font-semibold transition-all">
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-3.5 h-3 bg-muted border border-foreground/30 rounded-2xs ${aspectRatio.previewClass}`}
+                />
+                <span className="font-bold text-xs text-foreground">
+                  {aspectRatio.name}
+                </span>
+                <span className="text-[11px] font-medium text-muted-foreground">
+                  {aspectRatio.label}
+                </span>
+                <span className="text-[10px] font-mono text-muted-foreground/80 hidden sm:inline">
+                  ({aspectRatio.width}×{aspectRatio.height})
+                </span>
+              </div>
+            </SelectTrigger>
+            <SelectContent className="w-68 font-manrope max-h-80 shadow-2xl border-border/80 backdrop-blur-xl bg-background/95 p-1">
+              <div className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Canvas Resolution & Aspect Ratio
+              </div>
+              {ASPECT_RATIOS.map((ratio) => (
+                <SelectItem
+                  key={ratio.name}
+                  value={ratio.name}
+                  className="py-2 px-2 rounded-md cursor-pointer focus:bg-accent/80 transition-colors"
+                >
+                  <div className="flex items-center gap-3 w-full">
+                    <div
+                      className={`w-6.5 shrink-0 bg-muted border border-foreground/20 rounded-xs ${ratio.previewClass}`}
+                    />
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-semibold text-xs text-foreground">
+                          {ratio.name}
+                        </span>
+                        <span className="text-[10px] font-bold text-primary uppercase tracking-wide">
+                          {ratio.label}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono text-muted-foreground">
+                        {ratio.width} × {ratio.height}
+                      </span>
+                    </div>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div
           ref={containerRef}
           className="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden z-10 w-full h-full relative"
@@ -374,8 +436,8 @@ export default function EditorPage() {
 
       {/* Desktop Right Sidebar */}
       <div className="hidden md:flex w-76 shrink-0 border-l-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
-        <div className="h-12 border-b-2 dark:border-neutral-800 flex items-center px-4 shrink-0 bg-transparent">
-          <span className="font-bold text-xs uppercase tracking-wider text-muted-foreground font-display">
+        <div className="flex justify-center h-12 border-b-2 dark:border-neutral-800 items-center px-4 shrink-0 bg-transparent">
+          <span className="text-sm uppercase font-bold pt-0.5 tracking-wider font-display">
             Canvas & Shaders
           </span>
         </div>

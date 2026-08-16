@@ -435,7 +435,7 @@ export function LeftPanel({
 
                       <Separator />
 
-                      <div className="space-y-4 font-manrope">
+                      <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <Label className="text-sm font-semibold uppercase tracking-wider">
                             Dither Effect
@@ -449,7 +449,7 @@ export function LeftPanel({
                         </div>
 
                         {imgElement?.dither?.enabled && (
-                          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
                             <div className="space-y-2">
                               <Label className="text-xs font-medium text-muted-foreground">
                                 Pattern Type
