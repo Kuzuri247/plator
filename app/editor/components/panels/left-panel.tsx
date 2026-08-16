@@ -31,7 +31,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
 import {
   LeftPanelProps,
@@ -48,6 +47,37 @@ import {
 import { cn } from "@/lib/utils";
 import { useStore } from "../../store/use-store";
 import { LayerPanel } from "./layer-panel";
+
+const getFontFamilyStyle = (font: string) => {
+  switch (font) {
+    case "Inter":
+      return "var(--font-inter), Inter, sans-serif";
+    case "Manrope":
+      return "var(--font-manrope), Manrope, sans-serif";
+    case "Space Grotesk":
+      return "var(--font-space), 'Space Grotesk', sans-serif";
+    case "Roboto":
+      return "var(--font-roboto), Roboto, sans-serif";
+    case "Instrument Serif":
+      return "var(--font-instrument-serif), var(--font-instrument), 'Instrument Serif', serif";
+    case "Poppins":
+      return "var(--font-poppins), Poppins, sans-serif";
+    case "Playfair Display":
+      return "var(--font-playfair), 'Playfair Display', serif";
+    case "Oswald":
+      return "var(--font-oswald), Oswald, sans-serif";
+    case "Montserrat":
+      return "var(--font-montserrat), Montserrat, sans-serif";
+    case "Arial":
+      return "Arial, Helvetica, sans-serif";
+    case "Impact":
+      return "Impact, 'Arial Black', sans-serif";
+    case "Courier":
+      return "'Courier New', Courier, monospace";
+    default:
+      return font;
+  }
+};
 
 export function LeftPanel({
   onImageUpload,
@@ -117,7 +147,7 @@ export function LeftPanel({
         onValueChange={setActiveTab}
         className="w-full flex-1 flex flex-col h-full"
       >
-        <div className="px-3 pt-4 shrink-0">
+        <div className="px-3 pt-3 pb-1 shrink-0">
           <TabsList className="w-full grid grid-cols-3 dark:bg-neutral-800">
             <TabsTrigger value="image">
               <ImageIcon className="size-3.5" />
@@ -182,7 +212,7 @@ export function LeftPanel({
                       <Separator />
 
                       <Label className="text-sm font-semibold uppercase tracking-wider">
-                        Properties
+                        Image Properties
                       </Label>
                       <div className="space-y-4 grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
                         {/* Scale */}
@@ -500,7 +530,7 @@ export function LeftPanel({
                           <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
                             {/* Row 1: Pattern Dropdown (Left) + Swatches & Swap (Right) */}
                             <div className="grid grid-cols-12 gap-2 items-end">
-                              <div className="col-span-5 pr-1 space-y-1.5 min-w-0">
+                              <div className="col-span-5 pr-1 space-y-2 min-w-0">
                                 <Label className="text-xs font-medium text-muted-foreground">
                                   Pattern Type
                                 </Label>
@@ -729,145 +759,182 @@ export function LeftPanel({
                         Typography
                       </Label>
 
-                      <div className="grid grid-cols-6 w-fit">
-                        <Select
-                          value={textStyle.fontFamily}
-                          onValueChange={(val) =>
-                            updateSelected({ fontFamily: val })
-                          }
-                        >
-                          <span className="text-[13px] font-medium text-muted-foreground col-start-1 flex items-center">
-                            Font
-                          </span>
-                          <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
-                            <div className="flex items-center gap-2">
-                              <SelectValue className="" />
-                            </div>
-                          </SelectTrigger>
-                          <SelectContent className="font-manrope text-xs max-h-50">
-                            {FONT_FAMILIES.map((f) => (
-                              <SelectItem key={f} value={f}>
-                                {f === "Space Grotesk"
-                                  ? "Space"
-                                  : f === "Playfair Display"
-                                    ? "Playfair"
-                                    : f === "Montserrat"
-                                      ? "Moserrat"
-                                      : f === "Instrument Serif"
-                                        ? "Ins Serif"
-                                        : f}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={textStyle.fontWeight}
-                          onValueChange={(val) =>
-                            updateSelected({ fontWeight: val })
-                          }
-                        >
-                          <span className="text-[13px] font-medium text-muted-foreground w-fit col-start-4 flex items-center">
-                            Wgt.
-                          </span>
-                          <SelectTrigger className="h-8 bg-transparent border-border/50 font-manrope">
-                            <div className="flex items-center gap-2">
+                      {/* Font Family & Weight */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1.5 min-w-0">
+                          <Label className="text-xs font-medium text-muted-foreground">
+                            Font Family
+                          </Label>
+                          <Select
+                            value={textStyle.fontFamily}
+                            onValueChange={(val) =>
+                              updateSelected({ fontFamily: val })
+                            }
+                          >
+                            <SelectTrigger
+                              className="h-8 w-full text-xs"
+                              style={{ fontFamily: getFontFamilyStyle(textStyle.fontFamily) }}
+                            >
                               <SelectValue />
-                            </div>
-                          </SelectTrigger>
-                          <SelectContent className="font-manrope">
-                            {FONT_WEIGHTS.map((w) => (
-                              <SelectItem key={w.value} value={w.value}>
-                                {w.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                            </SelectTrigger>
+                            <SelectContent className="text-xs max-h-60">
+                              {FONT_FAMILIES.map((f) => (
+                                <SelectItem
+                                  key={f}
+                                  value={f}
+                                  style={{ fontFamily: getFontFamilyStyle(f) }}
+                                  className="text-xs py-1.5 cursor-pointer"
+                                >
+                                  {f}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-1.5 min-w-0">
+                          <Label className="text-xs font-medium text-muted-foreground">
+                            Font Weight
+                          </Label>
+                          <Select
+                            value={textStyle.fontWeight}
+                            onValueChange={(val) =>
+                              updateSelected({ fontWeight: val })
+                            }
+                          >
+                            <SelectTrigger className="h-8 w-full font-manrope text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="font-manrope text-xs">
+                              {FONT_WEIGHTS.map((w) => (
+                                <SelectItem
+                                  key={w.value}
+                                  value={w.value}
+                                  className="text-xs py-1.5 cursor-pointer"
+                                >
+                                  {w.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
 
-                      <div className="space-y-2">
+                      {/* Text Effects (Individual square cards evenly distributed in a row) */}
+                      <div className="space-y-1.5">
                         <Label className="text-xs font-medium text-muted-foreground">
                           Text Effects
                         </Label>
-                        <ToggleGroup
-                          type="multiple"
-                          value={textStyle.textEffect}
-                          onValueChange={(val) =>
-                            updateSelected({ textEffect: val })
-                          }
-                          className={cn(
-                            "flex-wrap justify-start gap-2 border-2 dark:border-neutral-800 rounded-md p-1 bg-muted/20",
-                            "*:rounded-md *:transition-colors *:text-muted-foreground *:hover:bg-muted",
-                            " *:size-8 *:data-[state=on]:bg-primary *:data-[state=on]:text-primary-foreground",
-                          )}
-                        >
-                          <ToggleGroupItem value="outline" aria-label="Outline">
-                            <Highlighter className="size-4" />
-                          </ToggleGroupItem>
-                          <ToggleGroupItem
-                            value="underline"
-                            aria-label="Underline"
-                          >
-                            <Underline className="size-4" />
-                          </ToggleGroupItem>
-                          <ToggleGroupItem
-                            value="line-through"
-                            aria-label="Strikethrough"
-                          >
-                            <Strikethrough className="size-4" />
-                          </ToggleGroupItem>
-                          <ToggleGroupItem value="italic" aria-label="Italic">
-                            <Italic className="size-4" />
-                          </ToggleGroupItem>
-                          <ToggleGroupItem
-                            value="uppercase"
-                            aria-label="Uppercase"
-                          >
-                            <CaseUpper className="size-4" />
-                          </ToggleGroupItem>
-                          <ToggleGroupItem
-                            value="small-caps"
-                            aria-label="Small Caps"
-                          >
-                            <ALargeSmall className="size-4" />
-                          </ToggleGroupItem>
-
-                        </ToggleGroup>
+                        <div className="grid grid-cols-6 gap-2">
+                          {[
+                            {
+                              id: "outline",
+                              icon: Highlighter,
+                              title: "Outline Text",
+                            },
+                            {
+                              id: "underline",
+                              icon: Underline,
+                              title: "Underline",
+                            },
+                            {
+                              id: "line-through",
+                              icon: Strikethrough,
+                              title: "Strikethrough",
+                            },
+                            {
+                              id: "italic",
+                              icon: Italic,
+                              title: "Italic",
+                            },
+                            {
+                              id: "uppercase",
+                              icon: CaseUpper,
+                              title: "Uppercase",
+                            },
+                            {
+                              id: "small-caps",
+                              icon: ALargeSmall,
+                              title: "Small Caps",
+                            },
+                          ].map((eff) => {
+                            const isActive = (textStyle.textEffect || []).includes(eff.id);
+                            const Icon = eff.icon;
+                            return (
+                              <button
+                                key={eff.id}
+                                type="button"
+                                onClick={() => {
+                                  const current = textStyle.textEffect || [];
+                                  const next = isActive
+                                    ? current.filter((x) => x !== eff.id)
+                                    : [...current, eff.id];
+                                  updateSelected({ textEffect: next });
+                                }}
+                                className={`aspect-square w-full rounded-md border flex items-center justify-center transition-all cursor-pointer shadow-2xs hover:scale-105 ${isActive
+                                    ? "bg-primary text-primary-foreground border-primary font-bold shadow-xs scale-102"
+                                    : "bg-background/60 hover:bg-muted/60 border-neutral-300 dark:border-neutral-700 text-muted-foreground hover:text-foreground"
+                                  }`}
+                                title={eff.title}
+                              >
+                                <Icon className="size-4" />
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
 
-                      <div className="space-y-3 *:pr-4">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-xs font-medium text-muted-foreground">
-                            Color & Size
-                          </Label>
-                          <span className="text-xs text-muted-foreground font-manrope">
-                            {textStyle.fontSize}px
-                          </span>
+                      {/* Text Color & Font Size Row */}
+                      <div className="grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Color
+                            </Label>
+                          </div>
+                          <div className="flex items-center gap-2 h-8">
+                            <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                              <div
+                                className="absolute inset-0"
+                                style={{ backgroundColor: textStyle.color }}
+                              />
+                              <input
+                                type="color"
+                                value={textStyle.color}
+                                onChange={(e) =>
+                                  updateSelected({ color: e.target.value })
+                                }
+                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                title="Text Color"
+                              />
+                            </div>
+                            <span className="text-xs font-manrope text-muted-foreground uppercase">
+                              {textStyle.color}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-4 px-2">
-                          <div className="relative group cursor-pointer">
-                            <div
-                              className="size-6 rounded-full border-neutral-300 dark:border-neutral-500 border-2 shadow-sm flex items-center justify-center transition-transform hover:scale-105"
-                              style={{ backgroundColor: textStyle.color }}
-                            />
-                            <Input
-                              type="color"
-                              value={textStyle.color}
-                              onChange={(e) =>
-                                updateSelected({ color: e.target.value })
+
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Size
+                            </Label>
+                            <span className="text-xs text-muted-foreground">
+                              {textStyle.fontSize}px
+                            </span>
+                          </div>
+                          <div className="flex items-center h-8">
+                            <Slider
+                              value={[textStyle.fontSize]}
+                              onValueChange={([v]) =>
+                                updateSelected({ fontSize: v })
                               }
-                              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                              min={12}
+                              max={120}
+                              step={1}
+                              className="w-full"
                             />
                           </div>
-                          <Slider
-                            value={[textStyle.fontSize]}
-                            onValueChange={([v]) =>
-                              updateSelected({ fontSize: v })
-                            }
-                            min={12}
-                            max={80}
-                            className="flex-1"
-                          />
                         </div>
                       </div>
                     </div>
@@ -878,8 +945,8 @@ export function LeftPanel({
                       <Label className="text-sm font-semibold uppercase tracking-wider">
                         3D Transforms
                       </Label>
-                      <div className="space-y-2 font-manrope">
-                        <div className="grid grid-cols-3 px-2 items-center gap-2 justify-center">
+                      <div className="space-y-3 font-manrope font-semibold">
+                        <div className="grid grid-cols-3 gap-2 items-center justify-center">
                           <Label className="text-[10px] text-muted-foreground flex justify-center">
                             X: {textStyle.rotateX}°
                           </Label>
@@ -890,7 +957,7 @@ export function LeftPanel({
                             Z: {textStyle.rotate}°
                           </Label>
                         </div>
-                        <div className="flex gap-4 px-2">
+                        <div className="grid grid-cols-3 gap-2">
                           <Slider
                             value={[textStyle.rotateX]}
                             onValueChange={([val]) =>
@@ -942,13 +1009,15 @@ export function LeftPanel({
 
                       {textStyle.showBackground && (
                         <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
-                          {/* Row 1: Box Color & Shadow */}
-                          <div className="grid grid-cols-2 gap-2 items-center *:pr-1">
-                            <div className="flex items-center justify-between">
-                              <Label className="text-xs font-medium text-muted-foreground">
-                                Background
-                              </Label>
-                              <div className="flex items-center gap-2">
+                          {/* Row 1: Background Color & Shadow */}
+                          <div className="grid grid-cols-2 gap-2 font-semibold *:pr-1">
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Color
+                                </Label>
+                              </div>
+                              <div className="flex items-center gap-2 h-8">
                                 <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                   <div
                                     className="absolute inset-0"
@@ -968,11 +1037,13 @@ export function LeftPanel({
                                     title="Box Background Color"
                                   />
                                 </div>
-
+                                <span className="text-xs font-manrope text-muted-foreground uppercase">
+                                  {textStyle.backgroundColor}
+                                </span>
                               </div>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                               <div className="flex items-center justify-between">
                                 <Label className="text-xs font-medium text-muted-foreground">
                                   Shadow
@@ -984,31 +1055,34 @@ export function LeftPanel({
                                   )?.name || "None"}
                                 </span>
                               </div>
-                              <Slider
-                                defaultValue={[0]}
-                                value={[
-                                  SHADOW_PRESETS.findIndex(
-                                    (s) =>
-                                      s.value === textStyle.backgroundShadow,
-                                  ) !== -1
-                                    ? SHADOW_PRESETS.findIndex(
+                              <div className="flex items-center h-8">
+                                <Slider
+                                  defaultValue={[0]}
+                                  value={[
+                                    SHADOW_PRESETS.findIndex(
                                       (s) =>
-                                        s.value ===
-                                        textStyle.backgroundShadow,
-                                    )
-                                    : 0,
-                                ]}
-                                onValueChange={([val]) => {
-                                  const preset = SHADOW_PRESETS[val];
-                                  if (preset)
-                                    updateSelected({
-                                      backgroundShadow: preset.value,
-                                    });
-                                }}
-                                min={0}
-                                max={SHADOW_PRESETS.length - 1}
-                                step={1}
-                              />
+                                        s.value === textStyle.backgroundShadow,
+                                    ) !== -1
+                                      ? SHADOW_PRESETS.findIndex(
+                                        (s) =>
+                                          s.value ===
+                                          textStyle.backgroundShadow,
+                                      )
+                                      : 0,
+                                  ]}
+                                  onValueChange={([val]) => {
+                                    const preset = SHADOW_PRESETS[val];
+                                    if (preset)
+                                      updateSelected({
+                                        backgroundShadow: preset.value,
+                                      });
+                                  }}
+                                  min={0}
+                                  max={SHADOW_PRESETS.length - 1}
+                                  step={1}
+                                  className="w-full"
+                                />
+                              </div>
                             </div>
                           </div>
 
