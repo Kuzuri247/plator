@@ -10,7 +10,7 @@ export const DEFAULT_DITHER_CONFIG = {
 };
 
 export const DEFAULT_MESH_CONFIG: MeshGradientConfig = {
-  colors: ["#ff007f", "#7928ca", "#0070f3", "#00dfd8", "#ff007f"],
+  colors: ["#09090b", "#18181b", "#3f3f46", "#71717a", "#e4e4e7"],
   speed: 1.0,
   noiseIntensity: 30,
   noiseScale: 1.5,
@@ -31,6 +31,10 @@ export const DEFAULT_OVERLAY_CONFIG: OverlayConfig = {
 };
 
 export const MESH_PALETTES = [
+  {
+    name: "Chrome",
+    colors: ["#09090b", "#18181b", "#3f3f46", "#71717a", "#e4e4e7"],
+  },
   {
     name: "Cyberpunk",
     colors: ["#ff007f", "#7928ca", "#0070f3", "#00dfd8", "#ffbe0b"],
@@ -60,17 +64,13 @@ export const MESH_PALETTES = [
     colors: ["#ff0844", "#ffb199", "#f12711", "#f5af19", "#ff4e50"],
   },
   {
-    name: "Monochrome Tech",
-    colors: ["#09090b", "#18181b", "#3f3f46", "#71717a", "#e4e4e7"],
-  },
-  {
     name: "Deep Ocean",
     colors: ["#020b14", "#0a2540", "#004b79", "#0077b6", "#00f2fe"],
   },
 ];
 
 export const ASPECT_RATIOS = [
- {
+  {
     name: "16:9",
     label: "Video",
     width: 900,

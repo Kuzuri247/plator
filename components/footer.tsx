@@ -1,5 +1,6 @@
 import React from "react";
-import { Github, Twitter, Globe, ExternalLink } from "lucide-react";
+import { Github, Globe, ExternalLink } from "lucide-react";
+import { XIcon } from "@/components/icons/x-icon";
 import { FooterPattern } from "./patterns";
 
 export const Footer: React.FC = () => {
@@ -62,7 +63,7 @@ export const Footer: React.FC = () => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
               >
-                <Twitter size={16} /> Twitter (X)
+                <XIcon className="size-4" /> X (formerly Twitter)
               </a>
               <a
                 href="https://github.com/Kuzuri247"

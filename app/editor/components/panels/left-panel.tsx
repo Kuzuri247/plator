@@ -120,15 +120,15 @@ export function LeftPanel({
         <div className="px-3 pt-4 shrink-0">
           <TabsList className="w-full grid grid-cols-3 dark:bg-neutral-800">
             <TabsTrigger value="image">
-              <ImageIcon className="size-4" />
+              <ImageIcon className="size-3.5" />
               Image
             </TabsTrigger>
             <TabsTrigger value="text">
-              <Type className="size-4" />
+              <Type className="size-3.5" />
               Text
             </TabsTrigger>
             <TabsTrigger value="layers">
-              <Layers className="size-4" />
+              <Layers className="size-3.5" />
               Layers
             </TabsTrigger>
           </TabsList>
@@ -184,7 +184,7 @@ export function LeftPanel({
                       <Label className="text-sm font-semibold uppercase tracking-wider">
                         Properties
                       </Label>
-                      <div className="space-y-4 grid grid-cols-2 gap-2 px-2 font-manrope font-semibold *:pr-1">
+                      <div className="space-y-4 grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs font-medium text-muted-foreground">
@@ -303,8 +303,8 @@ export function LeftPanel({
                                 (s) => s.value === imgStyle.shadow,
                               ) !== -1
                                 ? SHADOW_PRESETS.findIndex(
-                                    (s) => s.value === imgStyle.shadow,
-                                  )
+                                  (s) => s.value === imgStyle.shadow,
+                                )
                                 : 0,
                             ]}
                             onValueChange={([val]) => {
@@ -414,11 +414,10 @@ export function LeftPanel({
                             <div className="flex items-center justify-end">
                               <button
                                 onClick={onToggleCropping}
-                                className={`h-8.5 w-22 mr-2 rounded-xs text-xs flex items-center justify-center border-2 transition-colors ${
-                                  isCropping
+                                className={`h-8.5 w-22 mr-2 rounded-xs text-xs flex items-center justify-center border-2 transition-colors ${isCropping
                                     ? "bg-primary dark:bg-primary/90 text-primary-foreground border-dashed border-3 border-black"
                                     : "bg-transparent text-muted-foreground border-dashed border-neutral-300 dark:border-neutral-700"
-                                }`}
+                                  }`}
                               >
                                 <Crop className="size-3 mr-1.5" />
                                 {isCropping ? "Done" : "Crop"}
@@ -436,58 +435,55 @@ export function LeftPanel({
 
                       <Separator />
 
-                      <div className="space-y-4">
-                        <Label className="text-sm font-semibold uppercase tracking-wider">
-                          Dither Effect
-                        </Label>
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Enable Dither
-                            </Label>
-                            <Switch
-                              checked={imgElement?.dither?.enabled || false}
-                              onCheckedChange={(enabled) =>
-                                setDitherConfig(selectedElementId!, { enabled })
-                              }
-                            />
-                          </div>
+                      <div className="space-y-4 font-manrope">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-semibold uppercase tracking-wider">
+                            Dither Effect
+                          </Label>
+                          <Switch
+                            checked={imgElement?.dither?.enabled || false}
+                            onCheckedChange={(enabled) =>
+                              setDitherConfig(selectedElementId!, { enabled })
+                            }
+                          />
+                        </div>
 
-                          {imgElement?.dither?.enabled && (
-                            <div className="space-y-3">
-                              <div className="space-y-2">
-                                <Label className="text-xs font-medium text-muted-foreground">
-                                  Pattern Type
-                                </Label>
-                                <Select
-                                  value={String(imgElement?.dither?.ditherType || 1)}
-                                  onValueChange={(val) =>
-                                    setDitherConfig(selectedElementId!, { ditherType: Number(val) })
-                                  }
-                                >
-                                  <SelectTrigger className="h-8">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="0">Bayer 2x2</SelectItem>
-                                    <SelectItem value="1">Bayer 4x4</SelectItem>
-                                    <SelectItem value="2">Bayer 8x8</SelectItem>
-                                    <SelectItem value="3">Random Noise</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
+                        {imgElement?.dither?.enabled && (
+                          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className="space-y-2">
+                              <Label className="text-xs font-medium text-muted-foreground">
+                                Pattern Type
+                              </Label>
+                              <Select
+                                value={String(imgElement?.dither?.ditherType ?? 1)}
+                                onValueChange={(val) =>
+                                  setDitherConfig(selectedElementId!, { ditherType: Number(val) })
+                                }
+                              >
+                                <SelectTrigger className="h-8">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="0">Bayer 2x2</SelectItem>
+                                  <SelectItem value="1">Bayer 4x4</SelectItem>
+                                  <SelectItem value="2">Bayer 8x8</SelectItem>
+                                  <SelectItem value="3">Random Noise</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
 
-                              <div className="space-y-2">
+                            <div className="grid grid-cols-2 gap-2 *:pr-1">
+                              <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                   <Label className="text-xs font-medium text-muted-foreground">
                                     Pixel Size
                                   </Label>
-                                  <span className="text-xs text-muted-foreground">
-                                    {imgElement?.dither?.pixelSize || 4}px
+                                  <span className="text-xs font-mono text-muted-foreground">
+                                    {imgElement?.dither?.pixelSize ?? 4}px
                                   </span>
                                 </div>
                                 <Slider
-                                  value={[imgElement?.dither?.pixelSize || 4]}
+                                  value={[imgElement?.dither?.pixelSize ?? 4]}
                                   onValueChange={([pixelSize]) =>
                                     setDitherConfig(selectedElementId!, { pixelSize })
                                   }
@@ -497,17 +493,17 @@ export function LeftPanel({
                                 />
                               </div>
 
-                              <div className="space-y-2">
+                              <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                   <Label className="text-xs font-medium text-muted-foreground">
                                     Color Steps
                                   </Label>
-                                  <span className="text-xs text-muted-foreground">
-                                    {imgElement?.dither?.colorSteps || 4}
+                                  <span className="text-xs font-mono text-muted-foreground">
+                                    {imgElement?.dither?.colorSteps ?? 4}
                                   </span>
                                 </div>
                                 <Slider
-                                  value={[imgElement?.dither?.colorSteps || 4]}
+                                  value={[imgElement?.dither?.colorSteps ?? 4]}
                                   onValueChange={([colorSteps]) =>
                                     setDitherConfig(selectedElementId!, { colorSteps })
                                   }
@@ -516,45 +512,72 @@ export function LeftPanel({
                                   step={1}
                                 />
                               </div>
+                            </div>
 
-                              <div className="grid grid-cols-2 gap-2">
-                                <div className="space-y-2">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Foreground
-                                  </Label>
-                                  <input
-                                    type="color"
-                                    value={imgElement?.dither?.colorFront || "#ffffff"}
-                                    onChange={(e) =>
-                                      setDitherConfig(selectedElementId!, { colorFront: e.target.value })
-                                    }
-                                    className="w-full h-8 rounded border cursor-pointer"
-                                  />
+                            <div className="grid grid-cols-2 gap-2 *:pr-1">
+                              <div className="space-y-2">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Foreground
+                                </Label>
+                                <div className="flex items-center gap-2">
+                                  <div className="relative size-7 rounded-md overflow-hidden border-2 border-neutral-300 dark:border-neutral-700 shrink-0">
+                                    <div
+                                      className="absolute inset-0"
+                                      style={{
+                                        backgroundColor: imgElement?.dither?.colorFront || "#ffffff",
+                                      }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={imgElement?.dither?.colorFront || "#ffffff"}
+                                      onChange={(e) =>
+                                        setDitherConfig(selectedElementId!, { colorFront: e.target.value })
+                                      }
+                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                    />
+                                  </div>
+                                  <span className="text-[11px] font-mono text-muted-foreground uppercase">
+                                    {imgElement?.dither?.colorFront || "#ffffff"}
+                                  </span>
                                 </div>
-                                <div className="space-y-2">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Background
-                                  </Label>
-                                  <input
-                                    type="color"
-                                    value={imgElement?.dither?.colorBack || "#000000"}
-                                    onChange={(e) =>
-                                      setDitherConfig(selectedElementId!, { colorBack: e.target.value })
-                                    }
-                                    className="w-full h-8 rounded border cursor-pointer"
-                                  />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Background
+                                </Label>
+                                <div className="flex items-center gap-2">
+                                  <div className="relative size-7 rounded-md overflow-hidden border-2 border-neutral-300 dark:border-neutral-700 shrink-0">
+                                    <div
+                                      className="absolute inset-0"
+                                      style={{
+                                        backgroundColor: imgElement?.dither?.colorBack || "#000000",
+                                      }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={imgElement?.dither?.colorBack || "#000000"}
+                                      onChange={(e) =>
+                                        setDitherConfig(selectedElementId!, { colorBack: e.target.value })
+                                      }
+                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                    />
+                                  </div>
+                                  <span className="text-[11px] font-mono text-muted-foreground uppercase">
+                                    {imgElement?.dither?.colorBack || "#000000"}
+                                  </span>
                                 </div>
                               </div>
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     </>
                   ) : (
                     <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
                       {activeTab === "image" &&
-                      selectedElement?.type !== "image" &&
-                      elements.some((e) => e.type === "image")
+                        selectedElement?.type !== "image" &&
+                        elements.some((e) => e.type === "image")
                         ? "An image layer was previously selected. Select it again from Layers to edit."
                         : "Select an image layer to edit properties."}
                     </div>
@@ -707,9 +730,7 @@ export function LeftPanel({
                           >
                             <ALargeSmall className="size-4" />
                           </ToggleGroupItem>
-                          <ToggleGroupItem value="blur" aria-label="Blur">
-                            <Ghost className="size-4" />
-                          </ToggleGroupItem>
+
                         </ToggleGroup>
                       </div>
 
@@ -900,10 +921,10 @@ export function LeftPanel({
                                       s.value === textStyle.backgroundShadow,
                                   ) !== -1
                                     ? SHADOW_PRESETS.findIndex(
-                                        (s) =>
-                                          s.value ===
-                                          textStyle.backgroundShadow,
-                                      )
+                                      (s) =>
+                                        s.value ===
+                                        textStyle.backgroundShadow,
+                                    )
                                     : 0,
                                 ]}
                                 onValueChange={([val]) => {
@@ -926,8 +947,8 @@ export function LeftPanel({
                 ) : (
                   <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
                     {activeTab === "text" &&
-                    selectedElement?.type !== "text" &&
-                    elements.some((e) => e.type === "text")
+                      selectedElement?.type !== "text" &&
+                      elements.some((e) => e.type === "text")
                       ? "A text layer was previously selected. Select it again from Layers to edit."
                       : "Select a text layer to edit properties."}
                   </div>

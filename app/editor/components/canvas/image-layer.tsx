@@ -135,7 +135,13 @@ export const ImageLayer = memo(
         return;
       }
 
-      const ditherConfig = img.dither;
+      const ditherConfig = {
+        ditherType: img.dither.ditherType ?? 1,
+        pixelSize: img.dither.pixelSize ?? 4,
+        colorSteps: img.dither.colorSteps ?? 4,
+        colorFront: img.dither.colorFront || "#ffffff",
+        colorBack: img.dither.colorBack || "#000000",
+      };
 
       const processImage = async () => {
         const originalImage = new Image();

@@ -76,9 +76,11 @@ const FRAGMENT_SHADER_SOURCE = `
     }
 
     // Quantize with color steps
-    float ditheredLuminance = floor(luminance * u_colorSteps + threshold) / u_colorSteps;
+    float steps = max(u_colorSteps, 2.0);
+    float lum = luminance + (threshold - 0.5) / steps;
+    float quantLum = clamp(floor(lum * (steps - 1.0) + 0.5) / (steps - 1.0), 0.0, 1.0);
     
-    vec3 finalColor = mix(u_colorBack, u_colorFront, step(0.5, ditheredLuminance));
+    vec3 finalColor = mix(u_colorBack, u_colorFront, quantLum);
     gl_FragColor = vec4(finalColor, color.a);
   }
 `;
