@@ -240,3 +240,13 @@ export interface DitherConfig {
   colorFront: string; // Hex string e.g. "#ffffff"
   colorBack: string; // Hex string e.g. "#000000"
 }
+
+export interface DitherConfig {
+  enabled: boolean;
+  ditherType: number; // 0: Bayer 2x2, 1: Bayer 4x4, 2: Bayer 8x8, 3: Random
+  pixelSize: number;
+  colorSteps: number;
+  colorFront: string; // Hex string e.g. "#ffffff"
+  colorBack: string;  // Hex string e.g. "#000000"
+}
+
