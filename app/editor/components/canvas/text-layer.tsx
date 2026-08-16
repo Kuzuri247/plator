@@ -91,10 +91,25 @@ export const TextLayer = memo(
           fontWeight: element.style.fontWeight,
           color: element.style.color,
           textShadow: element.style.textShadow,
-          backgroundColor: element.style.showBackground
+          backgroundColor: element.style.glassmorphism
+            ? element.style.showBackground
+              ? element.style.backgroundColor
+              : "rgba(255, 255, 255, 0.15)"
+            : element.style.showBackground
             ? element.style.backgroundColor
             : "transparent",
-          boxShadow: element.style.showBackground
+          backdropFilter: element.style.glassmorphism
+            ? `blur(${element.style.glassBlur || 16}px) saturate(180%)`
+            : undefined,
+          WebkitBackdropFilter: element.style.glassmorphism
+            ? `blur(${element.style.glassBlur || 16}px) saturate(180%)`
+            : undefined,
+          border: element.style.glassmorphism
+            ? "1px solid rgba(255, 255, 255, 0.3)"
+            : undefined,
+          boxShadow: element.style.glassmorphism
+            ? "0 8px 32px 0 rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35)"
+            : element.style.showBackground
             ? element.style.backgroundShadow
             : "none",
           borderRadius: `${element.style.borderRadius}px`,

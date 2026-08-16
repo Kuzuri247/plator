@@ -1,3 +1,5 @@
+import { MeshGradientConfig, OverlayConfig } from "./types";
+
 export const DEFAULT_DITHER_CONFIG = {
   enabled: false,
   ditherType: 1, // Bayer 4x4 default
@@ -6,6 +8,66 @@ export const DEFAULT_DITHER_CONFIG = {
   colorFront: "#ffffff",
   colorBack: "#000000",
 };
+
+export const DEFAULT_MESH_CONFIG: MeshGradientConfig = {
+  colors: ["#ff007f", "#7928ca", "#0070f3", "#00dfd8", "#ff007f"],
+  speed: 1.0,
+  noiseIntensity: 30,
+  noiseScale: 1.5,
+  noiseGrain: 0,
+  isAnimating: true,
+  ditherEnabled: false,
+  ditherType: 1,
+  ditherPixelSize: 4,
+  ditherColorSteps: 6,
+};
+
+export const DEFAULT_OVERLAY_CONFIG: OverlayConfig = {
+  pattern: "none",
+  patternOpacity: 30,
+  patternColor: "#ffffff",
+  texture: "none",
+  textureOpacity: 40,
+};
+
+export const MESH_PALETTES = [
+  {
+    name: "Cyberpunk",
+    colors: ["#ff007f", "#7928ca", "#0070f3", "#00dfd8", "#ffbe0b"],
+  },
+  {
+    name: "Sunset Silk",
+    colors: ["#ff416c", "#ff4b2b", "#ffb347", "#f72585", "#7209b7"],
+  },
+  {
+    name: "Aurora",
+    colors: ["#0575e6", "#00f260", "#059669", "#10b981", "#022c22"],
+  },
+  {
+    name: "Velvet Noir",
+    colors: ["#090a0f", "#18132e", "#241a4a", "#3b1e70", "#120a21"],
+  },
+  {
+    name: "Vaporwave",
+    colors: ["#ff71ce", "#01cdfe", "#05ffa1", "#b967ff", "#fffb96"],
+  },
+  {
+    name: "Pastel Dream",
+    colors: ["#ffcbf2", "#f3c4fb", "#c8b6ff", "#b8c0ff", "#ffd6a5"],
+  },
+  {
+    name: "Solar Flare",
+    colors: ["#ff0844", "#ffb199", "#f12711", "#f5af19", "#ff4e50"],
+  },
+  {
+    name: "Monochrome Tech",
+    colors: ["#09090b", "#18181b", "#3f3f46", "#71717a", "#e4e4e7"],
+  },
+  {
+    name: "Deep Ocean",
+    colors: ["#020b14", "#0a2540", "#004b79", "#0077b6", "#00f2fe"],
+  },
+];
 
 export const ASPECT_RATIOS = [
  {

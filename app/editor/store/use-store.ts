@@ -1,21 +1,37 @@
 import { create } from "zustand";
 import { EditorState, CanvasElement } from "../types";
-import { ASPECT_RATIOS } from "../values";
+import {
+  ASPECT_RATIOS,
+  DEFAULT_MESH_CONFIG,
+  DEFAULT_OVERLAY_CONFIG,
+} from "../values";
 
-const DEFAULT_BG = "radial-gradient(at 0% 0%, #7209b7 0px, transparent 70%), radial-gradient(at 100% 0%, #9d4edd 0px, transparent 70%), radial-gradient(at 100% 100%, #e0aaff 0px, transparent 70%), radial-gradient(at 0% 100%, #c77dff 0px, transparent 70%)";
+const DEFAULT_BG = "mesh";
 
 export const useStore = create<EditorState>((set, get) => ({
-  aspectRatio: ASPECT_RATIOS.find((r) => r.name === "16:9") || ASPECT_RATIOS[0],
+  aspectRatio:
+    ASPECT_RATIOS.find((r) => r.name === "16:9") || ASPECT_RATIOS[0],
   canvasBackground: DEFAULT_BG,
+  meshConfig: { ...DEFAULT_MESH_CONFIG },
+  overlayConfig: { ...DEFAULT_OVERLAY_CONFIG },
   elements: [],
   selectedElementId: null,
   isCropping: false,
   activeTab: "image",
   lastSelectedTextId: null,
   lastSelectedImageId: null,
-  exportFormat: "png",
+  exportFormat: "mp4",
   exportQuality: "2",
-  history: [{ elements: [], canvasBackground: DEFAULT_BG }],
+  exportDuration: 3,
+  exportFps: 60,
+  history: [
+    {
+      elements: [],
+      canvasBackground: DEFAULT_BG,
+      meshConfig: { ...DEFAULT_MESH_CONFIG },
+      overlayConfig: { ...DEFAULT_OVERLAY_CONFIG },
+    },
+  ],
   historyIndex: 0,
 
   setAspectRatio: (name) => {
@@ -39,10 +55,55 @@ export const useStore = create<EditorState>((set, get) => ({
     set((state) => {
       const newHistory = [
         ...state.history.slice(0, state.historyIndex + 1),
-        { elements: state.elements, canvasBackground: bg },
+        {
+          elements: state.elements,
+          canvasBackground: bg,
+          meshConfig: state.meshConfig,
+          overlayConfig: state.overlayConfig,
+        },
       ];
       return {
         canvasBackground: bg,
+        history: newHistory,
+        historyIndex: newHistory.length - 1,
+      };
+    });
+  },
+
+  setMeshConfig: (config) => {
+    set((state) => {
+      const newConfig = { ...state.meshConfig, ...config };
+      const newHistory = [
+        ...state.history.slice(0, state.historyIndex + 1),
+        {
+          elements: state.elements,
+          canvasBackground: state.canvasBackground,
+          meshConfig: newConfig,
+          overlayConfig: state.overlayConfig,
+        },
+      ];
+      return {
+        meshConfig: newConfig,
+        history: newHistory,
+        historyIndex: newHistory.length - 1,
+      };
+    });
+  },
+
+  setOverlayConfig: (config) => {
+    set((state) => {
+      const newConfig = { ...state.overlayConfig, ...config };
+      const newHistory = [
+        ...state.history.slice(0, state.historyIndex + 1),
+        {
+          elements: state.elements,
+          canvasBackground: state.canvasBackground,
+          meshConfig: state.meshConfig,
+          overlayConfig: newConfig,
+        },
+      ];
+      return {
+        overlayConfig: newConfig,
         history: newHistory,
         historyIndex: newHistory.length - 1,
       };
@@ -53,7 +114,12 @@ export const useStore = create<EditorState>((set, get) => ({
     set((state) => {
       const newHistory = [
         ...state.history.slice(0, state.historyIndex + 1),
-        { elements, canvasBackground: state.canvasBackground },
+        {
+          elements,
+          canvasBackground: state.canvasBackground,
+          meshConfig: state.meshConfig,
+          overlayConfig: state.overlayConfig,
+        },
       ];
       return {
         elements,
@@ -65,24 +131,30 @@ export const useStore = create<EditorState>((set, get) => ({
 
   setExportFormat: (format) => set({ exportFormat: format }),
   setExportQuality: (quality) => set({ exportQuality: quality }),
+  setExportDuration: (duration) => set({ exportDuration: duration }),
+  setExportFps: (fps) => set({ exportFps: fps }),
 
   setActiveTab: (tab) => {
     set((state) => {
       let newSelectedId = state.selectedElementId;
 
       if (tab === "text") {
-        const currentIsText = state.elements.find(el => el.id === state.selectedElementId)?.type === "text";
+        const currentIsText =
+          state.elements.find((el) => el.id === state.selectedElementId)?.type ===
+          "text";
         if (!currentIsText && state.lastSelectedTextId) {
-          if (state.elements.find(el => el.id === state.lastSelectedTextId)) {
+          if (state.elements.find((el) => el.id === state.lastSelectedTextId)) {
             newSelectedId = state.lastSelectedTextId;
           }
         }
       }
 
       if (tab === "image") {
-        const currentIsImage = state.elements.find(el => el.id === state.selectedElementId)?.type === "image";
+        const currentIsImage =
+          state.elements.find((el) => el.id === state.selectedElementId)?.type ===
+          "image";
         if (!currentIsImage && state.lastSelectedImageId) {
-          if (state.elements.find(el => el.id === state.lastSelectedImageId)) {
+          if (state.elements.find((el) => el.id === state.lastSelectedImageId)) {
             newSelectedId = state.lastSelectedImageId;
           }
         }
@@ -97,14 +169,21 @@ export const useStore = create<EditorState>((set, get) => ({
       const newElements = [...state.elements, element];
       const newHistory = [
         ...state.history.slice(0, state.historyIndex + 1),
-        { elements: newElements, canvasBackground: state.canvasBackground },
+        {
+          elements: newElements,
+          canvasBackground: state.canvasBackground,
+          meshConfig: state.meshConfig,
+          overlayConfig: state.overlayConfig,
+        },
       ];
       return {
         elements: newElements,
         selectedElementId: element.id,
         activeTab: element.type === "text" ? "text" : "image",
-        lastSelectedTextId: element.type === "text" ? element.id : state.lastSelectedTextId,
-        lastSelectedImageId: element.type === "image" ? element.id : state.lastSelectedImageId,
+        lastSelectedTextId:
+          element.type === "text" ? element.id : state.lastSelectedTextId,
+        lastSelectedImageId:
+          element.type === "image" ? element.id : state.lastSelectedImageId,
         history: newHistory,
         historyIndex: newHistory.length - 1,
       };
@@ -134,14 +213,21 @@ export const useStore = create<EditorState>((set, get) => ({
       const newElements = state.elements.filter((el) => el.id !== id);
       const newHistory = [
         ...state.history.slice(0, state.historyIndex + 1),
-        { elements: newElements, canvasBackground: state.canvasBackground },
+        {
+          elements: newElements,
+          canvasBackground: state.canvasBackground,
+          meshConfig: state.meshConfig,
+          overlayConfig: state.overlayConfig,
+        },
       ];
       return {
         elements: newElements,
         selectedElementId: null,
         isCropping: false,
-        lastSelectedTextId: state.lastSelectedTextId === id ? null : state.lastSelectedTextId,
-        lastSelectedImageId: state.lastSelectedImageId === id ? null : state.lastSelectedImageId,
+        lastSelectedTextId:
+          state.lastSelectedTextId === id ? null : state.lastSelectedTextId,
+        lastSelectedImageId:
+          state.lastSelectedImageId === id ? null : state.lastSelectedImageId,
         history: newHistory,
         historyIndex: newHistory.length - 1,
       };
@@ -166,7 +252,7 @@ export const useStore = create<EditorState>((set, get) => ({
 
   selectElement: (id) => {
     set((state) => {
-      const element = state.elements.find(el => el.id === id);
+      const element = state.elements.find((el) => el.id === id);
       let newTab = state.activeTab;
 
       if (element && state.activeTab !== "layers") {
@@ -176,9 +262,11 @@ export const useStore = create<EditorState>((set, get) => ({
       return {
         selectedElementId: id,
         isCropping: false,
-        lastSelectedTextId: element?.type === "text" ? id : state.lastSelectedTextId,
-        lastSelectedImageId: element?.type === "image" ? id : state.lastSelectedImageId,
-        activeTab: newTab
+        lastSelectedTextId:
+          element?.type === "text" ? id : state.lastSelectedTextId,
+        lastSelectedImageId:
+          element?.type === "image" ? id : state.lastSelectedImageId,
+        activeTab: newTab,
       };
     });
   },
@@ -193,6 +281,8 @@ export const useStore = create<EditorState>((set, get) => ({
       return {
         elements: historyState.elements,
         canvasBackground: historyState.canvasBackground,
+        meshConfig: historyState.meshConfig,
+        overlayConfig: historyState.overlayConfig,
         historyIndex: newIndex,
       };
     });
@@ -206,6 +296,8 @@ export const useStore = create<EditorState>((set, get) => ({
       return {
         elements: historyState.elements,
         canvasBackground: historyState.canvasBackground,
+        meshConfig: historyState.meshConfig,
+        overlayConfig: historyState.overlayConfig,
         historyIndex: newIndex,
       };
     });
@@ -215,12 +307,21 @@ export const useStore = create<EditorState>((set, get) => ({
     set({
       elements: [],
       canvasBackground: DEFAULT_BG,
-      history: [{ elements: [], canvasBackground: DEFAULT_BG }],
+      meshConfig: { ...DEFAULT_MESH_CONFIG },
+      overlayConfig: { ...DEFAULT_OVERLAY_CONFIG },
+      history: [
+        {
+          elements: [],
+          canvasBackground: DEFAULT_BG,
+          meshConfig: { ...DEFAULT_MESH_CONFIG },
+          overlayConfig: { ...DEFAULT_OVERLAY_CONFIG },
+        },
+      ],
       historyIndex: 0,
       selectedElementId: null,
       lastSelectedImageId: null,
-      lastSelectedTextId: null
-    })
+      lastSelectedTextId: null,
+    });
   },
 
   setDitherConfig: (layerId, config) => {
@@ -229,7 +330,14 @@ export const useStore = create<EditorState>((set, get) => ({
         if (el.id !== layerId) return el;
         if (el.type !== "image") return el;
 
-        const currentDither = el.dither || { enabled: false, ditherType: 1, pixelSize: 4, colorSteps: 4, colorFront: "#ffffff", colorBack: "#000000" };
+        const currentDither = el.dither || {
+          enabled: false,
+          ditherType: 1,
+          pixelSize: 4,
+          colorSteps: 4,
+          colorFront: "#ffffff",
+          colorBack: "#000000",
+        };
         const newDither = { ...currentDither, ...config };
 
         return { ...el, dither: newDither };
@@ -237,7 +345,12 @@ export const useStore = create<EditorState>((set, get) => ({
 
       const newHistory = [
         ...state.history.slice(0, state.historyIndex + 1),
-        { elements: newElements, canvasBackground: state.canvasBackground },
+        {
+          elements: newElements,
+          canvasBackground: state.canvasBackground,
+          meshConfig: state.meshConfig,
+          overlayConfig: state.overlayConfig,
+        },
       ];
 
       return {
@@ -246,5 +359,5 @@ export const useStore = create<EditorState>((set, get) => ({
         historyIndex: newHistory.length - 1,
       };
     });
-  }
+  },
 }));

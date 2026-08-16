@@ -279,7 +279,20 @@ export const ImageLayer = memo(
             pointerEvents: isLocked ? "none" : "auto",
             inset: `${top}% ${right}% ${bottom}% ${left}%`,
             borderRadius: `${img.style.borderRadius}px`,
-            boxShadow: img.style.shadow === "none" ? "none" : img.style.shadow,
+            boxShadow: img.style.glassmorphism
+              ? "0 8px 32px 0 rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
+              : img.style.shadow === "none"
+              ? "none"
+              : img.style.shadow,
+            border: img.style.glassmorphism
+              ? "1px solid rgba(255, 255, 255, 0.35)"
+              : undefined,
+            backdropFilter: img.style.glassmorphism
+              ? `blur(${img.style.glassBlur || 16}px) saturate(180%)`
+              : undefined,
+            WebkitBackdropFilter: img.style.glassmorphism
+              ? `blur(${img.style.glassBlur || 16}px) saturate(180%)`
+              : undefined,
             opacity: img.style.opacity / 100,
             filter: `blur(${img.style.blur}px) ${
               isSelected ? "brightness(1.03)" : ""

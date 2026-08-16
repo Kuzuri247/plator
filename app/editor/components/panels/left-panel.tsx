@@ -33,7 +33,12 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
-import { LeftPanelProps, ImageElement, TextElement } from "../../types";
+import {
+  LeftPanelProps,
+  ImageElement,
+  TextElement,
+  DEFAULT_TEXT_STYLE,
+} from "../../types";
 import {
   FONT_FAMILIES,
   FONT_WEIGHTS,
@@ -75,22 +80,7 @@ export function LeftPanel({
       name: "New Text",
       content: "Sample Text",
       position: { x: 100, y: 100 },
-      style: {
-        fontSize: 48,
-        fontFamily: "Inter",
-        fontWeight: "400",
-        color: "#ffffff",
-        textShadow: "none",
-        borderRadius: 0,
-        backgroundColor: "#000000",
-        padding: 4,
-        showBackground: false,
-        backgroundShadow: "none",
-        textEffect: [],
-        rotate: 0,
-        rotateX: 0,
-        rotateY: 0,
-      },
+      style: { ...DEFAULT_TEXT_STYLE },
       isVisible: true,
       isLocked: false,
     });
