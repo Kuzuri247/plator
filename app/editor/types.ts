@@ -141,6 +141,7 @@ export interface EditorCanvasProps {
   selectedElementId: string | null;
   isDragging: boolean;
   isCropping: boolean;
+  snapGuides?: { x: number | null; y: number | null };
   onElementMouseDown: (e: React.PointerEvent, elementId: string) => void;
   onEmptyClick: () => void;
   onMouseMove: (e: React.PointerEvent) => void;

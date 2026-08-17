@@ -23,38 +23,59 @@ const CropHandle = ({
 }) => {
   let cursorClass = "";
   let positionClass = "";
+  let indicator = null;
 
   const baseClass =
     "absolute z-50 flex items-center justify-center pointer-events-auto touch-none";
 
   if (position === "top") {
     cursorClass = "cursor-ns-resize";
-    positionClass = "top-0 left-0 right-0 h-4 -translate-y-1/2"; // Increased hit area for touch
+    positionClass = "top-0 left-0 right-0 h-4 -translate-y-1/2";
+    indicator = (
+      <div className="w-6 h-1 rounded-full bg-primary border border-white/80 shadow-xs pointer-events-none" />
+    );
   } else if (position === "bottom") {
     cursorClass = "cursor-ns-resize";
     positionClass = "bottom-0 left-0 right-0 h-4 translate-y-1/2";
+    indicator = (
+      <div className="w-6 h-1 rounded-full bg-primary border border-white/80 shadow-xs pointer-events-none" />
+    );
   } else if (position === "left") {
     cursorClass = "cursor-ew-resize";
     positionClass = "left-0 top-0 bottom-0 w-4 -translate-x-1/2";
+    indicator = (
+      <div className="w-1 h-6 rounded-full bg-primary border border-white/80 shadow-xs pointer-events-none" />
+    );
   } else if (position === "right") {
     cursorClass = "cursor-ew-resize";
     positionClass = "right-0 top-0 bottom-0 w-4 translate-x-1/2";
+    indicator = (
+      <div className="w-1 h-6 rounded-full bg-primary border border-white/80 shadow-xs pointer-events-none" />
+    );
   } else if (position === "top-left") {
     cursorClass = "cursor-nwse-resize";
-    positionClass =
-      "top-0 left-0 w-5 h-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-primary";
+    positionClass = "top-0 left-0 w-6 h-6 -translate-x-1/2 -translate-y-1/2";
+    indicator = (
+      <div className="w-2.5 h-2.5 rounded-xs border-2 border-primary bg-background shadow-xs pointer-events-none" />
+    );
   } else if (position === "top-right") {
     cursorClass = "cursor-nesw-resize";
-    positionClass =
-      "top-0 right-0 w-5 h-5 translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-primary";
+    positionClass = "top-0 right-0 w-6 h-6 translate-x-1/2 -translate-y-1/2";
+    indicator = (
+      <div className="w-2.5 h-2.5 rounded-xs border-2 border-primary bg-background shadow-xs pointer-events-none" />
+    );
   } else if (position === "bottom-left") {
     cursorClass = "cursor-nesw-resize";
-    positionClass =
-      "bottom-0 left-0 w-5 h-5 -translate-x-1/2 translate-y-1/2 rounded-full border border-white bg-primary";
+    positionClass = "bottom-0 left-0 w-6 h-6 -translate-x-1/2 translate-y-1/2";
+    indicator = (
+      <div className="w-2.5 h-2.5 rounded-xs border-2 border-primary bg-background shadow-xs pointer-events-none" />
+    );
   } else if (position === "bottom-right") {
     cursorClass = "cursor-nwse-resize";
-    positionClass =
-      "bottom-0 right-0 w-5 h-5 translate-x-1/2 translate-y-1/2 rounded-full border border-white bg-primary";
+    positionClass = "bottom-0 right-0 w-6 h-6 translate-x-1/2 translate-y-1/2";
+    indicator = (
+      <div className="w-2.5 h-2.5 rounded-xs border-2 border-primary bg-background shadow-xs pointer-events-none" />
+    );
   }
 
   return (
@@ -64,7 +85,9 @@ const CropHandle = ({
         onPointerDown(e);
       }}
       className={`${baseClass} ${positionClass} ${cursorClass}`}
-    />
+    >
+      {indicator}
+    </div>
   );
 };
 
@@ -250,10 +273,10 @@ export const ImageLayer = memo(
             ${
               isLocked ? "cursor-default" : "cursor-move"
             } ${
-              isSelected && !isCropping ? "ring-2 ring-primary" : ""
-            } ${isCropping ? "ring-1 ring-dashed ring-primary/50" : ""}
+              isSelected ? "ring-2 ring-primary" : ""
+            }
           `}
-          onPointerDown={(e) => !isCropping && !isLocked && onPointerDown?.(e, img.id)}
+          onPointerDown={(e) => !isLocked && onPointerDown?.(e, img.id)}
           style={{
             pointerEvents: isLocked ? "none" : "auto",
             inset: `${top}% ${right}% ${bottom}% ${left}%`,
@@ -299,9 +322,9 @@ export const ImageLayer = memo(
             />
           </div>
 
-          {isCropping && isSelected && (
+          {isSelected && (
             <>
-              <div className="absolute inset-0 border-dashed border-4 border-primary pointer-events-none" />
+              <div className="absolute inset-0 border border-dashed border-primary/80 pointer-events-none rounded-[inherit]" />
               {/* Handles using Pointer Events */}
               <CropHandle
                 position="top"
@@ -350,7 +373,7 @@ export const ImageLayer = memo(
       JSON.stringify(prev.img.dither) === JSON.stringify(next.img.dither) &&
       prev.isSelected === next.isSelected &&
       prev.isDragging === next.isDragging &&
-      prev.isCropping === next.isCropping
+      prev.isLocked === next.isLocked
     );
   }
 );

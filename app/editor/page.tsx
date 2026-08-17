@@ -64,6 +64,7 @@ export default function EditorPage() {
 
   const {
     isDragging,
+    snapGuides,
     handleElementPointerDown,
     handleCanvasPointerMove,
     handlePointerUp,
@@ -337,13 +338,20 @@ export default function EditorPage() {
               meshConfig={meshConfig}
               overlayConfig={overlayConfig}
               elements={elements}
-              onEmptyClick={() => hiddenInputRef.current?.click()}
+              onEmptyClick={() => {
+                if (elements.length === 0) {
+                  hiddenInputRef.current?.click();
+                } else {
+                  selectElement(null);
+                }
+              }}
               selectedElementId={selectedElementId}
               onElementMouseDown={handleElementPointerDown}
               onMouseMove={handleCanvasPointerMove}
               onMouseUp={handlePointerUp}
               isDragging={isDragging}
               isCropping={isCropping}
+              snapGuides={snapGuides}
               onCropChange={handleCropChange}
             />
           </div>
