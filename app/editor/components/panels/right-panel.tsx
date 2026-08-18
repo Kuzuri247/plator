@@ -150,40 +150,71 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                     <Label className="text-sm font-semibold uppercase tracking-wider">
                       Palette Combinations
                     </Label>
-                    <Button
-                      onClick={handleRandomMesh}
-                      variant="outline"
-                      size="sm"
-                      className="h-7 text-xs gap-1 border-primary/40 hover:border-primary text-primary cursor-pointer"
-                    >
-                      <Sparkles className="size-3" /> Randomize
-                    </Button>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
-                    {MESH_PALETTES.map((pal) => (
+                    <div className="relative group rounded-lg p-[1.5px] transition-transform hover:scale-[1.03] active:scale-[0.98]">
+                      <div className="absolute -inset-0.75 rounded-xl google-rainbow-glow opacity-70 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
                       <button
-                        key={pal.name}
-                        onClick={() => {
-                          setBackground("mesh");
-                          setMeshConfig({ colors: [...pal.colors] });
-                        }}
-                        className="group relative rounded-lg p-1.5 border border-border/70 hover:border-primary/80 hover:ring-1 hover:ring-primary/50 transition-all text-center bg-background/50 hover:scale-[1.03] hover:z-10 hover:shadow-md cursor-pointer"
+                        type="button"
+                        onClick={handleRandomMesh}
+                        className="relative z-10 w-full h-full rounded-[6.5px] p-1.5 transition-all text-center bg-card dark:bg-neutral-900 hover:bg-card/90 dark:hover:bg-neutral-900/90 cursor-pointer overflow-hidden flex flex-col justify-between"
+                        title="Generate random mesh colors"
                       >
-                        <div className="flex h-5 w-full rounded overflow-hidden mb-1 shadow-xs">
-                          {pal.colors.map((c, i) => (
-                            <div
-                              key={i}
-                              className="flex-1 h-full"
-                              style={{ backgroundColor: c }}
-                            />
-                          ))}
+                        <div className="flex h-5 w-full rounded overflow-hidden mb-1 shadow-xs relative">
+                          <div className="flex-1 h-full animate-circulate-1" />
+                          <div className="flex-1 h-full animate-circulate-2" />
+                          <div className="flex-1 h-full animate-circulate-3" />
+                          <div className="flex-1 h-full animate-circulate-4" />
+                          <div className="flex-1 h-full animate-circulate-5" />
+                          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity animate-palette-shimmer" />
                         </div>
-                        <span className="text-[10px] font-medium text-foreground truncate block text-center">
-                          {pal.name}
-                        </span>
+                        <div className="flex items-center justify-center gap-1">
+                          <span className="text-[10px] font-medium text-foreground truncate block text-center">
+                            Randomize
+                          </span>
+                        </div>
                       </button>
-                    ))}
+                    </div>
+
+                    {MESH_PALETTES.map((pal) => {
+                      const isSelected =
+                        canvasBackground === "mesh" &&
+                        meshConfig.colors.length === pal.colors.length &&
+                        meshConfig.colors.every(
+                          (c, i) =>
+                            c.toLowerCase() === pal.colors[i].toLowerCase()
+                        );
+
+                      return (
+                        <button
+                          key={pal.name}
+                          type="button"
+                          onClick={() => {
+                            setBackground("mesh");
+                            setMeshConfig({ colors: [...pal.colors] });
+                          }}
+                          className={`group relative rounded-lg p-1.5 border transition-all text-center bg-background/50 hover:scale-[1.03] hover:z-10 hover:shadow-md cursor-pointer ${isSelected
+                              ? "border-primary ring-1 ring-primary/60 bg-primary/5 shadow-xs font-semibold"
+                              : "border-border/70 hover:border-primary/80 hover:ring-1 hover:ring-primary/50"
+                            }`}
+                        >
+                          <div className="flex h-5 w-full rounded overflow-hidden mb-1 shadow-xs">
+                            {pal.colors.map((c, i) => (
+                              <div
+                                key={i}
+                                className="flex-1 h-full"
+                                style={{ backgroundColor: c }}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-[10px] font-medium text-foreground truncate block text-center">
+                            {pal.name}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

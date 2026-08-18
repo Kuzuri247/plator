@@ -36,10 +36,6 @@ export const MESH_PALETTES = [
     colors: ["#09090b", "#18181b", "#3f3f46", "#71717a", "#e4e4e7"],
   },
   {
-    name: "Cyberpunk",
-    colors: ["#ff007f", "#7928ca", "#0070f3", "#00dfd8", "#ffbe0b"],
-  },
-  {
     name: "Sunset Silk",
     colors: ["#ff416c", "#ff4b2b", "#ffb347", "#f72585", "#7209b7"],
   },

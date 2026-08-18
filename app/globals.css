@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --shadow-next: 0 8px 30px rgba(0, 0, 0, 0.1);
@@ -14,30 +14,30 @@
   --font-playfair: var(--font-playfair);
   --font-oswald: var(--font-oswald);
   --font-montserrat: var(--font-montserrat);
-
-  --color-background: oklch(var(--background));
-  --color-surface: oklch(var(--surface));
-  --color-foreground: oklch(var(--foreground));
+  
   --color-card: oklch(var(--card));
-  --color-card-foreground: oklch(var(--card-foreground));
-  --color-popover: oklch(var(--popover));
-  --color-popover-foreground: oklch(var(--popover-foreground));
-  --color-primary: oklch(var(--primary));
-  --color-primary-foreground: oklch(var(--primary-foreground));
-  --color-secondary: oklch(var(--secondary));
-  --color-secondary-foreground: oklch(var(--secondary-foreground));
   --color-muted: oklch(var(--muted));
-  --color-muted-foreground: oklch(var(--muted-foreground));
   --color-accent: oklch(var(--accent));
+  --color-popover: oklch(var(--popover));
+  --color-primary: oklch(var(--primary));
+  --color-surface: oklch(var(--surface));
+  --color-background: oklch(var(--background));
+  --color-foreground: oklch(var(--foreground));
+  --color-secondary: oklch(var(--secondary));
+  --color-card-foreground: oklch(var(--card-foreground));
+  --color-muted-foreground: oklch(var(--muted-foreground));
+  --color-popover-foreground: oklch(var(--popover-foreground));
+  --color-primary-foreground: oklch(var(--primary-foreground));
   --color-accent-foreground: oklch(var(--accent-foreground));
+  --color-secondary-foreground: oklch(var(--secondary-foreground));
   --color-destructive: oklch(var(--destructive));
   --color-destructive-foreground: oklch(var(--destructive-foreground));
   --color-border: oklch(var(--border));
   --color-input: oklch(var(--input));
   --color-ring: oklch(var(--ring));
-
   --color-success: oklch(var(--success));
   --color-success-foreground: oklch(var(--success-foreground));
+
 }
 
 @layer base {
@@ -68,7 +68,7 @@
     --destructive: 0.6 0.15 25;
     --destructive-foreground: 0.98 0.005 100;
 
-    --success: 0.65 0.18 145; /* Green */
+    --success: 0.65 0.18 145;
     --success-foreground: 0.98 0 100;
 
     --border: 0.9 0.02 100;
@@ -81,18 +81,17 @@
   .dark {
     --shadow-next: 0 8px 30px rgba(0, 225, 250, 0.915);
 
-    /* Dark Mode - Cyberpunk/Neon Future */
-    --background: 0.1 0.01 100; /* Deep Carbon Black */
-    --foreground: 0.95 0.01 100; /* Off-white */
+    --background: 0.1 0.01 100; 
+    --foreground: 0.95 0.01 100; 
 
-    --card: 0.12 0.01 100; /* Slightly lighter carbon */
+    --card: 0.12 0.01 100; 
     --card-foreground: 0.95 0.01 100;
 
     --popover: 0.12 0.01 100;
     --popover-foreground: 0.95 0.01 100;
 
-    --primary: 0.88 0.22 100; /* Bright Neon Yellow */
-    --primary-foreground: 0.1 0.02 100; /* Black text on neon button */
+    --primary: 0.88 0.22 100;
+    --primary-foreground: 0.1 0.02 100;
 
     --secondary: 0.2 0.02 100;
     --secondary-foreground: 0.95 0.01 100;
@@ -101,15 +100,15 @@
     --muted-foreground: 0.65 0.02 100;
 
     --accent: 0.18 0.03 100;
-    --accent-foreground: 0.88 0.22 100; /* Yellow text on accent hover */
+    --accent-foreground: 0.88 0.22 100;
 
     --destructive: 0.4 0.15 25;
     --destructive-foreground: 0.98 0.005 100;
 
-    --success: 0.75 0.2 145; /* Neon Green */
+    --success: 0.75 0.2 145;
     --success-foreground: 0.1 0.02 100;
 
-    --border: 0.22 0.02 100; /* Dark Yellow-ish Grey */
+    --border: 0.22 0.02 100;
     --input: 0.22 0.02 100;
     --ring: 0.88 0.22 100;
   }
@@ -132,7 +131,6 @@
     scrollbar-width: none;
   }
 
-  /* Thin sleek scrollbars */
   * {
     scrollbar-width: thin;
     scrollbar-color: oklch(var(--border)) transparent;
@@ -156,3 +154,110 @@
     background: oklch(var(--muted-foreground) / 0.6);
   }
 }
+
+/* rainbow colors */
+@keyframes meshCirculate {
+  0% {
+    background-color: #4285F4;
+  }
+  16.6% {
+    background-color: #9b51e0;
+  }
+  33.3% {
+    background-color: #EA4335;
+  }
+  50% {
+    background-color: #FBBC05;
+  }
+  66.6% {
+    background-color: #34A853;
+  }
+  83.3% {
+    background-color: #00dfd8;
+  }
+  100% {
+    background-color: #4285F4;
+  }
+}
+
+@keyframes shimmerWave {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-circulate-1 {
+  animation: meshCirculate 3s linear infinite;
+  animation-delay: 0s;
+}
+
+.animate-circulate-2 {
+  animation: meshCirculate 3s linear infinite;
+  animation-delay: -0.6s;
+}
+
+.animate-circulate-3 {
+  animation: meshCirculate 3s linear infinite;
+  animation-delay: -1.2s;
+}
+
+.animate-circulate-4 {
+  animation: meshCirculate 3s linear infinite;
+  animation-delay: -1.8s;
+}
+
+.animate-circulate-5 {
+  animation: meshCirculate 3s linear infinite;
+  animation-delay: -2.4s;
+}
+
+.animate-palette-shimmer {
+  animation: shimmerWave 2.5s ease-in-out infinite;
+}
+
+@property --rainbow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rainbowRotate {
+  0% {
+    --rainbow-angle: 0deg;
+  }
+  100% {
+    --rainbow-angle: 360deg;
+  }
+}
+
+@keyframes googleGlowPulse {
+  0%, 100% {
+    opacity: 0.65;
+    filter: blur(8px);
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    filter: blur(12px);
+    transform: scale(1.02);
+  }
+}
+
+.google-rainbow-glow {
+  background: conic-gradient(
+    from var(--rainbow-angle, 0deg),
+    #4285F4 0%,
+    #9b51e0 20%,
+    #EA4335 40%,
+    #FBBC05 60%,
+    #34A853 80%,
+    #4285F4 100%
+  );
+  animation: rainbowRotate 3s linear infinite, googleGlowPulse 2.5s ease-in-out infinite;
+}
+
+
+
