@@ -400,63 +400,58 @@ export function LeftPanel({
 
                       <div className="space-y-4">
                         <Label className="text-sm font-semibold uppercase tracking-wider">
-                          Transforms & Clipping
+                          Orientation & Clipping
                         </Label>
 
                         {/* 3D Rotation Controls */}
-                        <div className="space-y-3 font-manrope font-semibold">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium flex items-center gap-2">
-                              <Rotate3d className="size-3" /> 3D Rotation
+
+
+                        <div className="space-y-2">
+                          <div className="grid grid-cols-3 gap-2 items-center justify-center">
+                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                              X-Axis: {imgStyle.rotateX}°
+                            </Label>
+                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                              Y-Axis: {imgStyle.rotateY}°
+                            </Label>
+                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                              Z-Axis: {imgStyle.rotate}°
                             </Label>
                           </div>
 
-                          <div className="space-y-2 pt-2">
-                            <div className="grid grid-cols-3 gap-2 items-center justify-center">
-                              <Label className="text-[10px] text-muted-foreground flex justify-center">
-                                X: {imgStyle.rotateX}°
-                              </Label>
-                              <Label className="text-[10px] text-muted-foreground flex justify-center">
-                                Y: {imgStyle.rotateY}°
-                              </Label>
-                              <Label className="text-[10px] text-muted-foreground flex justify-center">
-                                Z: {imgStyle.rotate}°
-                              </Label>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-2">
-                              <Slider
-                                value={[imgStyle.rotateX]}
-                                onValueChange={([val]) =>
-                                  updateSelected({ rotateX: val })
-                                }
-                                min={-180}
-                                max={180}
-                                step={1}
-                                className="py-1"
-                              />
-                              <Slider
-                                value={[imgStyle.rotateY]}
-                                onValueChange={([val]) =>
-                                  updateSelected({ rotateY: val })
-                                }
-                                min={-180}
-                                max={180}
-                                step={1}
-                                className="py-1"
-                              />
-                              <Slider
-                                value={[imgStyle.rotate]}
-                                onValueChange={([val]) =>
-                                  updateSelected({ rotate: val })
-                                }
-                                min={-180}
-                                max={180}
-                                step={1}
-                                className="py-1"
-                              />
-                            </div>
+                          <div className="grid grid-cols-3 gap-2">
+                            <Slider
+                              value={[imgStyle.rotateX]}
+                              onValueChange={([val]) =>
+                                updateSelected({ rotateX: val })
+                              }
+                              min={-180}
+                              max={180}
+                              step={1}
+                              className="py-1"
+                            />
+                            <Slider
+                              value={[imgStyle.rotateY]}
+                              onValueChange={([val]) =>
+                                updateSelected({ rotateY: val })
+                              }
+                              min={-180}
+                              max={180}
+                              step={1}
+                              className="py-1"
+                            />
+                            <Slider
+                              value={[imgStyle.rotate]}
+                              onValueChange={([val]) =>
+                                updateSelected({ rotate: val })
+                              }
+                              min={-180}
+                              max={180}
+                              step={1}
+                              className="py-1"
+                            />
                           </div>
+
                         </div>
 
                         {/* Row: Clip Path & 3D Preset Dropdowns */}
@@ -556,7 +551,7 @@ export function LeftPanel({
                             {/* Row 1: Pattern Dropdown (Left) + Swatches & Swap (Right) */}
                             <div className="grid grid-cols-12 gap-2 items-end">
                               <div className="col-span-5 pr-1 space-y-2 min-w-0">
-                                <Label className="text-xs font-medium text-muted-foreground">
+                                <Label className="text-xs font-medium text-muted-foreground mb-2">
                                   Pattern Type
                                 </Label>
                                 <Select
@@ -577,13 +572,13 @@ export function LeftPanel({
                                 </Select>
                               </div>
 
-                              <div className="col-span-7 flex items-center justify-end gap-1.5 pb-0.5">
+                              <div className="col-span-7 flex items-center justify-end gap-1.5 pb-px">
                                 {/* Foreground Color */}
-                                <div className="flex flex-col items-center gap-1">
-                                  <Label className="text-xs mb-1.5 font-medium text-muted-foreground">
+                                <div className="flex flex-col items-center">
+                                  <Label className="text-xs mb-2 font-medium text-muted-foreground">
                                     BG color
                                   </Label>
-                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                  <div className="relative size-7.5 -mb-px rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                     <div
                                       className="absolute inset-0"
                                       style={{
@@ -620,11 +615,11 @@ export function LeftPanel({
                                 </button>
 
                                 {/* Background Color */}
-                                <div className="flex flex-col items-center gap-1">
-                                  <Label className="text-xs mb-1.5 font-medium text-muted-foreground">
+                                <div className="flex flex-col items-center">
+                                  <Label className="text-xs mb-2 font-medium text-muted-foreground">
                                     FG color
                                   </Label>
-                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                  <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                     <div
                                       className="absolute inset-0"
                                       style={{
@@ -749,468 +744,470 @@ export function LeftPanel({
             className="absolute inset-0 data-[state=inactive]:hidden focus-visible:outline-none mt-0"
           >
             <ScrollArea className="h-full w-full">
-              <div className="p-4 flex flex-col gap-4 pb-20">
-                <div className="space-y-3">
-                  <Label className="text-sm font-semibold uppercase tracking-wider">
-                    Content
-                  </Label>
+              <div className="p-4 flex flex-col gap-6 pb-20">
+                <div className="space-y-5">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-semibold uppercase tracking-wider">
+                      Content
+                    </Label>
+                    {selectedElement?.type === "text" && textStyle ? (
+                      <Textarea
+                        value={(selectedElement as TextElement).content}
+                        onChange={(e) =>
+                          updateSelected({ content: e.target.value })
+                        }
+                        className="min-h-8 resize-none bg-transparent placeholder:font-inter"
+                        placeholder="Type text here..."
+                      />
+                    ) : null}
+
+                    <Button
+                      onClick={handleAddText}
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-transparent border-dashed rounded-sm border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
+                    >
+                      <Plus className="w-3.5 h-3.5 mr-2" /> Add Text Layer
+                    </Button>
+                  </div>
+
                   {selectedElement?.type === "text" && textStyle ? (
-                    <Textarea
-                      value={(selectedElement as TextElement).content}
-                      onChange={(e) =>
-                        updateSelected({ content: e.target.value })
-                      }
-                      className="min-h-8 resize-none bg-transparent placeholder:font-inter"
-                      placeholder="Type text here..."
-                    />
-                  ) : null}
+                    <>
+                      <Separator />
 
-                  <Button
-                    onClick={handleAddText}
-                    variant="outline"
-                    size="sm"
-                    className="w-full bg-transparent border-dashed rounded-sm border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
-                  >
-                    <Plus className="w-3.5 h-3.5 mr-2" /> Add Text Layer
-                  </Button>
-                </div>
-
-                <Separator />
-
-                {selectedElement?.type === "text" && textStyle ? (
-                  <>
-                    <div className="space-y-4">
-                      <Label className="text-sm font-semibold uppercase tracking-wider">
-                        Typography
-                      </Label>
-
-                      {/* Font Family & Weight */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1.5 min-w-0">
-                          <Label className="text-xs font-medium text-muted-foreground">
-                            Font Family
-                          </Label>
-                          <Select
-                            value={textStyle.fontFamily}
-                            onValueChange={(val) =>
-                              updateSelected({ fontFamily: val })
-                            }
-                          >
-                            <SelectTrigger
-                              className="h-8 w-full text-xs"
-                              style={{ fontFamily: getFontFamilyStyle(textStyle.fontFamily) }}
-                            >
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="text-xs max-h-60">
-                              {FONT_FAMILIES.map((f) => (
-                                <SelectItem
-                                  key={f}
-                                  value={f}
-                                  style={{ fontFamily: getFontFamilyStyle(f) }}
-                                  className="text-xs py-1.5 cursor-pointer"
-                                >
-                                  {f}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-1.5 min-w-0">
-                          <Label className="text-xs font-medium text-muted-foreground">
-                            Font Weight
-                          </Label>
-                          <Select
-                            value={textStyle.fontWeight}
-                            onValueChange={(val) =>
-                              updateSelected({ fontWeight: val })
-                            }
-                          >
-                            <SelectTrigger className="h-8 w-full font-manrope text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="font-manrope text-xs">
-                              {FONT_WEIGHTS.map((w) => (
-                                <SelectItem
-                                  key={w.value}
-                                  value={w.value}
-                                  className="text-xs py-1.5 cursor-pointer"
-                                >
-                                  {w.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      {/* Text Effects (Individual square cards evenly distributed in a row) */}
-                      <div className="space-y-1.5">
-                        <Label className="text-xs font-medium text-muted-foreground">
-                          Text Effects
+                      <div className="space-y-4">
+                        <Label className="text-sm font-semibold uppercase tracking-wider">
+                          Typography
                         </Label>
-                        <div className="grid grid-cols-6 gap-2">
-                          {[
-                            {
-                              id: "outline",
-                              icon: Highlighter,
-                              title: "Outline Text",
-                            },
-                            {
-                              id: "underline",
-                              icon: Underline,
-                              title: "Underline",
-                            },
-                            {
-                              id: "line-through",
-                              icon: Strikethrough,
-                              title: "Strikethrough",
-                            },
-                            {
-                              id: "italic",
-                              icon: Italic,
-                              title: "Italic",
-                            },
-                            {
-                              id: "uppercase",
-                              icon: CaseUpper,
-                              title: "Uppercase",
-                            },
-                            {
-                              id: "small-caps",
-                              icon: ALargeSmall,
-                              title: "Small Caps",
-                            },
-                          ].map((eff) => {
-                            const isActive = (textStyle.textEffect || []).includes(eff.id);
-                            const Icon = eff.icon;
-                            return (
-                              <button
-                                key={eff.id}
-                                type="button"
-                                onClick={() => {
-                                  const current = textStyle.textEffect || [];
-                                  const next = isActive
-                                    ? current.filter((x) => x !== eff.id)
-                                    : [...current, eff.id];
-                                  updateSelected({ textEffect: next });
-                                }}
-                                className={`aspect-square w-full rounded-md border flex items-center justify-center transition-all cursor-pointer shadow-2xs hover:scale-105 ${isActive
+
+                        {/* Font Family & Weight */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-1.5 min-w-0">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Font Family
+                            </Label>
+                            <Select
+                              value={textStyle.fontFamily}
+                              onValueChange={(val) =>
+                                updateSelected({ fontFamily: val })
+                              }
+                            >
+                              <SelectTrigger
+                                className="h-8 w-full text-xs"
+                                style={{ fontFamily: getFontFamilyStyle(textStyle.fontFamily) }}
+                              >
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="text-xs max-h-60">
+                                {FONT_FAMILIES.map((f) => (
+                                  <SelectItem
+                                    key={f}
+                                    value={f}
+                                    style={{ fontFamily: getFontFamilyStyle(f) }}
+                                    className="text-xs py-1.5 cursor-pointer"
+                                  >
+                                    {f}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-1.5 min-w-0">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Font Weight
+                            </Label>
+                            <Select
+                              value={textStyle.fontWeight}
+                              onValueChange={(val) =>
+                                updateSelected({ fontWeight: val })
+                              }
+                            >
+                              <SelectTrigger className="h-8 w-full font-manrope text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="font-manrope text-xs">
+                                {FONT_WEIGHTS.map((w) => (
+                                  <SelectItem
+                                    key={w.value}
+                                    value={w.value}
+                                    className="text-xs py-1.5 cursor-pointer"
+                                  >
+                                    {w.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        {/* Text Effects (Individual square cards evenly distributed in a row) */}
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium text-muted-foreground">
+                            Text Effects
+                          </Label>
+                          <div className="grid grid-cols-6 gap-2">
+                            {[
+                              {
+                                id: "outline",
+                                icon: Highlighter,
+                                title: "Outline Text",
+                              },
+                              {
+                                id: "underline",
+                                icon: Underline,
+                                title: "Underline",
+                              },
+                              {
+                                id: "line-through",
+                                icon: Strikethrough,
+                                title: "Strikethrough",
+                              },
+                              {
+                                id: "italic",
+                                icon: Italic,
+                                title: "Italic",
+                              },
+                              {
+                                id: "uppercase",
+                                icon: CaseUpper,
+                                title: "Uppercase",
+                              },
+                              {
+                                id: "small-caps",
+                                icon: ALargeSmall,
+                                title: "Small Caps",
+                              },
+                            ].map((eff) => {
+                              const isActive = (textStyle.textEffect || []).includes(eff.id);
+                              const Icon = eff.icon;
+                              return (
+                                <button
+                                  key={eff.id}
+                                  type="button"
+                                  onClick={() => {
+                                    const current = textStyle.textEffect || [];
+                                    const next = isActive
+                                      ? current.filter((x) => x !== eff.id)
+                                      : [...current, eff.id];
+                                    updateSelected({ textEffect: next });
+                                  }}
+                                  className={`aspect-square w-full rounded-md border flex items-center justify-center transition-all cursor-pointer shadow-2xs hover:scale-105 ${isActive
                                     ? "bg-primary text-primary-foreground border-primary font-bold shadow-xs scale-102"
                                     : "bg-background/60 hover:bg-muted/60 border-neutral-300 dark:border-neutral-700 text-muted-foreground hover:text-foreground"
-                                  }`}
-                                title={eff.title}
-                              >
-                                <Icon className="size-4" />
-                              </button>
-                            );
-                          })}
+                                    }`}
+                                  title={eff.title}
+                                >
+                                  <Icon className="size-4" />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Text Color & Font Size Row */}
+                        <div className="grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <Label className="text-xs font-medium text-muted-foreground">
+                                Color
+                              </Label>
+                            </div>
+                            <div className="flex items-center gap-2 h-8">
+                              <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                <div
+                                  className="absolute inset-0"
+                                  style={{ backgroundColor: textStyle.color }}
+                                />
+                                <input
+                                  type="color"
+                                  value={textStyle.color}
+                                  onChange={(e) =>
+                                    updateSelected({ color: e.target.value })
+                                  }
+                                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                  title="Text Color"
+                                />
+                              </div>
+                              <span className="text-xs font-manrope text-muted-foreground uppercase">
+                                {textStyle.color}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <Label className="text-xs font-medium text-muted-foreground">
+                                Size
+                              </Label>
+                              <span className="text-xs text-muted-foreground">
+                                {textStyle.fontSize}px
+                              </span>
+                            </div>
+                            <div className="flex items-center h-8">
+                              <Slider
+                                value={[textStyle.fontSize]}
+                                onValueChange={([v]) =>
+                                  updateSelected({ fontSize: v })
+                                }
+                                min={12}
+                                max={120}
+                                step={1}
+                                className="w-full"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Text Color & Font Size Row */}
-                      <div className="grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Color
-                            </Label>
-                          </div>
-                          <div className="flex items-center gap-2 h-8">
-                            <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
-                              <div
-                                className="absolute inset-0"
-                                style={{ backgroundColor: textStyle.color }}
-                              />
-                              <input
-                                type="color"
-                                value={textStyle.color}
-                                onChange={(e) =>
-                                  updateSelected({ color: e.target.value })
-                                }
-                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                title="Text Color"
-                              />
-                            </div>
-                            <span className="text-xs font-manrope text-muted-foreground uppercase">
-                              {textStyle.color}
-                            </span>
-                          </div>
-                        </div>
+                      <Separator />
 
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Size
+                      <div className="space-y-4">
+                        <Label className="text-sm font-semibold uppercase tracking-wider">
+                          Orientation
+                        </Label>
+                        <div className="space-y-3 font-manrope font-semibold">
+                          <div className="grid grid-cols-3 gap-2 items-center justify-center">
+                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                              X-Axis: {textStyle.rotateX}°
                             </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {textStyle.fontSize}px
-                            </span>
+                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                              Y-Axis: {textStyle.rotateY}°
+                            </Label>
+                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                              Z-Axis: {textStyle.rotate}°
+                            </Label>
                           </div>
-                          <div className="flex items-center h-8">
+                          <div className="grid grid-cols-3 gap-2">
                             <Slider
-                              value={[textStyle.fontSize]}
-                              onValueChange={([v]) =>
-                                updateSelected({ fontSize: v })
+                              value={[textStyle.rotateX]}
+                              onValueChange={([val]) =>
+                                updateSelected({ rotateX: val })
                               }
-                              min={12}
-                              max={120}
+                              min={-180}
+                              max={180}
                               step={1}
-                              className="w-full"
+                              className="py-1"
+                            />
+                            <Slider
+                              value={[textStyle.rotateY]}
+                              onValueChange={([val]) =>
+                                updateSelected({ rotateY: val })
+                              }
+                              min={-180}
+                              max={180}
+                              step={1}
+                              className="py-1"
+                            />
+                            <Slider
+                              value={[textStyle.rotate]}
+                              onValueChange={([val]) =>
+                                updateSelected({ rotate: val })
+                              }
+                              min={-180}
+                              max={180}
+                              step={1}
+                              className="py-1"
                             />
                           </div>
-                        </div>
-                      </div>
-                    </div>
 
-                    <Separator />
-
-                    <div className="space-y-4">
-                      <Label className="text-sm font-semibold uppercase tracking-wider">
-                        3D Transforms
-                      </Label>
-                      <div className="space-y-3 font-manrope font-semibold">
-                        <div className="grid grid-cols-3 gap-2 items-center justify-center">
-                          <Label className="text-[10px] text-muted-foreground flex justify-center">
-                            X: {textStyle.rotateX}°
-                          </Label>
-                          <Label className="text-[10px] text-muted-foreground flex justify-center">
-                            Y: {textStyle.rotateY}°
-                          </Label>
-                          <Label className="text-[10px] text-muted-foreground flex justify-center">
-                            Z: {textStyle.rotate}°
-                          </Label>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2">
-                          <Slider
-                            value={[textStyle.rotateX]}
-                            onValueChange={([val]) =>
-                              updateSelected({ rotateX: val })
-                            }
-                            min={-180}
-                            max={180}
-                            step={1}
-                            className="py-1"
-                          />
-                          <Slider
-                            value={[textStyle.rotateY]}
-                            onValueChange={([val]) =>
-                              updateSelected({ rotateY: val })
-                            }
-                            min={-180}
-                            max={180}
-                            step={1}
-                            className="py-1"
-                          />
-                          <Slider
-                            value={[textStyle.rotate]}
-                            onValueChange={([val]) =>
-                              updateSelected({ rotate: val })
-                            }
-                            min={-180}
-                            max={180}
-                            step={1}
-                            className="py-1"
-                          />
-                        </div>
-
-                        {/* 3D Preset for Text */}
-                        <div className="space-y-1.5 min-w-0 pt-1">
-                          <Label className="text-xs font-medium text-muted-foreground">
-                            3D Preset
-                          </Label>
-                          <Select
-                            value={
-                              TRANSFORM_3D_PRESETS.find(
-                                (p) =>
-                                  p.id !== "custom" &&
-                                  p.rotateX === textStyle.rotateX &&
-                                  p.rotateY === textStyle.rotateY &&
-                                  p.rotate === textStyle.rotate
-                              )?.id || "custom"
-                            }
-                            onValueChange={(presetId) => {
-                              const preset = TRANSFORM_3D_PRESETS.find(
-                                (p) => p.id === presetId
-                              );
-                              if (preset && preset.id !== "custom") {
-                                updateSelected({
-                                  rotateX: preset.rotateX,
-                                  rotateY: preset.rotateY,
-                                  rotate: preset.rotate,
-                                });
+                          {/* 3D Preset for Text */}
+                          <div className="space-y-1.5 min-w-0 pt-1">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              3D Preset
+                            </Label>
+                            <Select
+                              value={
+                                TRANSFORM_3D_PRESETS.find(
+                                  (p) =>
+                                    p.id !== "custom" &&
+                                    p.rotateX === textStyle.rotateX &&
+                                    p.rotateY === textStyle.rotateY &&
+                                    p.rotate === textStyle.rotate
+                                )?.id || "custom"
                               }
-                            }}
-                          >
-                            <SelectTrigger className="h-8 w-full text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="text-xs max-h-56">
-                              {TRANSFORM_3D_PRESETS.map((preset) => (
-                                <SelectItem
-                                  key={preset.id}
-                                  value={preset.id}
-                                  className="text-xs py-1.5 cursor-pointer"
-                                >
-                                  {preset.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                              onValueChange={(presetId) => {
+                                const preset = TRANSFORM_3D_PRESETS.find(
+                                  (p) => p.id === presetId
+                                );
+                                if (preset && preset.id !== "custom") {
+                                  updateSelected({
+                                    rotateX: preset.rotateX,
+                                    rotateY: preset.rotateY,
+                                    rotate: preset.rotate,
+                                  });
+                                }
+                              }}
+                            >
+                              <SelectTrigger className="h-8 w-full text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="text-xs max-h-56">
+                                {TRANSFORM_3D_PRESETS.map((preset) => (
+                                  <SelectItem
+                                    key={preset.id}
+                                    value={preset.id}
+                                    className="text-xs py-1.5 cursor-pointer"
+                                  >
+                                    {preset.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <Separator />
+                      <Separator />
 
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-sm font-semibold uppercase tracking-wider">
-                          Text Background
-                        </Label>
-                        <Switch
-                          checked={textStyle.showBackground}
-                          onCheckedChange={(val) =>
-                            updateSelected({ showBackground: val })
-                          }
-                        />
-                      </div>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-semibold uppercase tracking-wider">
+                            Text Background
+                          </Label>
+                          <Switch
+                            checked={textStyle.showBackground}
+                            onCheckedChange={(val) =>
+                              updateSelected({ showBackground: val })
+                            }
+                          />
+                        </div>
 
-                      {textStyle.showBackground && (
-                        <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
-                          {/* Row 1: Background Color & Shadow */}
-                          <div className="grid grid-cols-2 gap-2 font-semibold *:pr-1">
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between">
-                                <Label className="text-xs font-medium text-muted-foreground">
-                                  Background 
-                                </Label>
+                        {textStyle.showBackground && (
+                          <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
+                            {/* Row 1: Background Color & Shadow */}
+                            <div className="grid grid-cols-2 gap-2 font-semibold *:pr-1">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Background
+                                  </Label>
+                                </div>
+                                <div className="flex items-center gap-2 h-8">
+                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                    <div
+                                      className="absolute inset-0"
+                                      style={{
+                                        backgroundColor: textStyle.backgroundColor,
+                                      }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={textStyle.backgroundColor}
+                                      onChange={(e) =>
+                                        updateSelected({
+                                          backgroundColor: e.target.value,
+                                        })
+                                      }
+                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                      title="Box Background Color"
+                                    />
+                                  </div>
+                                  <span className="text-xs font-manrope text-muted-foreground uppercase">
+                                    {textStyle.backgroundColor}
+                                  </span>
+                                </div>
                               </div>
-                              <div className="flex items-center gap-2 h-8">
-                                <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
-                                  <div
-                                    className="absolute inset-0"
-                                    style={{
-                                      backgroundColor: textStyle.backgroundColor,
+
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Shadow
+                                  </Label>
+                                  <span className="text-xs text-muted-foreground">
+                                    {SHADOW_PRESETS.find(
+                                      (s) =>
+                                        s.value === textStyle.backgroundShadow,
+                                    )?.name || "None"}
+                                  </span>
+                                </div>
+                                <div className="flex items-center h-8">
+                                  <Slider
+                                    defaultValue={[0]}
+                                    value={[
+                                      SHADOW_PRESETS.findIndex(
+                                        (s) =>
+                                          s.value === textStyle.backgroundShadow,
+                                      ) !== -1
+                                        ? SHADOW_PRESETS.findIndex(
+                                          (s) =>
+                                            s.value ===
+                                            textStyle.backgroundShadow,
+                                        )
+                                        : 0,
+                                    ]}
+                                    onValueChange={([val]) => {
+                                      const preset = SHADOW_PRESETS[val];
+                                      if (preset)
+                                        updateSelected({
+                                          backgroundShadow: preset.value,
+                                        });
                                     }}
-                                  />
-                                  <input
-                                    type="color"
-                                    value={textStyle.backgroundColor}
-                                    onChange={(e) =>
-                                      updateSelected({
-                                        backgroundColor: e.target.value,
-                                      })
-                                    }
-                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                    title="Box Background Color"
+                                    min={0}
+                                    max={SHADOW_PRESETS.length - 1}
+                                    step={1}
+                                    className="w-full"
                                   />
                                 </div>
-                                <span className="text-xs font-manrope text-muted-foreground uppercase">
-                                  {textStyle.backgroundColor}
-                                </span>
                               </div>
                             </div>
 
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between">
-                                <Label className="text-xs font-medium text-muted-foreground">
-                                  Shadow
-                                </Label>
-                                <span className="text-xs text-muted-foreground">
-                                  {SHADOW_PRESETS.find(
-                                    (s) =>
-                                      s.value === textStyle.backgroundShadow,
-                                  )?.name || "None"}
-                                </span>
-                              </div>
-                              <div className="flex items-center h-8">
+                            {/* Row 2: Padding & Roundness */}
+                            <div className="grid grid-cols-2 gap-2 font-semibold *:pr-1">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Padding
+                                  </Label>
+                                  <span className="text-xs text-muted-foreground">
+                                    {textStyle.padding}px
+                                  </span>
+                                </div>
                                 <Slider
-                                  defaultValue={[0]}
-                                  value={[
-                                    SHADOW_PRESETS.findIndex(
-                                      (s) =>
-                                        s.value === textStyle.backgroundShadow,
-                                    ) !== -1
-                                      ? SHADOW_PRESETS.findIndex(
-                                        (s) =>
-                                          s.value ===
-                                          textStyle.backgroundShadow,
-                                      )
-                                      : 0,
-                                  ]}
-                                  onValueChange={([val]) => {
-                                    const preset = SHADOW_PRESETS[val];
-                                    if (preset)
-                                      updateSelected({
-                                        backgroundShadow: preset.value,
-                                      });
-                                  }}
+                                  value={[textStyle.padding]}
+                                  onValueChange={([v]) =>
+                                    updateSelected({ padding: v })
+                                  }
                                   min={0}
-                                  max={SHADOW_PRESETS.length - 1}
+                                  max={30}
                                   step={1}
-                                  className="w-full"
+                                />
+                              </div>
+
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Roundness
+                                  </Label>
+                                  <span className="text-xs text-muted-foreground">
+                                    {textStyle.borderRadius}px
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[textStyle.borderRadius]}
+                                  onValueChange={([v]) =>
+                                    updateSelected({ borderRadius: v })
+                                  }
+                                  min={0}
+                                  max={50}
+                                  step={1}
                                 />
                               </div>
                             </div>
                           </div>
-
-                          {/* Row 2: Padding & Roundness */}
-                          <div className="grid grid-cols-2 gap-2 font-semibold *:pr-1">
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between">
-                                <Label className="text-xs font-medium text-muted-foreground">
-                                  Padding
-                                </Label>
-                                <span className="text-xs text-muted-foreground">
-                                  {textStyle.padding}px
-                                </span>
-                              </div>
-                              <Slider
-                                value={[textStyle.padding]}
-                                onValueChange={([v]) =>
-                                  updateSelected({ padding: v })
-                                }
-                                min={0}
-                                max={30}
-                                step={1}
-                              />
-                            </div>
-
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between">
-                                <Label className="text-xs font-medium text-muted-foreground">
-                                  Roundness
-                                </Label>
-                                <span className="text-xs text-muted-foreground">
-                                  {textStyle.borderRadius}px
-                                </span>
-                              </div>
-                              <Slider
-                                value={[textStyle.borderRadius]}
-                                onValueChange={([v]) =>
-                                  updateSelected({ borderRadius: v })
-                                }
-                                min={0}
-                                max={50}
-                                step={1}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
+                      {activeTab === "text" &&
+                        selectedElement?.type !== "text" &&
+                        elements.some((e) => e.type === "text")
+                        ? "A text layer was previously selected. Select it again from Layers to edit."
+                        : "Select a text layer to edit properties."}
                     </div>
-                  </>
-                ) : (
-                  <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
-                    {activeTab === "text" &&
-                      selectedElement?.type !== "text" &&
-                      elements.some((e) => e.type === "text")
-                      ? "A text layer was previously selected. Select it again from Layers to edit."
-                      : "Select a text layer to edit properties."}
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </ScrollArea>
           </TabsContent>
