@@ -99,7 +99,7 @@ export default function EditorPage() {
         const newImage: ImageElement = {
           id,
           type: "image",
-          name: "Image Layer",
+          name: file.name || "Image Layer",
           src: result,
           position: { x, y },
           style: { ...DEFAULT_IMAGE_STYLE, scale: Math.round(scale) },

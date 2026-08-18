@@ -1,4 +1,4 @@
-import { useState, useCallback, RefObject } from "react";
+import { useState, useCallback, useEffect, RefObject } from "react";
 import { CanvasElement } from "../types";
 
 export interface SnapGuides {
@@ -22,6 +22,18 @@ export function useSelection(
     y: null,
   });
 
+  // Instantly cancel any ongoing drag if the layer becomes locked or is removed
+  useEffect(() => {
+    if (dragTarget) {
+      const targetEl = elements.find((el) => el.id === dragTarget);
+      if (!targetEl || targetEl.isLocked) {
+        setDragTarget(null);
+        setIsDragging(false);
+        setSnapGuides({ x: null, y: null });
+      }
+    }
+  }, [elements, dragTarget]);
+
   const getCanvasScale = useCallback(() => {
     if (!canvasRef.current) return 1;
     const rect = canvasRef.current.getBoundingClientRect();
@@ -36,7 +48,7 @@ export function useSelection(
       const scale = getCanvasScale();
       const element = elements.find((el) => el.id === elementId);
 
-      if (!element || !canvasRef.current) return;
+      if (!element || !canvasRef.current || element.isLocked) return;
 
       const canvasRect = canvasRef.current.getBoundingClientRect();
 
@@ -75,6 +87,13 @@ export function useSelection(
 
   const handleCanvasPointerMove = (e: React.PointerEvent) => {
     if (!dragTarget || !canvasRef.current) return;
+    const targetEl = elements.find((el) => el.id === dragTarget);
+    if (!targetEl || targetEl.isLocked) {
+      setDragTarget(null);
+      setIsDragging(false);
+      setSnapGuides({ x: null, y: null });
+      return;
+    }
     e.preventDefault();
 
     const scale = getCanvasScale();

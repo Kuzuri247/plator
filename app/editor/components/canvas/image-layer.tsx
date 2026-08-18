@@ -322,7 +322,7 @@ export const ImageLayer = memo(
             />
           </div>
 
-          {isSelected && (
+          {isSelected && !isLocked && (
             <>
               <div className="absolute inset-0 border border-dashed border-primary/80 pointer-events-none rounded-[inherit]" />
               {/* Handles using Pointer Events */}

@@ -4,7 +4,6 @@ import {
   Type,
   Image as ImageIcon,
   Plus,
-  Rotate3d,
   Highlighter,
   Underline,
   Strikethrough,
@@ -98,18 +97,11 @@ export function LeftPanel({
 
   const selectedElement = elements.find((el) => el.id === selectedElementId);
 
-  // const getStyle = (key: string, defaultVal: any) => {
-  //   if (selectedElement && "style" in selectedElement) {
-  //     return (selectedElement.style as any)[key] ?? defaultVal;
-  //   }
-  //   return defaultVal;
-  // };
-
   const handleAddText = () => {
     addElement({
       id: `text_${Date.now()}`,
       type: "text",
-      name: "New Text",
+      name: "Sample Text",
       content: "Sample Text",
       position: { x: 100, y: 100 },
       style: { ...DEFAULT_TEXT_STYLE },
@@ -169,7 +161,7 @@ export function LeftPanel({
         <div className="flex-1 min-h-0 relative">
           <TabsContent
             value="layers"
-            className="absolute inset-0 data-[state=inactive]:hidden mt-0"
+            className="absolute inset-0 data-[state=inactive]:hidden mt-0 overflow-hidden w-full max-w-full"
           >
             <LayerPanel />
           </TabsContent>
@@ -516,9 +508,16 @@ export function LeftPanel({
                               }}
                             >
                               <SelectTrigger className="h-8 w-full text-xs">
-                                <SelectValue />
+                                <SelectValue placeholder="Custom" />
                               </SelectTrigger>
                               <SelectContent className="text-xs max-h-56">
+                                <SelectItem
+                                  value="custom"
+                                  className="text-xs py-1.5 cursor-pointer text-muted-foreground"
+                                  disabled
+                                >
+                                  Custom
+                                </SelectItem>
                                 {TRANSFORM_3D_PRESETS.map((preset) => (
                                   <SelectItem
                                     key={preset.id}
@@ -1228,9 +1227,16 @@ export function LeftPanel({
                               }}
                             >
                               <SelectTrigger className="h-8 w-full text-xs">
-                                <SelectValue />
+                                <SelectValue placeholder="Custom" />
                               </SelectTrigger>
                               <SelectContent className="text-xs max-h-56">
+                                <SelectItem
+                                  value="custom"
+                                  className="text-xs py-1.5 cursor-pointer text-muted-foreground"
+                                  disabled
+                                >
+                                  Custom
+                                </SelectItem>
                                 {TRANSFORM_3D_PRESETS.map((preset) => (
                                   <SelectItem
                                     key={preset.id}

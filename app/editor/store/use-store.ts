@@ -36,18 +36,83 @@ export const useStore = create<EditorState>((set, get) => ({
 
   setAspectRatio: (name) => {
     const ratio = ASPECT_RATIOS.find((r) => r.name === name);
-    if (ratio) set({ aspectRatio: ratio });
+    if (!ratio) return;
+    set((state) => {
+      const oldRatio = state.aspectRatio;
+      if (oldRatio.width === ratio.width && oldRatio.height === ratio.height) {
+        return { aspectRatio: ratio };
+      }
+      const deltaX = (ratio.width - oldRatio.width) / 2;
+      const deltaY = (ratio.height - oldRatio.height) / 2;
+
+      const newElements = state.elements.map((el) => ({
+        ...el,
+        position: {
+          x: Math.round(el.position.x + deltaX),
+          y: Math.round(el.position.y + deltaY),
+        },
+      }));
+
+      const newHistory = [
+        ...state.history.slice(0, state.historyIndex + 1),
+        {
+          elements: newElements,
+          canvasBackground: state.canvasBackground,
+          meshConfig: state.meshConfig,
+          overlayConfig: state.overlayConfig,
+        },
+      ];
+
+      return {
+        aspectRatio: ratio,
+        elements: newElements,
+        history: newHistory,
+        historyIndex: newHistory.length - 1,
+      };
+    });
   },
 
   setCustomSize: (width, height) => {
-    set({
-      aspectRatio: {
+    set((state) => {
+      const oldRatio = state.aspectRatio;
+      if (oldRatio.width === width && oldRatio.height === height) {
+        return {};
+      }
+      const deltaX = (width - oldRatio.width) / 2;
+      const deltaY = (height - oldRatio.height) / 2;
+
+      const newElements = state.elements.map((el) => ({
+        ...el,
+        position: {
+          x: Math.round(el.position.x + deltaX),
+          y: Math.round(el.position.y + deltaY),
+        },
+      }));
+
+      const newRatio = {
         name: "Custom",
         label: "Custom",
         width,
         height,
         previewClass: "aspect-auto",
-      },
+      };
+
+      const newHistory = [
+        ...state.history.slice(0, state.historyIndex + 1),
+        {
+          elements: newElements,
+          canvasBackground: state.canvasBackground,
+          meshConfig: state.meshConfig,
+          overlayConfig: state.overlayConfig,
+        },
+      ];
+
+      return {
+        aspectRatio: newRatio,
+        elements: newElements,
+        history: newHistory,
+        historyIndex: newHistory.length - 1,
+      };
     });
   },
 
@@ -243,11 +308,18 @@ export const useStore = create<EditorState>((set, get) => ({
   },
 
   toggleLock: (id) => {
-    set((state) => ({
-      elements: state.elements.map((el) =>
-        el.id === id ? { ...el, isLocked: !el.isLocked } : el
-      ),
-    }));
+    set((state) => {
+      const isNowLocked = !state.elements.find((el) => el.id === id)?.isLocked;
+      return {
+        elements: state.elements.map((el) =>
+          el.id === id ? { ...el, isLocked: !el.isLocked } : el
+        ),
+        isCropping:
+          isNowLocked && state.selectedElementId === id
+            ? false
+            : state.isCropping,
+      };
+    });
   },
 
   selectElement: (id) => {
