@@ -247,21 +247,21 @@ export const SHADOW_PRESETS = [
     value: "8px 0 15px -3px rgb(0 0 0 / 0.5), 4px 0 6px -2px rgb(0 0 0 / 0.08)",
   },
   {
-    name: "X-Large",
+    name: "XL",
     value:
       "0 20px 25px -5px rgb(0 0 0 / 0.7), 0 10px 10px -5px rgb(0 0 0 / 0.06)",
   },
   {
-    name: "Left Bottom",
+    name: "L Bottom",
     value:
       "-12px 12px 25px -5px rgb(0 0 0 / 0.7), -6px 6px 10px -5px rgb(0 0 0 / 0.06)",
   },
   {
-    name: "Right Bottom",
+    name: "R Bottom",
     value:
       "12px 12px 25px -5px rgb(0 0 0 / 0.7), 6px 6px 10px -5px rgb(0 0 0 / 0.06)",
   },
-  { name: "2X-Large", value: "0 50px 50px -12px rgb(0 0 0 / 0.9)" },
+  { name: "2XL", value: "0 50px 50px -12px rgb(0 0 0 / 0.9)" },
 ];
 
 export const COLOR_PALETTES = {
@@ -413,4 +413,46 @@ export const PRESET_GRADIENTS = [
     value:
       "radial-gradient(at 0% 0%, #001219 0px, transparent 70%), radial-gradient(at 100% 0%, #005f73 0px, transparent 70%), radial-gradient(at 100% 100%, #0a1628 0px, transparent 70%), radial-gradient(at 0% 100%, #003566 0px, transparent 70%)",
   },
+];
+
+export interface GradientDirectionOption {
+  id: string;
+  name: string;
+  tailwind: string;
+  css: string;
+  arrow: string;
+}
+
+export const GRADIENT_DIRECTIONS: GradientDirectionOption[] = [
+  { id: "to-b", name: "To Bottom", tailwind: "to-b", css: "to bottom", arrow: "↓" },
+  { id: "to-r", name: "To Right", tailwind: "to-r", css: "to right", arrow: "→" },
+  { id: "to-br", name: "To Bottom Right", tailwind: "to-br", css: "to bottom right", arrow: "↘" },
+  { id: "to-tr", name: "To Top Right", tailwind: "to-tr", css: "to top right", arrow: "↗" },
+  { id: "to-t", name: "To Top", tailwind: "to-t", css: "to top", arrow: "↑" },
+  { id: "to-l", name: "To Left", tailwind: "to-l", css: "to left", arrow: "←" },
+  { id: "to-bl", name: "To Bottom Left", tailwind: "to-bl", css: "to bottom left", arrow: "↙" },
+  { id: "to-tl", name: "To Top Left", tailwind: "to-tl", css: "to top left", arrow: "↖" },
+];
+
+export const TEXT_GRADIENT_PRESETS = [
+  { name: "Silver", from: "#ffffff", to: "#94a3b8" },
+  { name: "Gold", from: "#fef08a", to: "#ca8a04" },
+  { name: "Sunset", from: "#ff7e5f", to: "#feb47b" },
+  { name: "Cyber", from: "#00dfd8", to: "#ff007f" },
+  { name: "Neon Cyan", from: "#00f2fe", to: "#4facfe" },
+  { name: "Purple", from: "#c084fc", to: "#6366f1" },
+  { name: "Emerald", from: "#4ade80", to: "#059669" },
+  { name: "Flame", from: "#fb923c", to: "#ef4444" },
+  { name: "Monochrome", from: "#ffffff", to: "#52525b" },
+];
+
+export const BACKGROUND_GRADIENT_PRESETS = [
+  { name: "Dark Velvet", from: "#18181b", to: "#09090b" },
+  { name: "Slate Glass", from: "#334155", to: "#0f172a" },
+  { name: "Midnight", from: "#1e1b4b", to: "#0f172a" },
+  { name: "Crimson Glow", from: "#881337", to: "#1c0a00" },
+  { name: "Emerald Depth", from: "#064e3b", to: "#022c22" },
+  { name: "Purple Twilight", from: "#3b0764", to: "#110726" },
+  { name: "Cyber Dusk", from: "#0f172a", to: "#3b0764" },
+  { name: "Deep Amber", from: "#451a03", to: "#180a02" },
 ];

@@ -64,9 +64,16 @@ export interface TextStyle {
   fontFamily: string;
   fontWeight: string;
   color: string;
+  colorEnd?: string;
+  colorType?: "solid" | "gradient";
+  colorDirection?: string;
   textShadow: string;
   borderRadius: number;
+  borderWidth?: number;
   backgroundColor: string;
+  backgroundColorEnd?: string;
+  backgroundType?: "solid" | "gradient";
+  backgroundDirection?: string;
   padding: number;
   showBackground: boolean;
   backgroundShadow: string;
@@ -81,12 +88,19 @@ export interface TextStyle {
 export const DEFAULT_TEXT_STYLE: TextStyle = {
   fontSize: 48,
   fontFamily: "Inter",
-  fontWeight: "400",
+  fontWeight: "600",
   color: "#ffffff",
+  colorEnd: "#94a3b8",
+  colorType: "gradient",
+  colorDirection: "to bottom",
   textShadow: "none",
   borderRadius: 0,
-  backgroundColor: "#000000",
-  padding: 4,
+  borderWidth: 0,
+  backgroundColor: "#18181b",
+  backgroundColorEnd: "#09090b",
+  backgroundType: "gradient",
+  backgroundDirection: "to bottom",
+  padding: 8,
   showBackground: false,
   backgroundShadow: "none",
   textEffect: [],

@@ -42,6 +42,9 @@ import {
   SHADOW_PRESETS,
   CLIP_PATHS,
   TRANSFORM_3D_PRESETS,
+  GRADIENT_DIRECTIONS,
+  TEXT_GRADIENT_PRESETS,
+  BACKGROUND_GRADIENT_PRESETS,
 } from "../../values";
 import { cn } from "@/lib/utils";
 import { useStore } from "../../store/use-store";
@@ -406,20 +409,20 @@ export function LeftPanel({
                         {/* 3D Rotation Controls */}
 
 
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-3 gap-2 items-center justify-center">
-                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                        <div className="space-y-2 font-manrope">
+                          <div className="grid grid-cols-3 gap-3 items-center justify-center">
+                            <Label className="text-xs text-muted-foreground flex justify-center">
                               X-Axis: {imgStyle.rotateX}°
                             </Label>
-                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                            <Label className="text-xs text-muted-foreground flex justify-center">
                               Y-Axis: {imgStyle.rotateY}°
                             </Label>
-                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                            <Label className="text-xs text-muted-foreground flex justify-center">
                               Z-Axis: {imgStyle.rotate}°
                             </Label>
                           </div>
 
-                          <div className="grid grid-cols-3 gap-2">
+                          <div className="grid grid-cols-3 gap-4">
                             <Slider
                               value={[imgStyle.rotateX]}
                               onValueChange={([val]) =>
@@ -642,10 +645,10 @@ export function LeftPanel({
 
                             {/* Row 2: Quick Palette Presets */}
                             <div className="space-y-1.5 pt-0.5">
-                              <Label className="text-[11px] font-medium text-muted-foreground">
+                              <Label className="text-xs font-medium text-muted-foreground">
                                 Color Presets
                               </Label>
-                              <div className="grid grid-cols-3 gap-1.5">
+                              <div className="grid grid-cols-3 gap-1.5 ">
                                 {[
                                   { name: "Mono", front: "#ffffff", back: "#000000" },
                                   { name: "GameBoy", front: "#9bbc0f", back: "#0f380f" },
@@ -670,7 +673,7 @@ export function LeftPanel({
                                       <div className="flex-1 h-full" style={{ backgroundColor: pal.front }} />
                                       <div className="flex-1 h-full" style={{ backgroundColor: pal.back }} />
                                     </div>
-                                    <span className="text-[9px] font-medium text-muted-foreground group-hover:text-foreground truncate block">
+                                    <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground truncate block">
                                       {pal.name}
                                     </span>
                                   </button>
@@ -781,7 +784,7 @@ export function LeftPanel({
                         </Label>
 
                         {/* Font Family & Weight */}
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2 gap-2 font-manrope *font-semibold">
                           <div className="space-y-1.5 min-w-0">
                             <Label className="text-xs font-medium text-muted-foreground">
                               Font Family
@@ -843,7 +846,7 @@ export function LeftPanel({
 
                         {/* Text Effects (Individual square cards evenly distributed in a row) */}
                         <div className="space-y-1.5">
-                          <Label className="text-xs font-medium text-muted-foreground">
+                          <Label className="text-xs font-manrope text-muted-foreground">
                             Text Effects
                           </Label>
                           <div className="grid grid-cols-6 gap-2">
@@ -905,58 +908,243 @@ export function LeftPanel({
                           </div>
                         </div>
 
-                        {/* Text Color & Font Size Row */}
-                        <div className="grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <Label className="text-xs font-medium text-muted-foreground">
-                                Color
-                              </Label>
+                        {/* Font Size */}
+                        <div className="space-y-3 font-manrope font-semibold">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Font Size
+                            </Label>
+                            <span className="text-xs text-muted-foreground">
+                              {textStyle.fontSize}px
+                            </span>
+                          </div>
+                          <Slider
+                            value={[textStyle.fontSize]}
+                            onValueChange={([v]) =>
+                              updateSelected({ fontSize: v })
+                            }
+                            min={12}
+                            max={120}
+                            step={1}
+                            className="w-full"
+                          />
+                        </div>
+
+                        {/* Text Color & Gradient Section */}
+                        <div className="space-y-3 font-manrope font-semibold">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs text-muted-foreground">
+                              Color Gradient
+                            </Label>
+                            {/* Mode Tabs */}
+                            <div className="flex items-center bg-muted/60 p-0.5 rounded-md border border-neutral-300 dark:border-neutral-700">
+                              {[
+                                { id: "gradient", label: "Gradient" },
+                                { id: "solid", label: "Solid" },
+                              ].map((mode) => (
+                                <button
+                                  key={mode.id}
+                                  type="button"
+                                  onClick={() =>
+                                    updateSelected({ colorType: mode.id as "gradient" | "solid" })
+                                  }
+                                  className={`px-2.5 py-0.5 text-[10px] font-medium rounded-xs transition-all cursor-pointer ${
+                                    (textStyle.colorType || "gradient") === mode.id
+                                      ? "bg-background text-foreground shadow-xs font-semibold"
+                                      : "text-muted-foreground hover:text-foreground"
+                                  }`}
+                                >
+                                  {mode.label}
+                                </button>
+                              ))}
                             </div>
-                            <div className="flex items-center gap-2 h-8">
-                              <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                          </div>
+
+                          {(textStyle.colorType || "gradient") === "gradient" ? (
+                            <div className="space-y-3">
+                              {/* 2 Color Pickers + Swap */}
+                              <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-background/50 border border-neutral-300/80 dark:border-neutral-700/80 shadow-2xs">
+                                {/* From Color */}
+                                <div className="flex items-center gap-2 flex-1 min-w-0">
+                                  <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                    <div
+                                      className="absolute inset-0"
+                                      style={{ backgroundColor: textStyle.color || "#ffffff" }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={textStyle.color || "#ffffff"}
+                                      onChange={(e) =>
+                                        updateSelected({ color: e.target.value })
+                                      }
+                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                      title="Start Color"
+                                    />
+                                  </div>
+                                  <div className="flex flex-col min-w-0">
+                                    <span className="text-[10px] text-muted-foreground uppercase font-medium">From</span>
+                                    <span className="text-xs font-semibold uppercase truncate">
+                                      {textStyle.color || "#ffffff"}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Swap Button */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const curFrom = textStyle.color || "#ffffff";
+                                    const curTo = textStyle.colorEnd || "#94a3b8";
+                                    updateSelected({ color: curTo, colorEnd: curFrom });
+                                  }}
+                                  className="size-7 flex items-center justify-center rounded-md border border-border/70 hover:border-primary text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-background/80 hover:bg-muted/50 shadow-xs shrink-0"
+                                  title="Swap Colors"
+                                >
+                                  <ArrowLeftRight className="size-3" />
+                                </button>
+
+                                {/* To Color */}
+                                <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                                  <div className="flex flex-col min-w-0 text-right">
+                                    <span className="text-[10px] text-muted-foreground uppercase font-medium">To</span>
+                                    <span className="text-xs font-semibold uppercase truncate">
+                                      {textStyle.colorEnd || "#94a3b8"}
+                                    </span>
+                                  </div>
+                                  <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                    <div
+                                      className="absolute inset-0"
+                                      style={{ backgroundColor: textStyle.colorEnd || "#94a3b8" }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={textStyle.colorEnd || "#94a3b8"}
+                                      onChange={(e) =>
+                                        updateSelected({ colorEnd: e.target.value })
+                                      }
+                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                      title="End Color"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Row: Direction & Presets Dropdowns */}
+                              <div className="grid grid-cols-2 gap-2 font-manrope font-semibold">
+                                {/* Direction Dropdown */}
+                                <div className="space-y-1.5 min-w-0">
+                                  <Label className="text-xs font-medium text-muted-foreground truncate block">
+                                    Direction
+                                  </Label>
+                                  <Select
+                                    value={textStyle.colorDirection || "to bottom"}
+                                    onValueChange={(val) =>
+                                      updateSelected({ colorDirection: val })
+                                    }
+                                  >
+                                    <SelectTrigger className="h-8 w-full text-xs">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="text-xs max-h-56">
+                                      {GRADIENT_DIRECTIONS.map((dir) => (
+                                        <SelectItem
+                                          key={dir.id}
+                                          value={dir.css}
+                                          className="text-xs py-1.5 cursor-pointer"
+                                        >
+                                          <span className="font-mono mr-1.5">{dir.arrow}</span>
+                                          <span>{dir.name}</span>
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                {/* Presets Dropdown */}
+                                <div className="space-y-1.5 min-w-0">
+                                  <Label className="text-xs font-medium text-muted-foreground truncate block">
+                                    Preset
+                                  </Label>
+                                  <Select
+                                    value={
+                                      TEXT_GRADIENT_PRESETS.find(
+                                        (p) =>
+                                          p.from.toLowerCase() === textStyle.color?.toLowerCase() &&
+                                          p.to.toLowerCase() === textStyle.colorEnd?.toLowerCase()
+                                      )?.name || "custom"
+                                    }
+                                    onValueChange={(presetName) => {
+                                      const preset = TEXT_GRADIENT_PRESETS.find(
+                                        (p) => p.name === presetName
+                                      );
+                                      if (preset) {
+                                        updateSelected({
+                                          color: preset.from,
+                                          colorEnd: preset.to,
+                                          colorType: "gradient",
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <SelectTrigger className="h-8 w-full text-xs">
+                                      <SelectValue placeholder="Preset" />
+                                    </SelectTrigger>
+                                    <SelectContent className="text-xs max-h-56">
+                                      <SelectItem
+                                        value="custom"
+                                        className="text-xs py-1.5 cursor-pointer"
+                                        disabled
+                                      >
+                                        Custom
+                                      </SelectItem>
+                                      {TEXT_GRADIENT_PRESETS.map((preset) => (
+                                        <SelectItem
+                                          key={preset.name}
+                                          value={preset.name}
+                                          className="text-xs py-1.5 cursor-pointer"
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            <div
+                                              className="size-3 rounded-xs shrink-0 border border-neutral-300 dark:border-neutral-700 shadow-2xs"
+                                              style={{
+                                                background: `linear-gradient(to right, ${preset.from}, ${preset.to})`,
+                                              }}
+                                            />
+                                            <span>{preset.name}</span>
+                                          </div>
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            /* Solid Mode */
+                            <div className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border border-neutral-300/80 dark:border-neutral-700/80 shadow-2xs">
+                              <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                 <div
                                   className="absolute inset-0"
-                                  style={{ backgroundColor: textStyle.color }}
+                                  style={{ backgroundColor: textStyle.color || "#ffffff" }}
                                 />
                                 <input
                                   type="color"
-                                  value={textStyle.color}
+                                  value={textStyle.color || "#ffffff"}
                                   onChange={(e) =>
                                     updateSelected({ color: e.target.value })
                                   }
                                   className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                  title="Text Color"
+                                  title="Solid Text Color"
                                 />
                               </div>
-                              <span className="text-xs font-manrope text-muted-foreground uppercase">
-                                {textStyle.color}
-                              </span>
+                              <div className="flex flex-col">
+                                <span className="text-[10px] text-muted-foreground uppercase font-medium">Flat Color</span>
+                                <span className="text-xs font-semibold uppercase">
+                                  {textStyle.color || "#ffffff"}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <Label className="text-xs font-medium text-muted-foreground">
-                                Size
-                              </Label>
-                              <span className="text-xs text-muted-foreground">
-                                {textStyle.fontSize}px
-                              </span>
-                            </div>
-                            <div className="flex items-center h-8">
-                              <Slider
-                                value={[textStyle.fontSize]}
-                                onValueChange={([v]) =>
-                                  updateSelected({ fontSize: v })
-                                }
-                                min={12}
-                                max={120}
-                                step={1}
-                                className="w-full"
-                              />
-                            </div>
-                          </div>
+                          )}
                         </div>
                       </div>
 
@@ -967,18 +1155,18 @@ export function LeftPanel({
                           Orientation
                         </Label>
                         <div className="space-y-3 font-manrope font-semibold">
-                          <div className="grid grid-cols-3 gap-2 items-center justify-center">
-                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                          <div className="grid grid-cols-3 gap-3 items-center justify-center">
+                            <Label className="text-xs text-muted-foreground flex justify-center">
                               X-Axis: {textStyle.rotateX}°
                             </Label>
-                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                            <Label className="text-xs text-muted-foreground flex justify-center">
                               Y-Axis: {textStyle.rotateY}°
                             </Label>
-                            <Label className="text-[11px] text-muted-foreground flex justify-center">
+                            <Label className="text-xs text-muted-foreground flex justify-center">
                               Z-Axis: {textStyle.rotate}°
                             </Label>
                           </div>
-                          <div className="grid grid-cols-3 gap-2">
+                          <div className="grid grid-cols-3 gap-4">
                             <Slider
                               value={[textStyle.rotateX]}
                               onValueChange={([val]) =>
@@ -1075,40 +1263,238 @@ export function LeftPanel({
 
                         {textStyle.showBackground && (
                           <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
-                            {/* Row 1: Background Color & Shadow */}
-                            <div className="grid grid-cols-2 gap-2 font-semibold *:pr-1">
+                            {/* Background Style Mode Tabs */}
+                            <div className="flex items-center justify-between">
+                              <Label className="text-xs text-muted-foreground">
+                                Background Gradient
+                              </Label>
+                              <div className="flex items-center bg-muted/60 p-0.5 rounded-md border border-neutral-300 dark:border-neutral-700">
+                                {[
+                                  { id: "gradient", label: "Gradient" },
+                                  { id: "solid", label: "Solid" },
+                                ].map((mode) => (
+                                  <button
+                                    key={mode.id}
+                                    type="button"
+                                    onClick={() =>
+                                      updateSelected({ backgroundType: mode.id as "gradient" | "solid" })
+                                    }
+                                    className={`px-2.5 py-0.5 text-[10px] font-medium rounded-xs transition-all cursor-pointer ${
+                                      (textStyle.backgroundType || "gradient") === mode.id
+                                        ? "bg-background text-foreground shadow-xs font-semibold"
+                                        : "text-muted-foreground hover:text-foreground"
+                                    }`}
+                                  >
+                                    {mode.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Background Colors */}
+                            {(textStyle.backgroundType || "gradient") === "gradient" ? (
                               <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Background
-                                  </Label>
-                                </div>
-                                <div className="flex items-center gap-2 h-8">
-                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
-                                    <div
-                                      className="absolute inset-0"
-                                      style={{
-                                        backgroundColor: textStyle.backgroundColor,
-                                      }}
-                                    />
-                                    <input
-                                      type="color"
-                                      value={textStyle.backgroundColor}
-                                      onChange={(e) =>
-                                        updateSelected({
-                                          backgroundColor: e.target.value,
-                                        })
-                                      }
-                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                      title="Box Background Color"
-                                    />
+                                <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-background/50 border border-neutral-300/80 dark:border-neutral-700/80 shadow-2xs">
+                                  {/* From Color */}
+                                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                                    <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                      <div
+                                        className="absolute inset-0"
+                                        style={{
+                                          backgroundColor: textStyle.backgroundColor || "#18181b",
+                                        }}
+                                      />
+                                      <input
+                                        type="color"
+                                        value={textStyle.backgroundColor || "#18181b"}
+                                        onChange={(e) =>
+                                          updateSelected({
+                                            backgroundColor: e.target.value,
+                                          })
+                                        }
+                                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                        title="Start Background Color"
+                                      />
+                                    </div>
+                                    <div className="flex flex-col min-w-0">
+                                      <span className="text-[10px] text-muted-foreground uppercase font-medium">From</span>
+                                      <span className="text-xs font-semibold uppercase truncate">
+                                        {textStyle.backgroundColor || "#18181b"}
+                                      </span>
+                                    </div>
                                   </div>
-                                  <span className="text-xs font-manrope text-muted-foreground uppercase">
-                                    {textStyle.backgroundColor}
+
+                                  {/* Swap Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const curFrom = textStyle.backgroundColor || "#18181b";
+                                      const curTo = textStyle.backgroundColorEnd || "#09090b";
+                                      updateSelected({
+                                        backgroundColor: curTo,
+                                        backgroundColorEnd: curFrom,
+                                      });
+                                    }}
+                                    className="size-7 flex items-center justify-center rounded-md border border-border/70 hover:border-primary text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-background/80 hover:bg-muted/50 shadow-xs shrink-0"
+                                    title="Swap Background Colors"
+                                  >
+                                    <ArrowLeftRight className="size-3" />
+                                  </button>
+
+                                  {/* To Color */}
+                                  <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                                    <div className="flex flex-col min-w-0 text-right">
+                                      <span className="text-[10px] text-muted-foreground uppercase font-medium">To</span>
+                                      <span className="text-xs font-semibold uppercase truncate">
+                                        {textStyle.backgroundColorEnd || "#09090b"}
+                                      </span>
+                                    </div>
+                                    <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                      <div
+                                        className="absolute inset-0"
+                                        style={{
+                                          backgroundColor: textStyle.backgroundColorEnd || "#09090b",
+                                        }}
+                                      />
+                                      <input
+                                        type="color"
+                                        value={textStyle.backgroundColorEnd || "#09090b"}
+                                        onChange={(e) =>
+                                          updateSelected({
+                                            backgroundColorEnd: e.target.value,
+                                          })
+                                        }
+                                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                        title="End Background Color"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Row: Direction & Presets Dropdowns */}
+                                <div className="grid grid-cols-2 gap-2 font-manrope font-semibold">
+                                  {/* 1. Direction Dropdown */}
+                                  <div className="space-y-1.5 min-w-0">
+                                    <Label className="text-xs font-medium text-muted-foreground truncate block">
+                                      Direction
+                                    </Label>
+                                    <Select
+                                      value={textStyle.backgroundDirection || "to bottom"}
+                                      onValueChange={(val) =>
+                                        updateSelected({ backgroundDirection: val })
+                                      }
+                                    >
+                                      <SelectTrigger className="h-8 w-full text-xs">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent className="text-xs max-h-56">
+                                        {GRADIENT_DIRECTIONS.map((dir) => (
+                                          <SelectItem
+                                            key={dir.id}
+                                            value={dir.css}
+                                            className="text-xs py-1.5 cursor-pointer"
+                                          >
+                                            <span className="font-mono mr-1.5">{dir.arrow}</span>
+                                            <span>{dir.name}</span>
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+
+                                  {/* 2. Presets Dropdown */}
+                                  <div className="space-y-1.5 min-w-0">
+                                    <Label className="text-xs font-medium text-muted-foreground truncate block">
+                                      Preset
+                                    </Label>
+                                    <Select
+                                      value={
+                                        BACKGROUND_GRADIENT_PRESETS.find(
+                                          (p) =>
+                                            p.from.toLowerCase() === textStyle.backgroundColor?.toLowerCase() &&
+                                            p.to.toLowerCase() === textStyle.backgroundColorEnd?.toLowerCase()
+                                        )?.name || "custom"
+                                      }
+                                      onValueChange={(presetName) => {
+                                        const preset = BACKGROUND_GRADIENT_PRESETS.find(
+                                          (p) => p.name === presetName
+                                        );
+                                        if (preset) {
+                                          updateSelected({
+                                            backgroundColor: preset.from,
+                                            backgroundColorEnd: preset.to,
+                                            backgroundType: "gradient",
+                                          });
+                                        }
+                                      }}
+                                    >
+                                      <SelectTrigger className="h-8 w-full text-xs">
+                                        <SelectValue placeholder="Preset" />
+                                      </SelectTrigger>
+                                      <SelectContent className="text-xs max-h-56">
+                                        <SelectItem
+                                          value="custom"
+                                          className="text-xs py-1.5 cursor-pointer"
+                                          disabled
+                                        >
+                                          Custom
+                                        </SelectItem>
+                                        {BACKGROUND_GRADIENT_PRESETS.map((preset) => (
+                                          <SelectItem
+                                            key={preset.name}
+                                            value={preset.name}
+                                            className="text-xs py-1.5 cursor-pointer"
+                                          >
+                                            <div className="flex items-center gap-2">
+                                              <div
+                                                className="size-3 rounded-xs shrink-0 border border-neutral-300 dark:border-neutral-700 shadow-2xs"
+                                                style={{
+                                                  background: `linear-gradient(to right, ${preset.from}, ${preset.to})`,
+                                                }}
+                                              />
+                                              <span className="truncate">{preset.name}</span>
+                                            </div>
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              /* Solid Mode */
+                              <div className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border border-neutral-300/80 dark:border-neutral-700/80 shadow-2xs">
+                                <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      backgroundColor: textStyle.backgroundColor || "#18181b",
+                                    }}
+                                  />
+                                  <input
+                                    type="color"
+                                    value={textStyle.backgroundColor || "#18181b"}
+                                    onChange={(e) =>
+                                      updateSelected({
+                                        backgroundColor: e.target.value,
+                                      })
+                                    }
+                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                    title="Solid Background Color"
+                                  />
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="text-[10px] text-muted-foreground uppercase font-medium">Flat Color</span>
+                                  <span className="text-xs font-semibold uppercase">
+                                    {textStyle.backgroundColor || "#18181b"}
                                   </span>
                                 </div>
                               </div>
+                            )}
 
+                            {/* 2x2 Grid of Sliders: Shadow, Border, Padding, Roundness */}
+                            <div className="grid grid-cols-2 gap-3 font-semibold *:pr-1">
+                              {/* 1. Shadow Preset Slider */}
                               <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                   <Label className="text-xs font-medium text-muted-foreground">
@@ -1121,39 +1507,55 @@ export function LeftPanel({
                                     )?.name || "None"}
                                   </span>
                                 </div>
-                                <div className="flex items-center h-8">
-                                  <Slider
-                                    defaultValue={[0]}
-                                    value={[
-                                      SHADOW_PRESETS.findIndex(
+                                <Slider
+                                  defaultValue={[0]}
+                                  value={[
+                                    SHADOW_PRESETS.findIndex(
+                                      (s) =>
+                                        s.value === textStyle.backgroundShadow,
+                                    ) !== -1
+                                      ? SHADOW_PRESETS.findIndex(
                                         (s) =>
-                                          s.value === textStyle.backgroundShadow,
-                                      ) !== -1
-                                        ? SHADOW_PRESETS.findIndex(
-                                          (s) =>
-                                            s.value ===
-                                            textStyle.backgroundShadow,
-                                        )
-                                        : 0,
-                                    ]}
-                                    onValueChange={([val]) => {
-                                      const preset = SHADOW_PRESETS[val];
-                                      if (preset)
-                                        updateSelected({
-                                          backgroundShadow: preset.value,
-                                        });
-                                    }}
-                                    min={0}
-                                    max={SHADOW_PRESETS.length - 1}
-                                    step={1}
-                                    className="w-full"
-                                  />
-                                </div>
+                                          s.value ===
+                                          textStyle.backgroundShadow,
+                                      )
+                                      : 0,
+                                  ]}
+                                  onValueChange={([val]) => {
+                                    const preset = SHADOW_PRESETS[val];
+                                    if (preset)
+                                      updateSelected({
+                                        backgroundShadow: preset.value,
+                                      });
+                                  }}
+                                  min={0}
+                                  max={SHADOW_PRESETS.length - 1}
+                                  step={1}
+                                />
                               </div>
-                            </div>
 
-                            {/* Row 2: Padding & Roundness */}
-                            <div className="grid grid-cols-2 gap-2 font-semibold *:pr-1">
+                              {/* 2. Border Width Slider */}
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Border
+                                  </Label>
+                                  <span className="text-xs text-muted-foreground">
+                                    {textStyle.borderWidth ?? 0}px
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[textStyle.borderWidth ?? 0]}
+                                  onValueChange={([v]) =>
+                                    updateSelected({ borderWidth: v })
+                                  }
+                                  min={0}
+                                  max={20}
+                                  step={1}
+                                />
+                              </div>
+
+                              {/* 3. Padding Slider */}
                               <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                   <Label className="text-xs font-medium text-muted-foreground">
@@ -1169,11 +1571,12 @@ export function LeftPanel({
                                     updateSelected({ padding: v })
                                   }
                                   min={0}
-                                  max={30}
+                                  max={40}
                                   step={1}
                                 />
                               </div>
 
+                              {/* 4. Roundness Slider */}
                               <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                   <Label className="text-xs font-medium text-muted-foreground">

@@ -17,16 +17,11 @@ export const TextLayer = memo(
     onPointerDown?: (e: React.PointerEvent, id: string) => void;
     isLocked: boolean;
   }) => {
-    const getEffectStyles = () => {
-      const effects = element.style.textEffect || [];
-      const baseColor = element.style.color;
+    const effects = element.style.textEffect || [];
+    const isOutline = effects.includes("outline");
 
+    const getEffectStyles = (): React.CSSProperties => {
       const styles: React.CSSProperties = {};
-
-      if (effects.includes("outline")) {
-        styles.color = "transparent";
-        styles.WebkitTextStroke = `1px ${baseColor}`;
-      }
 
       const decorations = [];
       if (effects.includes("underline")) decorations.push("underline");
@@ -55,17 +50,82 @@ export const TextLayer = memo(
       return styles;
     };
 
-    const has3DRotation =
-      (element.style.rotateX || 0) !== 0 || (element.style.rotateY || 0) !== 0;
+    // Text Color / Gradient Computation
+    const colorType = element.style.colorType || "gradient";
+    const colorDirection = element.style.colorDirection || "to bottom";
+    const startColor = element.style.color || "#ffffff";
+    const endColor = element.style.colorEnd || "#94a3b8";
+
+    const textGradientStyle: React.CSSProperties = isOutline
+      ? {
+          color: "transparent",
+          WebkitTextStroke: `1.5px ${startColor}`,
+          backgroundImage: "none",
+          WebkitBackgroundClip: "border-box",
+          WebkitTextFillColor: "transparent",
+        }
+      : colorType === "solid"
+      ? {
+          color: startColor,
+          backgroundImage: "none",
+          WebkitBackgroundClip: "border-box",
+          WebkitTextFillColor: startColor,
+        }
+      : {
+          backgroundImage: `linear-gradient(${colorDirection}, ${startColor}, ${endColor})`,
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          color: "transparent",
+        };
+
+    // Text Background Computation
+    const bgType = element.style.backgroundType || "gradient";
+    const bgDirection = element.style.backgroundDirection || "to bottom";
+    const bgStartColor = element.style.backgroundColor || "#18181b";
+    const bgEndColor = element.style.backgroundColorEnd || "#09090b";
+
+    const backgroundStyle = element.style.showBackground
+      ? bgType === "solid"
+        ? bgStartColor
+        : `linear-gradient(${bgDirection}, ${bgStartColor}, ${bgEndColor})`
+      : "transparent";
+
+    const hasBorder = (element.style.borderWidth ?? 0) > 0;
+    const borderGradient = `linear-gradient(${colorDirection}, ${startColor}, ${endColor})`;
+
+    const baseBackground = element.style.glassmorphism
+      ? element.style.showBackground
+        ? backgroundStyle
+        : "rgba(255, 255, 255, 0.15)"
+      : backgroundStyle;
+
+    const backgroundCss = hasBorder
+      ? colorType === "solid"
+        ? baseBackground
+        : `${
+            baseBackground.startsWith("linear-gradient")
+              ? baseBackground
+              : `linear-gradient(${baseBackground}, ${baseBackground})`
+          } padding-box, ${borderGradient} border-box`
+      : baseBackground;
+
+    const borderCss = hasBorder
+      ? colorType === "solid"
+        ? `${element.style.borderWidth}px solid ${startColor}`
+        : `${element.style.borderWidth}px solid transparent`
+      : element.style.glassmorphism
+      ? "1px solid rgba(255, 255, 255, 0.3)"
+      : undefined;
 
     return (
       <div
-        className={`absolute select-none hover:ring-1 hover:ring-white/50 transition-all touch-none ${
+        className={`absolute select-none transition-all touch-none ${
           isDragging ? "duration-0" : "duration-100"
         } ${
           isLocked ? "cursor-default" : "cursor-move"
         } ${
-          isSelected ? "ring-2 ring-primary" : ""
+          isSelected ? "ring-2 ring-primary" : "hover:ring-1 hover:ring-white/40"
         }`}
         onPointerDown={(e) => {
           if (!isLocked && onPointerDown) {
@@ -79,34 +139,21 @@ export const TextLayer = memo(
           willChange:
             isSelected || isDragging ? "transform, left, top" : undefined,
           transformStyle: "preserve-3d",
+          transformOrigin: "center center",
           transform: `
-            perspective(${has3DRotation ? 1000 : 700}px)
+            perspective(2000px)
             rotateX(${element.style.rotateX || 0}deg)
             rotateY(${element.style.rotateY || 0}deg)
             rotateZ(${element.style.rotate || 0}deg)
-            translateZ(${isSelected ? 20 : 10}px)
           `,
-          fontSize: element.style.fontSize,
-          fontFamily: element.style.fontFamily,
-          fontWeight: element.style.fontWeight,
-          color: element.style.color,
-          textShadow: element.style.textShadow,
-          backgroundColor: element.style.glassmorphism
-            ? element.style.showBackground
-              ? element.style.backgroundColor
-              : "rgba(255, 255, 255, 0.15)"
-            : element.style.showBackground
-            ? element.style.backgroundColor
-            : "transparent",
+          background: backgroundCss,
           backdropFilter: element.style.glassmorphism
             ? `blur(${element.style.glassBlur || 16}px) saturate(180%)`
             : undefined,
           WebkitBackdropFilter: element.style.glassmorphism
             ? `blur(${element.style.glassBlur || 16}px) saturate(180%)`
             : undefined,
-          border: element.style.glassmorphism
-            ? "1px solid rgba(255, 255, 255, 0.3)"
-            : undefined,
+          border: borderCss,
           boxShadow: element.style.glassmorphism
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35)"
             : element.style.showBackground
@@ -116,12 +163,22 @@ export const TextLayer = memo(
           padding: `${element.style.padding}px`,
           lineHeight: 1.2,
           backfaceVisibility: "visible",
-          contain: "layout style paint",
           filter: isSelected ? "brightness(1.03)" : "none",
-          ...getEffectStyles(),
         }}
       >
-        {element.content}
+        <span
+          className="block whitespace-pre-wrap select-none pointer-events-none"
+          style={{
+            fontSize: element.style.fontSize,
+            fontFamily: element.style.fontFamily,
+            fontWeight: element.style.fontWeight,
+            textShadow: element.style.textShadow,
+            ...textGradientStyle,
+            ...getEffectStyles(),
+          }}
+        >
+          {element.content}
+        </span>
       </div>
     );
   },
@@ -130,10 +187,11 @@ export const TextLayer = memo(
       prev.element.id === next.element.id &&
       prev.element.position.x === next.element.position.x &&
       prev.element.position.y === next.element.position.y &&
-      prev.element.style === next.element.style &&
+      JSON.stringify(prev.element.style) === JSON.stringify(next.element.style) &&
       prev.element.content === next.element.content &&
       prev.isSelected === next.isSelected &&
-      prev.isDragging === next.isDragging
+      prev.isDragging === next.isDragging &&
+      prev.isLocked === next.isLocked
     );
   }
 );

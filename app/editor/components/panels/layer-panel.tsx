@@ -52,14 +52,14 @@ export function LayerPanel() {
 
   return (
     <div className="flex flex-col h-full w-full">
-      <div className="p-4 border-b dark:border-neutral-800">
+      <div className="p-4 pb-3 border-b dark:border-neutral-800">
         <h3 className="text-sm font-semibold uppercase tracking-wider">
           Layers ({elements.length})
         </h3>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-2">
+        <div className="px-2 py-3">
           {displayElements.length === 0 ? (
             <div className="text-center py-10 text-muted-foreground text-xs">
               No layers added yet.
