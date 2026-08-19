@@ -64,6 +64,7 @@ export interface TextStyle {
   fontFamily: string;
   fontWeight: string;
   color: string;
+  colorVia?: string;
   colorEnd?: string;
   colorType?: "solid" | "gradient";
   colorDirection?: string;
@@ -71,6 +72,7 @@ export interface TextStyle {
   borderRadius: number;
   borderWidth?: number;
   backgroundColor: string;
+  backgroundColorVia?: string;
   backgroundColorEnd?: string;
   backgroundType?: "solid" | "gradient";
   backgroundDirection?: string;
@@ -90,13 +92,15 @@ export const DEFAULT_TEXT_STYLE: TextStyle = {
   fontFamily: "Inter",
   fontWeight: "600",
   color: "#ffffff",
-  colorEnd: "#94a3b8",
+  colorVia: "#cbd5e1",
+  colorEnd: "#64748b",
   colorType: "gradient",
   colorDirection: "to bottom",
   textShadow: "none",
   borderRadius: 0,
   borderWidth: 0,
   backgroundColor: "#18181b",
+  backgroundColorVia: "#111113",
   backgroundColorEnd: "#09090b",
   backgroundType: "gradient",
   backgroundDirection: "to bottom",
@@ -258,14 +262,5 @@ export interface DitherConfig {
   colorSteps: number;
   colorFront: string; // Hex string e.g. "#ffffff"
   colorBack: string; // Hex string e.g. "#000000"
-}
-
-export interface DitherConfig {
-  enabled: boolean;
-  ditherType: number; // 0: Bayer 2x2, 1: Bayer 4x4, 2: Bayer 8x8, 3: Random
-  pixelSize: number;
-  colorSteps: number;
-  colorFront: string; // Hex string e.g. "#ffffff"
-  colorBack: string;  // Hex string e.g. "#000000"
 }
 

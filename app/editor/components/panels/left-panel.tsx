@@ -961,11 +961,11 @@ export function LeftPanel({
 
                           {(textStyle.colorType || "gradient") === "gradient" ? (
                             <div className="space-y-3">
-                              {/* 2 Color Pickers + Swap */}
-                              <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-background/50 border border-neutral-300/80 dark:border-neutral-700/80 shadow-2xs">
+                              {/* 3 Color Pickers: From - Via - To */}
+                              <div className="grid grid-cols-3 gap-1.5 ">
                                 {/* From Color */}
-                                <div className="flex items-center gap-2 flex-1 min-w-0">
-                                  <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                     <div
                                       className="absolute inset-0"
                                       style={{ backgroundColor: textStyle.color || "#ffffff" }}
@@ -977,53 +977,64 @@ export function LeftPanel({
                                         updateSelected({ color: e.target.value })
                                       }
                                       className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                      title="Start Color"
+                                      title="From Color"
                                     />
                                   </div>
                                   <div className="flex flex-col min-w-0">
-                                    <span className="text-[10px] text-muted-foreground uppercase font-medium">From</span>
-                                    <span className="text-xs font-semibold uppercase truncate">
+                                    <span className="text-[9px] text-muted-foreground uppercase font-medium leading-tight">From</span>
+                                    <span className="text-[10px] font-semibold uppercase truncate leading-tight">
                                       {textStyle.color || "#ffffff"}
                                     </span>
                                   </div>
                                 </div>
 
-                                {/* Swap Button */}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const curFrom = textStyle.color || "#ffffff";
-                                    const curTo = textStyle.colorEnd || "#94a3b8";
-                                    updateSelected({ color: curTo, colorEnd: curFrom });
-                                  }}
-                                  className="size-7 flex items-center justify-center rounded-md border border-border/70 hover:border-primary text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-background/80 hover:bg-muted/50 shadow-xs shrink-0"
-                                  title="Swap Colors"
-                                >
-                                  <ArrowLeftRight className="size-3" />
-                                </button>
-
-                                {/* To Color */}
-                                <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                                  <div className="flex flex-col min-w-0 text-right">
-                                    <span className="text-[10px] text-muted-foreground uppercase font-medium">To</span>
-                                    <span className="text-xs font-semibold uppercase truncate">
-                                      {textStyle.colorEnd || "#94a3b8"}
-                                    </span>
-                                  </div>
-                                  <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                {/* Via Color */}
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                     <div
                                       className="absolute inset-0"
-                                      style={{ backgroundColor: textStyle.colorEnd || "#94a3b8" }}
+                                      style={{ backgroundColor: textStyle.colorVia || "#cbd5e1" }}
                                     />
                                     <input
                                       type="color"
-                                      value={textStyle.colorEnd || "#94a3b8"}
+                                      value={textStyle.colorVia || "#cbd5e1"}
+                                      onChange={(e) =>
+                                        updateSelected({ colorVia: e.target.value })
+                                      }
+                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                      title="Via Color"
+                                    />
+                                  </div>
+                                  <div className="flex flex-col min-w-0">
+                                    <span className="text-[9px] text-muted-foreground uppercase font-medium leading-tight">Via</span>
+                                    <span className="text-[10px] font-semibold uppercase truncate leading-tight">
+                                      {textStyle.colorVia || "#cbd5e1"}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* To Color */}
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                    <div
+                                      className="absolute inset-0"
+                                      style={{ backgroundColor: textStyle.colorEnd || "#64748b" }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={textStyle.colorEnd || "#64748b"}
                                       onChange={(e) =>
                                         updateSelected({ colorEnd: e.target.value })
                                       }
                                       className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                      title="End Color"
+                                      title="To Color"
                                     />
+                                  </div>
+                                  <div className="flex flex-col min-w-0">
+                                    <span className="text-[9px] text-muted-foreground uppercase font-medium leading-tight">To</span>
+                                    <span className="text-[10px] font-semibold uppercase truncate leading-tight">
+                                      {textStyle.colorEnd || "#64748b"}
+                                    </span>
                                   </div>
                                 </div>
                               </div>
@@ -1069,6 +1080,7 @@ export function LeftPanel({
                                       TEXT_GRADIENT_PRESETS.find(
                                         (p) =>
                                           p.from.toLowerCase() === textStyle.color?.toLowerCase() &&
+                                          p.via.toLowerCase() === textStyle.colorVia?.toLowerCase() &&
                                           p.to.toLowerCase() === textStyle.colorEnd?.toLowerCase()
                                       )?.name || "custom"
                                     }
@@ -1079,6 +1091,7 @@ export function LeftPanel({
                                       if (preset) {
                                         updateSelected({
                                           color: preset.from,
+                                          colorVia: preset.via,
                                           colorEnd: preset.to,
                                           colorType: "gradient",
                                         });
@@ -1106,7 +1119,7 @@ export function LeftPanel({
                                             <div
                                               className="size-3 rounded-xs shrink-0 border border-neutral-300 dark:border-neutral-700 shadow-2xs"
                                               style={{
-                                                background: `linear-gradient(to right, ${preset.from}, ${preset.to})`,
+                                                background: `linear-gradient(to right, ${preset.from}, ${preset.via}, ${preset.to})`,
                                               }}
                                             />
                                             <span>{preset.name}</span>
@@ -1120,8 +1133,8 @@ export function LeftPanel({
                             </div>
                           ) : (
                             /* Solid Mode */
-                            <div className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border border-neutral-300/80 dark:border-neutral-700/80 shadow-2xs">
-                              <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                 <div
                                   className="absolute inset-0"
                                   style={{ backgroundColor: textStyle.color || "#ffffff" }}
@@ -1136,9 +1149,9 @@ export function LeftPanel({
                                   title="Solid Text Color"
                                 />
                               </div>
-                              <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground uppercase font-medium">Flat Color</span>
-                                <span className="text-xs font-semibold uppercase">
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-[9px] text-muted-foreground uppercase font-medium leading-tight">Solid Color</span>
+                                <span className="text-[10px] font-semibold uppercase truncate leading-tight">
                                   {textStyle.color || "#ffffff"}
                                 </span>
                               </div>
@@ -1300,10 +1313,11 @@ export function LeftPanel({
                             {/* Background Colors */}
                             {(textStyle.backgroundType || "gradient") === "gradient" ? (
                               <div className="space-y-3">
-                                <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-background/50 border border-neutral-300/80 dark:border-neutral-700/80 shadow-2xs">
+                                {/* 3 Color Pickers: From - Via - To */}
+                                <div className="grid grid-cols-3 gap-1.5 ">
                                   {/* From Color */}
-                                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                                    <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                       <div
                                         className="absolute inset-0"
                                         style={{
@@ -1319,43 +1333,49 @@ export function LeftPanel({
                                           })
                                         }
                                         className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                        title="Start Background Color"
+                                        title="From Background Color"
                                       />
                                     </div>
                                     <div className="flex flex-col min-w-0">
-                                      <span className="text-[10px] text-muted-foreground uppercase font-medium">From</span>
-                                      <span className="text-xs font-semibold uppercase truncate">
+                                      <span className="text-[9px] text-muted-foreground uppercase font-medium leading-tight">From</span>
+                                      <span className="text-[10px] font-semibold uppercase truncate leading-tight">
                                         {textStyle.backgroundColor || "#18181b"}
                                       </span>
                                     </div>
                                   </div>
 
-                                  {/* Swap Button */}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const curFrom = textStyle.backgroundColor || "#18181b";
-                                      const curTo = textStyle.backgroundColorEnd || "#09090b";
-                                      updateSelected({
-                                        backgroundColor: curTo,
-                                        backgroundColorEnd: curFrom,
-                                      });
-                                    }}
-                                    className="size-7 flex items-center justify-center rounded-md border border-border/70 hover:border-primary text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-background/80 hover:bg-muted/50 shadow-xs shrink-0"
-                                    title="Swap Background Colors"
-                                  >
-                                    <ArrowLeftRight className="size-3" />
-                                  </button>
-
-                                  {/* To Color */}
-                                  <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                                    <div className="flex flex-col min-w-0 text-right">
-                                      <span className="text-[10px] text-muted-foreground uppercase font-medium">To</span>
-                                      <span className="text-xs font-semibold uppercase truncate">
-                                        {textStyle.backgroundColorEnd || "#09090b"}
+                                  {/* Via Color */}
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                      <div
+                                        className="absolute inset-0"
+                                        style={{
+                                          backgroundColor: textStyle.backgroundColorVia || "#111113",
+                                        }}
+                                      />
+                                      <input
+                                        type="color"
+                                        value={textStyle.backgroundColorVia || "#111113"}
+                                        onChange={(e) =>
+                                          updateSelected({
+                                            backgroundColorVia: e.target.value,
+                                          })
+                                        }
+                                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                        title="Via Background Color"
+                                      />
+                                    </div>
+                                    <div className="flex flex-col min-w-0">
+                                      <span className="text-[9px] text-muted-foreground uppercase font-medium leading-tight">Via</span>
+                                      <span className="text-[10px] font-semibold uppercase truncate leading-tight">
+                                        {textStyle.backgroundColorVia || "#111113"}
                                       </span>
                                     </div>
-                                    <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                  </div>
+
+                                  {/* To Color */}
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                       <div
                                         className="absolute inset-0"
                                         style={{
@@ -1371,8 +1391,14 @@ export function LeftPanel({
                                           })
                                         }
                                         className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                        title="End Background Color"
+                                        title="To Background Color"
                                       />
+                                    </div>
+                                    <div className="flex flex-col min-w-0">
+                                      <span className="text-[9px] text-muted-foreground uppercase font-medium leading-tight">To</span>
+                                      <span className="text-[10px] font-semibold uppercase truncate leading-tight">
+                                        {textStyle.backgroundColorEnd || "#09090b"}
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
@@ -1418,6 +1444,7 @@ export function LeftPanel({
                                         BACKGROUND_GRADIENT_PRESETS.find(
                                           (p) =>
                                             p.from.toLowerCase() === textStyle.backgroundColor?.toLowerCase() &&
+                                            p.via.toLowerCase() === textStyle.backgroundColorVia?.toLowerCase() &&
                                             p.to.toLowerCase() === textStyle.backgroundColorEnd?.toLowerCase()
                                         )?.name || "custom"
                                       }
@@ -1428,6 +1455,7 @@ export function LeftPanel({
                                         if (preset) {
                                           updateSelected({
                                             backgroundColor: preset.from,
+                                            backgroundColorVia: preset.via,
                                             backgroundColorEnd: preset.to,
                                             backgroundType: "gradient",
                                           });
@@ -1455,7 +1483,7 @@ export function LeftPanel({
                                               <div
                                                 className="size-3 rounded-xs shrink-0 border border-neutral-300 dark:border-neutral-700 shadow-2xs"
                                                 style={{
-                                                  background: `linear-gradient(to right, ${preset.from}, ${preset.to})`,
+                                                  background: `linear-gradient(to right, ${preset.from}, ${preset.via}, ${preset.to})`,
                                                 }}
                                               />
                                               <span className="truncate">{preset.name}</span>
@@ -1469,8 +1497,8 @@ export function LeftPanel({
                               </div>
                             ) : (
                               /* Solid Mode */
-                              <div className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border border-neutral-300/80 dark:border-neutral-700/80 shadow-2xs">
-                                <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
                                   <div
                                     className="absolute inset-0"
                                     style={{
@@ -1489,9 +1517,9 @@ export function LeftPanel({
                                     title="Solid Background Color"
                                   />
                                 </div>
-                                <div className="flex flex-col">
-                                  <span className="text-[10px] text-muted-foreground uppercase font-medium">Flat Color</span>
-                                  <span className="text-xs font-semibold uppercase">
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-[9px] text-muted-foreground uppercase font-medium leading-tight">Solid Color</span>
+                                  <span className="text-[10px] font-semibold uppercase truncate leading-tight">
                                     {textStyle.backgroundColor || "#18181b"}
                                   </span>
                                 </div>

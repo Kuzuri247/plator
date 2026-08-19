@@ -54,7 +54,12 @@ export const TextLayer = memo(
     const colorType = element.style.colorType || "gradient";
     const colorDirection = element.style.colorDirection || "to bottom";
     const startColor = element.style.color || "#ffffff";
-    const endColor = element.style.colorEnd || "#94a3b8";
+    const viaColor = element.style.colorVia || "#cbd5e1";
+    const endColor = element.style.colorEnd || "#64748b";
+
+    const textGradient = element.style.colorVia
+      ? `linear-gradient(${colorDirection}, ${startColor}, ${viaColor}, ${endColor})`
+      : `linear-gradient(${colorDirection}, ${startColor}, ${endColor})`;
 
     const textGradientStyle: React.CSSProperties = isOutline
       ? {
@@ -72,7 +77,7 @@ export const TextLayer = memo(
           WebkitTextFillColor: startColor,
         }
       : {
-          backgroundImage: `linear-gradient(${colorDirection}, ${startColor}, ${endColor})`,
+          backgroundImage: textGradient,
           WebkitBackgroundClip: "text",
           backgroundClip: "text",
           WebkitTextFillColor: "transparent",
@@ -83,16 +88,23 @@ export const TextLayer = memo(
     const bgType = element.style.backgroundType || "gradient";
     const bgDirection = element.style.backgroundDirection || "to bottom";
     const bgStartColor = element.style.backgroundColor || "#18181b";
+    const bgViaColor = element.style.backgroundColorVia || "#111113";
     const bgEndColor = element.style.backgroundColorEnd || "#09090b";
+
+    const bgGradient = element.style.backgroundColorVia
+      ? `linear-gradient(${bgDirection}, ${bgStartColor}, ${bgViaColor}, ${bgEndColor})`
+      : `linear-gradient(${bgDirection}, ${bgStartColor}, ${bgEndColor})`;
 
     const backgroundStyle = element.style.showBackground
       ? bgType === "solid"
         ? bgStartColor
-        : `linear-gradient(${bgDirection}, ${bgStartColor}, ${bgEndColor})`
+        : bgGradient
       : "transparent";
 
     const hasBorder = (element.style.borderWidth ?? 0) > 0;
-    const borderGradient = `linear-gradient(${colorDirection}, ${startColor}, ${endColor})`;
+    const borderGradient = element.style.colorVia
+      ? `linear-gradient(${colorDirection}, ${startColor}, ${viaColor}, ${endColor})`
+      : `linear-gradient(${colorDirection}, ${startColor}, ${endColor})`;
 
     const baseBackground = element.style.glassmorphism
       ? element.style.showBackground

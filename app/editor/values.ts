@@ -430,25 +430,37 @@ export const GRADIENT_DIRECTIONS: GradientDirectionOption[] = [
   { id: "to-tl", name: "To Top Left", tailwind: "to-tl", css: "to top left", arrow: "↖" },
 ];
 
-export const TEXT_GRADIENT_PRESETS = [
-  { name: "Silver", from: "#ffffff", to: "#94a3b8" },
-  { name: "Gold", from: "#fef08a", to: "#ca8a04" },
-  { name: "Sunset", from: "#ff7e5f", to: "#feb47b" },
-  { name: "Cyber", from: "#00dfd8", to: "#ff007f" },
-  { name: "Neon Cyan", from: "#00f2fe", to: "#4facfe" },
-  { name: "Purple", from: "#c084fc", to: "#6366f1" },
-  { name: "Emerald", from: "#4ade80", to: "#059669" },
-  { name: "Flame", from: "#fb923c", to: "#ef4444" },
-  { name: "Monochrome", from: "#ffffff", to: "#52525b" },
+export interface GradientPresetOption {
+  name: string;
+  from: string;
+  via: string;
+  to: string;
+}
+
+export const TEXT_GRADIENT_PRESETS: GradientPresetOption[] = [
+  { name: "Silver", from: "#ffffff", via: "#cbd5e1", to: "#64748b" },
+  { name: "Gold", from: "#fef08a", via: "#eab308", to: "#a16207" },
+  { name: "Sunset", from: "#ff7e5f", via: "#feb47b", to: "#ff6e7f" },
+  { name: "Cyber", from: "#00dfd8", via: "#7928ca", to: "#ff007f" },
+  { name: "Neon Cyan", from: "#00f2fe", via: "#38bdf8", to: "#2563eb" },
+  { name: "Purple", from: "#e879f9", via: "#c084fc", to: "#6366f1" },
+  { name: "Emerald", from: "#86efac", via: "#22c55e", to: "#047857" },
+  { name: "Flame", from: "#fde047", via: "#fb923c", to: "#dc2626" },
+  { name: "Monochrome", from: "#ffffff", via: "#a1a1aa", to: "#27272a" },
+  { name: "Prism", from: "#38bdf8", via: "#818cf8", to: "#c084fc" },
+  { name: "Rose Gold", from: "#ffe4e6", via: "#f43f5e", to: "#881337" },
+  { name: "Cosmic", from: "#67e8f9", via: "#a855f7", to: "#ec4899" },
 ];
 
-export const BACKGROUND_GRADIENT_PRESETS = [
-  { name: "Dark Velvet", from: "#18181b", to: "#09090b" },
-  { name: "Slate Glass", from: "#334155", to: "#0f172a" },
-  { name: "Midnight", from: "#1e1b4b", to: "#0f172a" },
-  { name: "Crimson Glow", from: "#881337", to: "#1c0a00" },
-  { name: "Emerald Depth", from: "#064e3b", to: "#022c22" },
-  { name: "Purple Twilight", from: "#3b0764", to: "#110726" },
-  { name: "Cyber Dusk", from: "#0f172a", to: "#3b0764" },
-  { name: "Deep Amber", from: "#451a03", to: "#180a02" },
+export const BACKGROUND_GRADIENT_PRESETS: GradientPresetOption[] = [
+  { name: "Dark Velvet", from: "#27272a", via: "#18181b", to: "#09090b" },
+  { name: "Slate Glass", from: "#475569", via: "#1e293b", to: "#0f172a" },
+  { name: "Midnight", from: "#312e81", via: "#1e1b4b", to: "#0f172a" },
+  { name: "Crimson Glow", from: "#881337", via: "#4c0519", to: "#1c0a00" },
+  { name: "Emerald Depth", from: "#065f46", via: "#064e3b", to: "#022c22" },
+  { name: "Purple Twilight", from: "#581c87", via: "#3b0764", to: "#110726" },
+  { name: "Cyber Dusk", from: "#1e1b4b", via: "#0f172a", to: "#3b0764" },
+  { name: "Deep Amber", from: "#78350f", via: "#451a03", to: "#180a02" },
+  { name: "Abyss Noir", from: "#18181b", via: "#09090b", to: "#000000" },
+  { name: "Ocean Deep", from: "#0f3460", via: "#16213e", to: "#1a1a2e" },
 ];

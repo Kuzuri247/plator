@@ -165,6 +165,8 @@ const SortableLayer = memo(function SortableLayer({
                 background: textEl?.style.showBackground
                   ? textEl.style.backgroundType === "solid"
                     ? textEl.style.backgroundColor
+                    : textEl.style.backgroundColorVia
+                    ? `linear-gradient(${textEl.style.backgroundDirection || "to bottom"}, ${textEl.style.backgroundColor || "#18181b"}, ${textEl.style.backgroundColorVia || "#111113"}, ${textEl.style.backgroundColorEnd || "#09090b"})`
                     : `linear-gradient(${textEl.style.backgroundDirection || "to bottom"}, ${textEl.style.backgroundColor || "#18181b"}, ${textEl.style.backgroundColorEnd || "#09090b"})`
                   : undefined,
               }}
