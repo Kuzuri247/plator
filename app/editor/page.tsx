@@ -363,7 +363,7 @@ export default function EditorPage() {
             <PopoverContent
               align="end"
               sideOffset={8}
-              className="w-80 p-4 font-manrope bg-card/95 backdrop-blur-xl border border-border/80 shadow-2xl rounded-xl space-y-3 z-50"
+              className="w-72 p-4 font-manrope bg-card/95 backdrop-blur-xl border border-border/80 shadow-2xl rounded-xl space-y-3 z-50"
             >
               {/* Export Header */}
               <div className="flex items-center justify-between">
