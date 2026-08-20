@@ -84,11 +84,12 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             contain: "layout style paint",
           }}
           onPointerDown={(e) => {
+            const target = e.target as HTMLElement | SVGElement | null;
             if (
               e.target === e.currentTarget ||
-              (e.target as HTMLElement).getAttribute("data-canvas") === "true" ||
-              (e.target as HTMLElement).tagName === "CANVAS" ||
-              (e.target as HTMLElement).tagName === "svg"
+              target?.getAttribute?.("data-canvas") === "true" ||
+              target?.tagName === "CANVAS" ||
+              Boolean(target?.closest?.("svg, [data-canvas='true']"))
             ) {
               handleEmptyClick();
             }

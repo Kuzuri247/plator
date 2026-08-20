@@ -129,7 +129,8 @@ export async function captureCanvasFrames(
     );
   }
 
-  const totalFrames = Math.max(1, Math.round(durationSeconds * fps));
+  // Cap total frames to a safe memory threshold (max 360 frames = 6s @ 60fps)
+  const totalFrames = Math.min(360, Math.max(1, Math.round(durationSeconds * fps)));
   const frames: Uint8Array[] = [];
 
   try {
@@ -230,7 +231,11 @@ export async function recordCanvasToWebM(
 
   const stream = compositeCanvas.captureStream
     ? compositeCanvas.captureStream(fps)
-    : (webglCanvas as any)?.captureStream(fps);
+    : (webglCanvas as HTMLCanvasElement)?.captureStream?.(fps);
+
+  if (!stream) {
+    throw new Error("Canvas video capture stream is not supported in this browser environment.");
+  }
 
   const mimeTypes = [
     "video/webm;codecs=vp9,opus",

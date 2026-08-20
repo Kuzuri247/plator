@@ -30,6 +30,8 @@ export const useStore = create<EditorState>((set, get) => ({
       canvasBackground: DEFAULT_BG,
       meshConfig: { ...DEFAULT_MESH_CONFIG },
       overlayConfig: { ...DEFAULT_OVERLAY_CONFIG },
+      aspectRatio:
+        ASPECT_RATIOS.find((r) => r.name === "16:9") || ASPECT_RATIOS[0],
     },
   ],
   historyIndex: 0,
@@ -60,6 +62,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: state.canvasBackground,
           meshConfig: state.meshConfig,
           overlayConfig: state.overlayConfig,
+          aspectRatio: ratio,
         },
       ];
 
@@ -104,6 +107,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: state.canvasBackground,
           meshConfig: state.meshConfig,
           overlayConfig: state.overlayConfig,
+          aspectRatio: newRatio,
         },
       ];
 
@@ -125,6 +129,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: bg,
           meshConfig: state.meshConfig,
           overlayConfig: state.overlayConfig,
+          aspectRatio: state.aspectRatio,
         },
       ];
       return {
@@ -145,6 +150,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: state.canvasBackground,
           meshConfig: newConfig,
           overlayConfig: state.overlayConfig,
+          aspectRatio: state.aspectRatio,
         },
       ];
       return {
@@ -165,6 +171,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: state.canvasBackground,
           meshConfig: state.meshConfig,
           overlayConfig: newConfig,
+          aspectRatio: state.aspectRatio,
         },
       ];
       return {
@@ -184,6 +191,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: state.canvasBackground,
           meshConfig: state.meshConfig,
           overlayConfig: state.overlayConfig,
+          aspectRatio: state.aspectRatio,
         },
       ];
       return {
@@ -194,7 +202,11 @@ export const useStore = create<EditorState>((set, get) => ({
     });
   },
 
-  setExportFormat: (format) => set({ exportFormat: format }),
+  setExportFormat: (format) =>
+    set((state) => ({
+      exportFormat: format,
+      exportFps: format === "gif" ? 30 : state.exportFps,
+    })),
   setExportQuality: (quality) => set({ exportQuality: quality }),
   setExportDuration: (duration) => set({ exportDuration: duration }),
   setExportFps: (fps) => set({ exportFps: fps }),
@@ -239,6 +251,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: state.canvasBackground,
           meshConfig: state.meshConfig,
           overlayConfig: state.overlayConfig,
+          aspectRatio: state.aspectRatio,
         },
       ];
       return {
@@ -283,6 +296,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: state.canvasBackground,
           meshConfig: state.meshConfig,
           overlayConfig: state.overlayConfig,
+          aspectRatio: state.aspectRatio,
         },
       ];
       return {
@@ -355,6 +369,7 @@ export const useStore = create<EditorState>((set, get) => ({
         canvasBackground: historyState.canvasBackground,
         meshConfig: historyState.meshConfig,
         overlayConfig: historyState.overlayConfig,
+        aspectRatio: historyState.aspectRatio || state.aspectRatio,
         historyIndex: newIndex,
       };
     });
@@ -370,23 +385,28 @@ export const useStore = create<EditorState>((set, get) => ({
         canvasBackground: historyState.canvasBackground,
         meshConfig: historyState.meshConfig,
         overlayConfig: historyState.overlayConfig,
+        aspectRatio: historyState.aspectRatio || state.aspectRatio,
         historyIndex: newIndex,
       };
     });
   },
 
   reset: () => {
+    const defaultRatio =
+      ASPECT_RATIOS.find((r) => r.name === "16:9") || ASPECT_RATIOS[0];
     set({
       elements: [],
       canvasBackground: DEFAULT_BG,
       meshConfig: { ...DEFAULT_MESH_CONFIG },
       overlayConfig: { ...DEFAULT_OVERLAY_CONFIG },
+      aspectRatio: defaultRatio,
       history: [
         {
           elements: [],
           canvasBackground: DEFAULT_BG,
           meshConfig: { ...DEFAULT_MESH_CONFIG },
           overlayConfig: { ...DEFAULT_OVERLAY_CONFIG },
+          aspectRatio: defaultRatio,
         },
       ],
       historyIndex: 0,
@@ -422,6 +442,7 @@ export const useStore = create<EditorState>((set, get) => ({
           canvasBackground: state.canvasBackground,
           meshConfig: state.meshConfig,
           overlayConfig: state.overlayConfig,
+          aspectRatio: state.aspectRatio,
         },
       ];
 

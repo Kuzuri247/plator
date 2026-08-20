@@ -139,12 +139,15 @@ export const ImageLayer = memo(
         colorBack: img.dither.colorBack || "#000000",
       };
 
+      let isMounted = true;
+
       const processImage = async () => {
         const originalImage = new Image();
         originalImage.crossOrigin = "anonymous";
         originalImage.src = img.src;
 
         originalImage.onload = () => {
+          if (!isMounted) return;
           try {
             const scaleFactor = Math.max(0.05, (img.style?.scale || 100) / 100);
             const effectivePxSize = Math.max(
@@ -159,20 +162,27 @@ export const ImageLayer = memo(
               colorFront: hexToRgbNormalized(ditherConfig.colorFront),
               colorBack: hexToRgbNormalized(ditherConfig.colorBack),
             });
-            setProcessedImage(processedCanvas.toDataURL("image/png"));
+            if (isMounted) {
+              setProcessedImage(processedCanvas.toDataURL("image/png"));
+            }
           } catch (error) {
             console.error("Dither processing failed:", error);
-            setProcessedImage(null);
+            if (isMounted) setProcessedImage(null);
           }
         };
 
         originalImage.onerror = () => {
+          if (!isMounted) return;
           console.error("Failed to load image for dithering");
           setProcessedImage(null);
         };
       };
 
       processImage();
+
+      return () => {
+        isMounted = false;
+      };
     }, [
       img.src,
       img.dither?.enabled,

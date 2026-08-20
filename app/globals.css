@@ -156,7 +156,7 @@
 }
 
 /* rainbow colors */
-@keyframes meshCirculate {
+@keyframes mesh-circulate {
   0% {
     background-color: #4285F4;
   }
@@ -180,7 +180,7 @@
   }
 }
 
-@keyframes shimmerWave {
+@keyframes shimmer-wave {
   0% {
     transform: translateX(-100%);
   }
@@ -190,32 +190,32 @@
 }
 
 .animate-circulate-1 {
-  animation: meshCirculate 3s linear infinite;
+  animation: mesh-circulate 3s linear infinite;
   animation-delay: 0s;
 }
 
 .animate-circulate-2 {
-  animation: meshCirculate 3s linear infinite;
+  animation: mesh-circulate 3s linear infinite;
   animation-delay: -0.6s;
 }
 
 .animate-circulate-3 {
-  animation: meshCirculate 3s linear infinite;
+  animation: mesh-circulate 3s linear infinite;
   animation-delay: -1.2s;
 }
 
 .animate-circulate-4 {
-  animation: meshCirculate 3s linear infinite;
+  animation: mesh-circulate 3s linear infinite;
   animation-delay: -1.8s;
 }
 
 .animate-circulate-5 {
-  animation: meshCirculate 3s linear infinite;
+  animation: mesh-circulate 3s linear infinite;
   animation-delay: -2.4s;
 }
 
 .animate-palette-shimmer {
-  animation: shimmerWave 2.5s ease-in-out infinite;
+  animation: shimmer-wave 2.5s ease-in-out infinite;
 }
 
 @property --rainbow-angle {
@@ -224,7 +224,7 @@
   inherits: false;
 }
 
-@keyframes rainbowRotate {
+@keyframes rainbow-rotate {
   0% {
     --rainbow-angle: 0deg;
   }
@@ -233,7 +233,7 @@
   }
 }
 
-@keyframes googleGlowPulse {
+@keyframes google-glow-pulse {
   0%, 100% {
     opacity: 0.65;
     filter: blur(8px);
@@ -256,7 +256,7 @@
     #34A853 80%,
     #4285F4 100%
   );
-  animation: rainbowRotate 3s linear infinite, googleGlowPulse 2.5s ease-in-out infinite;
+  animation: rainbow-rotate 3s linear infinite, google-glow-pulse 2.5s ease-in-out infinite;
 }
 
 

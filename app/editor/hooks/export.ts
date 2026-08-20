@@ -103,11 +103,7 @@ export function useExport(
     );
 
     try {
-      if (
-        exportFormat === "mp4" ||
-        exportFormat === "gif" ||
-        exportFormat === "webm"
-      ) {
+      if (exportFormat === "mp4" || exportFormat === "gif") {
         const qualityScale = Math.max(1, parseInt(exportQuality) || 2);
         const targetFps =
           exportFormat === "gif" ? Math.min(exportFps || 30, 30) : exportFps || 60;
@@ -117,16 +113,20 @@ export function useExport(
             !canvasBackground.startsWith("#") &&
             !canvasBackground.startsWith("rgb"));
 
+        const safeDuration = Math.min(6, Math.max(1, exportDuration || 3));
+        const safeFps = Math.min(60, Math.max(30, targetFps));
+        const safeScale = Math.min(4, Math.max(1, qualityScale));
+
         setExportStatus("Capturing high-resolution frames...");
         toast.loading(
-          `Capturing ${exportDuration}s @ ${targetFps} FPS (${qualityScale}x HD)...`,
+          `Capturing ${safeDuration}s @ ${safeFps} FPS (${safeScale}x HD)...`,
           { id: toastId }
         );
 
         const captured = await captureCanvasFrames(canvasRef.current, {
-          durationSeconds: exportDuration || 3,
-          fps: targetFps,
-          scale: qualityScale,
+          durationSeconds: safeDuration,
+          fps: safeFps,
+          scale: safeScale,
           meshConfig,
           isMeshBackground: isMesh,
           onProgress: (pct, status) => {
@@ -172,23 +172,6 @@ export function useExport(
 
           downloadBlob(gifBlob, `plator-animation-${Date.now()}.gif`);
           toast.success("GIF exported successfully!", { id: toastId });
-          return;
-        }
-
-        if (exportFormat === "webm") {
-          setExportStatus("Encoding high-quality VP9 WebM...");
-          toast.loading("Encoding VP9 WebM...", { id: toastId });
-
-          const webmBlob = await renderFramesToWebM(
-            captured.frames,
-            captured.fps,
-            (ffmpegPct) => {
-              setExportProgress(45 + Math.round(ffmpegPct * 0.55));
-            }
-          );
-
-          downloadBlob(webmBlob, `plator-animation-${Date.now()}.webm`);
-          toast.success("WebM exported successfully!", { id: toastId });
           return;
         }
       } else {

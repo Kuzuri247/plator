@@ -21,17 +21,26 @@ async function getCachedBlobURLs(): Promise<{
     };
   }
 
-  // 1. Try local pre-bundled assets first
+  // 1. Try local pre-bundled assets first with response validation
   try {
-    const coreURL = await toBlobURL(
+    const fetchLocalBlob = async (path: string, mime: string) => {
+      const res = await fetch(path);
+      if (!res.ok) {
+        throw new Error(`Failed to load ${path}: ${res.status}`);
+      }
+      const blob = await res.blob();
+      return URL.createObjectURL(new Blob([blob], { type: mime }));
+    };
+
+    const coreURL = await fetchLocalBlob(
       "/ffmpeg/ffmpeg-core.js",
       "text/javascript"
     );
-    const wasmURL = await toBlobURL(
+    const wasmURL = await fetchLocalBlob(
       "/ffmpeg/ffmpeg-core.wasm",
       "application/wasm"
     );
-    const classWorkerURL = await toBlobURL(
+    const classWorkerURL = await fetchLocalBlob(
       "/ffmpeg/worker.js",
       "text/javascript"
     );
@@ -69,9 +78,16 @@ async function getCachedBlobURLs(): Promise<{
  * caused by Emscripten C runtime exit() calls destroying function pointer tables.
  */
 export async function createFreshFFmpeg(
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  onLog?: (message: string) => void
 ): Promise<FFmpeg> {
   const ffmpeg = new FFmpeg();
+
+  if (onLog) {
+    ffmpeg.on("log", ({ message }) => {
+      onLog(message);
+    });
+  }
 
   if (onProgress) {
     ffmpeg.on("progress", ({ progress }) => {
@@ -88,7 +104,7 @@ export async function getFFmpeg(
   onLog?: (message: string) => void,
   onProgress?: (progress: number) => void
 ): Promise<FFmpeg> {
-  return createFreshFFmpeg(onProgress);
+  return createFreshFFmpeg(onProgress, onLog);
 }
 
 /**
@@ -119,9 +135,9 @@ export async function renderFramesToMp4(
       "-c:v",
       "libx264",
       "-preset",
-      "slow", // Full rate-distortion optimization & subpixel precision
+      "medium",
       "-crf",
-      "12", // Studio master visually lossless quality
+      "15", // Studio master visually lossless quality
       "-vf",
       "scale=trunc(iw/2)*2:trunc(ih/2)*2",
       "-colorspace",
@@ -169,14 +185,14 @@ export async function renderFramesToGif(
       await ffmpeg.writeFile(filename, frames[i]);
     }
 
-    // Single-pass complex filtergraph with full 256 colors
+    // Single-pass complex filtergraph with full 256 colors & dynamic fps
     await ffmpeg.exec([
       "-framerate",
       `${fps}`,
       "-i",
       "frame_%04d.png",
       "-filter_complex",
-      "fps=30,scale=min(iw\\,1080):-2:flags=lanczos,split [a][b]; [a] palettegen=max_colors=256:stats_mode=single [p]; [b][p] paletteuse=dither=sierra2_4a:diff_mode=rectangle",
+      `fps=${fps},scale=min(iw\\,1080):-2:flags=lanczos,split [a][b]; [a] palettegen=max_colors=256:stats_mode=single [p]; [b][p] paletteuse=dither=sierra2_4a:diff_mode=rectangle`,
       "-y",
       "output.gif",
     ]);

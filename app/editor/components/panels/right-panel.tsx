@@ -1,20 +1,14 @@
 "use client";
 
-import React, { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState } from "react";
 import {
-  Download,
   Image as ImageIcon,
   Loader2,
-  Sparkles,
   Laugh,
   Layers,
-  Sliders,
-  Palette,
-  Film,
   Zap,
-  Grid,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -28,10 +22,9 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { RightPanelProps, ExportFormat } from "../../types";
+import { RightPanelProps } from "../../types";
 import {
   MESH_PALETTES,
-  PRESET_GRADIENTS,
 } from "../../values";
 import { Wallpapers } from "../../hooks/wallpaper";
 import { Memes } from "../../hooks/memes";
@@ -45,18 +38,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
     canvasBackground,
     meshConfig,
     overlayConfig,
-    exportFormat,
-    exportQuality,
-    exportDuration,
-    exportFps,
     setBackground,
     setCustomSize,
     setMeshConfig,
     setOverlayConfig,
-    setExportFormat,
-    setExportQuality,
-    setExportDuration,
-    setExportFps,
   } = useStore();
 
   const {
@@ -110,11 +95,6 @@ export function RightPanel({ onDownload }: RightPanelProps) {
       loadMoreMemes();
     }
   }, [memesLoading, memesHasMore, loadMoreMemes]);
-
-  const isVideoFormat =
-    exportFormat === "mp4" ||
-    exportFormat === "gif" ||
-    exportFormat === "webm";
 
   return (
     <div className="flex flex-col h-full w-full bg-card">
@@ -646,6 +626,9 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                               setCustomSize(img.naturalWidth, img.naturalHeight);
                               setBackground(`url(${meme.url})`);
                             };
+                            img.onerror = () => {
+                              toast.error("Failed to load meme template image.");
+                            };
                           }}
                           className="group relative aspect-video rounded-lg overflow-hidden border border-border/70 hover:border-primary hover:ring-2 hover:ring-primary/60 transition-all duration-200 hover:scale-[1.03] hover:z-20 hover:shadow-xl cursor-pointer bg-muted/30"
                         >
@@ -673,149 +656,6 @@ export function RightPanel({ onDownload }: RightPanelProps) {
           </TabsContent>
         </div>
       </Tabs>
-
-      {/* Export Studio Section */}
-      <div className="p-4 border-t-2 dark:border-neutral-800 shrink-0 bg-card z-10 space-y-3">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm font-semibold uppercase tracking-wider flex items-center gap-1.5">
-            <Film className="size-3.5 text-primary" /> Export
-          </Label>
-          <span className="text-[10px] font-semibold text-primary uppercase tracking-wide">
-            {isVideoFormat ? "WASM Video" : "Hi-Res Snapshot"}
-          </span>
-        </div>
-
-        {/* Format Selector Pills */}
-        <div className="grid grid-cols-6 gap-1 bg-muted/60 p-1 rounded-lg">
-          {(["mp4", "gif", "webm", "png", "jpeg", "svg"] as ExportFormat[]).map(
-            (fmt) => (
-              <button
-                key={fmt}
-                onClick={() => setExportFormat(fmt)}
-                className={`py-1 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${exportFormat === fmt
-                  ? "bg-primary text-primary-foreground shadow-xs scale-102"
-                  : "text-muted-foreground hover:text-foreground"
-                  }`}
-              >
-                {fmt}
-              </button>
-            )
-          )}
-        </div>
-
-        {/* Video / Loop Settings */}
-        {isVideoFormat ? (
-          <div className="space-y-3 pt-1">
-            <div className="grid grid-cols-2 gap-3 items-end">
-              {/* Duration Dropdown */}
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-muted-foreground block">
-                  Duration
-                </Label>
-                <Select
-                  value={String(exportDuration)}
-                  onValueChange={(val) => setExportDuration(Number(val))}
-                >
-                  <SelectTrigger className="h-8 w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[1, 2, 3, 4, 5, 6].map((sec) => (
-                      <SelectItem key={sec} value={String(sec)}>
-                        {sec}s
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Framerate Toggle */}
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-muted-foreground block">
-                  Framerate
-                </Label>
-                <div className="grid grid-cols-2 gap-1 bg-muted/60 p-1 rounded-lg h-8">
-                  {[
-                    { value: 30, label: "30 FPS" },
-                    { value: 60, label: "60 FPS" },
-                  ].map(({ value, label }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setExportFps(value)}
-                      className={`rounded text-xs font-semibold transition-all cursor-pointer flex items-center justify-center ${
-                        exportFps === value
-                          ? "bg-primary text-primary-foreground shadow-xs font-bold"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-0.5">
-              <Label className="text-xs text-muted-foreground">
-                Resolution Scale
-              </Label>
-              <div className="flex gap-1.5">
-                {[
-                  { q: "1", label: "1x Standard" },
-                  { q: "2", label: "2x 1080p HD" },
-                  { q: "4", label: "4x 4K Ultra" },
-                ].map(({ q, label }) => (
-                  <button
-                    key={q}
-                    type="button"
-                    onClick={() => setExportQuality(q)}
-                    className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${
-                      exportQuality === q
-                        ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
-                        : "border-border text-muted-foreground hover:text-foreground"
-                    }`}
-                    title={label}
-                  >
-                    {q}x
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between pt-1">
-            <Label className="text-xs text-muted-foreground">
-              Resolution Scale
-            </Label>
-            <div className="flex gap-1.5">
-              {["1", "2", "4"].map((q) => (
-                <button
-                  key={q}
-                  type="button"
-                  onClick={() => setExportQuality(q)}
-                  className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${
-                    exportQuality === q
-                      ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
-                      : "border-border text-muted-foreground"
-                  }`}
-                >
-                  {q}x
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Export Button */}
-        <Button
-          onClick={onDownload}
-          variant="primary"
-          className="w-full h-11 font-bold text-xs uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg cursor-pointer flex items-center justify-center gap-2"
-        >
-          <Download className="size-4" /> Download {exportFormat.toUpperCase()}
-        </Button>
-      </div>
     </div>
   );
 }

@@ -167,7 +167,7 @@ export interface EditorCanvasProps {
   onCropChange: (id: string, newCrop: any) => void;
 }
 
-export type ExportFormat = "mp4" | "gif" | "webm" | "png" | "jpeg" | "svg";
+export type ExportFormat = "mp4" | "gif" | "png" | "jpeg" | "svg";
 
 export interface EditorState {
   aspectRatio: typeof ASPECT_RATIOS[0];
@@ -249,10 +249,11 @@ export interface HistoryState {
   canvasBackground: string;
   meshConfig: MeshGradientConfig;
   overlayConfig: OverlayConfig;
+  aspectRatio?: (typeof ASPECT_RATIOS)[number];
 }
 
 export interface RightPanelProps {
-  onDownload: () => void;
+  onDownload?: () => void;
 }
 
 export interface DitherConfig {

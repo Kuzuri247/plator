@@ -960,7 +960,7 @@ export function LeftPanel({
                           </div>
 
                           {(textStyle.colorType || "gradient") === "gradient" ? (
-                            <div className="space-y-3">
+                            <div className="space-y-5">
                               {/* 3 Color Pickers: From - Via - To */}
                               <div className="grid grid-cols-3 gap-1.25 ">
                                 {/* From Color */}

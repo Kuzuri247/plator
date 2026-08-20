@@ -215,6 +215,7 @@ const SortableLayer = memo(function SortableLayer({
           <Button
             variant="ghost"
             size="icon"
+            aria-label={element.isLocked ? "Unlock layer" : "Lock layer"}
             className={cn(
               "size-6 rounded-md cursor-pointer p-0 shrink-0",
               element.isLocked
@@ -234,6 +235,7 @@ const SortableLayer = memo(function SortableLayer({
           <Button
             variant="ghost"
             size="icon"
+            aria-label={element.isVisible ? "Hide layer" : "Show layer"}
             className={cn(
               "size-6 rounded-md cursor-pointer p-0 shrink-0",
               !element.isVisible
@@ -253,6 +255,7 @@ const SortableLayer = memo(function SortableLayer({
           <Button
             variant="ghost"
             size="icon"
+            aria-label="Delete layer"
             className="size-6 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer p-0 shrink-0 opacity-70 group-hover:opacity-100"
             title="Delete Layer"
             onClick={(e) => {
@@ -265,6 +268,9 @@ const SortableLayer = memo(function SortableLayer({
 
           {/* Drag Handle */}
           <div
+            role="button"
+            tabIndex={0}
+            aria-label="Reorder layer"
             className="p-1 rounded-md text-muted-foreground/60 hover:text-foreground cursor-grab active:cursor-grabbing hover:bg-muted/50 transition-colors shrink-0 touch-none"
             onPointerDown={(e) => controls.start(e)}
             title="Reorder Layer"
@@ -278,7 +284,7 @@ const SortableLayer = memo(function SortableLayer({
       <div className="flex items-center gap-1 mt-1.5 pt-1.5 border-t border-border/40 text-[9px] text-muted-foreground font-manrope flex-wrap min-w-0 overflow-hidden">
         {/* Coordinates */}
         <span className="text-[9px] bg-muted/70 dark:bg-muted/50 px-1.5 py-0.2 rounded-xs border border-border/50 shrink-0">
-          X:{element.position.x} &nbsp; Y:{element.position.y}
+          X:{Math.round(element.position.x)} &nbsp; Y:{Math.round(element.position.y)}
         </span>
 
         {/* Feature Badges */}
