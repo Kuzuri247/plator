@@ -146,14 +146,20 @@ export const ImageLayer = memo(
 
         originalImage.onload = () => {
           try {
+            const scaleFactor = Math.max(0.05, (img.style?.scale || 100) / 100);
+            const effectivePxSize = Math.max(
+              1,
+              Math.round((ditherConfig.pixelSize || 4) / scaleFactor)
+            );
+
             const processedCanvas = applyDitherToCanvas(originalImage, {
               ditherType: ditherConfig.ditherType,
-              pixelSize: ditherConfig.pixelSize,
+              pixelSize: effectivePxSize,
               colorSteps: ditherConfig.colorSteps,
               colorFront: hexToRgbNormalized(ditherConfig.colorFront),
               colorBack: hexToRgbNormalized(ditherConfig.colorBack),
             });
-            setProcessedImage(processedCanvas.toDataURL());
+            setProcessedImage(processedCanvas.toDataURL("image/png"));
           } catch (error) {
             console.error("Dither processing failed:", error);
             setProcessedImage(null);
@@ -167,7 +173,16 @@ export const ImageLayer = memo(
       };
 
       processImage();
-    }, [img.src, img.dither]);
+    }, [
+      img.src,
+      img.dither?.enabled,
+      img.dither?.ditherType,
+      img.dither?.pixelSize,
+      img.dither?.colorSteps,
+      img.dither?.colorFront,
+      img.dither?.colorBack,
+      img.style?.scale,
+    ]);
 
     const handleCropStart = (e: React.PointerEvent, side: CropPosition) => {
       e.preventDefault();
@@ -318,6 +333,7 @@ export const ImageLayer = memo(
                 height: `${heightFactor * 100}%`,
                 left: `${-left * widthFactor}%`,
                 top: `${-top * heightFactor}%`,
+                imageRendering: img.dither?.enabled ? "pixelated" : "auto",
               }}
             />
           </div>

@@ -384,7 +384,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-2">
                           <Label className="text-xs font-medium text-muted-foreground">
-                            Algorithm
+                            Pattern
                           </Label>
                           <Select
                             value={String(meshConfig.ditherType)}
@@ -686,13 +686,13 @@ export function RightPanel({ onDownload }: RightPanelProps) {
         </div>
 
         {/* Format Selector Pills */}
-        <div className="grid grid-cols-5 gap-1 bg-muted/60 p-1 rounded-lg">
-          {(["mp4", "gif", "webm", "png", "jpeg"] as ExportFormat[]).map(
+        <div className="grid grid-cols-6 gap-1 bg-muted/60 p-1 rounded-lg">
+          {(["mp4", "gif", "webm", "png", "jpeg", "svg"] as ExportFormat[]).map(
             (fmt) => (
               <button
                 key={fmt}
                 onClick={() => setExportFormat(fmt)}
-                className={`py-1 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${exportFormat === fmt
+                className={`py-1 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${exportFormat === fmt
                   ? "bg-primary text-primary-foreground shadow-xs scale-102"
                   : "text-muted-foreground hover:text-foreground"
                   }`}
@@ -705,42 +705,82 @@ export function RightPanel({ onDownload }: RightPanelProps) {
 
         {/* Video / Loop Settings */}
         {isVideoFormat ? (
-          <div className="grid grid-cols-2 gap-2 pt-1">
-            <div>
-              <div className="flex justify-between text-[11px] font-medium mb-1">
-                <span>Duration</span>
-                <span className="font-manrope text-primary font-bold">
-                  {exportDuration}s
-                </span>
+          <div className="space-y-3 pt-1">
+            <div className="grid grid-cols-2 gap-3 items-end">
+              {/* Duration Dropdown */}
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-muted-foreground block">
+                  Duration
+                </Label>
+                <Select
+                  value={String(exportDuration)}
+                  onValueChange={(val) => setExportDuration(Number(val))}
+                >
+                  <SelectTrigger className="h-8 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6].map((sec) => (
+                      <SelectItem key={sec} value={String(sec)}>
+                        {sec}s
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <Slider
-                value={[exportDuration]}
-                min={1}
-                max={6}
-                step={1}
-                onValueChange={([val]) => setExportDuration(val)}
-              />
+
+              {/* Framerate Toggle */}
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-muted-foreground block">
+                  Framerate
+                </Label>
+                <div className="grid grid-cols-2 gap-1 bg-muted/60 p-1 rounded-lg h-8">
+                  {[
+                    { value: 30, label: "30 FPS" },
+                    { value: 60, label: "60 FPS" },
+                  ].map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setExportFps(value)}
+                      className={`rounded text-xs font-semibold transition-all cursor-pointer flex items-center justify-center ${
+                        exportFps === value
+                          ? "bg-primary text-primary-foreground shadow-xs font-bold"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div>
-              <div className="flex justify-between text-[11px] font-medium mb-1">
-                <span>Framerate</span>
-                <span className="font-manrope text-primary font-bold">
-                  {exportFps} FPS
-                </span>
+            <div className="flex items-center justify-between pt-0.5">
+              <Label className="text-xs text-muted-foreground">
+                Resolution Scale
+              </Label>
+              <div className="flex gap-1.5">
+                {[
+                  { q: "1", label: "1x Standard" },
+                  { q: "2", label: "2x 1080p HD" },
+                  { q: "4", label: "4x 4K Ultra" },
+                ].map(({ q, label }) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => setExportQuality(q)}
+                    className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${
+                      exportQuality === q
+                        ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
+                        : "border-border text-muted-foreground hover:text-foreground"
+                    }`}
+                    title={label}
+                  >
+                    {q}x
+                  </button>
+                ))}
               </div>
-              <Select
-                value={String(exportFps)}
-                onValueChange={(v) => setExportFps(parseInt(v))}
-              >
-                <SelectTrigger className="h-7 text-xs bg-background">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="30">30 FPS</SelectItem>
-                  <SelectItem value="60">60 FPS (Fluid)</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
         ) : (
@@ -752,11 +792,13 @@ export function RightPanel({ onDownload }: RightPanelProps) {
               {["1", "2", "4"].map((q) => (
                 <button
                   key={q}
+                  type="button"
                   onClick={() => setExportQuality(q)}
-                  className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${exportQuality === q
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-muted-foreground"
-                    }`}
+                  className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${
+                    exportQuality === q
+                      ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
+                      : "border-border text-muted-foreground"
+                  }`}
                 >
                   {q}x
                 </button>

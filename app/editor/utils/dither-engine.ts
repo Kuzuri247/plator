@@ -31,24 +31,39 @@ const FRAGMENT_SHADER_SOURCE = `
   float bayer2(vec2 uv) {
     int x = int(mod(uv.x, 2.0));
     int y = int(mod(uv.y, 2.0));
-    if (x == 0 && y == 0) return 0.0 / 4.0;
-    if (x == 1 && y == 1) return 1.0 / 4.0;
-    if (x == 1 && y == 0) return 2.0 / 4.0;
-    return 3.0 / 4.0;
+    int idx = x + y * 2;
+    if (idx == 0) return 0.0 / 4.0;
+    if (idx == 1) return 2.0 / 4.0;
+    if (idx == 2) return 3.0 / 4.0;
+    return 1.0 / 4.0;
   }
 
   float bayer4(vec2 uv) {
-    vec2 bayerUv = floor(mod(uv, 4.0));
-    float b2 = bayer2(floor(bayerUv / 2.0));
-    float b1 = bayer2(mod(bayerUv, 2.0));
-    return b2 + b1 / 4.0;
+    int x = int(mod(uv.x, 4.0));
+    int y = int(mod(uv.y, 4.0));
+    int idx = x + y * 4;
+    if (idx == 0) return 0.0 / 16.0;
+    if (idx == 1) return 8.0 / 16.0;
+    if (idx == 2) return 2.0 / 16.0;
+    if (idx == 3) return 10.0 / 16.0;
+    if (idx == 4) return 12.0 / 16.0;
+    if (idx == 5) return 4.0 / 16.0;
+    if (idx == 6) return 14.0 / 16.0;
+    if (idx == 7) return 6.0 / 16.0;
+    if (idx == 8) return 3.0 / 16.0;
+    if (idx == 9) return 11.0 / 16.0;
+    if (idx == 10) return 1.0 / 16.0;
+    if (idx == 11) return 9.0 / 16.0;
+    if (idx == 12) return 15.0 / 16.0;
+    if (idx == 13) return 7.0 / 16.0;
+    if (idx == 14) return 13.0 / 16.0;
+    return 5.0 / 16.0;
   }
 
   float bayer8(vec2 uv) {
-    vec2 bayerUv = floor(mod(uv, 8.0));
-    float b4 = bayer4(floor(bayerUv / 2.0));
-    float b1 = bayer2(mod(bayerUv, 2.0));
-    return b4 + b1 / 16.0;
+    vec2 p4 = mod(uv, 4.0);
+    vec2 p2 = floor(mod(uv, 8.0) / 4.0);
+    return (bayer4(p4) * 64.0 + bayer2(p2) * 4.0) / 64.0;
   }
 
   float rand(vec2 co) {
@@ -56,14 +71,20 @@ const FRAGMENT_SHADER_SOURCE = `
   }
 
   void main() {
-    vec2 gridUv = floor(v_texCoord * u_resolution / u_pxSize) * u_pxSize / u_resolution;
+    vec2 gridUv = floor(v_texCoord * u_resolution / max(u_pxSize, 1.0)) * max(u_pxSize, 1.0) / u_resolution;
     vec4 color = texture2D(u_image, gridUv);
     
+    // Preserve transparency
+    if (color.a < 0.01) {
+      gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+      return;
+    }
+
     // Convert to grayscale luminance
     float luminance = dot(color.rgb, vec3(0.299, 0.587, 0.114));
     
     float threshold = 0.5;
-    vec2 pixelPos = floor(v_texCoord * u_resolution / u_pxSize);
+    vec2 pixelPos = floor(v_texCoord * u_resolution / max(u_pxSize, 1.0));
 
     if (u_ditherType == 0) {
       threshold = bayer2(pixelPos);
@@ -77,7 +98,8 @@ const FRAGMENT_SHADER_SOURCE = `
 
     // Quantize with color steps
     float steps = max(u_colorSteps, 2.0);
-    float lum = luminance + (threshold - 0.5) / steps;
+    float spread = 1.0 / (steps - 1.0);
+    float lum = luminance + (threshold - 0.5) * spread;
     float quantLum = clamp(floor(lum * (steps - 1.0) + 0.5) / (steps - 1.0), 0.0, 1.0);
     
     vec3 finalColor = mix(u_colorBack, u_colorFront, quantLum);
@@ -90,12 +112,22 @@ export function applyDitherToCanvas(
   options: DitherShaderOptions
 ): HTMLCanvasElement {
   const outputCanvas = document.createElement("canvas");
-  const width = sourceCanvas.width;
-  const height = sourceCanvas.height;
+  const width =
+    (sourceCanvas as HTMLImageElement).naturalWidth ||
+    (sourceCanvas as HTMLCanvasElement).width ||
+    800;
+  const height =
+    (sourceCanvas as HTMLImageElement).naturalHeight ||
+    (sourceCanvas as HTMLCanvasElement).height ||
+    600;
   outputCanvas.width = width;
   outputCanvas.height = height;
 
-  const gl = outputCanvas.getContext("webgl");
+  const gl = outputCanvas.getContext("webgl", {
+    preserveDrawingBuffer: true,
+    alpha: true,
+    antialias: false,
+  });
   if (!gl) return outputCanvas;
 
   // Compile Shaders

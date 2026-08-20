@@ -65,36 +65,58 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://plator.fun"),
   title: {
-    default: "Plator - Content Creation & Scheduling MicroSaaS",
+    default: "Plator - Visual Mockup & WebGL Studio for Creators",
     template: "%s | Plator",
   },
-  description: "The ultimate tool for creators. Design beautiful templates, preview across platforms, and schedule posts seamlessly.",
-  keywords: ["content creation", "social media", "scheduling", "design", "twitter", "linkedin"],
-  authors: [{ name: "Kuzuri247" }],
+  description:
+    "The ultimate visual studio for creators. Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and 4K snapshots.",
+  keywords: [
+    "Plator",
+    "screenshot mockup generator",
+    "3D device mockup",
+    "WebGL shader studio",
+    "fluid mesh gradient",
+    "Bayer dithering generator",
+    "dither art",
+    "MP4 animation creator",
+    "social media post designer",
+    "GIF creator",
+    "wallpaper studio",
+    "creative design tool",
+  ],
+  authors: [{ name: "Kuzuri247" }, { name: "Plator", url: "https://plator.fun" }],
   creator: "Plator",
+  publisher: "Plator",
+  category: "Design & Creative Tools",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://plator.vercel.app",
-    title: "Plator - Content Creation & Scheduling",
-    description: "Design beautiful templates, preview across platforms, and schedule your social media posts seamlessly.",
+    url: "https://plator.fun",
+    title: "Plator - Visual Mockup & WebGL Studio for Creators",
+    description:
+      "Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and 4K snapshots.",
     siteName: "Plator",
     images: [
       {
-        url: "/og-image.png", // Ensure you add this image to public folder
+        url: "/editor.png",
         width: 1200,
         height: 630,
-        alt: "Plator - Content Creation & Scheduling",
+        alt: "Plator - Visual Mockup & WebGL Studio for Creators",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Plator - Content Creation & Scheduling",
-    description: "Design beautiful templates, preview across platforms, and schedule your social media posts seamlessly.",
+    title: "Plator - Visual Mockup & WebGL Studio for Creators",
+    description:
+      "Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and 4K snapshots.",
     creator: "@kuzuri247",
-    images: ["/og-image.png"],
+    images: ["/editor.png"],
   },
   robots: {
     index: true,
@@ -109,6 +131,36 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://plator.fun/#webapp",
+      "name": "Plator",
+      "url": "https://plator.fun",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "All",
+      "description":
+        "The ultimate visual studio for creators. Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and 4K snapshots.",
+      "browserRequirements": "Requires WebGL support",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+      },
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://plator.fun/#organization",
+      "name": "Plator",
+      "url": "https://plator.fun",
+      "logo": "https://plator.fun/editor.png",
+      "sameAs": ["https://twitter.com/kuzuri247"],
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -116,6 +168,12 @@ export default function RootLayout({
 }>) {
   return (
     <html className="scroll-smooth" lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`
           ${inter.variable} 

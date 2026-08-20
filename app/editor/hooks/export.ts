@@ -4,8 +4,12 @@ import { RefObject, useState } from "react";
 import { toast } from "sonner";
 import { toPng, toJpeg, toSvg } from "html-to-image";
 import { useStore } from "../store/use-store";
-import { recordCanvasToWebM } from "../utils/canvas-recorder";
-import { transcodeToMp4, transcodeToGif } from "../utils/ffmpeg-service";
+import { captureCanvasFrames } from "../utils/canvas-recorder";
+import {
+  renderFramesToMp4,
+  renderFramesToGif,
+  renderFramesToWebM,
+} from "../utils/ffmpeg-service";
 
 export function useExport(
   canvasRef: RefObject<HTMLDivElement | null>,
@@ -14,6 +18,7 @@ export function useExport(
   const {
     aspectRatio,
     canvasBackground,
+    meshConfig,
     exportFormat,
     exportQuality,
     exportDuration,
@@ -93,52 +98,97 @@ export function useExport(
     setIsExporting(true);
     setExportProgress(0);
 
-    const toastId = toast.loading(`Preparing ${exportFormat.toUpperCase()} export...`);
+    const toastId = toast.loading(
+      `Preparing ${exportFormat.toUpperCase()} export...`
+    );
 
     try {
-      if (exportFormat === "mp4" || exportFormat === "gif" || exportFormat === "webm") {
-        setExportStatus("Recording canvas stream...");
-        toast.loading(`Capturing ${exportDuration}s 60fps canvas stream...`, {
-          id: toastId,
-        });
+      if (
+        exportFormat === "mp4" ||
+        exportFormat === "gif" ||
+        exportFormat === "webm"
+      ) {
+        const qualityScale = Math.max(1, parseInt(exportQuality) || 2);
+        const targetFps =
+          exportFormat === "gif" ? Math.min(exportFps || 30, 30) : exportFps || 60;
+        const isMesh =
+          canvasBackground === "mesh" ||
+          (!canvasBackground.startsWith("url(") &&
+            !canvasBackground.startsWith("#") &&
+            !canvasBackground.startsWith("rgb"));
 
-        const webmBlob = await recordCanvasToWebM(canvasRef.current, {
+        setExportStatus("Capturing high-resolution frames...");
+        toast.loading(
+          `Capturing ${exportDuration}s @ ${targetFps} FPS (${qualityScale}x HD)...`,
+          { id: toastId }
+        );
+
+        const captured = await captureCanvasFrames(canvasRef.current, {
           durationSeconds: exportDuration || 3,
-          fps: exportFps || 60,
-          onProgress: (pct) => {
-            setExportProgress(Math.round(pct * 0.5)); // 0 - 50% for recording
+          fps: targetFps,
+          scale: qualityScale,
+          meshConfig,
+          isMeshBackground: isMesh,
+          onProgress: (pct, status) => {
+            setExportProgress(Math.round(pct * 0.45)); // 0 - 45%
+            if (status) setExportStatus(status);
           },
         });
 
-        if (exportFormat === "webm") {
-          downloadBlob(webmBlob, `plator-animation-${Date.now()}.webm`);
-          toast.success("WebM exported successfully!", { id: toastId });
-          return;
-        }
-
         if (exportFormat === "mp4") {
-          setExportStatus("Encoding H.264 MP4 with FFmpeg WASM...");
-          toast.loading("Transcoding to MP4 with FFmpeg WASM...", { id: toastId });
-
-          const mp4Blob = await transcodeToMp4(webmBlob, (ffmpegPct) => {
-            setExportProgress(50 + Math.round(ffmpegPct * 0.5));
+          setExportStatus("Encoding studio-quality H.264 MP4 with FFmpeg...");
+          toast.loading("Encoding crystal-clear MP4 with FFmpeg WASM...", {
+            id: toastId,
           });
 
-          downloadBlob(mp4Blob, `plator-animation-${Date.now()}.mp4`);
-          toast.success("MP4 video exported successfully!", { id: toastId });
+          const mp4Blob = await renderFramesToMp4(
+            captured.frames,
+            captured.fps,
+            (ffmpegPct) => {
+              setExportProgress(45 + Math.round(ffmpegPct * 0.55));
+            }
+          );
+
+          downloadBlob(mp4Blob, `plator-video-${Date.now()}.mp4`);
+          toast.success("MP4 exported in crystal-clear quality!", {
+            id: toastId,
+          });
           return;
         }
 
         if (exportFormat === "gif") {
-          setExportStatus("Generating 2-pass palette optimized GIF...");
-          toast.loading("Generating optimized looping GIF...", { id: toastId });
-
-          const gifBlob = await transcodeToGif(webmBlob, (ffmpegPct) => {
-            setExportProgress(50 + Math.round(ffmpegPct * 0.5));
+          setExportStatus("Generating palette-optimized GIF...");
+          toast.loading("Generating optimized looping GIF...", {
+            id: toastId,
           });
+
+          const gifBlob = await renderFramesToGif(
+            captured.frames,
+            captured.fps,
+            (ffmpegPct) => {
+              setExportProgress(45 + Math.round(ffmpegPct * 0.55));
+            }
+          );
 
           downloadBlob(gifBlob, `plator-animation-${Date.now()}.gif`);
           toast.success("GIF exported successfully!", { id: toastId });
+          return;
+        }
+
+        if (exportFormat === "webm") {
+          setExportStatus("Encoding high-quality VP9 WebM...");
+          toast.loading("Encoding VP9 WebM...", { id: toastId });
+
+          const webmBlob = await renderFramesToWebM(
+            captured.frames,
+            captured.fps,
+            (ffmpegPct) => {
+              setExportProgress(45 + Math.round(ffmpegPct * 0.55));
+            }
+          );
+
+          downloadBlob(webmBlob, `plator-animation-${Date.now()}.webm`);
+          toast.success("WebM exported successfully!", { id: toastId });
           return;
         }
       } else {
@@ -146,7 +196,10 @@ export function useExport(
         setExportStatus("Rendering high-resolution image...");
         const dataUrl = await generateStaticImage();
         if (dataUrl) {
-          downloadDataUrl(dataUrl, `plator-export-${Date.now()}.${exportFormat}`);
+          downloadDataUrl(
+            dataUrl,
+            `plator-export-${Date.now()}.${exportFormat}`
+          );
           toast.success(`${exportFormat.toUpperCase()} exported successfully!`, {
             id: toastId,
           });

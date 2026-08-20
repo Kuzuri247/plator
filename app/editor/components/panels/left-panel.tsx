@@ -208,7 +208,7 @@ export function LeftPanel({
                       <Label className="text-sm font-semibold uppercase tracking-wider">
                         Image Properties
                       </Label>
-                      <div className="space-y-4 grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
+                      <div className="space-y-5 grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
                         {/* Scale */}
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
@@ -393,7 +393,7 @@ export function LeftPanel({
 
                       <Separator />
 
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         <Label className="text-sm font-semibold uppercase tracking-wider">
                           Orientation & Clipping
                         </Label>
@@ -535,7 +535,7 @@ export function LeftPanel({
 
                       <Separator />
 
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         <div className="flex items-center justify-between">
                           <Label className="text-sm font-semibold uppercase tracking-wider">
                             Dither Effect
@@ -549,7 +549,7 @@ export function LeftPanel({
                         </div>
 
                         {imgElement?.dither?.enabled && (
-                          <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div className="space-y-5 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
                             {/* Row 1: Pattern Dropdown (Left) + Swatches & Swap (Right) */}
                             <div className="grid grid-cols-12 gap-2 items-end">
                               <div className="col-span-5 pr-1 space-y-2 min-w-0">
@@ -777,7 +777,7 @@ export function LeftPanel({
                     <>
                       <Separator />
 
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         <Label className="text-sm font-semibold uppercase tracking-wider">
                           Typography
                         </Label>
@@ -962,7 +962,7 @@ export function LeftPanel({
                           {(textStyle.colorType || "gradient") === "gradient" ? (
                             <div className="space-y-3">
                               {/* 3 Color Pickers: From - Via - To */}
-                              <div className="grid grid-cols-3 gap-1.5 ">
+                              <div className="grid grid-cols-3 gap-1.25 ">
                                 {/* From Color */}
                                 <div className="flex items-center gap-1.5 min-w-0">
                                   <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
@@ -1162,7 +1162,7 @@ export function LeftPanel({
 
                       <Separator />
 
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         <Label className="text-sm font-semibold uppercase tracking-wider">
                           Orientation
                         </Label>
@@ -1267,7 +1267,7 @@ export function LeftPanel({
 
                       <Separator />
 
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         <div className="flex items-center justify-between">
                           <Label className="text-sm font-semibold uppercase tracking-wider">
                             Text Background
@@ -1281,7 +1281,7 @@ export function LeftPanel({
                         </div>
 
                         {textStyle.showBackground && (
-                          <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div className="space-y-5 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
                             {/* Background Style Mode Tabs */}
                             <div className="flex items-center justify-between">
                               <Label className="text-xs text-muted-foreground">
@@ -1314,7 +1314,7 @@ export function LeftPanel({
                             {(textStyle.backgroundType || "gradient") === "gradient" ? (
                               <div className="space-y-3">
                                 {/* 3 Color Pickers: From - Via - To */}
-                                <div className="grid grid-cols-3 gap-1.5 ">
+                                <div className="grid grid-cols-3 gap-1.25 ">
                                   {/* From Color */}
                                   <div className="flex items-center gap-1.5 min-w-0">
                                     <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
