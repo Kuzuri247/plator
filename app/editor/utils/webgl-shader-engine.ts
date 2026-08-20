@@ -78,24 +78,39 @@ export const FRAGMENT_SHADER = `
   float bayer2(vec2 uv) {
     int x = int(mod(uv.x, 2.0));
     int y = int(mod(uv.y, 2.0));
-    if (x == 0 && y == 0) return 0.0 / 4.0;
-    if (x == 1 && y == 1) return 1.0 / 4.0;
-    if (x == 1 && y == 0) return 2.0 / 4.0;
-    return 3.0 / 4.0;
+    int idx = x + y * 2;
+    if (idx == 0) return 0.0 / 4.0;
+    if (idx == 1) return 2.0 / 4.0;
+    if (idx == 2) return 3.0 / 4.0;
+    return 1.0 / 4.0;
   }
 
   float bayer4(vec2 uv) {
-    vec2 bayerUv = floor(mod(uv, 4.0));
-    float b2 = bayer2(floor(bayerUv / 2.0));
-    float b1 = bayer2(mod(bayerUv, 2.0));
-    return b2 + b1 / 4.0;
+    int x = int(mod(uv.x, 4.0));
+    int y = int(mod(uv.y, 4.0));
+    int idx = x + y * 4;
+    if (idx == 0) return 0.0 / 16.0;
+    if (idx == 1) return 8.0 / 16.0;
+    if (idx == 2) return 2.0 / 16.0;
+    if (idx == 3) return 10.0 / 16.0;
+    if (idx == 4) return 12.0 / 16.0;
+    if (idx == 5) return 4.0 / 16.0;
+    if (idx == 6) return 14.0 / 16.0;
+    if (idx == 7) return 6.0 / 16.0;
+    if (idx == 8) return 3.0 / 16.0;
+    if (idx == 9) return 11.0 / 16.0;
+    if (idx == 10) return 1.0 / 16.0;
+    if (idx == 11) return 9.0 / 16.0;
+    if (idx == 12) return 15.0 / 16.0;
+    if (idx == 13) return 7.0 / 16.0;
+    if (idx == 14) return 13.0 / 16.0;
+    return 5.0 / 16.0;
   }
 
   float bayer8(vec2 uv) {
-    vec2 bayerUv = floor(mod(uv, 8.0));
-    float b4 = bayer4(floor(bayerUv / 2.0));
-    float b1 = bayer2(mod(bayerUv, 2.0));
-    return b4 + b1 / 16.0;
+    vec2 p4 = mod(uv, 4.0);
+    vec2 p2 = floor(mod(uv, 8.0) / 4.0);
+    return (bayer4(p4) * 64.0 + bayer2(p2) * 4.0) / 64.0;
   }
 
   float rand(vec2 co) {
@@ -342,6 +357,40 @@ export class WebGLMeshRenderer {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
+  public renderTime(timeInSeconds: number) {
+    if (!this.gl || !this.program) return;
+    const gl = this.gl;
+    gl.useProgram(this.program);
+
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    gl.viewport(0, 0, width, height);
+
+    this.lastRenderTime = timeInSeconds;
+
+    if (this.uResLoc) gl.uniform2f(this.uResLoc, width, height);
+    if (this.uTimeLoc) gl.uniform1f(this.uTimeLoc, timeInSeconds);
+
+    const c = this.uniforms.colors;
+    if (this.uC1Loc) gl.uniform3f(this.uC1Loc, c[0][0], c[0][1], c[0][2]);
+    if (this.uC2Loc) gl.uniform3f(this.uC2Loc, c[1][0], c[1][1], c[1][2]);
+    if (this.uC3Loc) gl.uniform3f(this.uC3Loc, c[2][0], c[2][1], c[2][2]);
+    if (this.uC4Loc) gl.uniform3f(this.uC4Loc, c[3][0], c[3][1], c[3][2]);
+    if (this.uC5Loc) gl.uniform3f(this.uC5Loc, c[4][0], c[4][1], c[4][2]);
+
+    if (this.uSpeedLoc) gl.uniform1f(this.uSpeedLoc, this.uniforms.speed);
+    if (this.uNoiseIntLoc) gl.uniform1f(this.uNoiseIntLoc, this.uniforms.noiseIntensity);
+    if (this.uNoiseScaleLoc) gl.uniform1f(this.uNoiseScaleLoc, this.uniforms.noiseScale);
+    if (this.uNoiseGrainLoc) gl.uniform1f(this.uNoiseGrainLoc, this.uniforms.noiseGrain || 0.0);
+    if (this.uIsAnimLoc) gl.uniform1i(this.uIsAnimLoc, this.uniforms.isAnimating ? 1 : 0);
+    if (this.uDitherEnLoc) gl.uniform1i(this.uDitherEnLoc, this.uniforms.ditherEnabled ? 1 : 0);
+    if (this.uDitherTypeLoc) gl.uniform1i(this.uDitherTypeLoc, this.uniforms.ditherType);
+    if (this.uDitherPxLoc) gl.uniform1f(this.uDitherPxLoc, this.uniforms.ditherPixelSize);
+    if (this.uDitherStepsLoc) gl.uniform1f(this.uDitherStepsLoc, this.uniforms.ditherColorSteps);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
   public start() {
     if (this.isRunning) return;
     this.isRunning = true;
@@ -369,4 +418,44 @@ export class WebGLMeshRenderer {
     this.gl = null;
     this.program = null;
   }
+}
+
+export function buildMeshUniforms(meshConfig: {
+  colors: string[];
+  speed: number;
+  noiseIntensity: number;
+  noiseScale: number;
+  noiseGrain?: number;
+  isAnimating?: boolean;
+  ditherEnabled: boolean;
+  ditherType: number;
+  ditherPixelSize: number;
+  ditherColorSteps: number;
+}): MeshShaderUniforms {
+  const colorsRGB: [
+    [number, number, number],
+    [number, number, number],
+    [number, number, number],
+    [number, number, number],
+    [number, number, number]
+  ] = [
+    hexToRgb01(meshConfig.colors[0] || "#09090b"),
+    hexToRgb01(meshConfig.colors[1] || "#18181b"),
+    hexToRgb01(meshConfig.colors[2] || "#3f3f46"),
+    hexToRgb01(meshConfig.colors[3] || "#71717a"),
+    hexToRgb01(meshConfig.colors[4] || "#e4e4e7"),
+  ];
+
+  return {
+    colors: colorsRGB,
+    speed: meshConfig.speed,
+    noiseIntensity: meshConfig.noiseIntensity,
+    noiseScale: meshConfig.noiseScale,
+    noiseGrain: meshConfig.noiseGrain || 0,
+    isAnimating: meshConfig.isAnimating ?? true,
+    ditherEnabled: meshConfig.ditherEnabled,
+    ditherType: meshConfig.ditherType,
+    ditherPixelSize: meshConfig.ditherPixelSize,
+    ditherColorSteps: meshConfig.ditherColorSteps,
+  };
 }

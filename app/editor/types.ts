@@ -8,7 +8,9 @@ export interface ImageStyle {
   shadow: string;
   blur: number;
   opacity: number;
-  noise: number;
+  brightness?: number;
+  contrast?: number;
+  saturate?: number;
   rotate: number;
   rotateX: number;
   rotateY: number;
@@ -34,7 +36,9 @@ export const DEFAULT_IMAGE_STYLE: ImageStyle = {
   rotateY: 0,
   blur: 0,
   opacity: 100,
-  noise: 0,
+  brightness: 100,
+  contrast: 100,
+  saturate: 100,
   clipPath: "none",
   flipX: false,
   flipY: false,
@@ -60,9 +64,18 @@ export interface TextStyle {
   fontFamily: string;
   fontWeight: string;
   color: string;
+  colorVia?: string;
+  colorEnd?: string;
+  colorType?: "solid" | "gradient";
+  colorDirection?: string;
   textShadow: string;
   borderRadius: number;
+  borderWidth?: number;
   backgroundColor: string;
+  backgroundColorVia?: string;
+  backgroundColorEnd?: string;
+  backgroundType?: "solid" | "gradient";
+  backgroundDirection?: string;
   padding: number;
   showBackground: boolean;
   backgroundShadow: string;
@@ -77,12 +90,21 @@ export interface TextStyle {
 export const DEFAULT_TEXT_STYLE: TextStyle = {
   fontSize: 48,
   fontFamily: "Inter",
-  fontWeight: "400",
+  fontWeight: "600",
   color: "#ffffff",
+  colorVia: "#cbd5e1",
+  colorEnd: "#64748b",
+  colorType: "gradient",
+  colorDirection: "to bottom",
   textShadow: "none",
   borderRadius: 0,
-  backgroundColor: "#000000",
-  padding: 4,
+  borderWidth: 0,
+  backgroundColor: "#18181b",
+  backgroundColorVia: "#111113",
+  backgroundColorEnd: "#09090b",
+  backgroundType: "gradient",
+  backgroundDirection: "to bottom",
+  padding: 8,
   showBackground: false,
   backgroundShadow: "none",
   textEffect: [],
@@ -137,6 +159,7 @@ export interface EditorCanvasProps {
   selectedElementId: string | null;
   isDragging: boolean;
   isCropping: boolean;
+  snapGuides?: { x: number | null; y: number | null };
   onElementMouseDown: (e: React.PointerEvent, elementId: string) => void;
   onEmptyClick: () => void;
   onMouseMove: (e: React.PointerEvent) => void;
@@ -144,7 +167,7 @@ export interface EditorCanvasProps {
   onCropChange: (id: string, newCrop: any) => void;
 }
 
-export type ExportFormat = "mp4" | "gif" | "webm" | "png" | "jpeg" | "svg";
+export type ExportFormat = "mp4" | "gif" | "png" | "jpeg" | "svg";
 
 export interface EditorState {
   aspectRatio: typeof ASPECT_RATIOS[0];
@@ -226,10 +249,11 @@ export interface HistoryState {
   canvasBackground: string;
   meshConfig: MeshGradientConfig;
   overlayConfig: OverlayConfig;
+  aspectRatio?: (typeof ASPECT_RATIOS)[number];
 }
 
 export interface RightPanelProps {
-  onDownload: () => void;
+  onDownload?: () => void;
 }
 
 export interface DitherConfig {
@@ -239,14 +263,5 @@ export interface DitherConfig {
   colorSteps: number;
   colorFront: string; // Hex string e.g. "#ffffff"
   colorBack: string; // Hex string e.g. "#000000"
-}
-
-export interface DitherConfig {
-  enabled: boolean;
-  ditherType: number; // 0: Bayer 2x2, 1: Bayer 4x4, 2: Bayer 8x8, 3: Random
-  pixelSize: number;
-  colorSteps: number;
-  colorFront: string; // Hex string e.g. "#ffffff"
-  colorBack: string;  // Hex string e.g. "#000000"
 }
 

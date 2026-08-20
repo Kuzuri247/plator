@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
       },
     ],
-    sitemap: "https://plator.app/sitemap.xml",
+    sitemap: "https://plator.fun/sitemap.xml",
   };
 }

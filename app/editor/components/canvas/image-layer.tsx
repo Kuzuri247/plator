@@ -23,38 +23,59 @@ const CropHandle = ({
 }) => {
   let cursorClass = "";
   let positionClass = "";
+  let indicator = null;
 
   const baseClass =
     "absolute z-50 flex items-center justify-center pointer-events-auto touch-none";
 
   if (position === "top") {
     cursorClass = "cursor-ns-resize";
-    positionClass = "top-0 left-0 right-0 h-4 -translate-y-1/2"; // Increased hit area for touch
+    positionClass = "top-0 left-0 right-0 h-4 -translate-y-1/2";
+    indicator = (
+      <div className="w-6 h-1 rounded-full bg-primary border border-white/80 shadow-xs pointer-events-none" />
+    );
   } else if (position === "bottom") {
     cursorClass = "cursor-ns-resize";
     positionClass = "bottom-0 left-0 right-0 h-4 translate-y-1/2";
+    indicator = (
+      <div className="w-6 h-1 rounded-full bg-primary border border-white/80 shadow-xs pointer-events-none" />
+    );
   } else if (position === "left") {
     cursorClass = "cursor-ew-resize";
     positionClass = "left-0 top-0 bottom-0 w-4 -translate-x-1/2";
+    indicator = (
+      <div className="w-1 h-6 rounded-full bg-primary border border-white/80 shadow-xs pointer-events-none" />
+    );
   } else if (position === "right") {
     cursorClass = "cursor-ew-resize";
     positionClass = "right-0 top-0 bottom-0 w-4 translate-x-1/2";
+    indicator = (
+      <div className="w-1 h-6 rounded-full bg-primary border border-white/80 shadow-xs pointer-events-none" />
+    );
   } else if (position === "top-left") {
     cursorClass = "cursor-nwse-resize";
-    positionClass =
-      "top-0 left-0 w-5 h-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-primary";
+    positionClass = "top-0 left-0 w-6 h-6 -translate-x-1/2 -translate-y-1/2";
+    indicator = (
+      <div className="w-2.5 h-2.5 rounded-xs border-2 border-primary bg-background shadow-xs pointer-events-none" />
+    );
   } else if (position === "top-right") {
     cursorClass = "cursor-nesw-resize";
-    positionClass =
-      "top-0 right-0 w-5 h-5 translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-primary";
+    positionClass = "top-0 right-0 w-6 h-6 translate-x-1/2 -translate-y-1/2";
+    indicator = (
+      <div className="w-2.5 h-2.5 rounded-xs border-2 border-primary bg-background shadow-xs pointer-events-none" />
+    );
   } else if (position === "bottom-left") {
     cursorClass = "cursor-nesw-resize";
-    positionClass =
-      "bottom-0 left-0 w-5 h-5 -translate-x-1/2 translate-y-1/2 rounded-full border border-white bg-primary";
+    positionClass = "bottom-0 left-0 w-6 h-6 -translate-x-1/2 translate-y-1/2";
+    indicator = (
+      <div className="w-2.5 h-2.5 rounded-xs border-2 border-primary bg-background shadow-xs pointer-events-none" />
+    );
   } else if (position === "bottom-right") {
     cursorClass = "cursor-nwse-resize";
-    positionClass =
-      "bottom-0 right-0 w-5 h-5 translate-x-1/2 translate-y-1/2 rounded-full border border-white bg-primary";
+    positionClass = "bottom-0 right-0 w-6 h-6 translate-x-1/2 translate-y-1/2";
+    indicator = (
+      <div className="w-2.5 h-2.5 rounded-xs border-2 border-primary bg-background shadow-xs pointer-events-none" />
+    );
   }
 
   return (
@@ -64,33 +85,10 @@ const CropHandle = ({
         onPointerDown(e);
       }}
       className={`${baseClass} ${positionClass} ${cursorClass}`}
-    />
+    >
+      {indicator}
+    </div>
   );
-};
-
-const createNoiseImage = () => {
-  if (typeof window === "undefined") return "";
-
-  const canvas = document.createElement("canvas");
-  canvas.width = 128;
-  canvas.height = 128;
-  const ctx = canvas.getContext("2d");
-
-  if (!ctx) return "";
-
-  const imageData = ctx.createImageData(canvas.width, canvas.height);
-  const data = imageData.data;
-
-  for (let i = 0; i < data.length; i += 4) {
-    const value = Math.floor(Math.random() * 255);
-    data[i] = value;
-    data[i + 1] = value;
-    data[i + 2] = value;
-    data[i + 3] = 255;
-  }
-
-  ctx.putImageData(imageData, 0, 0);
-  return canvas.toDataURL("image/png");
 };
 
 function hexToRgbNormalized(hex: string): [number, number, number] {
@@ -127,8 +125,6 @@ export const ImageLayer = memo(
     const ghostRef = useRef<HTMLImageElement>(null);
     const [processedImage, setProcessedImage] = useState<string | null>(null);
 
-    const noiseImage = useMemo(() => createNoiseImage(), []);
-
     useEffect(() => {
       if (!img.dither?.enabled) {
         setProcessedImage(null);
@@ -143,35 +139,60 @@ export const ImageLayer = memo(
         colorBack: img.dither.colorBack || "#000000",
       };
 
+      let isMounted = true;
+
       const processImage = async () => {
         const originalImage = new Image();
         originalImage.crossOrigin = "anonymous";
         originalImage.src = img.src;
 
         originalImage.onload = () => {
+          if (!isMounted) return;
           try {
+            const scaleFactor = Math.max(0.05, (img.style?.scale || 100) / 100);
+            const effectivePxSize = Math.max(
+              1,
+              Math.round((ditherConfig.pixelSize || 4) / scaleFactor)
+            );
+
             const processedCanvas = applyDitherToCanvas(originalImage, {
               ditherType: ditherConfig.ditherType,
-              pixelSize: ditherConfig.pixelSize,
+              pixelSize: effectivePxSize,
               colorSteps: ditherConfig.colorSteps,
               colorFront: hexToRgbNormalized(ditherConfig.colorFront),
               colorBack: hexToRgbNormalized(ditherConfig.colorBack),
             });
-            setProcessedImage(processedCanvas.toDataURL());
+            if (isMounted) {
+              setProcessedImage(processedCanvas.toDataURL("image/png"));
+            }
           } catch (error) {
             console.error("Dither processing failed:", error);
-            setProcessedImage(null);
+            if (isMounted) setProcessedImage(null);
           }
         };
 
         originalImage.onerror = () => {
+          if (!isMounted) return;
           console.error("Failed to load image for dithering");
           setProcessedImage(null);
         };
       };
 
       processImage();
-    }, [img.src, img.dither]);
+
+      return () => {
+        isMounted = false;
+      };
+    }, [
+      img.src,
+      img.dither?.enabled,
+      img.dither?.ditherType,
+      img.dither?.pixelSize,
+      img.dither?.colorSteps,
+      img.dither?.colorFront,
+      img.dither?.colorBack,
+      img.style?.scale,
+    ]);
 
     const handleCropStart = (e: React.PointerEvent, side: CropPosition) => {
       e.preventDefault();
@@ -277,10 +298,10 @@ export const ImageLayer = memo(
             ${
               isLocked ? "cursor-default" : "cursor-move"
             } ${
-              isSelected && !isCropping ? "ring-2 ring-primary" : ""
-            } ${isCropping ? "ring-1 ring-dashed ring-primary/50" : ""}
+              isSelected ? "ring-2 ring-primary" : ""
+            }
           `}
-          onPointerDown={(e) => !isCropping && !isLocked && onPointerDown?.(e, img.id)}
+          onPointerDown={(e) => !isLocked && onPointerDown?.(e, img.id)}
           style={{
             pointerEvents: isLocked ? "none" : "auto",
             inset: `${top}% ${right}% ${bottom}% ${left}%`,
@@ -300,9 +321,11 @@ export const ImageLayer = memo(
               ? `blur(${img.style.glassBlur || 16}px) saturate(180%)`
               : undefined,
             opacity: img.style.opacity / 100,
-            filter: `blur(${img.style.blur}px) ${
-              isSelected ? "brightness(1.03)" : ""
-            }`,
+            filter: `blur(${img.style.blur || 0}px) brightness(${
+              (img.style.brightness ?? 100) / 100
+            }) contrast(${(img.style.contrast ?? 100) / 100}) saturate(${
+              (img.style.saturate ?? 100) / 100
+            })`,
             backfaceVisibility: has3DRotation ? "visible" : "hidden",
           }}
         >
@@ -320,24 +343,14 @@ export const ImageLayer = memo(
                 height: `${heightFactor * 100}%`,
                 left: `${-left * widthFactor}%`,
                 top: `${-top * heightFactor}%`,
+                imageRendering: img.dither?.enabled ? "pixelated" : "auto",
               }}
             />
-
-            {img.style.noise > 0 && (
-              <div
-                className="absolute inset-0 z-10 pointer-events-none mix-blend-overlay"
-                style={{
-                  opacity: img.style.noise / 100,
-                  backgroundImage: `url("${noiseImage}")`,
-                  backgroundRepeat: "repeat",
-                }}
-              />
-            )}
           </div>
 
-          {isCropping && isSelected && (
+          {isSelected && !isLocked && (
             <>
-              <div className="absolute inset-0 border-dashed border-4 border-primary pointer-events-none" />
+              <div className="absolute inset-0 border border-dashed border-primary/80 pointer-events-none rounded-[inherit]" />
               {/* Handles using Pointer Events */}
               <CropHandle
                 position="top"
@@ -386,7 +399,7 @@ export const ImageLayer = memo(
       JSON.stringify(prev.img.dither) === JSON.stringify(next.img.dither) &&
       prev.isSelected === next.isSelected &&
       prev.isDragging === next.isDragging &&
-      prev.isCropping === next.isCropping
+      prev.isLocked === next.isLocked
     );
   }
 );

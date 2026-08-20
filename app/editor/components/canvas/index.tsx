@@ -26,6 +26,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       onMouseUp,
       isDragging,
       isCropping,
+      snapGuides,
       onCropChange,
     },
     ref
@@ -81,6 +82,17 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             perspective: "2500px",
             perspectiveOrigin: "center center",
             contain: "layout style paint",
+          }}
+          onPointerDown={(e) => {
+            const target = e.target as HTMLElement | SVGElement | null;
+            if (
+              e.target === e.currentTarget ||
+              target?.getAttribute?.("data-canvas") === "true" ||
+              target?.tagName === "CANVAS" ||
+              Boolean(target?.closest?.("svg, [data-canvas='true']"))
+            ) {
+              handleEmptyClick();
+            }
           }}
           onPointerMove={onMouseMove as any}
           onPointerUp={onMouseUp as any}
@@ -170,6 +182,21 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             }
             return null;
           })}
+
+          {/* Visual Magnetic Center Snap Guide Lines */}
+          {snapGuides?.x != null && (
+            <div
+              className="absolute top-0 bottom-0 pointer-events-none z-50 border-l border-dashed border-primary animate-in fade-in duration-100"
+              style={{ left: `${snapGuides.x}px` }}
+            />
+          )}
+
+          {snapGuides?.y != null && (
+            <div
+              className="absolute left-0 right-0 pointer-events-none z-50 border-t border-dashed border-primary animate-in fade-in duration-100"
+              style={{ top: `${snapGuides.y}px` }}
+            />
+          )}
         </div>
       </Card>
     );

@@ -4,7 +4,7 @@ import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import {
   WebGLMeshRenderer,
   MeshShaderUniforms,
-  hexToRgb01,
+  buildMeshUniforms,
 } from "../../utils/webgl-shader-engine";
 
 export interface WebGLCanvasProps {
@@ -54,22 +54,8 @@ export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
     }));
 
     const buildUniforms = (): MeshShaderUniforms => {
-      const colorsRGB: [
-        [number, number, number],
-        [number, number, number],
-        [number, number, number],
-        [number, number, number],
-        [number, number, number]
-      ] = [
-        hexToRgb01(meshColors[0] || "#09090b"),
-        hexToRgb01(meshColors[1] || "#18181b"),
-        hexToRgb01(meshColors[2] || "#3f3f46"),
-        hexToRgb01(meshColors[3] || "#71717a"),
-        hexToRgb01(meshColors[4] || "#e4e4e7"),
-      ];
-
-      return {
-        colors: colorsRGB,
+      return buildMeshUniforms({
+        colors: meshColors,
         speed,
         noiseIntensity,
         noiseScale,
@@ -79,7 +65,7 @@ export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
         ditherType,
         ditherPixelSize,
         ditherColorSteps,
-      };
+      });
     };
 
     // Initialize renderer
