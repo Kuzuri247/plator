@@ -118,12 +118,17 @@ export function useExport(
 
         setExportStatus("Exporting...");
 
+        const webglCanvasEl = canvasRef.current?.querySelector("canvas");
+        const currentMeshTime =
+          (webglCanvasEl as any)?.__meshRenderer?.getLastRenderTime?.() ?? 0;
+
         const imageBlob = await captureStaticSnapshot(canvasRef.current, {
           scale: qualityScale,
           format: exportFormat as "png" | "jpeg" | "svg",
           meshConfig,
           isMeshBackground: isMesh,
           canvasBackground,
+          meshTime: currentMeshTime,
         });
 
         downloadBlob(

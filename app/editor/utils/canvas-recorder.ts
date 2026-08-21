@@ -14,6 +14,7 @@ export interface StaticCaptureOptions {
   meshConfig?: MeshGradientConfig;
   isMeshBackground?: boolean;
   canvasBackground?: string;
+  meshTime?: number;
 }
 
 /**
@@ -32,6 +33,7 @@ export async function captureStaticSnapshot(
     meshConfig = DEFAULT_MESH_CONFIG,
     isMeshBackground = true,
     canvasBackground = "",
+    meshTime,
   } = options;
 
   if (typeof document !== "undefined" && document.fonts?.ready) {
@@ -135,7 +137,11 @@ export async function captureStaticSnapshot(
           ditherPixelSize: Math.max(1, (meshConfig.ditherPixelSize || 4) * scale),
         })
       );
-      webglRenderer.renderTime(0);
+      const effectiveMeshTime =
+        meshTime !== undefined
+          ? meshTime
+          : (containerEl.querySelector("canvas") as any)?.__meshRenderer?.getLastRenderTime?.() ?? 0;
+      webglRenderer.renderTime(effectiveMeshTime);
       compositeCtx.drawImage(webglCanvas, 0, 0, targetWidth, targetHeight);
     }
 
