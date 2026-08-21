@@ -352,7 +352,7 @@ export default function EditorPage() {
                   <>
                     <Download className="size-3.5" />
                     <span>Export</span>
-                    <span className="text-[10px] px-1.5 py-0.5 bg-primary-foreground/20 rounded uppercase font-extrabold">
+                    <span className="text-[10px] px-1.5 py-0.5 bg-primary-foreground/20 rounded uppercase font-manrope font-extrabold">
                       {exportFormat}
                     </span>
                     <ChevronDown className="size-3 opacity-70" />
@@ -511,12 +511,12 @@ export default function EditorPage() {
                 {isExporting ? (
                   <>
                     <Loader2 className="size-3.5 animate-spin" />
-                    <span>{exportStatus || `Exporting ${exportProgress}%`}</span>
+                    <span>{exportProgress > 0 ? `Exporting ${exportProgress}%` : "Exporting..."}</span>
                   </>
                 ) : (
                   <>
                     <Download className="size-3.5" />
-                    <span>Download {exportFormat.toUpperCase()}</span>
+                    <span>Export {exportFormat.toUpperCase()}</span>
                   </>
                 )}
               </Button>
@@ -618,29 +618,26 @@ export default function EditorPage() {
         {/* Export Progress Modal Overlay */}
         {isExporting && (
           <div className="absolute inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div className="bg-card border-2 border-border shadow-2xl rounded-2xl p-6 max-w-sm w-full space-y-4 text-center animate-in zoom-in-95 duration-200">
+            <div className="bg-card border-2 border-border shadow-2xl rounded-2xl p-6 max-w-xs w-full space-y-3 text-center animate-in zoom-in-95 duration-200">
               <div className="flex justify-center">
-                <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <Loader2 className="size-6 animate-spin" />
+                <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <Loader2 className="size-5 animate-spin" />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <h3 className="font-bold text-base uppercase tracking-wide">
-                  Exporting Asset
-                </h3>
-                <p className="text-xs text-muted-foreground">{exportStatus}</p>
-              </div>
+              <h3 className="font-bold text-sm uppercase tracking-wide">
+                Exporting {exportFormat.toUpperCase()}
+              </h3>
 
               {exportProgress > 0 && (
-                <div className="space-y-1.5">
-                  <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                <div className="space-y-1.5 pt-1">
+                  <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
                     <div
                       className="bg-primary h-full transition-all duration-200"
                       style={{ width: `${exportProgress}%` }}
                     />
                   </div>
-                  <div className="text-right text-[10px] font-manrope text-muted-foreground">
+                  <div className="text-center text-[10px] font-manrope font-semibold text-muted-foreground">
                     {exportProgress}%
                   </div>
                 </div>

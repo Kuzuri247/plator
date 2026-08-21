@@ -25,6 +25,7 @@ export interface WebGLCanvasProps {
 
 export interface WebGLCanvasHandle {
   getCanvas: () => HTMLCanvasElement | null;
+  getRenderTime: () => number;
 }
 
 export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
@@ -51,6 +52,7 @@ export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
 
     useImperativeHandle(ref, () => ({
       getCanvas: () => canvasRef.current,
+      getRenderTime: () => rendererRef.current?.getLastRenderTime() ?? 0,
     }));
 
     const buildUniforms = (): MeshShaderUniforms => {
@@ -77,10 +79,12 @@ export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
       canvas.height = height;
 
       const renderer = new WebGLMeshRenderer(canvas, buildUniforms());
+      (canvas as any).__meshRenderer = renderer;
       renderer.start();
       rendererRef.current = renderer;
 
       return () => {
+        (canvas as any).__meshRenderer = null;
         renderer.destroy();
         rendererRef.current = null;
       };

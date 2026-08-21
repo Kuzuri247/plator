@@ -413,6 +413,10 @@ export class WebGLMeshRenderer {
     }
   }
 
+  public getLastRenderTime(): number {
+    return this.lastRenderTime;
+  }
+
   public destroy() {
     this.stop();
     this.gl = null;
