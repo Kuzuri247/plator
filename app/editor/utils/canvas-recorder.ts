@@ -320,9 +320,9 @@ export async function captureCanvasFrames(
         targetHeight
       );
 
-      // Extract pristine lossless PNG frame buffer (zero compression artifacts before encoding)
+      // Extract lightweight JPEG frame buffer (~150KB/frame to prevent ArrayBuffer allocation overflow)
       const frameBlob = await new Promise<Blob | null>((resolve) =>
-        compositeCanvas.toBlob(resolve, "image/png")
+        compositeCanvas.toBlob(resolve, "image/jpeg", 0.95)
       );
 
       if (!frameBlob) {

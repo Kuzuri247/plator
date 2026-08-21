@@ -83,6 +83,8 @@ export function useExport(
         if (exportFormat === "mp4") {
           const mp4Blob = await renderFramesToMp4(
             captured.frames,
+            captured.width,
+            captured.height,
             captured.fps,
             (ffmpegPct) => {
               setExportProgress(45 + Math.round(ffmpegPct * 0.55));
@@ -97,6 +99,8 @@ export function useExport(
         if (exportFormat === "gif") {
           const gifBlob = await renderFramesToGif(
             captured.frames,
+            captured.width,
+            captured.height,
             captured.fps,
             (ffmpegPct) => {
               setExportProgress(45 + Math.round(ffmpegPct * 0.55));
