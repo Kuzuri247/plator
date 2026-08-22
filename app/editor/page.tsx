@@ -146,7 +146,7 @@ export default function EditorPage() {
 
       // Safe clearance so the canvas never overlaps top controls or bottom toolbar
       const paddingX = 48;
-      const paddingY = 76;
+      const paddingY = 96;
 
       const availableWidth = Math.max(100, containerWidth - paddingX);
       const availableHeight = Math.max(100, containerHeight - paddingY);

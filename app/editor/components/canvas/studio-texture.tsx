@@ -60,7 +60,10 @@ export const StudioTexture: React.FC<StudioTextureProps> = ({
 }) => {
   const reactId = useId().replace(/:/g, "_");
   const prefix = idPrefix || `tex_${reactId}`;
-  const grainDataUrl = useMemo(() => generateFilmGrainDataUrl(), []);
+  const grainDataUrl = useMemo(() => {
+    if (type !== "grain") return "";
+    return generateFilmGrainDataUrl();
+  }, [type]);
 
   if (type === "none" || opacity <= 0) return null;
 
@@ -161,7 +164,6 @@ export const StudioTexture: React.FC<StudioTextureProps> = ({
           <rect
             width="100%"
             height="100%"
-            fill="#ffffff"
             filter={`url(#${prefix}-dust-filter)`}
             opacity="0.5"
           />
