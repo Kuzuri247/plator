@@ -42,8 +42,8 @@ export async function captureStaticSnapshot(
     } catch {}
   }
 
-  const baseWidth = containerEl.clientWidth || 900;
-  const baseHeight = containerEl.clientHeight || 506;
+  const baseWidth = containerEl.clientWidth || 960;
+  const baseHeight = containerEl.clientHeight || 540;
   const targetWidth = Math.round(baseWidth * scale);
   const targetHeight = Math.round(baseHeight * scale);
 
@@ -212,8 +212,8 @@ export async function captureCanvasFrames(
   }
 
   // Base element dimension from DOM
-  const baseWidth = containerEl.clientWidth || 900;
-  const baseHeight = containerEl.clientHeight || 506;
+  const baseWidth = containerEl.clientWidth || 960;
+  const baseHeight = containerEl.clientHeight || 540;
 
   // Video codecs (H.264 / VP9 / YUV420p) require even dimensions
   let targetWidth = Math.round(baseWidth * scale);

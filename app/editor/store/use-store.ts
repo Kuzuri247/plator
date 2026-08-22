@@ -95,6 +95,7 @@ export const useStore = create<EditorState>((set, get) => ({
       const newRatio = {
         name: "Custom",
         label: "Custom",
+        category: "Custom" as const,
         width,
         height,
         previewClass: "aspect-auto",
