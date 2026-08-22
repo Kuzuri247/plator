@@ -139,6 +139,7 @@ export interface MeshGradientConfig {
   ditherType: number; // 0: Bayer 2x2, 1: Bayer 4x4, 2: Bayer 8x8, 3: Random
   ditherPixelSize: number;
   ditherColorSteps: number;
+  ditherStrength: number;
 }
 
 export interface OverlayConfig {
@@ -261,6 +262,7 @@ export interface DitherConfig {
   ditherType: number; // 0: Bayer 2x2, 1: Bayer 4x4, 2: Bayer 8x8, 3: Random
   pixelSize: number;
   colorSteps: number;
+  strength?: number;
   colorFront: string; // Hex string e.g. "#ffffff"
   colorBack: string; // Hex string e.g. "#000000"
 }

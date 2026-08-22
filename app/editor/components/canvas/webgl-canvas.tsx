@@ -20,6 +20,7 @@ export interface WebGLCanvasProps {
   ditherType: number;
   ditherPixelSize: number;
   ditherColorSteps: number;
+  ditherStrength?: number;
   className?: string;
 }
 
@@ -43,6 +44,7 @@ export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
       ditherType,
       ditherPixelSize,
       ditherColorSteps,
+      ditherStrength = 100,
       className,
     },
     ref
@@ -67,6 +69,7 @@ export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
         ditherType,
         ditherPixelSize,
         ditherColorSteps,
+        ditherStrength,
       });
     };
 
@@ -105,6 +108,7 @@ export const WebGLCanvas = forwardRef<WebGLCanvasHandle, WebGLCanvasProps>(
       ditherType,
       ditherPixelSize,
       ditherColorSteps,
+      ditherStrength,
     ]);
 
     return (

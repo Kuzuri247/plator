@@ -5,6 +5,7 @@ export const DEFAULT_DITHER_CONFIG = {
   ditherType: 1, // Bayer 4x4 default
   pixelSize: 4,
   colorSteps: 4,
+  strength: 100,
   colorFront: "#ffffff",
   colorBack: "#000000",
 };
@@ -20,6 +21,7 @@ export const DEFAULT_MESH_CONFIG: MeshGradientConfig = {
   ditherType: 1,
   ditherPixelSize: 4,
   ditherColorSteps: 6,
+  ditherStrength: 100,
 };
 
 export const DEFAULT_OVERLAY_CONFIG: OverlayConfig = {

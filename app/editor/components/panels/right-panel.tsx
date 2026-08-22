@@ -361,10 +361,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
 
                   {meshConfig.ditherEnabled && (
                     <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-2">
+                      <div className="grid grid-cols-2 gap-3 *:pr-1">
+                        <div className="space-y-2 min-w-0">
                           <Label className="text-xs font-medium text-muted-foreground">
-                            Pattern
+                            Matrix&nbsp; Pattern
                           </Label>
                           <Select
                             value={String(meshConfig.ditherType)}
@@ -372,7 +372,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                               setMeshConfig({ ditherType: parseInt(v) })
                             }
                           >
-                            <SelectTrigger className="h-8">
+                            <SelectTrigger className="h-8 w-full">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -383,9 +383,9 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 min-w-0">
                           <Label className="text-xs font-medium text-muted-foreground">
-                            Color Steps
+                            Color Levels
                           </Label>
                           <Select
                             value={String(meshConfig.ditherColorSteps)}
@@ -393,38 +393,61 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                               setMeshConfig({ ditherColorSteps: parseInt(v) })
                             }
                           >
-                            <SelectTrigger className="h-8">
+                            <SelectTrigger className="h-8 w-full">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="2">2 (1-Bit)</SelectItem>
-                              <SelectItem value="4">4 Steps</SelectItem>
-                              <SelectItem value="6">6 Steps</SelectItem>
-                              <SelectItem value="8">8 Steps</SelectItem>
-                              <SelectItem value="16">16 Steps</SelectItem>
+                              <SelectItem value="4">4 Levels</SelectItem>
+                              <SelectItem value="6">6 Levels</SelectItem>
+                              <SelectItem value="8">8 Levels</SelectItem>
+                              <SelectItem value="16">16 Levels</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-xs font-medium text-muted-foreground">
-                            Pixel Size
-                          </Label>
-                          <span className="text-xs font-manrope text-muted-foreground">
-                            {meshConfig.ditherPixelSize}px
-                          </span>
+                      {/* Row 2: Pixel Size & Dither Strength Sliders */}
+                      <div className="grid grid-cols-2 gap-3 *:pr-1">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Pixel Size
+                            </Label>
+                            <span className="text-xs font-manrope text-muted-foreground">
+                              {meshConfig.ditherPixelSize}px
+                            </span>
+                          </div>
+                          <Slider
+                            value={[meshConfig.ditherPixelSize]}
+                            min={1}
+                            max={16}
+                            step={1}
+                            onValueChange={([val]) =>
+                              setMeshConfig({ ditherPixelSize: val })
+                            }
+                          />
                         </div>
-                        <Slider
-                          value={[meshConfig.ditherPixelSize]}
-                          min={1}
-                          max={16}
-                          step={1}
-                          onValueChange={([val]) =>
-                            setMeshConfig({ ditherPixelSize: val })
-                          }
-                        />
+
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium text-muted-foreground">
+                              Strength
+                            </Label>
+                            <span className="text-xs font-manrope text-muted-foreground">
+                              {meshConfig.ditherStrength ?? 100}%
+                            </span>
+                          </div>
+                          <Slider
+                            value={[meshConfig.ditherStrength ?? 100]}
+                            min={0}
+                            max={100}
+                            step={1}
+                            onValueChange={([val]) =>
+                              setMeshConfig({ ditherStrength: val })
+                            }
+                          />
+                        </div>
                       </div>
                     </div>
                   )}

@@ -135,6 +135,7 @@ export const ImageLayer = memo(
         ditherType: img.dither.ditherType ?? 1,
         pixelSize: img.dither.pixelSize ?? 4,
         colorSteps: img.dither.colorSteps ?? 4,
+        strength: img.dither.strength ?? 100,
         colorFront: img.dither.colorFront || "#ffffff",
         colorBack: img.dither.colorBack || "#000000",
       };
@@ -159,6 +160,7 @@ export const ImageLayer = memo(
               ditherType: ditherConfig.ditherType,
               pixelSize: effectivePxSize,
               colorSteps: ditherConfig.colorSteps,
+              strength: ditherConfig.strength,
               colorFront: hexToRgbNormalized(ditherConfig.colorFront),
               colorBack: hexToRgbNormalized(ditherConfig.colorBack),
             });
@@ -189,6 +191,7 @@ export const ImageLayer = memo(
       img.dither?.ditherType,
       img.dither?.pixelSize,
       img.dither?.colorSteps,
+      img.dither?.strength,
       img.dither?.colorFront,
       img.dither?.colorBack,
       img.style?.scale,
