@@ -450,7 +450,7 @@ export function LeftPanel({
                         </div>
 
                         {/* Row: Clip Path & 3D Preset Dropdowns */}
-                        <div className="grid grid-cols-2 gap-6 font-manrope font-semibold pr-2">
+                        <div className="grid grid-cols-2 gap-4 font-manrope font-semibold pr-2">
                           {/* 1. Clip Path */}
                           <div className="space-y-1.5 min-w-0">
                             <Label className="text-xs font-medium text-muted-foreground truncate block">
@@ -549,12 +549,12 @@ export function LeftPanel({
                         </div>
 
                         {imgElement?.dither?.enabled && (
-                          <div className="space-y-5 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
-                            {/* Row 1: Pattern Dropdown (Left) + Swatches & Swap (Right) */}
-                            <div className="grid grid-cols-12 gap-2 items-end">
-                              <div className="col-span-5 pr-1 space-y-2 min-w-0">
-                                <Label className="text-xs font-medium text-muted-foreground mb-2">
-                                  Pattern Type
+                          <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
+                            {/* Row 1: Matrix Pattern & Color Levels Dropdowns */}
+                            <div className="grid grid-cols-2 gap-4 pr-2">
+                              <div className="space-y-2 min-w-0">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Matrix&nbsp; Pattern
                                 </Label>
                                 <Select
                                   value={String(imgElement?.dither?.ditherType ?? 1)}
@@ -574,80 +574,153 @@ export function LeftPanel({
                                 </Select>
                               </div>
 
-                              <div className="col-span-7 flex items-center justify-end gap-1.5 pb-px">
-                                {/* Foreground Color */}
-                                <div className="flex flex-col items-center">
-                                  <Label className="text-xs mb-2 font-medium text-muted-foreground">
-                                    BG color
-                                  </Label>
-                                  <div className="relative size-7.5 -mb-px rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
-                                    <div
-                                      className="absolute inset-0"
-                                      style={{
-                                        backgroundColor: imgElement?.dither?.colorFront || "#ffffff",
-                                      }}
-                                    />
-                                    <input
-                                      type="color"
-                                      value={imgElement?.dither?.colorFront || "#ffffff"}
-                                      onChange={(e) =>
-                                        setDitherConfig(selectedElementId!, { colorFront: e.target.value })
-                                      }
-                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                      title="Foreground Color"
-                                    />
-                                  </div>
-                                </div>
-
-                                {/* Invert / Swap Button */}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const currentFront = imgElement?.dither?.colorFront || "#ffffff";
-                                    const currentBack = imgElement?.dither?.colorBack || "#000000";
-                                    setDitherConfig(selectedElementId!, {
-                                      colorFront: currentBack,
-                                      colorBack: currentFront,
-                                    });
-                                  }}
-                                  className="size-7 flex items-center justify-center rounded-md border border-border/70 hover:border-primary text-muted-foreground hover:text-foreground mt-6 transition-colors cursor-pointer bg-background/50 hover:bg-muted/50 shadow-xs"
-                                  title="Swap Foreground & Background Colors"
+                              <div className="space-y-2 min-w-0">
+                                <Label className="text-xs font-medium text-muted-foreground">
+                                  Color Levels
+                                </Label>
+                                <Select
+                                  value={String(imgElement?.dither?.colorSteps ?? 4)}
+                                  onValueChange={(v) =>
+                                    setDitherConfig(selectedElementId!, { colorSteps: parseInt(v) })
+                                  }
                                 >
-                                  <ArrowLeftRight className="size-3" />
-                                </button>
+                                  <SelectTrigger className="h-8 w-full">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="2">2 (1-Bit)</SelectItem>
+                                    <SelectItem value="4">4 Levels</SelectItem>
+                                    <SelectItem value="6">6 Levels</SelectItem>
+                                    <SelectItem value="8">8 Levels</SelectItem>
+                                    <SelectItem value="16">16 Levels</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
 
-                                {/* Background Color */}
-                                <div className="flex flex-col items-center">
-                                  <Label className="text-xs mb-2 font-medium text-muted-foreground">
-                                    FG color
+                            {/* Row 2: Pixel Size & Strength Sliders */}
+                            <div className="grid grid-cols-2 gap-3 *:pr-1">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Pixel Size
                                   </Label>
-                                  <div className="relative size-7.5 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
-                                    <div
-                                      className="absolute inset-0"
-                                      style={{
-                                        backgroundColor: imgElement?.dither?.colorBack || "#000000",
-                                      }}
-                                    />
-                                    <input
-                                      type="color"
-                                      value={imgElement?.dither?.colorBack || "#000000"}
-                                      onChange={(e) =>
-                                        setDitherConfig(selectedElementId!, { colorBack: e.target.value })
-                                      }
-                                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
-                                      title="Background Color"
-                                    />
-                                  </div>
+                                  <span className="text-xs font-manrope text-muted-foreground">
+                                    {imgElement?.dither?.pixelSize ?? 4}px
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[imgElement?.dither?.pixelSize ?? 4]}
+                                  onValueChange={([pixelSize]) =>
+                                    setDitherConfig(selectedElementId!, { pixelSize })
+                                  }
+                                  min={1}
+                                  max={16}
+                                  step={1}
+                                />
+                              </div>
+
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-xs font-medium text-muted-foreground">
+                                    Strength
+                                  </Label>
+                                  <span className="text-xs font-manrope text-muted-foreground">
+                                    {imgElement?.dither?.strength ?? 100}%
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[imgElement?.dither?.strength ?? 100]}
+                                  onValueChange={([strength]) =>
+                                    setDitherConfig(selectedElementId!, { strength })
+                                  }
+                                  min={0}
+                                  max={100}
+                                  step={1}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Row 3: Color Palette Settings (Swatches & Swap) in Middle */}
+                            <div className="flex items-center justify-between p-2 rounded-lg bg-muted/40 border border-border/60">
+                              {/* Background Color */}
+                              <div className="flex items-center gap-2">
+                                <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      backgroundColor: imgElement?.dither?.colorBack || "#000000",
+                                    }}
+                                  />
+                                  <input
+                                    type="color"
+                                    value={imgElement?.dither?.colorBack || "#000000"}
+                                    onChange={(e) =>
+                                      setDitherConfig(selectedElementId!, { colorBack: e.target.value })
+                                    }
+                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                    title="Background Color"
+                                  />
+                                </div>
+                                <div className="flex flex-col">
+                                  <Label className="text-[11px] font-semibold">BG Color</Label>
+                                  <span className="text-[10px] font-mono text-muted-foreground uppercase">
+                                    {imgElement?.dither?.colorBack || "#000000"}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Swap Button */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const currentFront = imgElement?.dither?.colorFront || "#ffffff";
+                                  const currentBack = imgElement?.dither?.colorBack || "#000000";
+                                  setDitherConfig(selectedElementId!, {
+                                    colorFront: currentBack,
+                                    colorBack: currentFront,
+                                  });
+                                }}
+                                className="size-7 flex items-center justify-center rounded-md border border-border/70 hover:border-primary text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-background hover:bg-muted shadow-xs"
+                                title="Swap Colors"
+                              >
+                                <ArrowLeftRight className="size-3" />
+                              </button>
+
+                              {/* Foreground Color */}
+                              <div className="flex items-center gap-2">
+                                <div className="flex flex-col text-right">
+                                  <Label className="text-[11px] font-semibold">FG Color</Label>
+                                  <span className="text-[10px] font-mono text-muted-foreground uppercase">
+                                    {imgElement?.dither?.colorFront || "#ffffff"}
+                                  </span>
+                                </div>
+                                <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      backgroundColor: imgElement?.dither?.colorFront || "#ffffff",
+                                    }}
+                                  />
+                                  <input
+                                    type="color"
+                                    value={imgElement?.dither?.colorFront || "#ffffff"}
+                                    onChange={(e) =>
+                                      setDitherConfig(selectedElementId!, { colorFront: e.target.value })
+                                    }
+                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                                    title="Foreground Color"
+                                  />
                                 </div>
                               </div>
                             </div>
 
-                            {/* Row 2: Quick Palette Presets */}
+                            {/* Row 4: Quick Palette Presets */}
                             <div className="space-y-1.5 pt-0.5">
                               <Label className="text-xs font-medium text-muted-foreground">
                                 Color Presets
                               </Label>
-                              <div className="grid grid-cols-3 gap-1.5 ">
+                              <div className="grid grid-cols-3 gap-1.5">
                                 {[
                                   { name: "Mono", front: "#ffffff", back: "#000000" },
                                   { name: "GameBoy", front: "#9bbc0f", back: "#0f380f" },
@@ -677,49 +750,6 @@ export function LeftPanel({
                                     </span>
                                   </button>
                                 ))}
-                              </div>
-                            </div>
-
-                            {/* Row 3: Pixel Size & Color Steps Sliders */}
-                            <div className="grid grid-cols-2 gap-2 *:pr-1 pt-0.5">
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Pixel Size
-                                  </Label>
-                                  <span className="text-xs font-manrope text-muted-foreground">
-                                    {imgElement?.dither?.pixelSize ?? 4}px
-                                  </span>
-                                </div>
-                                <Slider
-                                  value={[imgElement?.dither?.pixelSize ?? 4]}
-                                  onValueChange={([pixelSize]) =>
-                                    setDitherConfig(selectedElementId!, { pixelSize })
-                                  }
-                                  min={1}
-                                  max={16}
-                                  step={1}
-                                />
-                              </div>
-
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Color Steps
-                                  </Label>
-                                  <span className="text-xs font-manrope text-muted-foreground">
-                                    {imgElement?.dither?.colorSteps ?? 4}
-                                  </span>
-                                </div>
-                                <Slider
-                                  value={[imgElement?.dither?.colorSteps ?? 4]}
-                                  onValueChange={([colorSteps]) =>
-                                    setDitherConfig(selectedElementId!, { colorSteps })
-                                  }
-                                  min={2}
-                                  max={16}
-                                  step={1}
-                                />
                               </div>
                             </div>
                           </div>
@@ -783,7 +813,7 @@ export function LeftPanel({
                         </Label>
 
                         {/* Font Family & Weight */}
-                        <div className="grid grid-cols-2 gap-2 font-manrope *font-semibold">
+                        <div className="grid grid-cols-2 gap-4 font-manrope *font-semibold">
                           <div className="space-y-1.5 min-w-0">
                             <Label className="text-xs font-medium text-muted-foreground">
                               Font Family
@@ -1040,7 +1070,7 @@ export function LeftPanel({
                               </div>
 
                               {/* Row: Direction & Presets Dropdowns */}
-                              <div className="grid grid-cols-2 gap-2 font-manrope font-semibold">
+                              <div className="grid grid-cols-2 gap-4 font-manrope font-semibold">
                                 {/* Direction Dropdown */}
                                 <div className="space-y-1.5 min-w-0">
                                   <Label className="text-xs font-medium text-muted-foreground truncate block">
@@ -1404,7 +1434,7 @@ export function LeftPanel({
                                 </div>
 
                                 {/* Row: Direction & Presets Dropdowns */}
-                                <div className="grid grid-cols-2 gap-2 font-manrope font-semibold">
+                                <div className="grid grid-cols-2 gap-4 font-manrope font-semibold">
                                   {/* 1. Direction Dropdown */}
                                   <div className="space-y-1.5 min-w-0">
                                     <Label className="text-xs font-medium text-muted-foreground truncate block">

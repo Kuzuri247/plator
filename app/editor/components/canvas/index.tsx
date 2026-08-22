@@ -113,6 +113,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
               ditherType={meshConfig.ditherType}
               ditherPixelSize={meshConfig.ditherPixelSize}
               ditherColorSteps={meshConfig.ditherColorSteps}
+              ditherStrength={meshConfig.ditherStrength ?? 100}
             />
           )}
 

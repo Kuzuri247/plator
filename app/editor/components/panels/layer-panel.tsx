@@ -55,7 +55,7 @@ export function LayerPanel() {
         <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           Layers
         </h3>
-        <span className="text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full border border-border/50">
+        <span className="text-[10px] font-semibold font-manrope text-muted-foreground bg-muted px-2 py-0.5 rounded-full border border-border/50">
           {elements.length} {elements.length === 1 ? "layer" : "layers"}
         </span>
       </div>

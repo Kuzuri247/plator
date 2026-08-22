@@ -15,6 +15,7 @@ export interface MeshShaderUniforms {
   ditherType: number; // 0: Bayer 2x2, 1: Bayer 4x4, 2: Bayer 8x8, 3: Random
   ditherPixelSize: number;
   ditherColorSteps: number;
+  ditherStrength?: number;
 }
 
 export const VERTEX_SHADER = `
@@ -45,6 +46,7 @@ export const FRAGMENT_SHADER = `
   uniform int u_ditherType;
   uniform float u_ditherPixelSize;
   uniform float u_ditherSteps;
+  uniform float u_ditherStrength;
 
   // Ashima Arts Simplex 2D noise
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -175,9 +177,12 @@ export const FRAGMENT_SHADER = `
       }
 
       float steps = max(u_ditherSteps, 2.0);
-      blendedColor += (threshold - 0.5) / steps;
-      blendedColor = floor(blendedColor * (steps - 1.0) + 0.5) / (steps - 1.0);
-      blendedColor = clamp(blendedColor, 0.0, 1.0);
+      vec3 ditheredColor = blendedColor + (threshold - 0.5) / steps;
+      ditheredColor = floor(ditheredColor * (steps - 1.0) + 0.5) / (steps - 1.0);
+      ditheredColor = clamp(ditheredColor, 0.0, 1.0);
+
+      float strength = clamp(u_ditherStrength, 0.0, 1.0);
+      blendedColor = mix(blendedColor, ditheredColor, strength);
     }
 
     gl_FragColor = vec4(blendedColor, 1.0);
@@ -230,6 +235,7 @@ export class WebGLMeshRenderer {
   private uDitherTypeLoc: WebGLUniformLocation | null = null;
   private uDitherPxLoc: WebGLUniformLocation | null = null;
   private uDitherStepsLoc: WebGLUniformLocation | null = null;
+  private uDitherStrengthLoc: WebGLUniformLocation | null = null;
 
   constructor(canvas: HTMLCanvasElement, initialUniforms: MeshShaderUniforms) {
     this.canvas = canvas;
@@ -297,6 +303,7 @@ export class WebGLMeshRenderer {
     this.uDitherTypeLoc = gl.getUniformLocation(program, "u_ditherType");
     this.uDitherPxLoc = gl.getUniformLocation(program, "u_ditherPixelSize");
     this.uDitherStepsLoc = gl.getUniformLocation(program, "u_ditherSteps");
+    this.uDitherStrengthLoc = gl.getUniformLocation(program, "u_ditherStrength");
 
     // Fullscreen quad buffer [-1, -1] to [1, 1]
     const buffer = gl.createBuffer();
@@ -353,6 +360,7 @@ export class WebGLMeshRenderer {
     if (this.uDitherTypeLoc) gl.uniform1i(this.uDitherTypeLoc, this.uniforms.ditherType);
     if (this.uDitherPxLoc) gl.uniform1f(this.uDitherPxLoc, this.uniforms.ditherPixelSize);
     if (this.uDitherStepsLoc) gl.uniform1f(this.uDitherStepsLoc, this.uniforms.ditherColorSteps);
+    if (this.uDitherStrengthLoc) gl.uniform1f(this.uDitherStrengthLoc, (this.uniforms.ditherStrength ?? 100) / 100.0);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
@@ -387,6 +395,7 @@ export class WebGLMeshRenderer {
     if (this.uDitherTypeLoc) gl.uniform1i(this.uDitherTypeLoc, this.uniforms.ditherType);
     if (this.uDitherPxLoc) gl.uniform1f(this.uDitherPxLoc, this.uniforms.ditherPixelSize);
     if (this.uDitherStepsLoc) gl.uniform1f(this.uDitherStepsLoc, this.uniforms.ditherColorSteps);
+    if (this.uDitherStrengthLoc) gl.uniform1f(this.uDitherStrengthLoc, (this.uniforms.ditherStrength ?? 100) / 100.0);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
@@ -435,6 +444,7 @@ export function buildMeshUniforms(meshConfig: {
   ditherType: number;
   ditherPixelSize: number;
   ditherColorSteps: number;
+  ditherStrength?: number;
 }): MeshShaderUniforms {
   const colorsRGB: [
     [number, number, number],
@@ -461,5 +471,6 @@ export function buildMeshUniforms(meshConfig: {
     ditherType: meshConfig.ditherType,
     ditherPixelSize: meshConfig.ditherPixelSize,
     ditherColorSteps: meshConfig.ditherColorSteps,
+    ditherStrength: meshConfig.ditherStrength ?? 100,
   };
 }

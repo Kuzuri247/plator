@@ -2,6 +2,7 @@ export interface DitherShaderOptions {
   ditherType: number; // 0: Bayer 2x2, 1: Bayer 4x4, 2: Bayer 8x8, 3: Random
   pixelSize: number;
   colorSteps: number;
+  strength?: number; // 0 to 100
   colorFront: [number, number, number]; // RGB normalized [0, 1]
   colorBack: [number, number, number];  // RGB normalized [0, 1]
 }
@@ -24,6 +25,7 @@ const FRAGMENT_SHADER_SOURCE = `
   uniform float u_pxSize;
   uniform int u_ditherType;
   uniform float u_colorSteps;
+  uniform float u_strength;
   uniform vec3 u_colorFront;
   uniform vec3 u_colorBack;
 
@@ -102,8 +104,11 @@ const FRAGMENT_SHADER_SOURCE = `
     float lum = luminance + (threshold - 0.5) * spread;
     float quantLum = clamp(floor(lum * (steps - 1.0) + 0.5) / (steps - 1.0), 0.0, 1.0);
     
-    vec3 finalColor = mix(u_colorBack, u_colorFront, quantLum);
-    gl_FragColor = vec4(finalColor, color.a);
+    vec3 ditheredColor = mix(u_colorBack, u_colorFront, quantLum);
+    float str = clamp(u_strength, 0.0, 1.0);
+    vec4 originalColor = texture2D(u_image, v_texCoord);
+    vec3 finalColor = mix(originalColor.rgb, ditheredColor, str);
+    gl_FragColor = vec4(finalColor, originalColor.a);
   }
 `;
 
@@ -190,6 +195,7 @@ export function applyDitherToCanvas(
   gl.uniform1f(gl.getUniformLocation(program, "u_pxSize"), options.pixelSize);
   gl.uniform1i(gl.getUniformLocation(program, "u_ditherType"), options.ditherType);
   gl.uniform1f(gl.getUniformLocation(program, "u_colorSteps"), options.colorSteps);
+  gl.uniform1f(gl.getUniformLocation(program, "u_strength"), (options.strength ?? 100) / 100.0);
   gl.uniform3fv(gl.getUniformLocation(program, "u_colorFront"), options.colorFront);
   gl.uniform3fv(gl.getUniformLocation(program, "u_colorBack"), options.colorBack);
 
