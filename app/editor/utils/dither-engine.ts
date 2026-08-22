@@ -106,8 +106,9 @@ const FRAGMENT_SHADER_SOURCE = `
     
     vec3 ditheredColor = mix(u_colorBack, u_colorFront, quantLum);
     float str = clamp(u_strength, 0.0, 1.0);
-    vec3 finalColor = mix(color.rgb, ditheredColor, str);
-    gl_FragColor = vec4(finalColor, color.a);
+    vec4 originalColor = texture2D(u_image, v_texCoord);
+    vec3 finalColor = mix(originalColor.rgb, ditheredColor, str);
+    gl_FragColor = vec4(finalColor, originalColor.a);
   }
 `;
 

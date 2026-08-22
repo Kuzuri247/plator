@@ -551,7 +551,7 @@ export function LeftPanel({
                         {imgElement?.dither?.enabled && (
                           <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
                             {/* Row 1: Matrix Pattern & Color Levels Dropdowns */}
-                            <div className="grid grid-cols-2 gap-3 *:pr-1">
+                            <div className="grid grid-cols-2 gap-4 pr-2">
                               <div className="space-y-2 min-w-0">
                                 <Label className="text-xs font-medium text-muted-foreground">
                                   Matrix&nbsp; Pattern
@@ -813,7 +813,7 @@ export function LeftPanel({
                         </Label>
 
                         {/* Font Family & Weight */}
-                        <div className="grid grid-cols-2 gap-2 font-manrope *font-semibold">
+                        <div className="grid grid-cols-2 gap-4 font-manrope *font-semibold">
                           <div className="space-y-1.5 min-w-0">
                             <Label className="text-xs font-medium text-muted-foreground">
                               Font Family
@@ -1070,7 +1070,7 @@ export function LeftPanel({
                               </div>
 
                               {/* Row: Direction & Presets Dropdowns */}
-                              <div className="grid grid-cols-2 gap-2 font-manrope font-semibold">
+                              <div className="grid grid-cols-2 gap-4 font-manrope font-semibold">
                                 {/* Direction Dropdown */}
                                 <div className="space-y-1.5 min-w-0">
                                   <Label className="text-xs font-medium text-muted-foreground truncate block">
@@ -1434,7 +1434,7 @@ export function LeftPanel({
                                 </div>
 
                                 {/* Row: Direction & Presets Dropdowns */}
-                                <div className="grid grid-cols-2 gap-2 font-manrope font-semibold">
+                                <div className="grid grid-cols-2 gap-4 font-manrope font-semibold">
                                   {/* 1. Direction Dropdown */}
                                   <div className="space-y-1.5 min-w-0">
                                     <Label className="text-xs font-medium text-muted-foreground truncate block">

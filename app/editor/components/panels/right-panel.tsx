@@ -361,7 +361,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
 
                   {meshConfig.ditherEnabled && (
                     <div className="space-y-4 font-manrope animate-in fade-in slide-in-from-top-2 duration-200">
-                      <div className="grid grid-cols-2 gap-3 *:pr-1">
+                      <div className="grid grid-cols-2 gap-4 pr-2">
                         <div className="space-y-2 min-w-0">
                           <Label className="text-xs font-medium text-muted-foreground">
                             Matrix&nbsp; Pattern
