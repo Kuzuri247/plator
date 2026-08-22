@@ -1,4 +1,4 @@
-import { ASPECT_RATIOS } from "./values";
+import { AspectRatioPreset } from "./values";
 import { VectorPatternType } from "./components/canvas/vector-overlay";
 import { StudioTextureType } from "./components/canvas/studio-texture";
 
@@ -171,7 +171,7 @@ export interface EditorCanvasProps {
 export type ExportFormat = "mp4" | "gif" | "png" | "jpeg" | "svg";
 
 export interface EditorState {
-  aspectRatio: typeof ASPECT_RATIOS[0];
+  aspectRatio: AspectRatioPreset;
   canvasBackground: string;
   meshConfig: MeshGradientConfig;
   overlayConfig: OverlayConfig;
@@ -250,7 +250,7 @@ export interface HistoryState {
   canvasBackground: string;
   meshConfig: MeshGradientConfig;
   overlayConfig: OverlayConfig;
-  aspectRatio?: (typeof ASPECT_RATIOS)[number];
+  aspectRatio?: AspectRatioPreset;
 }
 
 export interface RightPanelProps {

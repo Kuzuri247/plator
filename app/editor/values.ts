@@ -67,83 +67,132 @@ export const MESH_PALETTES = [
   },
 ];
 
-export const ASPECT_RATIOS = [
+export interface AspectRatioPreset {
+  name: string;
+  label: string;
+  category: "Video & Display" | "Social Media" | "Design & Standard" | "Custom";
+  width: number;
+  height: number;
+  previewClass: string;
+}
+
+export const ASPECT_RATIOS: AspectRatioPreset[] = [
+  // Video & Display
   {
     name: "16:9",
-    label: "Video",
-    width: 900,
-    height: 506,
+    label: "Video / Landscape",
+    category: "Video & Display",
+    width: 960,
+    height: 540,
     previewClass: "aspect-video",
   },
   {
+    name: "21:9",
+    label: "Cinematic Ultrawide",
+    category: "Video & Display",
+    width: 840,
+    height: 360,
+    previewClass: "aspect-[21/9]",
+  },
+  {
+    name: "16:10",
+    label: "MacBook / Display",
+    category: "Video & Display",
+    width: 800,
+    height: 500,
+    previewClass: "aspect-[16/10]",
+  },
+
+  // Social Media
+  {
     name: "9:16",
-    label: "Story",
-    width: 506,
-    height: 900,
+    label: "Story / Reels / TikTok",
+    category: "Social Media",
+    width: 540,
+    height: 960,
     previewClass: "aspect-[9/16]",
   },
   {
     name: "1:1",
-    label: "Square",
+    label: "Square Post",
+    category: "Social Media",
     width: 600,
     height: 600,
     previewClass: "aspect-square",
   },
   {
     name: "4:5",
-    label: "Social",
-    width: 500,
-    height: 625,
+    label: "Instagram Portrait",
+    category: "Social Media",
+    width: 540,
+    height: 675,
     previewClass: "aspect-[4/5]",
   },
   {
+    name: "3:1",
+    label: "X / Twitter Banner",
+    category: "Social Media",
+    width: 900,
+    height: 300,
+    previewClass: "aspect-[3/1]",
+  },
+  {
+    name: "2:1",
+    label: "X / Twitter Post",
+    category: "Social Media",
+    width: 800,
+    height: 400,
+    previewClass: "aspect-[2/1]",
+  },
+  {
+    name: "2:3",
+    label: "Pinterest Pin",
+    category: "Social Media",
+    width: 600,
+    height: 900,
+    previewClass: "aspect-[2/3]",
+  },
+  {
+    name: "1.91:1",
+    label: "LinkedIn Share",
+    category: "Social Media",
+    width: 800,
+    height: 419,
+    previewClass: "aspect-[1.91/1]",
+  },
+
+  // Design & Standard
+  {
     name: "4:3",
-    label: "Standard",
+    label: "iPad",
+    category: "Design & Standard",
     width: 800,
     height: 600,
     previewClass: "aspect-[4/3]",
   },
   {
     name: "3:4",
-    label: "Portrait",
+    label: "Portrait Tablet",
+    category: "Design & Standard",
     width: 600,
     height: 800,
     previewClass: "aspect-[3/4]",
   },
   {
-    name: "2:1",
-    label: "Header",
-    width: 800,
-    height: 400,
-    previewClass: "aspect-[2/1]",
-  },
-  {
     name: "3:2",
-    label: "Landscape",
+    label: "Dribbble / 35mm Photo",
+    category: "Design & Standard",
     width: 900,
     height: 600,
     previewClass: "aspect-[3/2]",
   },
   {
-    name: "2:3",
-    label: "Pinterest",
-    width: 600,
-    height: 900,
-    previewClass: "aspect-[2/3]",
-  },
-  {
-    name: "21:9",
-    label: "Cinematic",
-    width: 1000,
-    height: 428,
-    previewClass: "aspect-[21/9]",
-  },
-  {
-    name: "3:1",
-    label: "Banner",
-    width: 900,
-    height: 300,
-    previewClass: "aspect-[3/1]",
+    name: "5:4",
+    label: "Standard Monitor",
+    category: "Design & Standard",
+    width: 750,
+    height: 600,
+    previewClass: "aspect-[5/4]",
   },
 ];
 

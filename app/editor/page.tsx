@@ -30,7 +30,9 @@ import { ASPECT_RATIOS } from "./values";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -141,12 +143,19 @@ export default function EditorPage() {
       if (!containerRef.current) return;
       const containerWidth = containerRef.current.clientWidth;
       const containerHeight = containerRef.current.clientHeight;
-      const padding = 32;
-      const availableWidth = containerWidth - padding;
-      const availableHeight = containerHeight - padding;
+
+      // Safe clearance so the canvas never overlaps top controls or bottom toolbar
+      const paddingX = 48;
+      const paddingY = 96;
+
+      const availableWidth = Math.max(100, containerWidth - paddingX);
+      const availableHeight = Math.max(100, containerHeight - paddingY);
+
       const scaleX = availableWidth / aspectRatio.width;
       const scaleY = availableHeight / aspectRatio.height;
-      const newScale = Math.min(scaleX, scaleY, 1);
+
+      // Allow the canvas to scale up/down to comfortably fill the available workspace
+      const newScale = Math.min(scaleX, scaleY);
       setCanvasScale(newScale);
     };
     calculateScale();
@@ -293,44 +302,54 @@ export default function EditorPage() {
                 <span className="font-bold text-xs text-foreground">
                   {aspectRatio.name}
                 </span>
-                <span className="text-[11px] font-medium text-muted-foreground">
+                <span className="text-[11px] font-medium text-muted-foreground truncate max-w-28">
                   {aspectRatio.label}
-                </span>
-                <span className="text-[10px] font-manrope text-muted-foreground/80 hidden sm:inline">
-                  ({aspectRatio.width}×{aspectRatio.height})
                 </span>
               </div>
             </SelectTrigger>
-            <SelectContent className="w-68 font-manrope max-h-80 shadow-2xl border-border/80 backdrop-blur-xl bg-background/95 p-1">
+            <SelectContent className="w-72 font-manrope max-h-96 shadow-2xl border-border/80 backdrop-blur-xl bg-background/95 p-1">
               <div className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Canvas Resolution & Aspect Ratio
+                Aspect Ratio
               </div>
-              {ASPECT_RATIOS.map((ratio) => (
-                <SelectItem
-                  key={ratio.name}
-                  value={ratio.name}
-                  className="py-2 px-2 rounded-md cursor-pointer focus:bg-accent/80 transition-colors"
-                >
-                  <div className="flex items-center gap-3 w-full">
-                    <div
-                      className={`w-6.5 shrink-0 bg-muted border border-foreground/20 rounded-xs ${ratio.previewClass}`}
-                    />
-                    <div className="flex flex-col min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="font-semibold text-xs text-foreground">
-                          {ratio.name}
-                        </span>
-                        <span className="text-[10px] font-bold text-primary uppercase tracking-wide">
-                          {ratio.label}
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-manrope text-muted-foreground">
-                        {ratio.width} × {ratio.height}
-                      </span>
-                    </div>
-                  </div>
+              {(["Video & Display", "Social Media", "Design & Standard"] as const).map(
+                (category) => {
+                  const items = ASPECT_RATIOS.filter((r) => r.category === category);
+                  if (items.length === 0) return null;
+                  return (
+                    <SelectGroup key={category}>
+                      <SelectLabel className="text-[10px] font-bold uppercase tracking-wider text-primary px-2 py-1 bg-muted/40 rounded-sm my-0.5">
+                        {category}
+                      </SelectLabel>
+                      {items.map((ratio) => (
+                        <SelectItem
+                          key={ratio.name}
+                          value={ratio.name}
+                          className="py-1.5 px-2 rounded-md cursor-pointer focus:bg-accent/80 transition-colors"
+                        >
+                          <div className="flex items-center gap-3 w-full">
+                            <div
+                              className={`w-6.5 shrink-0 bg-muted border border-foreground/20 rounded-xs ${ratio.previewClass}`}
+                            />
+                            <div className="flex items-center justify-between gap-1 flex-1 min-w-0">
+                              <span className="font-semibold text-xs text-foreground">
+                                {ratio.name}
+                              </span>
+                              <span className="text-[10px] font-bold text-primary uppercase tracking-wide">
+                                {ratio.label}
+                              </span>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  );
+                }
+              )}
+              {aspectRatio.name === "Custom" && (
+                <SelectItem value="Custom" className="hidden">
+                  Custom
                 </SelectItem>
-              ))}
+              )}
             </SelectContent>
           </Select>
         </div>
@@ -526,7 +545,7 @@ export default function EditorPage() {
 
         <div
           ref={containerRef}
-          className="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden z-10 w-full h-full relative"
+          className="flex-1 flex items-center justify-center p-3 overflow-hidden z-10 w-full h-full relative"
         >
           <div
             style={{
@@ -568,7 +587,7 @@ export default function EditorPage() {
         {/* Floating Quick Action Toolbar */}
         {!showLeftPanel && !showRightPanel && (
           <div className="absolute bottom-3 left-3 flex items-center gap-2 z-50 animate-in fade-in zoom-in duration-300">
-            <div className="bg-background/85 backdrop-blur-md border-2 border-border rounded-lg p-1 shadow-xl flex items-center gap-1">
+            <div className="bg-background/85 backdrop-blur-md border-2 border-border rounded-lg p-0.5 shadow-xl flex items-center gap-1">
               <Button
                 onClick={undo}
                 disabled={historyIndex <= 0}

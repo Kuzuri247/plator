@@ -7,6 +7,7 @@ import {
   Laugh,
   Layers,
   Zap,
+  Ban,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
@@ -25,13 +26,22 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { RightPanelProps } from "../../types";
 import {
   MESH_PALETTES,
+  DEFAULT_MESH_CONFIG,
 } from "../../values";
 import { Wallpapers } from "../../hooks/wallpaper";
 import { Memes } from "../../hooks/memes";
 import { generateRandomMeshColors } from "../../utils/gradient-gen";
 import { useStore } from "../../store/use-store";
-import { VectorPatternType } from "../canvas/vector-overlay";
-import { StudioTextureType } from "../canvas/studio-texture";
+import {
+  VectorOverlay,
+  VectorPatternType,
+  PATTERN_LIST,
+} from "../canvas/vector-overlay";
+import {
+  StudioTexture,
+  StudioTextureType,
+  TEXTURE_LIST,
+} from "../canvas/studio-texture";
 
 export function RightPanel({ onDownload }: RightPanelProps) {
   const {
@@ -61,12 +71,21 @@ export function RightPanel({ onDownload }: RightPanelProps) {
   const [pictureSubTab, setPictureSubTab] = useState<"wallpapers" | "memes">(
     "wallpapers"
   );
+  const [colorMode, setColorMode] = useState<"multiple" | "mono">("multiple");
+  const [monoColor, setMonoColor] = useState<string>(
+    () => meshConfig.colors[0] || "#18181b"
+  );
+  const [prevMultiColors, setPrevMultiColors] = useState<string[]>(
+    () => meshConfig.colors
+  );
 
   const wallpaperScrollRef = useRef<HTMLDivElement>(null);
   const memeScrollRef = useRef<HTMLDivElement>(null);
 
   const handleRandomMesh = () => {
     const randomColors = generateRandomMeshColors();
+    setPrevMultiColors(randomColors);
+    setColorMode("multiple");
     setBackground("mesh");
     setMeshConfig({ colors: randomColors });
   };
@@ -74,8 +93,44 @@ export function RightPanel({ onDownload }: RightPanelProps) {
   const handleColorChange = (index: number, newColor: string) => {
     const updatedColors = [...meshConfig.colors];
     updatedColors[index] = newColor;
+    setPrevMultiColors(updatedColors);
     setBackground("mesh");
     setMeshConfig({ colors: updatedColors });
+  };
+
+  const handleModeChange = (mode: "multiple" | "mono") => {
+    setColorMode(mode);
+    if (mode === "mono") {
+      const isAlreadyMono = meshConfig.colors.every(
+        (c) => c.toLowerCase() === meshConfig.colors[0].toLowerCase()
+      );
+      if (!isAlreadyMono) {
+        setPrevMultiColors(meshConfig.colors);
+      }
+      const targetColor = monoColor || meshConfig.colors[0] || "#18181b";
+      setBackground("mesh");
+      setMeshConfig({
+        colors: [targetColor, targetColor, targetColor, targetColor, targetColor],
+      });
+    } else {
+      const colorsToRestore =
+        prevMultiColors.length === 5 &&
+        prevMultiColors.some(
+          (c) => c.toLowerCase() !== prevMultiColors[0].toLowerCase()
+        )
+          ? prevMultiColors
+          : DEFAULT_MESH_CONFIG.colors;
+      setBackground("mesh");
+      setMeshConfig({ colors: [...colorsToRestore] });
+    }
+  };
+
+  const handleMonoColorChange = (newColor: string) => {
+    setMonoColor(newColor);
+    setBackground("mesh");
+    setMeshConfig({
+      colors: [newColor, newColor, newColor, newColor, newColor],
+    });
   };
 
   const handleWallpaperScroll = useCallback(() => {
@@ -173,11 +228,13 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           type="button"
                           onClick={() => {
                             setBackground("mesh");
+                            setPrevMultiColors([...pal.colors]);
+                            setColorMode("multiple");
                             setMeshConfig({ colors: [...pal.colors] });
                           }}
                           className={`group relative rounded-lg p-1.5 border transition-all text-center bg-background/50 hover:scale-[1.03] hover:z-10 hover:shadow-md cursor-pointer ${isSelected
-                              ? "border-primary ring-1 ring-primary/60 bg-primary/5 shadow-xs font-semibold"
-                              : "border-border/70 hover:border-primary/80 hover:ring-1 hover:ring-primary/50"
+                            ? "border-primary ring-1 ring-primary/60 bg-primary/5 shadow-xs font-semibold"
+                            : "border-border/70 hover:border-primary/80 hover:ring-1 hover:ring-primary/50"
                             }`}
                         >
                           <div className="flex h-5 w-full rounded overflow-hidden mb-1 shadow-xs">
@@ -200,37 +257,134 @@ export function RightPanel({ onDownload }: RightPanelProps) {
 
                 <Separator />
 
-                {/* Section 2: Custom Mesh Nodes */}
+                {/* Section 2: Custom Mesh Nodes / Single Color Palette */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-semibold uppercase tracking-wider">
-                    Color Palette
-                  </Label>
-                  <div className="flex items-center justify-between gap-1">
-                    {meshConfig.colors.map((color, idx) => (
-                      <div
-                        key={idx}
-                        className="flex flex-col items-center gap-1"
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold uppercase tracking-wider">
+                      Color Palette
+                    </Label>
+                    <div className="flex items-center bg-muted/60 p-0.5 rounded-lg shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleModeChange("multiple")}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-medium font-manrope transition-all cursor-pointer ${
+                          colorMode === "multiple"
+                            ? "bg-background text-foreground shadow-xs font-semibold"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
                       >
-                        <div className="relative size-8 rounded-lg overflow-hidden border border-border/80 shadow-xs hover:scale-105 transition-transform">
+                        Multiple
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleModeChange("mono")}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-medium font-manrope transition-all cursor-pointer ${
+                          colorMode === "mono"
+                            ? "bg-background text-foreground shadow-xs font-semibold"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        Mono
+                      </button>
+                    </div>
+                  </div>
+
+                  {colorMode === "multiple" ? (
+                    <div className="flex items-center justify-between gap-1 pl-1 pr-2">
+                      {meshConfig.colors.map((color, idx) => (
+                        <div
+                          key={idx}
+                          className="flex flex-col items-center gap-1"
+                        >
+                          <div className="relative size-8 rounded-lg overflow-hidden border border-border/80 shadow-xs hover:scale-105 transition-transform">
+                            <div
+                              className="absolute inset-0"
+                              style={{ backgroundColor: color }}
+                            />
+                            <input
+                              type="color"
+                              value={color}
+                              onChange={(e) =>
+                                handleColorChange(idx, e.target.value)
+                              }
+                              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
+                            />
+                          </div>
+                          <span className="text-[10px] font-manrope text-muted-foreground">
+                            #{idx + 1}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between gap-1 pl-1 pr-2">
+                      {/* Slot 1: Custom color picker */}
+                      <div className="flex flex-col items-center gap-1">
+                        <div
+                          className={`relative size-8 rounded-lg overflow-hidden border shadow-xs hover:scale-105 transition-transform ${
+                            !["#09090b", "#64748b", "#bae6fd", "#f8fafc"].includes(
+                              monoColor.toLowerCase()
+                            )
+                              ? "border-primary ring-2 ring-primary/80"
+                              : "border-border/80"
+                          }`}
+                        >
                           <div
                             className="absolute inset-0"
-                            style={{ backgroundColor: color }}
+                            style={{ backgroundColor: monoColor }}
                           />
                           <input
                             type="color"
-                            value={color}
+                            value={monoColor}
                             onChange={(e) =>
-                              handleColorChange(idx, e.target.value)
+                              handleMonoColorChange(e.target.value)
                             }
                             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
                           />
                         </div>
                         <span className="text-[10px] font-manrope text-muted-foreground">
-                          #{idx + 1}
+                          Custom
                         </span>
                       </div>
-                    ))}
-                  </div>
+
+                      {/* Slots 2-5: 1 Dark + Cool and Light presets */}
+                      {[
+                        { name: "Dark", color: "#09090b" },
+                        { name: "Steel", color: "#64748b" },
+                        { name: "Ice", color: "#bae6fd" },
+                        { name: "Snow", color: "#f8fafc" },
+                      ].map((item) => {
+                        const isSelected =
+                          monoColor.toLowerCase() === item.color.toLowerCase();
+                        return (
+                          <button
+                            key={item.color}
+                            type="button"
+                            onClick={() => handleMonoColorChange(item.color)}
+                            className="flex flex-col items-center gap-1 cursor-pointer group"
+                          >
+                            <div
+                              className={`size-8 rounded-lg overflow-hidden border shadow-xs transition-transform group-hover:scale-105 ${
+                                isSelected
+                                  ? "border-primary ring-2 ring-primary/80"
+                                  : "border-border/80"
+                              }`}
+                              style={{ backgroundColor: item.color }}
+                            />
+                            <span
+                              className={`text-[10px] font-manrope transition-colors ${
+                                isSelected
+                                  ? "text-primary font-semibold"
+                                  : "text-muted-foreground group-hover:text-foreground"
+                              }`}
+                            >
+                              {item.name}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 <Separator />
@@ -465,110 +619,149 @@ export function RightPanel({ onDownload }: RightPanelProps) {
               <div className="p-4 flex flex-col gap-6 pb-6">
                 {/* Vector Patterns */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-semibold uppercase tracking-wider">
-                    Patterns
-                  </Label>
-                  <div className="grid grid-cols-3 gap-2 font-manrope">
-                    {(
-                      [
-                        { id: "none", name: "None" },
-                        { id: "topographic", name: "Topographic" },
-                        { id: "isometric", name: "Isometric" },
-                        { id: "dotmatrix", name: "Dot Matrix" },
-                        { id: "crosshair", name: "Crosshairs" },
-                        { id: "blueprint", name: "Blueprint" },
-                      ] as { id: VectorPatternType; name: string }[]
-                    ).map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() =>
-                          setOverlayConfig({ pattern: p.id })
-                        }
-                        className={`p-2 rounded-lg border text-xs font-medium text-center transition-all cursor-pointer ${overlayConfig.pattern === p.id
-                          ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
-                          : "border-border/70 hover:border-border text-muted-foreground"
-                          }`}
-                      >
-                        {p.name}
-                      </button>
-                    ))}
-                  </div>
-
-                  {overlayConfig.pattern !== "none" && (
-                    <div className="space-y-3 pt-2 font-manrope">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-medium text-muted-foreground">
-                          Pattern Opacity
-                        </Label>
-                        <span className="text-xs text-muted-foreground">
-                          {overlayConfig.patternOpacity}%
-                        </span>
-                      </div>
+                  <div className="grid grid-cols-2 gap-2.5 items-center font-manrope">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      Patterns
+                    </Label>
+                    <div
+                      className={`flex items-center gap-0.5 transition-all duration-200 ${overlayConfig.pattern === "none"
+                          ? "opacity-30 pointer-events-none"
+                          : "opacity-100"
+                        }`}
+                    >
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground shrink-0 pr-1">
+                        Opacity
+                      </span>
                       <Slider
                         value={[overlayConfig.patternOpacity]}
                         min={5}
                         max={100}
                         step={1}
+                        disabled={overlayConfig.pattern === "none"}
                         onValueChange={([val]) =>
                           setOverlayConfig({ patternOpacity: val })
                         }
+                        className="flex-1 cursor-pointer"
                       />
+                      <span className="text-[10px] font-bold text-primary w-7 text-right shrink-0">
+                        {overlayConfig.patternOpacity}%
+                      </span>
                     </div>
-                  )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5 font-manrope">
+                    {PATTERN_LIST.map((p) => {
+                      const isSelected = overlayConfig.pattern === p.id;
+                      return (
+                        <button
+                          key={p.id}
+                          onClick={() => setOverlayConfig({ pattern: p.id })}
+                          className={`group relative aspect-video rounded-lg overflow-hidden border transition-all duration-200 hover:scale-[1.03] hover:z-20 hover:shadow-xl cursor-pointer bg-muted/30 ${isSelected
+                              ? "border-primary ring-2 ring-primary/80 shadow-lg"
+                              : "border-border/70 hover:border-primary hover:ring-2 hover:ring-primary/60"
+                            }`}
+                        >
+                          <div className="absolute inset-0 w-full h-full">
+                            {p.id === "none" ? (
+                              <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900/90 text-neutral-500 group-hover:text-neutral-300 transition-colors pb-3">
+                                <Ban className="size-5 mb-0.5 opacity-60 group-hover:opacity-100" />
+                                <span className="text-[9px] uppercase tracking-wider font-semibold opacity-60">
+                                  Off
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 relative overflow-hidden">
+                                <VectorOverlay
+                                  type={p.id}
+                                  opacity={85}
+                                  color="#ffffff"
+                                  blendMode="normal"
+                                  idPrefix={`preview_${p.id}`}
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="absolute z-50 bottom-0 inset-x-0 bg-black/75 text-white text-[10px] py-1 px-1.5 truncate text-center backdrop-blur-xs font-manrope font-medium transition-colors group-hover:bg-black/90 group-hover:text-primary">
+                            {p.name}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <Separator />
 
                 {/* Studio Textures */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-semibold uppercase tracking-wider">
-                    Texture Layer
-                  </Label>
-                  <div className="grid grid-cols-2 gap-2 font-manrope">
-                    {(
-                      [
-                        { id: "none", name: "None" },
-                        { id: "grain", name: "Film Grain" },
-                        { id: "paper", name: "Crushed Paper" },
-                        { id: "scratches", name: "Studio Scratches" },
-                      ] as { id: StudioTextureType; name: string }[]
-                    ).map((t) => (
-                      <button
-                        key={t.id}
-                        onClick={() =>
-                          setOverlayConfig({ texture: t.id })
-                        }
-                        className={`p-2.5 rounded-lg border text-xs font-medium text-center transition-all cursor-pointer ${overlayConfig.texture === t.id
-                          ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
-                          : "border-border/70 hover:border-border text-muted-foreground"
-                          }`}
-                      >
-                        {t.name}
-                      </button>
-                    ))}
-                  </div>
-
-                  {overlayConfig.texture !== "none" && (
-                    <div className="space-y-3 pt-2 font-manrope">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-medium text-muted-foreground">
-                          Texture Opacity
-                        </Label>
-                        <span className="text-xs text-muted-foreground">
-                          {overlayConfig.textureOpacity}%
-                        </span>
-                      </div>
+                  <div className="grid grid-cols-2 gap-2.5 items-center font-manrope">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      Texture Layer
+                    </Label>
+                    <div
+                      className={`flex items-center gap-0.5 transition-all duration-200 ${overlayConfig.texture === "none"
+                          ? "opacity-30 pointer-events-none"
+                          : "opacity-100"
+                        }`}
+                    >
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground shrink-0 pr-1">
+                        Opacity
+                      </span>
                       <Slider
                         value={[overlayConfig.textureOpacity]}
                         min={5}
                         max={100}
                         step={1}
+                        disabled={overlayConfig.texture === "none"}
                         onValueChange={([val]) =>
                           setOverlayConfig({ textureOpacity: val })
                         }
+                        className="flex-1 cursor-pointer"
                       />
+                      <span className="text-[10px] font-bold text-primary w-7 text-right shrink-0">
+                        {overlayConfig.textureOpacity}%
+                      </span>
                     </div>
-                  )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5 font-manrope">
+                    {TEXTURE_LIST.map((t) => {
+                      const isSelected = overlayConfig.texture === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          onClick={() => setOverlayConfig({ texture: t.id })}
+                          className={`group relative aspect-video rounded-lg overflow-hidden border transition-all duration-200 hover:scale-[1.03] hover:z-20 hover:shadow-xl cursor-pointer bg-muted/30 ${isSelected
+                              ? "border-primary ring-2 ring-primary/80 shadow-lg"
+                              : "border-border/70 hover:border-primary hover:ring-2 hover:ring-primary/60"
+                            }`}
+                        >
+                          <div className="absolute inset-0 w-full h-full">
+                            {t.id === "none" ? (
+                              <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900/90 text-neutral-500 group-hover:text-neutral-300 transition-colors pb-3">
+                                <Ban className="size-5 mb-0.5 opacity-60 group-hover:opacity-100" />
+                                <span className="text-[9px] uppercase tracking-wider font-semibold opacity-60">
+                                  Off
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 relative overflow-hidden">
+                                <StudioTexture
+                                  type={t.id}
+                                  opacity={85}
+                                  blendMode="normal"
+                                  idPrefix={`preview_tex_${t.id}`}
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="absolute z-50 bottom-0 inset-x-0 bg-black/75 text-white text-[10px] py-1 px-1.5 truncate text-center backdrop-blur-xs font-manrope font-medium transition-colors group-hover:bg-black/90 group-hover:text-primary">
+                            {t.name}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </ScrollArea>
