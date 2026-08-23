@@ -9,6 +9,7 @@ import {
   Playfair_Display as Playfair,
   Oswald,
   Montserrat,
+  Geist
 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -22,6 +23,11 @@ const manrope = Manrope({
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
 });
 
@@ -39,7 +45,7 @@ const roboto = Roboto({
 const instrument = Instrument_Serif({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-instrument-serif",
+  variable: "--font-instrument",
 });
 
 
@@ -177,6 +183,7 @@ export default function RootLayout({
       <body
         className={`
           ${inter.variable} 
+          ${geist.variable}
           ${manrope.variable} 
           ${space.variable} 
           ${roboto.variable}
@@ -194,7 +201,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="bg-background text-foreground font-space">
+          <main className="bg-background text-foreground font-geist">
             {children}
           </main>
           <Toaster position="top-center" swipeDirections={["right"]} />

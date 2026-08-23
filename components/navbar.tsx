@@ -1,5 +1,10 @@
 "use client";
 
+import { useState, useRef } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import { Sparkles, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -8,134 +13,177 @@ import {
   SheetDescription,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useState } from "react";
-import { Menu, Sparkles } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { Label } from "@radix-ui/react-label";
+import StackIcon from "tech-stack-icons";
 
 const NAV_ITEMS = [
-  { name: "Editor", href: "/editor" },
   { name: "Features", href: "/#features" },
-  { name: "Pricing", href: "/#pricing" },
+  { name: "FAQ", href: "/#faq" },
+  { name: "Support", href: "/#support" },
 ];
 
 export const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+
+  const { scrollY } = useScroll();
+  const lastScrollY = useRef(0);
+
+  useMotionValueEvent(scrollY, "change", (current) => {
+    const prev = lastScrollY.current;
+    const diff = current - prev;
+
+    // Only hide after scrolling past 80px and moving downwards by more than 5px
+    if (current > 80 && diff > 5) {
+      setIsHidden(true);
+    } else if (diff < -5 || current <= 80) {
+      setIsHidden(false);
+    }
+
+    lastScrollY.current = current;
+  });
 
   return (
-    <motion.nav
-      initial={{ opacity: 0, y: -100 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-      className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md h-16 flex items-center transition-colors duration-300"
+    <motion.header
+      initial={{ opacity: 0, y: -40 }}
+      animate={{
+        opacity: isHidden ? 0 : 1,
+        y: isHidden ? -80 : 0,
+      }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none"
     >
-      <div className="w-[90%] md:w-[80%] mx-auto flex justify-between items-center">
+      <nav
+        className="pointer-events-auto w-full max-w-5xl flex items-center justify-between px-3 sm:px-5 py-2 rounded-lg border border-border/70 bg-background/80 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/25 transition-colors"
+      >
+        {/* Brand Logo */}
         <Link
           href="/"
-          className="font-bold text-xl tracking-tighter font-display uppercase flex items-center text-foreground hover:opacity-80 transition-opacity"
+          className="flex items-center gap-1.5 font-bold text-lg tracking-tight uppercase text-foreground hover:opacity-85 transition-opacity pl-1"
         >
-          Pla<span className="text-primary">tor</span>
+          <span>
+            Pla<span className="text-primary font-extrabold">tor</span>
+          </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex gap-8 text-xs font-medium uppercase tracking-widest">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "transition-colors hover:text-primary",
-                pathname === item.href
-                  ? "text-foreground font-bold"
-                  : "text-muted-foreground"
-              )}
-            >
-              {item.name}
-            </Link>
-          ))}
+        {/* Desktop Navigation Links */}
+        <div className="hidden md:flex items-center gap-1 text-xs">
+          {NAV_ITEMS.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "px-3.5 text-sm font-medium font-manrope transition-all duration-200",
+                  isActive
+                    ? "bg-background text-foreground font-semibold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                )}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
         </div>
 
-        <div className="flex items-center gap-2 md:gap-4">
-          <div className="hidden md:block">
-            <ThemeToggle />
+        {/* Actions & CTA */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center justify-center">
+            <ThemeToggle classname=""/>
           </div>
 
-          <div className="hidden md:block">
-            <Link href="/editor">
-              <Button
-                variant="primary"
-                size="sm"
-                className="gap-2 font-semibold uppercase tracking-wider text-xs bg-primary hover:bg-primary/90 text-primary-foreground shadow-next"
-              >
-                <Sparkles size={14} /> Open Editor
-              </Button>
-            </Link>
-          </div>
+          <a
+            href="https://github.com/Kuzuri247"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex"
+          >
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-1.5 rounded-lg px-3 h-8 text-xs font-semibold font-manrope border-border/80 hover:bg-muted text-foreground shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all duration-50 cursor-pointer"
+            >
+              <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter]">
+                <StackIcon name="github" className="w-full h-full" />
+              </div>
+              <span>GitHub</span>
+            </Button>
+          </a>
 
-          <div className="md:hidden flex items-center gap-2">
-            <ThemeToggle />
+          {/* Mobile Navigation Trigger */}
+          <div className="md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="w-8 h-8">
-                  <Menu size={20} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 rounded-full hover:bg-muted"
+                  aria-label="Toggle navigation menu"
+                >
+                  <Menu className="size-4" />
                 </Button>
               </SheetTrigger>
-              <SheetContent className="flex flex-col p-0 gap-0">
-                <SheetHeader className="text-left p-4 border-b border-border/50">
-                  <Label className="uppercase tracking-tighter text-xl font-space font-semibold">
-                    Pla<span className="text-primary">tor</span>
-                  </Label>
-                  <SheetDescription className="text-sm text-muted-foreground">
-                    Navigation Menu
+              <SheetContent
+                side="top"
+                className="mx-auto mt-4 w-[92%] max-w-md rounded-3xl border border-border bg-background/95 backdrop-blur-2xl p-5 shadow-2xl"
+              >
+                <SheetHeader className="text-left pb-3 border-b border-border/50">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-lg uppercase tracking-tight">
+                      Pla<span className="text-primary">tor</span>
+                    </span>
+                  </div>
+                  <SheetDescription className="text-xs text-muted-foreground font-manrope">
+                    Visual Mockups & WebGL Shader Studio
                   </SheetDescription>
                 </SheetHeader>
-                
-                {/* Mobile Links */}
-                <div className="flex flex-col gap-1 flex-1 p-4 overflow-y-auto">
-                  {NAV_ITEMS.map((item, index) => (
-                    <motion.div
+
+                <div className="flex flex-col gap-1.5 py-4">
+                  {NAV_ITEMS.map((item) => (
+                    <Link
                       key={item.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 + index * 0.1 }}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium font-manrope transition-colors",
+                        pathname === item.href
+                          ? "bg-primary/10 text-primary font-bold"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )}
                     >
-                      <Link
-                        href={item.href}
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                          "flex items-center w-full p-2 rounded-md text-lg font-semibold font-manrope transition-all",
-                          pathname === item.href
-                            ? "bg-primary/10 text-primary font-bold"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        )}
-                      >
-                        {item.name}
-                      </Link>
-                    </motion.div>
+                      {item.name}
+                    </Link>
                   ))}
                 </div>
 
-                {/* Mobile CTA */}
-                <div className="p-6 border-t border-border bg-muted/20 font-space">
+                <div className="pt-2 flex flex-col gap-2">
                   <Link href="/editor" onClick={() => setIsOpen(false)}>
-                    <Button
-                      variant="primary"
-                      className="w-full justify-center gap-3 h-11 text-md font-semibold bg-primary text-primary-foreground shadow-sm uppercase tracking-wide"
-                    >
-                      <Sparkles size={16} /> Open Editor
+                    <Button className="w-full rounded-2xl h-11 text-sm font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-md gap-2">
+                      <Sparkles className="size-4" /> Open Studio
                     </Button>
                   </Link>
+                  <a
+                    href="https://github.com/Kuzuri247"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Button variant="outline" className="w-full rounded-2xl h-10 text-xs font-semibold border-border gap-2">
+                      <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter]">
+                        <StackIcon name="github" className="w-full h-full" />
+                      </div>
+                      <span>Star on GitHub</span>
+                    </Button>
+                  </a>
                 </div>
               </SheetContent>
             </Sheet>
           </div>
         </div>
-      </div>
-    </motion.nav>
+      </nav>
+    </motion.header>
   );
-};
+};

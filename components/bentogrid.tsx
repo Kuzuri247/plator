@@ -1,690 +1,389 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useTransform,
-  useSpring,
-} from "motion/react";
-import {
-  LayoutTemplate,
-  CalendarClock,
   Smartphone,
-  Image as ImageIcon,
-  Edit3,
-  Move,
-  Sparkles,
-  Bold,
-  Italic,
-  Underline,
-  ChevronUp,
-  ChevronDown,
   Monitor,
-  Wifi,
-  TypeOutline,
+  Square,
+  CheckCircle2,
 } from "lucide-react";
-import { BentoPattern } from "./patterns";
-
-const BentoCard = ({
-  children,
-  className,
-  delay = 0,
-  onMouseMove,
-  onMouseEnter,
-  onMouseLeave,
-}: {
-  children?: React.ReactNode;
-  className?: string;
-  delay?: number;
-  onMouseMove?: React.MouseEventHandler;
-  onMouseEnter?: React.MouseEventHandler;
-  onMouseLeave?: React.MouseEventHandler;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-50px" }}
-    transition={{ duration: 0.5, delay }}
-    onMouseMove={onMouseMove}
-    onMouseEnter={onMouseEnter}
-    onMouseLeave={onMouseLeave}
-    className={`relative overflow-hidden border-2 bg-card z-10 ${className}`}
-  >
-    {children}
-  </motion.div>
-);
-
-const TiltCard = ({
-  children,
-  className,
-}: {
-  children?: React.ReactNode;
-  className?: string;
-}) => {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
-  const mouseY = useSpring(y, { stiffness: 500, damping: 100 });
-
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["7deg", "-7deg"]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-7deg", "7deg"]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseXFromCenter = e.clientX - rect.left - width / 2;
-    const mouseYFromCenter = e.clientY - rect.top - height / 2;
-    x.set(mouseXFromCenter / width);
-    y.set(mouseYFromCenter / height);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      style={{
-        perspective: 1000,
-      }}
-      className={className}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      <motion.div
-        style={{
-          rotateX,
-          rotateY,
-          transformStyle: "preserve-3d",
-        }}
-        className="w-full h-full"
-      >
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-};
-
-const TwinklingStars = () => {
-  const stars = [
-    { top: "10%", left: "20%", delay: 0 },
-    { top: "30%", left: "80%", delay: 1.5 },
-    { top: "50%", left: "50%", delay: 0.5 },
-    { top: "70%", left: "10%", delay: 2 },
-    { top: "80%", left: "70%", delay: 1 },
-    { top: "20%", left: "90%", delay: 0.8 },
-    { top: "60%", left: "30%", delay: 1.2 },
-    { top: "40%", left: "60%", delay: 2.5 },
-  ];
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {stars.map((star, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-white rounded-full shadow-[0_0_4px_white]"
-          style={{ top: star.top, left: star.left }}
-          animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            delay: star.delay,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
 
 export const BentoGrid = () => {
-  const [editorStep, setEditorStep] = useState(0);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setEditorStep((prev) => (prev + 1) % 3);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const [fontIndex, setFontIndex] = useState(0);
-  const [activeStyles, setActiveStyles] = useState<string[]>([]);
-  const [isCardHovered, setIsCardHovered] = useState(false);
-
-  const fonts = [
-    { name: "Inter", class: "font-sans" },
-    { name: "Grotesk", class: "font-display" },
-    { name: "Serif", class: "font-serif" },
-    { name: "Mono", class: "font-manrope" },
+  // Card 1: Color palette state
+  const [selectedPalette, setSelectedPalette] = useState(0);
+  const palettes = [
+    { name: "Aurora", colors: ["#00dfd8", "#007cf0", "#7928ca", "#ff0080"] },
+    { name: "Cyber", colors: ["#ff007a", "#7928ca", "#4f46e5", "#06b6d4"] },
+    { name: "Sunset", colors: ["#ff4e50", "#f9d423", "#ff8a00", "#e52e71"] },
+    { name: "Emerald", colors: ["#10b981", "#059669", "#047857", "#064e3b"] },
   ];
 
-  const toggleStyle = (style: string) => {
-    setActiveStyles((prev) =>
-      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
-    );
-  };
+  // Card 2: Dither intensity state
+  const [ditherType, setDitherType] = useState<"bayer" | "noise" | "halftone">("bayer");
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isCardHovered) return;
+  // Card 3: Device preview aspect ratio
+  const [aspectRatio, setAspectRatio] = useState<"16:9" | "1:1" | "9:16">("16:9");
 
-      if (e.key === "ArrowRight") {
-        setFontIndex((prev) => (prev + 1) % fonts.length);
-      } else if (e.key === "ArrowLeft") {
-        setFontIndex((prev) => (prev - 1 + fonts.length) % fonts.length);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isCardHovered, fonts.length]);
-
-  const [currentMonth, setCurrentMonth] = useState(0);
-  const months = [
-    "JANUARY",
-    "FEBRUARY",
-    "MARCH",
-    "APRIL",
-    "MAY",
-    "JUNE",
-    "JULY",
-    "AUGUST",
-    "SEPTEMBER",
-    "OCTOBER",
-    "NOVEMBER",
-    "DECEMBER",
+  // Card 4: Font preview state
+  const [selectedFont, setSelectedFont] = useState(0);
+  const fontOptions = [
+    {
+      name: "Modern Sans",
+      sample: "Create at the speed of thought",
+      sub: "Inter Display • Medium 500",
+      fontClass: "font-sans font-medium tracking-tight",
+    },
+    {
+      name: "Editorial Serif",
+      sample: "Create at the speed of thought",
+      sub: "Instrument Serif • Italic",
+      fontClass: "font-instrument italic font-normal text-xl sm:text-2xl",
+    },
+    {
+      name: "Cyber Mono",
+      sample: "CREATE.AT.THE.SPEED_OF_THOUGHT",
+      sub: "JetBrains Mono • Semibold",
+      fontClass: "font-mono font-semibold tracking-tighter text-xs sm:text-sm",
+    },
   ];
 
-  const handleMonthChange = (direction: "up" | "down") => {
-    setCurrentMonth((prev) => {
-      if (direction === "up") return prev === 11 ? 0 : prev + 1;
-      return prev === 0 ? 11 : prev - 1;
-    });
+  // Card 5: Export format state
+  const [activeFormat, setActiveFormat] = useState<"PNG" | "MP4" | "GIF">("PNG");
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportSim = (fmt: "PNG" | "MP4" | "GIF") => {
+    setActiveFormat(fmt);
+    setIsExporting(true);
+    setTimeout(() => setIsExporting(false), 1200);
   };
-
-  const getCalendarDays = (monthIndex: number, year: number = 2025) => {
-    const firstDay = new Date(year, monthIndex, 1).getDay();
-    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-    const daysInPrevMonth = new Date(year, monthIndex, 0).getDate();
-
-    const days = [];
-
-    // Previous month
-    for (let i = 0; i < firstDay; i++) {
-      days.push({
-        num: daysInPrevMonth - firstDay + i + 1,
-        current: false,
-        prev: true,
-      });
-    }
-
-    // Current month
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push({ num: i, current: true, prev: false });
-    }
-
-    // Next month padding
-    const remaining = 42 - days.length;
-    for (let i = 1; i <= remaining; i++) {
-      days.push({ num: i, current: false, prev: false });
-    }
-
-    return days;
-  };
-
-  const calendarDays = getCalendarDays(currentMonth);
-
-  const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">(
-    "mobile"
-  );
 
   return (
-    <section className="w-full relative bg-background py-10 md:py-20">
-      <BentoPattern />
-
-      <div className="container w-[95%] md:w-[80%] lg:w-[75%] mx-auto relative z-20">
-        <div className="mb-10 md:mb-16 max-sm:ml-4 max-w-2xl">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground font-display uppercase tracking-tight">
-            Features for
-            <br />
-            <span className="text-primary">Modern Creators</span>
+    <section id="features" className="w-full py-24 relative scroll-mt-24">
+      <div className="w-[92%] max-w-6xl mx-auto">
+        {/* Section Header */}
+        <div className="flex flex-col items-center text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border/80 dark:border-neutral-800 bg-muted/40 text-xs font-medium font-manrope text-muted-foreground mb-4">
+            <span>Features & Superpowers</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground max-w-2xl text-balance">
+            Everything you need to create viral visual content
           </h2>
-          <div className="h-1 w-20 bg-foreground mb-6" />
-          <p className="text-muted-foreground text-sm md:text-base font-manrope">
-            Everything you need to go from idea to published post in minutes.
-            Minimalist tools for maximalist impact.
+          <p className="mt-3.5 text-sm sm:text-base text-muted-foreground max-w-xl font-manrope">
+            Streamlined studio capabilities built for creators, marketers, founders, and designers. No complex timeline software.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-4 h-auto md:h-[850px] *:border-2 *:dark:border-neutral-700/90">
-          <BentoCard className="md:col-span-4 md:row-span-2 flex flex-col p-5 md:p-8 hover:border-primary/30 transition-colors">
-            <div className="absolute top-4 right-4 md:top-6 md:right-6 max-sm:hidden">
-              <div className="flex items-center gap-2 px-2 py-1 bg-background/80 backdrop-blur border-2 rounded-full">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
-                </span>
-                <span className="text-[10px] font-manrope text-success uppercase tracking-wider">
-                  System Online
-                </span>
-              </div>
-            </div>
-
-            <div className="relative z-10 mb-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 border-2 bg-muted text-foreground">
-                  <LayoutTemplate size={20} />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-foreground font-display uppercase">
-                  Smart Editor
-                </h3>
-              </div>
-              <p className="text-muted-foreground max-w-md text-xs md:text-sm leading-relaxed font-manrope">
-                Create with purpose. Seamlessly switch between modes.
-              </p>
-            </div>
-
-            <div className="flex-1 relative bg-muted/20 border-2 dark:border-neutral-800 overflow-hidden flex items-center justify-center min-h-[200px]">
-              <div className="absolute inset-4 border-2 dark:border-neutral-800 bg-card shadow-2xl flex flex-col">
-                <div className="h-8 border-b border-border flex items-center px-3 justify-between bg-muted/30">
-                  <div className="flex gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
-                    <div className="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
-                    <div className="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
-                  </div>
-                  <div className="text-[10px] text-muted-foreground uppercase tracking-widest">
-                    Editor_v2.0
-                  </div>
-                </div>
-
-                {/* Dynamic Canvas Area */}
-                <div className="flex-1 relative flex items-center justify-center overflow-hidden bg-background">
-                  <AnimatePresence mode="wait">
-                    {editorStep === 0 && (
-                      <motion.div
-                        key="step1"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="relative w-3/4 h-3/4 bg-white p-6 shadow-lg flex flex-col gap-3 items-center justify-center  border-2"
-                      >
-                        <motion.h4
-                          className="text-2xl md:text-3xl font-black font-display text-black uppercase tracking-tighter text-center"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 }}
-                        >
-                          Bold Moves
-                        </motion.h4>
-                        <motion.p
-                          className="text-[10px] text-neutral-500 text-center max-w-[80%] font-inter"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.4 }}
-                        >
-                          Make an impact with our curated typography system.
-                        </motion.p>
-                      </motion.div>
-                    )}
-
-                    {editorStep === 1 && (
-                      <motion.div
-                        key="step2"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="relative w-3/4 h-3/4 bg-black border border-neutral-800 flex items-center justify-center overflow-hidden"
-                      >
-                        <motion.img
-                          src="https://images.unsplash.com/photo-1605106702734-205df224ecce?q=80&w=800&auto=format&fit=crop"
-                          className="w-full h-full object-cover opacity-60 grayscale"
-                          initial={{ scale: 1.2 }}
-                          animate={{ scale: 1 }}
-                          transition={{ duration: 2, ease: "easeOut" }}
-                        />
-                        <div className="absolute inset-0 border-[0.5px] border-white/20 grid grid-cols-3 grid-rows-3">
-                          <div className="border-r border-b border-white/10"></div>
-                          <div className="border-r border-b border-white/10"></div>
-                          <div className="border-b border-white/10"></div>
-                          <div className="border-r border-b border-white/10"></div>
-                          <div className="border-r border-b border-white/10"></div>
-                          <div className="border-b border-white/10"></div>
-                          <div className="border-r border-white/10"></div>
-                          <div className="border-r border-white/10"></div>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {editorStep === 2 && (
-                      <motion.div
-                        key="step3"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="relative w-3/4 h-3/4 flex items-center justify-center bg-black border border-neutral-800 overflow-hidden"
-                      >
-                        <img
-                          src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1000&auto=format&fit=crop"
-                          className="absolute inset-0 w-full h-full object-cover opacity-40"
-                          alt="Space"
-                        />
-                        {/* Gradient Overlay */}
-                        <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/80" />
-
-                        {/* Twinkling Dots Effect */}
-                        <TwinklingStars />
-
-                        <div className="relative z-10 flex flex-col items-center">
-                          <div className="animate-pulse">
-                            <Sparkles size={24} className="text-white mb-2" />
-                          </div>
-                          <div className="text-xs text-white animate-pulse font-display uppercase tracking-widest">
-                            Magic Effects
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <div className="h-10 border-t border-border flex items-center justify-around text-muted-foreground bg-muted/30">
-                  <div
-                    className={`flex items-center gap-1 transition-colors ${editorStep === 0 ? "text-primary" : ""
-                      }`}
-                  >
-                    <Edit3 size={10} />
-                    <span className="text-[8px] uppercase hidden sm:inline font-manrope">
-                      Typography
-                    </span>
-                  </div>
-                  <div
-                    className={`flex items-center gap-1 transition-colors ${editorStep === 1 ? "text-primary" : ""
-                      }`}
-                  >
-                    <Move size={10} />
-                    <span className="text-[8px] uppercase hidden sm:inline font-manrope">
-                      Structure
-                    </span>
-                  </div>
-                  <div
-                    className={`flex items-center gap-1 transition-colors ${editorStep === 2 ? "text-primary" : ""
-                      }`}
-                  >
-                    <Sparkles size={10} />
-                    <span className="text-[8px] uppercase hidden sm:inline font-manrope">
-                      Effects
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </BentoCard>
-
-          <BentoCard
-            className="md:col-span-2 md:row-span-2 p-5 md:p-8 flex flex-col items-center text-center justify-between bg-card hover:border-primary/30 transition-colors"
-            delay={0.1}
-            onMouseEnter={() => setIsCardHovered(true)}
-            onMouseLeave={() => setIsCardHovered(false)}
+        {/* High-Density 5-Item Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
+          {/* Card 1: WebGL Mesh Gradients (Col 7 / Row 1) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="md:col-span-7 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
-            <div className="w-full flex flex-col items-center">
-              <div className="p-3 border-2 bg-muted text-foreground mb-6">
-                <TypeOutline size={24} />
-              </div>
-              <h3 className="text-lg font-bold mb-2 font-display uppercase text-foreground">
-                Typography
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">
+                Fluid WebGL Mesh Gradients
               </h3>
-              <p className="text-xs text-muted-foreground mb-8 uppercase tracking-widest font-manrope">
-                {isCardHovered ? "Arrow Keys to Cycle" : "Hover to Interact"}
+              <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Generate dynamic, animated fluid gradients and studio textures. Pick harmonious presets or customize your color points.
               </p>
             </div>
 
-            <div className="relative w-full flex-1 flex items-center justify-center bg-muted/20 border-2 dark:border-neutral-800 mb-4 overflow-hidden min-h-[120px]">
+            {/* Interactive Preview Canvas */}
+            <div className="mt-6 rounded-2xl border border-border/60 dark:border-neutral-800 overflow-hidden relative p-4 flex flex-col justify-between min-h-[200px] shadow-inner">
+              {/* Dynamic Animated Gradient Background */}
               <motion.div
-                key={fontIndex}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`text-3xl lg:text-4xl text-foreground transition-all duration-200 ${fonts[fontIndex].class
-                  } 
-                    ${activeStyles.includes("bold") ? "font-bold" : ""} 
-                    ${activeStyles.includes("italic") ? "italic" : ""} 
-                    ${activeStyles.includes("underline") ? "underline" : ""}
-                  `}
-              >
-                Type
-              </motion.div>
-            </div>
+                key={selectedPalette}
+                initial={{ opacity: 0.7 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                className="absolute inset-0 opacity-95"
+                style={{
+                  background: `radial-gradient(circle at 20% 30%, ${palettes[selectedPalette].colors[0]} 0%, transparent 60%),
+                               radial-gradient(circle at 80% 40%, ${palettes[selectedPalette].colors[1]} 0%, transparent 60%),
+                               radial-gradient(circle at 50% 80%, ${palettes[selectedPalette].colors[2]} 0%, transparent 60%),
+                               radial-gradient(circle at 80% 90%, ${palettes[selectedPalette].colors[3]} 0%, transparent 50%),
+                               #0a0a0c`,
+                }}
+              />
 
-            <div className="w-full flex items-center justify-between p-2 border-2 dark:border-neutral-800 bg-muted/30">
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider px-2 border-r border-border min-w-[60px] text-center">
-                {fonts[fontIndex].name}
-              </div>
-              <div className="flex gap-1">
-                <button
-                  onClick={() => toggleStyle("bold")}
-                  className={`p-1.5 rounded transition-colors ${activeStyles.includes("bold")
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted"
-                    }`}
-                >
-                  <Bold size={12} />
-                </button>
-                <button
-                  onClick={() => toggleStyle("italic")}
-                  className={`p-1.5 rounded transition-colors ${activeStyles.includes("italic")
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted"
-                    }`}
-                >
-                  <Italic size={12} />
-                </button>
-                <button
-                  onClick={() => toggleStyle("underline")}
-                  className={`p-1.5 rounded transition-colors ${activeStyles.includes("underline")
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted"
-                    }`}
-                >
-                  <Underline size={12} />
-                </button>
-              </div>
-            </div>
-          </BentoCard>
-
-          <BentoCard
-            className="md:col-span-3 md:row-span-2 p-5 md:p-8 flex flex-col bg-card hover:border-primary/30 transition-colors"
-            delay={0.2}
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 border-2 bg-muted text-foreground">
-                  <CalendarClock size={20} />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold font-display uppercase text-foreground">
-                    Schedule
-                  </h3>
-                  <p className="text-xs text-muted-foreground font-manrope">
-                    Auto-post magic.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center border-2 dark:border-neutral-800 bg-muted/30">
-                <button
-                  onClick={() => handleMonthChange("down")}
-                  className="p-2 hover:text-foreground text-muted-foreground transition-colors"
-                >
-                  <ChevronDown size={14} className="rotate-90" />
-                </button>
-                <div className="px-3 py-1 text-xs font-manrope text-foreground border-x border-border min-w-[70px] md:min-w-20 text-center">
-                  {months[currentMonth].substring(0, 3)}
-                </div>
-                <button
-                  onClick={() => handleMonthChange("up")}
-                  className="p-2 hover:text-foreground text-muted-foreground transition-colors"
-                >
-                  <ChevronUp size={14} className="rotate-90" />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 border-2 bg-muted/10 p-2 md:p-4 relative overflow-hidden flex flex-col min-h-[200px]">
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--border)/0.2)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--border)/0.2)_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none" />
-
-              <div className="relative z-10 grid grid-cols-7 gap-1 h-full content-stretch">
-                {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-                  <div
-                    key={i}
-                    className="text-[10px] text-muted-foreground text-center py-1 font-manrope"
+              <div className="relative z-10 flex flex-wrap items-center gap-2 mt-auto pt-4">
+                {palettes.map((pal, idx) => (
+                  <button
+                    key={pal.name}
+                    type="button"
+                    onClick={() => setSelectedPalette(idx)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${selectedPalette === idx
+                      ? "bg-white text-black font-bold shadow-lg scale-[1.03]"
+                      : "bg-black/60 text-white/80 hover:bg-black/80 hover:text-white border border-white/10"
+                      }`}
                   >
-                    {d}
-                  </div>
-                ))}
-
-                {calendarDays.map((day, i) => {
-                  const isScheduled =
-                    day.current && (day.num * (currentMonth + 2)) % 5 === 0;
-
-                  return (
-                    <div
-                      key={i}
-                      className={`
-                           flex items-center justify-center relative group/day transition-colors min-h-6 rounded-sm
-                           ${day.current
-                          ? "bg-transparent text-muted-foreground hover:bg-muted"
-                          : "bg-transparent text-muted-foreground/20"
-                        }
-                           ${day.current && i % 2 !== 0 ? "bg-muted/20" : ""}
-                        `}
-                    >
-                      <span
-                        className={`text-[10px] ${isScheduled ? "font-bold text-foreground" : ""
-                          }`}
-                      >
-                        {day.num}
-                      </span>
-
-                      {day.current && isScheduled && (
-                        <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-success rounded-full shadow-sm" />
-                      )}
+                    <div className="flex size-3.5 rounded-full overflow-hidden shrink-0 border border-white/30">
+                      <div className="w-1/2 h-full" style={{ backgroundColor: pal.colors[0] }} />
+                      <div className="w-1/2 h-full" style={{ backgroundColor: pal.colors[1] }} />
                     </div>
-                  );
-                })}
+                    <span>{pal.name}</span>
+                  </button>
+                ))}
               </div>
             </div>
-          </BentoCard>
+          </motion.div>
 
-          <BentoCard
-            className="md:col-span-3 md:row-span-2 p-5 md:p-8 flex flex-col bg-card hover:border-primary/30 transition-colors"
-            delay={0.3}
+          {/* Card 2: Retro Dither Shaders (Col 5 / Row 1) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="md:col-span-5 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 border-2 bg-muted text-foreground">
-                  <Smartphone size={20} />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold font-display uppercase text-foreground">
-                    Live Preview
-                  </h3>
-                  <p className="text-xs text-muted-foreground font-manrope">
-                    Pixel perfect.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex border-2 dark:border-neutral-800 bg-muted/30 p-0.5">
-                <button
-                  onClick={() => setPreviewMode("mobile")}
-                  className={`p-2 transition-all duration-300 ${previewMode === "mobile"
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                    }`}
-                >
-                  <Smartphone size={14} />
-                </button>
-                <button
-                  onClick={() => setPreviewMode("desktop")}
-                  className={`p-2 transition-all duration-300 ${previewMode === "desktop"
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                    }`}
-                >
-                  <Monitor size={14} />
-                </button>
-              </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">
+                Vintage Dither Shaders
+              </h3>
+              <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Transform any image into authentic Bayer matrix dither art, retro grain, and 16-bit cyber aesthetics.
+              </p>
             </div>
 
-            <div className="flex-1 bg-muted/20 border-2 flex items-center justify-center relative overflow-hidden py-6 perspective-container min-h-[250px]">
-              <TiltCard className="w-full h-full flex items-center justify-center">
+            {/* Dither Mode Preview */}
+            <div className="mt-6 rounded-2xl border border-border/60 dark:border-neutral-800 bg-muted/20 p-4 flex flex-col justify-between min-h-[200px] relative overflow-hidden">
+              {/* Pattern Mockup Box */}
+              <div className="flex-1 rounded-xl bg-neutral-950 border border-neutral-800 p-4 flex flex-col items-center justify-center relative overflow-hidden">
+                <div
+                  className="absolute inset-0 opacity-40 transition-opacity duration-300 pointer-events-none"
+                  style={{
+                    backgroundImage:
+                      ditherType === "bayer"
+                        ? "radial-gradient(circle, #fff 1.5px, transparent 1.5px)"
+                        : ditherType === "noise"
+                          ? "repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 4px)"
+                          : "radial-gradient(circle, #fff 2.5px, transparent 2.5px)",
+                    backgroundSize: ditherType === "halftone" ? "12px 12px" : "6px 6px",
+                  }}
+                />
+                <span className="relative z-10 text-xs font-mono font-bold text-white uppercase tracking-widest bg-black/80 px-3.5 py-1.5 rounded-lg border border-white/20 shadow-md">
+                  {ditherType.toUpperCase()} MATRIX
+                </span>
+              </div>
+
+              {/* Dither Switcher */}
+              <div className="grid grid-cols-3 gap-1.5 mt-3">
+                {(["bayer", "noise", "halftone"] as const).map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setDitherType(type)}
+                    className={`py-1.5 rounded-lg text-xs font-medium capitalize transition-all cursor-pointer ${ditherType === type
+                      ? "bg-primary text-primary-foreground font-bold shadow-xs"
+                      : "bg-background/80 text-muted-foreground hover:text-foreground border border-border/60 dark:border-neutral-800"
+                      }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Card 3: 3D Device Frames & Multi-Aspect Ratio (Col 4 / Row 2) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+          >
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">
+                3D Device Mockups
+              </h3>
+              <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Wrap your visuals in device mockups with perspective tilt and ratios for all feeds.
+              </p>
+            </div>
+
+            {/* Device Canvas Frame */}
+            <div className="mt-6 rounded-2xl border border-border/60 dark:border-neutral-800 bg-muted/20 p-3.5 flex flex-col items-center justify-between h-[200px] overflow-hidden">
+              {/* Animated Mockup Box */}
+              <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
+                <motion.div
+                  layout
+                  transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                  className={`rounded-xl border-2 border-border/80 dark:border-neutral-700 bg-background shadow-md flex flex-col items-center justify-between p-1.5 overflow-hidden transition-all ${
+                    aspectRatio === "16:9"
+                      ? "w-36 h-20"
+                      : aspectRatio === "1:1"
+                      ? "w-20 h-20"
+                      : "w-14 h-24"
+                  }`}
+                >
+                  <div className="w-full flex-1 rounded bg-primary/10 border border-primary/20 flex items-center justify-center my-0.5 min-h-0">
+                    <span className="text-[10px] font-mono font-bold text-primary">
+                      {aspectRatio}
+                    </span>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Aspect Ratio Buttons */}
+              <div className="w-full flex items-center justify-between gap-1 bg-background/80 p-1 rounded-xl border border-border/60 dark:border-neutral-800 mt-2 shrink-0">
+                {[
+                  { id: "16:9", label: "16:9", icon: <Monitor className="size-3" /> },
+                  { id: "1:1", label: "1:1", icon: <Square className="size-3" /> },
+                  { id: "9:16", label: "9:16", icon: <Smartphone className="size-3" /> },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setAspectRatio(item.id as "16:9" | "1:1" | "9:16")}
+                    className={`flex-1 flex items-center justify-center gap-1 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      aspectRatio === item.id
+                        ? "bg-primary text-primary-foreground font-bold shadow-xs"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Card 4: Typography & Smart Badges (Col 4 / Row 2) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+          >
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">
+                Expressive Typography
+              </h3>
+              <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Pair modern curated Google fonts, adjustable text badge fills, and corner roundness.
+              </p>
+            </div>
+
+            {/* Font Interactive Preview */}
+            <div className="mt-6 rounded-2xl border border-border/60 dark:border-neutral-800 bg-muted/20 p-3.5 flex flex-col justify-between h-[200px] overflow-hidden">
+              <div className="flex-1 flex flex-col items-center justify-center text-center px-2">
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={previewMode}
-                    layout
-                    initial={false}
-                    animate={{
-                      width: previewMode === "mobile" ? "140px" : "70%",
-                      height: "100%",
-                    }}
-                    transition={{ type: "spring", stiffness: 180, damping: 20 }}
-                    className="bg-background border-2 shadow-2xl flex flex-col overflow-hidden relative group/device mx-auto"
-                    style={{ backfaceVisibility: "hidden" }}
+                    key={selectedFont}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    className="flex flex-col items-center"
                   >
-                    <div className="h-6 border-b border-border bg-muted/50 flex items-center px-2 gap-2 relative z-10 justify-between">
-                      <div className="flex gap-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-red-500/50"></div>
-                        <div className="w-1.5 h-1.5 rounded-full bg-yellow-500/50"></div>
-                      </div>
-                      <Wifi size={8} className="text-muted-foreground" />
-                    </div>
-
-                    <motion.div
-                      className="flex-1 p-3 space-y-4"
-                      animate={{ y: [-10, -50, -10] }}
-                      transition={{
-                        duration: 10,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <div className="flex gap-2 items-center opacity-80">
-                        <div className="w-6 h-6 rounded-full bg-muted"></div>
-                        <div className="space-y-1">
-                          <div className="w-16 h-1.5 bg-muted rounded"></div>
-                          <div className="w-8 h-1.5 bg-muted/50 rounded"></div>
-                        </div>
-                      </div>
-                      <div className="w-full aspect-video bg-muted/30 rounded border-2 flex items-center justify-center overflow-hidden">
-                        <ImageIcon
-                          size={20}
-                          className="text-muted-foreground"
-                        />
-                      </div>
-
-                      <div className="flex gap-2 items-center opacity-60 pt-2 border-t border-border">
-                        <div className="w-6 h-6 rounded-full bg-muted"></div>
-                        <div className="space-y-1">
-                          <div className="w-20 h-1.5 bg-muted rounded"></div>
-                        </div>
-                      </div>
-                      <div className="space-y-1.5 opacity-60">
-                        <div className="w-full h-1.5 bg-muted rounded"></div>
-                        <div className="w-[90%] h-1.5 bg-muted rounded"></div>
-                      </div>
-
-                      <div className="w-full aspect-square bg-muted/30 rounded border-2 mt-2"></div>
-                    </motion.div>
-
-                    <div className="absolute inset-0 bg-linear-to-tr from-white/5 to-transparent pointer-events-none z-20"></div>
+                    <p className={`text-sm sm:text-base text-foreground ${fontOptions[selectedFont].fontClass}`}>
+                      &ldquo;{fontOptions[selectedFont].sample}&rdquo;
+                    </p>
+                    <span className="text-[10px] text-muted-foreground font-mono mt-1.5">
+                      {fontOptions[selectedFont].sub}
+                    </span>
                   </motion.div>
                 </AnimatePresence>
-              </TiltCard>
+              </div>
+
+              {/* Font Selector Tabs */}
+              <div className="grid grid-cols-3 gap-1 bg-background/80 p-1 rounded-xl border border-border/60 dark:border-neutral-800 mt-2 shrink-0">
+                {fontOptions.map((font, idx) => (
+                  <button
+                    key={font.name}
+                    type="button"
+                    onClick={() => setSelectedFont(idx)}
+                    className={`py-1 rounded-lg text-[11px] transition-all truncate px-1 cursor-pointer font-medium ${
+                      selectedFont === idx
+                        ? "bg-primary text-primary-foreground font-bold shadow-xs"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {font.name.split(" ")[0]}
+                  </button>
+                ))}
+              </div>
             </div>
-          </BentoCard>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+          >
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">
+                Image and Video Export
+              </h3>
+              <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Export high quality images and broadcast 60 FPS MP4 video loops directly from GPU.
+              </p>
+            </div>
+
+            {/* Export Simulation Container */}
+            <div className="mt-6 rounded-2xl border border-border/60 dark:border-neutral-800 bg-muted/20 p-3.5 flex flex-col justify-between h-[200px] overflow-hidden">
+              <div className="flex-1 flex flex-col items-center justify-center gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-bold text-foreground">
+                    {activeFormat}
+                  </span>
+                  {isExporting ? (
+                    <span className="inline-flex items-center gap-1 text-[10px] text-amber-500 font-mono font-semibold animate-pulse">
+                      Rendering...
+                    </span>
+                  ) : (
+                    <CheckCircle2 className="size-3.5 text-emerald-500" />
+                  )}
+                </div>
+
+                {/* Progress bar simulation */}
+                <div className="w-full max-w-[160px] h-1.5 bg-muted rounded-full overflow-hidden border border-border/50">
+                  <motion.div
+                    key={isExporting ? "active" : "idle"}
+                    initial={{ width: "0%" }}
+                    animate={{ width: isExporting ? "100%" : "100%" }}
+                    transition={{ duration: isExporting ? 1.1 : 0.2 }}
+                    className="h-full bg-primary rounded-full"
+                  />
+                </div>
+
+                <span className="text-[10px] text-muted-foreground font-mono">
+                  Zero-Knowledge Privacy • 100% Client-Side
+                </span>
+              </div>
+
+              {/* Format Switcher Pills */}
+              <div className="grid grid-cols-3 gap-1.5 mt-3">
+                {(["PNG", "MP4", "GIF"] as const).map((fmt) => (
+                  <button
+                    key={fmt}
+                    type="button"
+                    onClick={() => handleExportSim(fmt)}
+                    className={`py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                      activeFormat === fmt
+                        ? "bg-primary text-primary-foreground shadow-xs font-bold"
+                        : "bg-background/80 text-muted-foreground hover:text-foreground border border-border/60 dark:border-neutral-800"
+                    }`}
+                  >
+                    {isExporting && activeFormat === fmt ? (
+                      <span className="animate-spin size-3 border-2 border-primary-foreground border-t-transparent rounded-full" />
+                    ) : (
+                      <span>{fmt}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
