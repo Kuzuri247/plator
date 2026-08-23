@@ -6,13 +6,14 @@
   --shadow-next: 0 8px 30px rgba(0, 0, 0, 0.1);
 
   --font-inter: var(--font-inter);
-  --font-manrope: var(--font-manrope);
   --font-space: var(--font-space);
+  --font-geist: var(--font-geist);
   --font-roboto: var(--font-roboto);
-  --font-instrument: var(--font-instrument);
+  --font-oswald: var(--font-oswald);
+  --font-manrope: var(--font-manrope);
   --font-poppins: var(--font-poppins);
   --font-playfair: var(--font-playfair);
-  --font-oswald: var(--font-oswald);
+  --font-instrument: var(--font-instrument);
   --font-montserrat: var(--font-montserrat);
   
   --color-card: oklch(var(--card));
@@ -108,8 +109,8 @@
     --success: 0.75 0.2 145;
     --success-foreground: 0.1 0.02 100;
 
-    --border: 0.22 0.02 100;
-    --input: 0.22 0.02 100;
+    --border: 0.27 0.005 106;
+    --input: 0.27 0.005 106;
     --ring: 0.88 0.22 100;
   }
 

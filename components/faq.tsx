@@ -6,66 +6,90 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { HelpCircle } from "lucide-react";
+import { motion } from "motion/react";
 
 const FAQS = [
   {
-    question: "How does the hardware-accelerated WebGL dither engine work?",
+    question: "What is Plator and who is it built for?",
     answer:
-      "Plator compiles a custom GLSL fragment shader directly onto your GPU. The source canvas is uploaded as a texture, and per-pixel luminance is mapped through Bayer threshold matrices (2x2, 4x4, 8x8) or pseudo-random noise functions. Quantization and palette interpolation happen at 60fps in WebGL.",
+      "Plator is a browser-native visual studio built for creators, indie makers, designers, and marketers. It lets you create device mockups, fluid animated mesh gradients, retro dither shaders, and export studio-quality 4K images and 60 FPS MP4 video loops with zero complexity.",
   },
   {
-    question: "Are there any server-side dependencies or data tracking?",
+    question: "What are dither shaders and how do they work?",
     answer:
-      "No. All image processing, shader passes, layer composition, and exports are executed entirely client-side in your browser. Your images and graphic assets never leave your device.",
+      "Dithering is a timeless visual aesthetic that renders color gradients and shadows using stylized pixel and dot-matrix patterns (like 90s cyber aesthetics and vintage displays). Plator processes these shaders live on your GPU at 60 FPS, giving your artwork an authentic retro-modern feel with instant controls.",
   },
   {
-    question: "How does the lossless 4K export work without compression blur?",
+    question: "Is Plator really 100% free and private?",
     answer:
-      "When you trigger an export, Plator renders your stage onto an isolated offscreen canvas scaled by your selected resolution multiplier (1x, 2x Retina, or 4x UHD). Textures and glyphs are rasterized at native pixel density, ensuring razor-sharp edges.",
+      "Yes, completely. Plator runs 100% client-side directly in your browser. None of your uploaded images, compositions, or exported files are ever sent to a remote server or stored in a database. Your data never leaves your device.",
   },
   {
-    question: "Can I customize typography background fills and border rounding?",
+    question: "What export formats and resolutions are supported?",
     answer:
-      "Yes. Selecting any text layer allows you to toggle background badges, adjust fill colors, configure opacity percentages, customize padding, and set corner roundness radii.",
+      "Plator supports lossless 1x, 2x Retina, and 4K UHD resolution exports in PNG and JPEG formats, alongside broadcast-ready 60 FPS MP4 video animations, WebM, and animated GIFs optimized for all social platforms.",
+  },
+  {
+    question: "Can I use Plator exports for commercial work?",
+    answer:
+      "Absolutely. Everything you design and export inside Plator is 100% owned by you. You have full commercial rights for client projects, social media channels, product marketing, SaaS landing pages, and portfolio showcases.",
   },
   {
     question: "Which browsers and devices are supported?",
     answer:
-      "Plator supports any modern browser with WebGL enabled, including Google Chrome, Mozilla Firefox, Apple Safari, Microsoft Edge, and mobile browsers on iOS and Android.",
+      "Plator supports any modern browser with WebGL hardware acceleration enabled, including Google Chrome, Apple Safari, Mozilla Firefox, Microsoft Edge, and Arc across desktop, laptop, and tablet devices.",
   },
 ];
 
 export function FAQ() {
   return (
-    <section id="faq" className="py-20 px-4 max-w-4xl mx-auto">
-      <div className="text-center max-w-xl mx-auto mb-12">
-        <div className="text-xs font-manrope uppercase tracking-wider text-muted-foreground mb-2">
-          Documentation & FAQ
-        </div>
-        <h2 className="text-3xl font-semibold tracking-[-0.02em] text-foreground mb-3">
-          Frequently asked questions.
-        </h2>
-        <p className="text-sm text-muted-foreground font-normal leading-relaxed">
-          Everything you need to know about the WebGL dither shader studio and layer workflows.
-        </p>
-      </div>
+    <section id="faq" className="w-full py-24 relative">
+      <div className="w-[92%] max-w-3xl mx-auto">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-xl mx-auto mb-12 md:mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border/80 dark:border-neutral-800 bg-muted/40 text-xs font-medium font-manrope text-muted-foreground mb-4">
+            <span>Got Questions?</span>
+          </div>
+          <h2 className="text-4xl font-bold tracking-tight text-foreground">
+            Frequently asked questions
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-muted-foreground font-manrope ">
+            Everything you need to know about Plator, shader workflows, privacy.
+          </p>
+        </motion.div>
 
-      <Accordion type="single" collapsible className="space-y-3">
-        {FAQS.map((faq, index) => (
-          <AccordionItem
-            key={index}
-            value={`faq-${index}`}
-            className="border border-border/80 rounded-xl px-5 bg-card/60 shadow-xs"
-          >
-            <AccordionTrigger className="text-sm font-semibold text-foreground py-4 hover:no-underline text-left">
-              {faq.question}
-            </AccordionTrigger>
-            <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4 pt-1">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+        {/* Accordion List with Rounded Styling and Generous Padding */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <Accordion type="single" collapsible className="space-y-3.5">
+            {FAQS.map((faq, index) => (
+              <AccordionItem
+                key={index}
+                value={`faq-${index}`}
+                className="border border-border/70 dark:border-neutral-800 rounded-2xl px-5 sm:px-6 bg-card/60 backdrop-blur-xl shadow-xs hover:border-primary/40 transition-colors duration-200"
+              >
+                <AccordionTrigger className="text-sm sm:text-base font-semibold font-manrope text-foreground py-4 sm:py-5 hover:no-underline text-left cursor-pointer">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-xs sm:text-sm text-muted-foreground font-manrope leading-relaxed pb-5 pt-1">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </motion.div>
+      </div>
     </section>
   );
 }

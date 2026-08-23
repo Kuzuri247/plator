@@ -1,138 +1,139 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "./ui/button";
-import { motion, AnimatePresence } from "motion/react";
-import { XPost, LinkedInPost, InstagramPost } from "./posts";
-import { LeftHeroPattern, RightHeroPattern } from "./patterns";
+import { motion } from "motion/react";
+import { Layers, Cpu, Video, Download } from "lucide-react";
 
 export const Hero = () => {
-  const [activeSlide, setActiveSlide] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % 3);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <section className="relative w-[95%] md:w-[80%] mx-auto min-h-auto md:min-h-[90vh] flex items-center justify-center pt-22 pb-12 md:pb-10 bg-background">
-      <div className="relative z-10 h-full w-full flex flex-col justify-center ">
-        <div className="absolute max-sm:hidden -top-3 -left-3 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 border-foreground z-30" />
-        <div className="absolute max-sm:hidden -top-3 -right-3 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 border-foreground z-30" />
-        <div className="absolute max-sm:hidden -bottom-3 -left-3 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 border-foreground z-30" />
-        <div className="absolute max-sm:hidden -bottom-3 -right-3 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 border-foreground z-30" />
+    <section className="relative w-full pt-32 pb-24 md:pt-40 overflow-hidden flex flex-col items-center">
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-2 dark:border-neutral-700 bg-background w-full relative z-20 shadow-next dark:shadow-white/50">
-          <div className="relative p-6 md:p-12 xl:p-16 flex flex-col justify-center border-r-0 lg:border-r-2 border-b-2 lg:border-b-0 dark:border-neutral-800 overflow-hidden min-h-[400px] lg:min-h-[600px]">
-            <LeftHeroPattern />
 
-            <div className="relative z-10">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-block mb-4 md:mb-6 px-3 py-1 border border-border text-muted-foreground text-[10px] md:text-xs uppercase tracking-widest bg-background/50 backdrop-blur-sm"
-              >
-                v2.0 WebGL Studio
-              </motion.div>
+      <div className="w-[92%] max-w-5xl mx-auto flex flex-col items-center text-center relative z-10">
+        {/* Pill Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border/70 bg-background/80 backdrop-blur-xl text-xs font-medium text-muted-foreground mb-6 shadow-xs hover:border-primary/40 transition-colors"
+        >
+          <span className="font-manrope">Next-Gen Visual & WebGL Studio</span>
+          <span className="text-border">|</span>
+          <span className="text-foreground font-semibold">100% Free & Open Source</span>
+        </motion.div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl md:text-5xl xl:text-7xl font-bold mb-4 md:mb-6 tracking-tighter leading-[0.9] text-foreground font-display uppercase"
-              >
-                Create
-                <br />
-                <span className="text-primary/95">Beyond Static</span>
-              </motion.h1>
+        {/* Main Centered Artistic Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="sm:text-6xl md:text-4xl lg:text-7xl font-semibold tracking-tighter max-w-4xl text-balance"
+        >
+          Everyone will be a{" "}
+          <span className="font-instrument tracking-tight font-normal text-primary">
+            creator
+          </span>{" "}
+          with Plator
+        </motion.h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-sm md:text-lg text-muted-foreground mb-8 md:mb-10 leading-relaxed max-w-md font-light font-manrope"
-              >
-                Design captivating visual assets with real-time WebGL mesh gradients,
-                animated noise shaders, studio textures, and instant MP4/GIF export.
-              </motion.p>
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-6 text-lg text-muted-foreground text-wrap max-w-2xl font-manrope font-normal leading-relaxed"
+        >
+          The all-in-one visual studio for modern creators. Design device mockups, real-time WebGL mesh gradients, retro dither shaders, and export studio-quality images and animations in seconds.
+        </motion.p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <Link href="/editor">
-                  <Button
-                    size="lg"
-                    variant="primary"
-                    className="h-14 px-8 text-base font-bold uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-300 ease-in-out shadow-2xl cursor-pointer w-full md:w-auto"
-                  >
-                    Open Editor ⚡
-                  </Button>
-                </Link>
-              </motion.div>
-            </div>
-          </div>
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto"
+        >
+          <Link href="/editor" className="w-full sm:w-auto">
+            <Button
+              size="lg"
+              className="w-full flex sm:w-auto h-12 px-4 rounded-lg text-sm font-semibold font-manrope bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 cursor-pointer gap-2"
+            >
 
-          <div className="relative min-h-[350px] lg:min-h-[600px] bg-background flex items-center justify-center overflow-hidden p-6 max-sm:p-0 md:p-8">
-            <RightHeroPattern />
+              <span className="flex justify-center items-center gap-2">
+                Start creating
+              </span>
+            </Button>
+          </Link>
 
-            <div className="relative z-10 w-full max-w-md flex flex-col items-center transform scale-90 sm:scale-100 origin-center">
-              <AnimatePresence mode="wait">
-                {activeSlide === 0 && (
-                  <motion.div
-                    key="x-container"
-                    initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full flex flex-col gap-2"
-                  >
-                    <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground pl-1">
-                      Twitter / X
-                    </div>
-                    <XPost />
-                  </motion.div>
-                )}
-                {activeSlide === 1 && (
-                  <motion.div
-                    key="linkedin-container"
-                    initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full flex flex-col items-start gap-2"
-                  >
-                    <div className="text-xs font-bold uppercase tracking-widest text-[#0A66C2] pl-1">
-                      LinkedIn
-                    </div>
-                    <LinkedInPost />
-                  </motion.div>
-                )}
-                {activeSlide === 2 && (
-                  <motion.div
-                    key="instagram-container"
-                    initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full flex flex-col items-start gap-2"
-                  >
-                    <div className="text-xs font-bold uppercase tracking-widest bg-linear-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] bg-clip-text text-transparent pl-1">
-                      Instagram
-                    </div>
-                    <InstagramPost />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+
+        </motion.div>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 40, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="w-[94%] max-w-6xl mx-auto mt-14 md:mt-20 relative z-20"
+      >
+        <div className="absolute -inset-1.5 bg-linear-to-b from-primary/30 via-primary/5 to-transparent rounded-[28px] md:rounded-[36px] blur-xl opacity-60 dark:opacity-40 -z-10" />
+
+        <div className="w-full rounded-2xl p-2 border border-border/80 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800 backdrop-blur-2xl shadow-2xl overflow-hidden group">
+
+
+          <div className="relative rounded-xl w-full overflow-hidden bg-neutral-100 dark:bg-neutral-950">
+            <Image
+              src="/editor-dark.png"
+              alt="Plator Visual Studio Workspace Interface (Dark Mode)"
+              width={1919}
+              height={999}
+              priority
+              className="hidden dark:block w-full h-auto object-cover rounded-xl transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+              sizes="(max-width: 1280px) 95vw, 1200px"
+            />
+            <Image
+              src="/editor-light.png"
+              alt="Plator Visual Studio Workspace Interface (Light Mode)"
+              width={1919}
+              height={992}
+              priority
+              className="block dark:hidden w-full h-auto object-cover rounded-xl transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+              sizes="(max-width: 1280px) 95vw, 1200px"
+            />
           </div>
         </div>
-      </div>
+      </motion.div>
+
+      {/* Feature Capabilities Strip (Like Cortex & Voiceflow bottom strip) */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        className="w-[90%] max-w-4xl mx-auto mt-12 md:mt-16 flex flex-col items-center text-center"
+      >
+        <p className="text-xs uppercase tracking-wide text-muted-foreground font-manrope font-semibold mb-5">
+          Empowering creators with modern browser-native technology
+        </p>
+
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs font-manrope font-medium text-muted-foreground">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 dark:border-neutral-800 bg-card/40">
+            <Cpu className="size-3.5 text-primary" />
+            <span>WebGL 2.0 GPU Engine</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 dark:border-neutral-800 bg-card/40">
+            <Layers className="size-3.5 text-primary" />
+            <span>Bayer Matrix Dithering</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 dark:border-neutral-800 bg-card/40">
+            <Video className="size-3.5 text-primary" />
+            <span>Client-Side FFmpeg WASM</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 dark:border-neutral-800 bg-card/40">
+            <Download className="size-3.5 text-primary" />
+            <span>Lossless Snapshots</span>
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 };

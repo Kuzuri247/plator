@@ -71,11 +71,11 @@ export function RightPanel({ onDownload }: RightPanelProps) {
   const [pictureSubTab, setPictureSubTab] = useState<"wallpapers" | "memes">(
     "wallpapers"
   );
-  const [colorMode, setColorMode] = useState<"multiple" | "mono">("multiple");
-  const [monoColor, setMonoColor] = useState<string>(
+  const [colorMode, setColorMode] = useState<"gradient" | "solid">("gradient");
+  const [solidColor, setSolidColor] = useState<string>(
     () => meshConfig.colors[0] || "#18181b"
   );
-  const [prevMultiColors, setPrevMultiColors] = useState<string[]>(
+  const [prevGradientColors, setPrevGradientColors] = useState<string[]>(
     () => meshConfig.colors
   );
 
@@ -84,8 +84,8 @@ export function RightPanel({ onDownload }: RightPanelProps) {
 
   const handleRandomMesh = () => {
     const randomColors = generateRandomMeshColors();
-    setPrevMultiColors(randomColors);
-    setColorMode("multiple");
+    setPrevGradientColors(randomColors);
+    setColorMode("gradient");
     setBackground("mesh");
     setMeshConfig({ colors: randomColors });
   };
@@ -93,40 +93,40 @@ export function RightPanel({ onDownload }: RightPanelProps) {
   const handleColorChange = (index: number, newColor: string) => {
     const updatedColors = [...meshConfig.colors];
     updatedColors[index] = newColor;
-    setPrevMultiColors(updatedColors);
+    setPrevGradientColors(updatedColors);
     setBackground("mesh");
     setMeshConfig({ colors: updatedColors });
   };
 
-  const handleModeChange = (mode: "multiple" | "mono") => {
+  const handleModeChange = (mode: "gradient" | "solid") => {
     setColorMode(mode);
-    if (mode === "mono") {
-      const isAlreadyMono = meshConfig.colors.every(
+    if (mode === "solid") {
+      const isAlreadySolid = meshConfig.colors.every(
         (c) => c.toLowerCase() === meshConfig.colors[0].toLowerCase()
       );
-      if (!isAlreadyMono) {
-        setPrevMultiColors(meshConfig.colors);
+      if (!isAlreadySolid) {
+        setPrevGradientColors(meshConfig.colors);
       }
-      const targetColor = monoColor || meshConfig.colors[0] || "#18181b";
+      const targetColor = solidColor || meshConfig.colors[0] || "#18181b";
       setBackground("mesh");
       setMeshConfig({
         colors: [targetColor, targetColor, targetColor, targetColor, targetColor],
       });
     } else {
       const colorsToRestore =
-        prevMultiColors.length === 5 &&
-        prevMultiColors.some(
-          (c) => c.toLowerCase() !== prevMultiColors[0].toLowerCase()
+        prevGradientColors.length === 5 &&
+        prevGradientColors.some(
+          (c) => c.toLowerCase() !== prevGradientColors[0].toLowerCase()
         )
-          ? prevMultiColors
+          ? prevGradientColors
           : DEFAULT_MESH_CONFIG.colors;
       setBackground("mesh");
       setMeshConfig({ colors: [...colorsToRestore] });
     }
   };
 
-  const handleMonoColorChange = (newColor: string) => {
-    setMonoColor(newColor);
+  const handleSolidColorChange = (newColor: string) => {
+    setSolidColor(newColor);
     setBackground("mesh");
     setMeshConfig({
       colors: [newColor, newColor, newColor, newColor, newColor],
@@ -228,8 +228,8 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           type="button"
                           onClick={() => {
                             setBackground("mesh");
-                            setPrevMultiColors([...pal.colors]);
-                            setColorMode("multiple");
+                            setPrevGradientColors([...pal.colors]);
+                            setColorMode("gradient");
                             setMeshConfig({ colors: [...pal.colors] });
                           }}
                           className={`group relative rounded-lg p-1.5 border transition-all text-center bg-background/50 hover:scale-[1.03] hover:z-10 hover:shadow-md cursor-pointer ${isSelected
@@ -266,30 +266,30 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                     <div className="flex items-center bg-muted/60 p-0.5 rounded-lg shrink-0">
                       <button
                         type="button"
-                        onClick={() => handleModeChange("multiple")}
+                        onClick={() => handleModeChange("gradient")}
                         className={`px-2.5 py-1 rounded-md text-[11px] font-medium font-manrope transition-all cursor-pointer ${
-                          colorMode === "multiple"
+                          colorMode === "gradient"
                             ? "bg-background text-foreground shadow-xs font-semibold"
                             : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
-                        Multiple
+                        Gradient
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleModeChange("mono")}
+                        onClick={() => handleModeChange("solid")}
                         className={`px-2.5 py-1 rounded-md text-[11px] font-medium font-manrope transition-all cursor-pointer ${
-                          colorMode === "mono"
+                          colorMode === "solid"
                             ? "bg-background text-foreground shadow-xs font-semibold"
                             : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
-                        Mono
+                        Solid
                       </button>
                     </div>
                   </div>
 
-                  {colorMode === "multiple" ? (
+                  {colorMode === "gradient" ? (
                     <div className="flex items-center justify-between gap-1 pl-1 pr-2">
                       {meshConfig.colors.map((color, idx) => (
                         <div
@@ -323,7 +323,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                         <div
                           className={`relative size-8 rounded-lg overflow-hidden border shadow-xs hover:scale-105 transition-transform ${
                             !["#09090b", "#64748b", "#bae6fd", "#f8fafc"].includes(
-                              monoColor.toLowerCase()
+                              solidColor.toLowerCase()
                             )
                               ? "border-primary ring-2 ring-primary/80"
                               : "border-border/80"
@@ -331,13 +331,13 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                         >
                           <div
                             className="absolute inset-0"
-                            style={{ backgroundColor: monoColor }}
+                            style={{ backgroundColor: solidColor }}
                           />
                           <input
                             type="color"
-                            value={monoColor}
+                            value={solidColor}
                             onChange={(e) =>
-                              handleMonoColorChange(e.target.value)
+                              handleSolidColorChange(e.target.value)
                             }
                             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-0"
                           />
@@ -355,12 +355,12 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                         { name: "Snow", color: "#f8fafc" },
                       ].map((item) => {
                         const isSelected =
-                          monoColor.toLowerCase() === item.color.toLowerCase();
+                          solidColor.toLowerCase() === item.color.toLowerCase();
                         return (
                           <button
                             key={item.color}
                             type="button"
-                            onClick={() => handleMonoColorChange(item.color)}
+                            onClick={() => handleSolidColorChange(item.color)}
                             className="flex flex-col items-center gap-1 cursor-pointer group"
                           >
                             <div

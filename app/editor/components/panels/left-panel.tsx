@@ -55,6 +55,8 @@ const getFontFamilyStyle = (font: string) => {
       return "var(--font-inter), Inter, sans-serif";
     case "Manrope":
       return "var(--font-manrope), Manrope, sans-serif";
+    case "Geist":
+      return "var(--font-geist), Geist, sans-serif";
     case "Space Grotesk":
       return "var(--font-space), 'Space Grotesk', sans-serif";
     case "Roboto":

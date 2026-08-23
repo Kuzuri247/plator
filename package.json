@@ -70,6 +70,7 @@
     "recharts": "2.15.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
+    "tech-stack-icons": "^3.7.1",
     "vaul": "^1.1.2",
     "zod": "^4.1.12",
     "zustand": "^5.0.10"
