@@ -82,7 +82,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="md:col-span-7 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-7 rounded-3xl border border-border dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -139,7 +139,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="md:col-span-5 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-5 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -196,7 +196,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -261,7 +261,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -318,7 +318,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">

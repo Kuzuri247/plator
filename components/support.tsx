@@ -139,7 +139,6 @@ export const Support: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Unified Abstract Cybernetic Console (Seamless, Borderless & Full Canvas Integration) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -147,9 +146,7 @@ export const Support: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="relative w-full overflow-hidden"
         >
-          {/* 3-Column Abstract Interactive Core */}
-          <div className="grid grid-cols-1 lg:grid-cols-10 items-center px-24">
-            {/* Left Pillar: Abstract Manifesto & Studio Guarantees */}
+          <div className="grid grid-cols-1 lg:grid-cols-10 items-center px-4 sm:px-8 lg:px-12 xl:px-24 gap-8 lg:gap-6">
             <div className="lg:col-span-3 flex flex-col justify-between space-y-5">
               <div>
 
@@ -182,19 +179,14 @@ export const Support: React.FC = () => {
               </div>
             </div>
 
-            {/* Center Focal Point: The Kinetic Fuel Reactor & Interactive QR/UPI HUD */}
-            <div className="lg:col-span-4 flex flex-col items-center justify-center relative">
-              {/* Concentric Center Glow Orb */}
-              <div className="relative w-full max-w-[300px] aspect-square rounded-full flex items-center justify-center p-6 border border-primary/20 dark:border-primary/30 bg-linear-to-b from-primary/10 via-background to-background/80 shadow-[0_0_50px_-12px_rgba(var(--primary),0.3)]">
-                {/* Rotating Dashed Perimeter */}
+            <div className="lg:col-span-4 flex flex-col items-center justify-center relative my-2 lg:my-0">
+              <div className="relative w-full max-w-[280px] sm:max-w-[300px] aspect-square rounded-full flex items-center justify-center p-6 border border-primary/20 dark:border-primary/30 bg-linear-to-b from-primary/10 via-background to-background/80 shadow-[0_0_50px_-12px_rgba(var(--primary),0.3)]">
                 <div className="absolute inset-0 rounded-full border border-dashed border-primary/40 animate-[spin_40s_linear_infinite] pointer-events-none" />
                 <div className="absolute inset-3 rounded-full border border-border/60 dark:border-neutral-800 pointer-events-none" />
 
-                {/* Inner Interactive Reactor Hub */}
                 <div className="relative z-10 flex flex-col items-center text-center w-full">
                   <AnimatePresence mode="wait">
                     {showQR ? (
-                      /* Mode A: Holographic QR Viewfinder */
                       <motion.div
                         key="qr-hologram"
                         initial={{ opacity: 0, scale: 0.9, rotateY: 90 }}
@@ -204,7 +196,6 @@ export const Support: React.FC = () => {
                         className="flex flex-col items-center"
                       >
                         <div className="relative p-2.5 bg-white rounded-2xl shadow-2xl border-2 border-primary/50 mb-2.5 group">
-                          {/* Corner Reticle Brackets */}
                           <div className="absolute -top-1 -left-1 size-3 border-t-2 border-l-2 border-primary" />
                           <div className="absolute -top-1 -right-1 size-3 border-t-2 border-r-2 border-primary" />
                           <div className="absolute -bottom-1 -left-1 size-3 border-b-2 border-l-2 border-primary" />
@@ -219,7 +210,7 @@ export const Support: React.FC = () => {
                           />
                         </div>
 
-                        <span className="text-[11px] font-mono text-muted-foreground mb-1.5">
+                        <span className="text-[11px] font-inter text-muted-foreground mb-1.5">
                           GPay · PhonePe · Paytm · UPI
                         </span>
 
@@ -232,7 +223,6 @@ export const Support: React.FC = () => {
                         </button>
                       </motion.div>
                     ) : (
-                      /* Mode B: Direct UPI & Identity Hub */
                       <motion.div
                         key="upi-core"
                         initial={{ opacity: 0, scale: 0.9, rotateY: -90 }}
@@ -241,7 +231,6 @@ export const Support: React.FC = () => {
                         transition={{ duration: 0.35 }}
                         className="flex flex-col items-center w-full"
                       >
-                        {/* Indie Maker Profile Photo */}
                         <div className="relative mb-2.5 group">
                           <div className="size-20 rounded-2xl bg-linear-to-tr from-primary via-purple-500 to-amber-400 p-[2px] shadow-lg">
                             <div className="size-full bg-background rounded-[14px] overflow-hidden relative">
@@ -262,12 +251,11 @@ export const Support: React.FC = () => {
                           Indie Developer & Creator
                         </p>
 
-                        {/* Interactive One-Click UPI Copy Capsule */}
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleCopyUPI()}
-                          className="w-[80%] flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-background/80 dark:bg-neutral-900 border border-border/80 dark:border-neutral-800 hover:border-primary text-xs font-mono transition-all cursor-pointer shadow-xs group"
+                          className="w-full max-w-[240px] flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-background/80 dark:bg-neutral-900 border border-border/80 dark:border-neutral-800 hover:border-primary text-xs font-inter transition-all cursor-pointer shadow-xs group"
                         >
                           <span className="truncate text-foreground font-semibold">
                             {upiId}
@@ -287,14 +275,13 @@ export const Support: React.FC = () => {
                           </div>
                         </motion.button>
 
-                        {/* QR Scanner Trigger */}
                         <button
                           type="button"
                           onClick={() => setShowQR(true)}
-                          className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                          className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:underline transition-colors cursor-pointer"
                         >
                           <QrCode className="size-3.5 text-primary" />
-                          <span>Show UPI / Scan QR</span>
+                          <span>Show QR Code</span>
                         </button>
                       </motion.div>
                     )}

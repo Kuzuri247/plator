@@ -63,6 +63,8 @@ export interface TextStyle {
   fontSize: number;
   fontFamily: string;
   fontWeight: string;
+  letterSpacing?: number;
+  writingMode?: "horizontal" | "vertical" | "vertical-upright";
   color: string;
   colorVia?: string;
   colorEnd?: string;
@@ -91,6 +93,8 @@ export const DEFAULT_TEXT_STYLE: TextStyle = {
   fontSize: 48,
   fontFamily: "Inter",
   fontWeight: "600",
+  letterSpacing: 0,
+  writingMode: "horizontal",
   color: "#ffffff",
   colorVia: "#cbd5e1",
   colorEnd: "#64748b",
@@ -161,6 +165,7 @@ export interface EditorCanvasProps {
   isDragging: boolean;
   isCropping: boolean;
   snapGuides?: { x: number | null; y: number | null };
+  showGrid?: boolean;
   onElementMouseDown: (e: React.PointerEvent, elementId: string) => void;
   onEmptyClick: () => void;
   onMouseMove: (e: React.PointerEvent) => void;

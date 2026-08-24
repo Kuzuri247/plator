@@ -130,6 +130,15 @@ export const TextLayer = memo(
       ? "1px solid rgba(255, 255, 255, 0.3)"
       : undefined;
 
+    // Writing Mode Computation
+    const writingMode = element.style.writingMode || "horizontal";
+    const writingModeStyle: React.CSSProperties =
+      writingMode === "vertical"
+        ? { writingMode: "vertical-rl", textOrientation: "mixed" }
+        : writingMode === "vertical-upright"
+        ? { writingMode: "vertical-rl", textOrientation: "upright" }
+        : { writingMode: "horizontal-tb" };
+
     return (
       <div
         className={`absolute select-none transition-all touch-none ${
@@ -184,7 +193,9 @@ export const TextLayer = memo(
             fontSize: element.style.fontSize,
             fontFamily: element.style.fontFamily,
             fontWeight: element.style.fontWeight,
+            letterSpacing: `${element.style.letterSpacing ?? 0}px`,
             textShadow: element.style.textShadow,
+            ...writingModeStyle,
             ...textGradientStyle,
             ...getEffectStyles(),
           }}

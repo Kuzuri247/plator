@@ -234,7 +234,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           }}
                           className={`group relative rounded-lg p-1.5 border transition-all text-center bg-background/50 hover:scale-[1.03] hover:z-10 hover:shadow-md cursor-pointer ${isSelected
                             ? "border-primary ring-1 ring-primary/60 bg-primary/5 shadow-xs font-semibold"
-                            : "border-border/70 hover:border-primary/80 hover:ring-1 hover:ring-primary/50"
+                            : "border-neutral-300 dark:border-neutral-700 hover:border-primary/80 hover:ring-1 hover:ring-primary/50"
                             }`}
                         >
                           <div className="flex h-5 w-full rounded overflow-hidden mb-1 shadow-xs">
@@ -267,7 +267,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                       <button
                         type="button"
                         onClick={() => handleModeChange("gradient")}
-                        className={`px-2.5 py-1 rounded-md text-[11px] font-medium font-manrope transition-all cursor-pointer ${
+                        className={`px-2.5 py-0.5 rounded-md text-[11px] font-medium font-manrope transition-all cursor-pointer ${
                           colorMode === "gradient"
                             ? "bg-background text-foreground shadow-xs font-semibold"
                             : "text-muted-foreground hover:text-foreground"
@@ -278,7 +278,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                       <button
                         type="button"
                         onClick={() => handleModeChange("solid")}
-                        className={`px-2.5 py-1 rounded-md text-[11px] font-medium font-manrope transition-all cursor-pointer ${
+                        className={`px-2.5 py-0.5 rounded-md text-[11px] font-medium font-manrope transition-all cursor-pointer ${
                           colorMode === "solid"
                             ? "bg-background text-foreground shadow-xs font-semibold"
                             : "text-muted-foreground hover:text-foreground"
@@ -296,7 +296,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           key={idx}
                           className="flex flex-col items-center gap-1"
                         >
-                          <div className="relative size-8 rounded-lg overflow-hidden border border-border/80 shadow-xs hover:scale-105 transition-transform">
+                          <div className="relative size-8 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 shadow-xs hover:scale-105 transition-transform">
                             <div
                               className="absolute inset-0"
                               style={{ backgroundColor: color }}
@@ -321,7 +321,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                       {/* Slot 1: Custom color picker */}
                       <div className="flex flex-col items-center gap-1">
                         <div
-                          className={`relative size-8 rounded-lg overflow-hidden border shadow-xs hover:scale-105 transition-transform ${
+                          className={`relative size-8 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 shadow-xs hover:scale-105 transition-transform ${
                             !["#09090b", "#64748b", "#bae6fd", "#f8fafc"].includes(
                               solidColor.toLowerCase()
                             )
@@ -658,7 +658,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           onClick={() => setOverlayConfig({ pattern: p.id })}
                           className={`group relative aspect-video rounded-lg overflow-hidden border transition-all duration-200 hover:scale-[1.03] hover:z-20 hover:shadow-xl cursor-pointer bg-muted/30 ${isSelected
                               ? "border-primary ring-2 ring-primary/80 shadow-lg"
-                              : "border-border/70 hover:border-primary hover:ring-2 hover:ring-primary/60"
+                              : "border-neutral-300 dark:border-neutral-700 hover:border-primary hover:ring-2 hover:ring-primary/60"
                             }`}
                         >
                           <div className="absolute inset-0 w-full h-full">
@@ -733,7 +733,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           onClick={() => setOverlayConfig({ texture: t.id })}
                           className={`group relative aspect-video rounded-lg overflow-hidden border transition-all duration-200 hover:scale-[1.03] hover:z-20 hover:shadow-xl cursor-pointer bg-muted/30 ${isSelected
                               ? "border-primary ring-2 ring-primary/80 shadow-lg"
-                              : "border-border/70 hover:border-primary hover:ring-2 hover:ring-primary/60"
+                              : "border-neutral-300 dark:border-neutral-700 hover:border-primary hover:ring-2 hover:ring-primary/60"
                             }`}
                         >
                           <div className="absolute inset-0 w-full h-full">

@@ -232,6 +232,12 @@ export const TEXT_EFFECTS = [
   { name: "Blur", value: "blur" },
 ];
 
+export const WRITING_MODES = [
+  { id: "horizontal", name: "Horizontal", arrow: "→", css: "horizontal-tb", orientation: "mixed" },
+  { id: "vertical", name: "Vertical (Down)", arrow: "↓", css: "vertical-rl", orientation: "mixed" },
+  { id: "vertical-upright", name: "Vertical (Upright)", arrow: "⇊", css: "vertical-rl", orientation: "upright" },
+];
+
 export const CLIP_PATHS = [
   { name: "None", value: "none" },
   { name: "Circle", value: "circle(50% at 50% 50%)" },

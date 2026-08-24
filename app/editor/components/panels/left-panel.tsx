@@ -44,6 +44,7 @@ import {
   GRADIENT_DIRECTIONS,
   TEXT_GRADIENT_PRESETS,
   BACKGROUND_GRADIENT_PRESETS,
+  WRITING_MODES,
 } from "../../values";
 import { cn } from "@/lib/utils";
 import { useStore } from "../../store/use-store";
@@ -644,7 +645,7 @@ export function LeftPanel({
                             </div>
 
                             {/* Row 3: Color Palette Settings (Swatches & Swap) in Middle */}
-                            <div className="flex items-center justify-between p-2 rounded-lg bg-muted/40 border border-border/60">
+                            <div className="flex items-center justify-between p-2 rounded-lg bg-muted/40 border border-neutral-300 dark:border-neutral-700">
                               {/* Background Color */}
                               <div className="flex items-center gap-2">
                                 <div className="relative size-7 rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-700 shrink-0 hover:scale-105 transition-transform shadow-xs">
@@ -814,8 +815,7 @@ export function LeftPanel({
                           Typography
                         </Label>
 
-                        {/* Font Family & Weight */}
-                        <div className="grid grid-cols-2 gap-4 font-manrope *font-semibold">
+                        <div className="grid grid-cols-2 gap-4 font-manrope font-semibold *:pr-1">
                           <div className="space-y-1.5 min-w-0">
                             <Label className="text-xs font-medium text-muted-foreground">
                               Font Family
@@ -847,6 +847,7 @@ export function LeftPanel({
                             </Select>
                           </div>
 
+                          {/* (1,2) Font Weight */}
                           <div className="space-y-1.5 min-w-0">
                             <Label className="text-xs font-medium text-muted-foreground">
                               Font Weight
@@ -873,9 +874,50 @@ export function LeftPanel({
                               </SelectContent>
                             </Select>
                           </div>
+
+                          <div className="space-y-2 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <Label className="text-xs font-medium text-muted-foreground">
+                                Font Size
+                              </Label>
+                              <span className="text-xs text-muted-foreground">
+                                {textStyle.fontSize}px
+                              </span>
+                            </div>
+                            <Slider
+                              value={[textStyle.fontSize]}
+                              onValueChange={([v]) =>
+                                updateSelected({ fontSize: v })
+                              }
+                              min={12}
+                              max={120}
+                              step={1}
+                              className="w-full"
+                            />
+                          </div>
+
+                          <div className="space-y-2 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <Label className="text-xs font-medium text-muted-foreground">
+                                Tracking
+                              </Label>
+                              <span className="text-xs text-muted-foreground">
+                                {textStyle.letterSpacing ?? 0}px
+                              </span>
+                            </div>
+                            <Slider
+                              value={[textStyle.letterSpacing ?? 0]}
+                              onValueChange={([v]) =>
+                                updateSelected({ letterSpacing: v })
+                              }
+                              min={-5}
+                              max={30}
+                              step={0.5}
+                              className="w-full"
+                            />
+                          </div>
                         </div>
 
-                        {/* Text Effects (Individual square cards evenly distributed in a row) */}
                         <div className="space-y-1.5">
                           <Label className="text-xs font-manrope text-muted-foreground">
                             Text Effects
@@ -939,33 +981,11 @@ export function LeftPanel({
                           </div>
                         </div>
 
-                        {/* Font Size */}
-                        <div className="space-y-3 font-manrope font-semibold">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Font Size
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {textStyle.fontSize}px
-                            </span>
-                          </div>
-                          <Slider
-                            value={[textStyle.fontSize]}
-                            onValueChange={([v]) =>
-                              updateSelected({ fontSize: v })
-                            }
-                            min={12}
-                            max={120}
-                            step={1}
-                            className="w-full"
-                          />
-                        </div>
-
                         {/* Text Color & Gradient Section */}
                         <div className="space-y-3 font-manrope font-semibold">
                           <div className="flex items-center justify-between">
                             <Label className="text-xs text-muted-foreground">
-                              Color Gradient
+                              Text Gradient
                             </Label>
                             {/* Mode Tabs */}
                             <div className="flex items-center bg-muted/60 p-0.5 rounded-md border border-neutral-300 dark:border-neutral-700">
@@ -1094,7 +1114,7 @@ export function LeftPanel({
                                           value={dir.css}
                                           className="text-xs py-1.5 cursor-pointer"
                                         >
-                                          <span className="font-mono mr-1.5">{dir.arrow}</span>
+                                          <span className="font-manrope text-[11px]">{dir.arrow}</span>
                                           <span>{dir.name}</span>
                                         </SelectItem>
                                       ))}
@@ -1243,56 +1263,85 @@ export function LeftPanel({
                             />
                           </div>
 
-                          {/* 3D Preset for Text */}
-                          <div className="space-y-1.5 min-w-0 pt-1">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              3D Preset
-                            </Label>
-                            <Select
-                              value={
-                                TRANSFORM_3D_PRESETS.find(
-                                  (p) =>
-                                    p.id !== "custom" &&
-                                    p.rotateX === textStyle.rotateX &&
-                                    p.rotateY === textStyle.rotateY &&
-                                    p.rotate === textStyle.rotate
-                                )?.id || "custom"
-                              }
-                              onValueChange={(presetId) => {
-                                const preset = TRANSFORM_3D_PRESETS.find(
-                                  (p) => p.id === presetId
-                                );
-                                if (preset && preset.id !== "custom") {
-                                  updateSelected({
-                                    rotateX: preset.rotateX,
-                                    rotateY: preset.rotateY,
-                                    rotate: preset.rotate,
-                                  });
+                          <div className="grid grid-cols-2 gap-4 font-manrope font-semibold">
+                             <div className="space-y-1.5 min-w-0">
+                              <Label className="text-xs font-medium text-muted-foreground truncate block">
+                                3D Preset
+                              </Label>
+                              <Select
+                                value={
+                                  TRANSFORM_3D_PRESETS.find(
+                                    (p) =>
+                                      p.id !== "custom" &&
+                                      p.rotateX === textStyle.rotateX &&
+                                      p.rotateY === textStyle.rotateY &&
+                                      p.rotate === textStyle.rotate
+                                  )?.id || "custom"
                                 }
-                              }}
-                            >
-                              <SelectTrigger className="h-8 w-full text-xs">
-                                <SelectValue placeholder="Custom" />
-                              </SelectTrigger>
-                              <SelectContent className="text-xs max-h-56">
-                                <SelectItem
-                                  value="custom"
-                                  className="text-xs py-1.5 cursor-pointer text-muted-foreground"
-                                  disabled
-                                >
-                                  Custom
-                                </SelectItem>
-                                {TRANSFORM_3D_PRESETS.map((preset) => (
+                                onValueChange={(presetId) => {
+                                  const preset = TRANSFORM_3D_PRESETS.find(
+                                    (p) => p.id === presetId
+                                  );
+                                  if (preset && preset.id !== "custom") {
+                                    updateSelected({
+                                      rotateX: preset.rotateX,
+                                      rotateY: preset.rotateY,
+                                      rotate: preset.rotate,
+                                    });
+                                  }
+                                }}
+                              >
+                                <SelectTrigger className="h-8 w-full text-xs">
+                                  <SelectValue placeholder="Custom" />
+                                </SelectTrigger>
+                                <SelectContent className="text-xs max-h-56">
                                   <SelectItem
-                                    key={preset.id}
-                                    value={preset.id}
-                                    className="text-xs py-1.5 cursor-pointer"
+                                    value="custom"
+                                    className="text-xs py-1.5 cursor-pointer text-muted-foreground"
+                                    disabled
                                   >
-                                    {preset.name}
+                                    Custom
                                   </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                                  {TRANSFORM_3D_PRESETS.map((preset) => (
+                                    <SelectItem
+                                      key={preset.id}
+                                      value={preset.id}
+                                      className="text-xs py-1.5 cursor-pointer"
+                                    >
+                                      {preset.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-1.5 min-w-0">
+                              <Label className="text-xs font-medium text-muted-foreground truncate block">
+                                Writing Mode
+                              </Label>
+                              <Select
+                                value={textStyle.writingMode || "horizontal"}
+                                onValueChange={(val) =>
+                                  updateSelected({ writingMode: val })
+                                }
+                              >
+                                <SelectTrigger className="h-8 w-full text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="text-xs max-h-56">
+                                  {WRITING_MODES.map((mode) => (
+                                    <SelectItem
+                                      key={mode.id}
+                                      value={mode.id}
+                                      className="text-xs py-1.5 cursor-pointer"
+                                    >
+                                      <span className="font-manrope text-[11px]">{mode.arrow}</span>
+                                      <span>{mode.name}</span>
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>                           
                           </div>
                         </div>
                       </div>
@@ -1458,7 +1507,7 @@ export function LeftPanel({
                                             value={dir.css}
                                             className="text-xs py-1.5 cursor-pointer"
                                           >
-                                            <span className="font-mono mr-1.5">{dir.arrow}</span>
+                                            <span className="font-manrope text-[11px]">{dir.arrow}</span>
                                             <span>{dir.name}</span>
                                           </SelectItem>
                                         ))}
