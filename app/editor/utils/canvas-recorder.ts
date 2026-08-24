@@ -288,8 +288,7 @@ export async function captureCanvasFrames(
     );
   }
 
-  // Cap total frames to a safe memory threshold (max 360 frames = 6s @ 60fps)
-  const totalFrames = Math.min(360, Math.max(1, Math.round(durationSeconds * fps)));
+  const totalFrames = Math.min(600, Math.max(1, Math.round(durationSeconds * fps)));
   const frames: Uint8Array[] = [];
 
   try {

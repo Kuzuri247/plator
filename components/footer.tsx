@@ -38,7 +38,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-muted-foreground text-xs sm:text-sm">
               <li>
                 <Link href="/#features" className="hover:text-foreground transition-colors">
-                  Features Bento
+                  Features
                 </Link>
               </li>
               <li>
@@ -125,7 +125,6 @@ export const Footer: React.FC = () => {
               >
                 <User className="size-3.5" />
                 <span>Developer Portfolio</span>
-                <ExternalLink className="size-3 opacity-60" />
               </a>
             </div>
           </div>

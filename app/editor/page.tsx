@@ -28,6 +28,7 @@ import { XIcon } from "@/components/icons/x-icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { MobileNotice } from "@/components/mobile-notice";
 import { useStore } from "./store/use-store";
 import { useSelection } from "./hooks/selection";
 import { useExport } from "./hooks/export";
@@ -48,6 +49,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 
 export default function EditorPage() {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -317,7 +319,6 @@ export default function EditorPage() {
 
   const renderExportContent = () => (
     <>
-      {/* Export Header */}
       <div className="flex items-center justify-between">
         <Label className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 text-foreground">
           <Film className="size-3.5 text-primary" /> Export Media
@@ -327,7 +328,6 @@ export default function EditorPage() {
         </span>
       </div>
 
-      {/* Format Selector Pills */}
       <div className="grid grid-cols-5 gap-1 bg-muted/60 p-1 rounded-lg">
         {(["mp4", "gif", "png", "jpeg", "svg"] as ExportFormat[]).map(
           (fmt) => (
@@ -346,38 +346,35 @@ export default function EditorPage() {
         )}
       </div>
 
-      {/* Video / Loop Settings */}
       {isVideoFormat ? (
         <div className="space-y-3 pt-1">
-          <div className="grid grid-cols-2 gap-3 items-end">
-            {/* Duration Dropdown */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-muted-foreground block">
-                Duration
-              </Label>
-              <Select
-                value={String(exportDuration)}
-                onValueChange={(val) => setExportDuration(Number(val))}
-              >
-                <SelectTrigger className="h-8 w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {[1, 2, 3, 4, 5, 6].map((sec) => (
-                    <SelectItem key={sec} value={String(sec)}>
-                      {sec}s
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center justify-between px-1">
+                <Label className="text-xs font-medium text-muted-foreground">
+                  Duration
+                </Label>
+                <span className="text-xs text-foreground font-manrope">
+                  {Math.min(10, Math.max(3, exportDuration || 3))}s
+                </span>
+              </div>
+              <div className="h-8 flex items-center px-1">
+                <Slider
+                  value={[Math.min(10, Math.max(3, exportDuration || 3))]}
+                  onValueChange={([val]) => setExportDuration(val)}
+                  min={3}
+                  max={10}
+                  step={1}
+                  className="cursor-pointer"
+                />
+              </div>
             </div>
 
-            {/* Framerate Toggle */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-muted-foreground block">
+              <Label className="text-xs font-medium text-muted-foreground block px-1">
                 Framerate
               </Label>
-              <div className="grid grid-cols-2 gap-1 bg-muted/60 p-1 rounded-lg h-8">
+              <div className="grid grid-cols-2 gap-1 bg-muted/60 rounded-lg h-6">
                 {[
                   { value: 30, label: "30 FPS", disabled: false },
                   { value: 60, label: "60 FPS", disabled: exportFormat === "gif" },
@@ -477,7 +474,7 @@ export default function EditorPage() {
 
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden flex-col md:flex-row">
-      {/* Mobile Top Header */}
+      <MobileNotice />
       <div className="md:hidden h-12 border-b dark:border-neutral-800 bg-card/95 backdrop-blur-md flex items-center justify-between px-2.5 shrink-0 z-30 relative">
         <div className="flex items-center gap-1">
           <Link href="/">

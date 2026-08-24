@@ -62,7 +62,7 @@ export const Support: React.FC = () => {
       id: "prs",
       title: "Pull Requests",
       badge: "GLSL & Code",
-      desc: "Contribute shaders, export tools & features",
+      desc: "Contribute via new features and tools",
       icon: <GitPullRequest className="size-4 text-primary" />,
       href: "https://github.com/Kuzuri247/plator/pulls",
       colorClass: "text-primary",
@@ -73,7 +73,7 @@ export const Support: React.FC = () => {
       id: "issues",
       title: "Issues & Feedback",
       badge: "RFCs",
-      desc: "Report bugs or suggest possible solutions",
+      desc: "Report bugs or suggest solutions",
       icon: <Bug className="size-4 text-emerald-500" />,
       href: "https://github.com/Kuzuri247/plator/issues",
       colorClass: "text-emerald-500",
@@ -100,7 +100,7 @@ export const Support: React.FC = () => {
     },
     {
       icon: <Layers className="size-3.5 text-blue-500" />,
-      title: "Permissive Commercial License",
+      title: "Free for Commercial Use",
       sub: "Use for any client or personal work",
     },
   ];
@@ -255,7 +255,7 @@ export const Support: React.FC = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleCopyUPI()}
-                          className="w-full max-w-[240px] flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-background/80 dark:bg-neutral-900 border border-border/80 dark:border-neutral-800 hover:border-primary text-xs font-inter transition-all cursor-pointer shadow-xs group"
+                          className="w-full max-w-50 flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-background/80 dark:bg-neutral-900 border border-border/80 dark:border-neutral-800 hover:border-primary text-xs font-inter transition-all cursor-pointer shadow-xs group"
                         >
                           <span className="truncate text-foreground font-semibold">
                             {upiId}
@@ -334,7 +334,7 @@ export const Support: React.FC = () => {
                   className="w-full flex items-center justify-between p-2.5 rounded-xl border border-border/70 dark:border-neutral-800 bg-muted/40 dark:bg-neutral-900/50 hover:bg-muted/70 text-xs font-semibold text-foreground transition-all group shadow-xs"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="size-6 rounded-lg bg-foreground/10 flex items-center justify-center">
+                    <div className="size-6 rounded-lg bg-foreground/10 flex items-center justify-center dark:invert transition-[filter]">
                       <StackIcon name="github" className="size-3.5 text-foreground" />
                     </div>
                     <span>Kuzuri247/plator</span>

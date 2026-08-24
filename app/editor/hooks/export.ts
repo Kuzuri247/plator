@@ -63,7 +63,7 @@ export function useExport(
             !canvasBackground.startsWith("#") &&
             !canvasBackground.startsWith("rgb"));
 
-        const safeDuration = Math.min(6, Math.max(1, exportDuration || 3));
+        const safeDuration = Math.min(10, Math.max(3, exportDuration || 3));
         const safeFps = Math.min(60, Math.max(30, targetFps));
         const safeScale = Math.min(4, Math.max(1, qualityScale));
 

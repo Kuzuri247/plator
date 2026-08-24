@@ -55,7 +55,7 @@ export const Hero = () => {
           <Link href="/editor" className="w-full sm:w-auto">
             <Button
               size="lg"
-              className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-6 rounded-lg text-sm font-semibold font-manrope bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 cursor-pointer gap-2"
+              className="w-fit sm:w-auto h-11 sm:h-12 px-5 sm:px-6 rounded-lg text-sm font-semibold font-manrope bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 cursor-pointer gap-2"
             >
               <span className="flex justify-center items-center gap-2">
                 Start creating
