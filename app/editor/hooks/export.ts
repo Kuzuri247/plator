@@ -50,8 +50,6 @@ export function useExport(
     setIsExporting(true);
     setExportProgress(0);
 
-    const toastId = toast.loading(`Exporting ${exportFormat.toUpperCase()}...`);
-
     try {
       if (exportFormat === "mp4" || exportFormat === "gif") {
         const qualityScale = Math.max(1, parseInt(exportQuality) || 2);
@@ -63,7 +61,7 @@ export function useExport(
             !canvasBackground.startsWith("#") &&
             !canvasBackground.startsWith("rgb"));
 
-        const safeDuration = Math.min(6, Math.max(1, exportDuration || 3));
+        const safeDuration = Math.min(10, Math.max(3, exportDuration || 3));
         const safeFps = Math.min(60, Math.max(30, targetFps));
         const safeScale = Math.min(4, Math.max(1, qualityScale));
 
@@ -92,7 +90,7 @@ export function useExport(
           );
 
           downloadBlob(mp4Blob, `plator-video-${Date.now()}.mp4`);
-          toast.success("Exported MP4 successfully!", { id: toastId });
+          toast.success("Exported MP4 successfully!");
           return;
         }
 
@@ -108,7 +106,7 @@ export function useExport(
           );
 
           downloadBlob(gifBlob, `plator-animation-${Date.now()}.gif`);
-          toast.success("Exported GIF successfully!", { id: toastId });
+          toast.success("Exported GIF successfully!");
           return;
         }
       } else {
@@ -139,15 +137,12 @@ export function useExport(
           imageBlob,
           `plator-${exportFormat}-${Date.now()}.${exportFormat}`
         );
-        toast.success(`Exported ${exportFormat.toUpperCase()} successfully!`, {
-          id: toastId,
-        });
+        toast.success(`Exported ${exportFormat.toUpperCase()} successfully!`);
       }
     } catch (error: any) {
       console.error("Export failed:", error);
       toast.error(
-        `Export failed: ${error?.message || "Unknown error occurred"}`,
-        { id: toastId }
+        `Export failed: ${error?.message || "Unknown error occurred"}`
       );
     } finally {
       setIsExporting(false);

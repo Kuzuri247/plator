@@ -15,7 +15,7 @@
   --font-playfair: var(--font-playfair);
   --font-instrument: var(--font-instrument);
   --font-montserrat: var(--font-montserrat);
-  
+
   --color-card: oklch(var(--card));
   --color-muted: oklch(var(--muted));
   --color-accent: oklch(var(--accent));
@@ -38,7 +38,6 @@
   --color-ring: oklch(var(--ring));
   --color-success: oklch(var(--success));
   --color-success-foreground: oklch(var(--success-foreground));
-
 }
 
 @layer base {
@@ -54,8 +53,8 @@
     --popover: 1 0 0;
     --popover-foreground: 0.14 0.02 100;
 
-    --primary: 0.8 0.18 95;
-    --primary-foreground: 0.1 0.03 100;
+    --primary: 0.58 0.22 255;
+    --primary-foreground: 0.99 0 0;
 
     --secondary: 0.95 0.01 100;
     --secondary-foreground: 0.14 0.02 100;
@@ -74,7 +73,7 @@
 
     --border: 0.9 0.02 100;
     --input: 0.9 0.02 100;
-    --ring: 0.8 0.18 95;
+    --ring: 0.58 0.22 255;
 
     --radius: 0.5rem;
   }
@@ -82,10 +81,10 @@
   .dark {
     --shadow-next: 0 8px 30px rgba(0, 225, 250, 0.915);
 
-    --background: 0.1 0.01 100; 
-    --foreground: 0.95 0.01 100; 
+    --background: 0.1 0.01 100;
+    --foreground: 0.95 0.01 100;
 
-    --card: 0.12 0.01 100; 
+    --card: 0.12 0.01 100;
     --card-foreground: 0.95 0.01 100;
 
     --popover: 0.12 0.01 100;
@@ -159,25 +158,25 @@
 /* rainbow colors */
 @keyframes mesh-circulate {
   0% {
-    background-color: #4285F4;
+    background-color: #4285f4;
   }
   16.6% {
     background-color: #9b51e0;
   }
   33.3% {
-    background-color: #EA4335;
+    background-color: #ea4335;
   }
   50% {
-    background-color: #FBBC05;
+    background-color: #fbbc05;
   }
   66.6% {
-    background-color: #34A853;
+    background-color: #34a853;
   }
   83.3% {
     background-color: #00dfd8;
   }
   100% {
-    background-color: #4285F4;
+    background-color: #4285f4;
   }
 }
 
@@ -235,7 +234,8 @@
 }
 
 @keyframes google-glow-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.65;
     filter: blur(8px);
     transform: scale(1);
@@ -250,15 +250,14 @@
 .google-rainbow-glow {
   background: conic-gradient(
     from var(--rainbow-angle, 0deg),
-    #4285F4 0%,
+    #4285f4 0%,
     #9b51e0 20%,
-    #EA4335 40%,
-    #FBBC05 60%,
-    #34A853 80%,
-    #4285F4 100%
+    #ea4335 40%,
+    #fbbc05 60%,
+    #34a853 80%,
+    #4285f4 100%
   );
-  animation: rainbow-rotate 3s linear infinite, google-glow-pulse 2.5s ease-in-out infinite;
+  animation:
+    rainbow-rotate 3s linear infinite,
+    google-glow-pulse 2.5s ease-in-out infinite;
 }
-
-
-

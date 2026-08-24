@@ -27,6 +27,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
       isDragging,
       isCropping,
       snapGuides,
+      showGrid,
       onCropChange,
     },
     ref
@@ -130,6 +131,38 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             opacity={overlayConfig.textureOpacity}
           />
 
+          {showGrid && (
+            <div
+              data-export-exclude="true"
+              className="absolute inset-0 pointer-events-none z-30 animate-in fade-in duration-200"
+            >
+              <div
+                className="absolute top-0 bottom-0 border-l border-solid border-primary/35"
+                style={{ left: "33.333%" }}
+              />
+              <div
+                className="absolute top-0 bottom-0 border-l border-dashed border-primary/35"
+                style={{ left: "50%" }}
+              />
+              <div
+                className="absolute top-0 bottom-0 border-l border-solid border-primary/35"
+                style={{ left: "66.667%" }}
+              />
+              <div
+                className="absolute left-0 right-0 border-t border-solid border-primary/35"
+                style={{ top: "33.333%" }}
+              />
+              <div
+                className="absolute left-0 right-0 border-t border-dashed border-primary/35"
+                style={{ top: "50%" }}
+              />
+              <div
+                className="absolute left-0 right-0 border-t border-solid border-primary/35"
+                style={{ top: "66.667%" }}
+              />
+            </div>
+          )}
+
           {/* Show placeholder if no elements AND background is not an image */}
           {elements.length === 0 && !canvasBackground.includes("url(") && (
             <div
@@ -152,7 +185,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
 
             if (el.type === "image") {
               return (
-                <div key={el.id} style={wrapperStyle}>
+                <div key={el.id} style={wrapperStyle} data-element-id={el.id}>
                   <ImageLayer
                     img={el}
                     isSelected={isSelected}
@@ -168,7 +201,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
               );
             } else if (el.type === "text") {
               return (
-                <div key={el.id} style={wrapperStyle}>
+                <div key={el.id} style={wrapperStyle} data-element-id={el.id}>
                   <TextLayer
                     element={el}
                     isSelected={isSelected}
@@ -184,7 +217,6 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
             return null;
           })}
 
-          {/* Visual Magnetic Center Snap Guide Lines */}
           {snapGuides?.x != null && (
             <div
               className="absolute top-0 bottom-0 pointer-events-none z-50 border-l border-dashed border-primary animate-in fade-in duration-100"

@@ -2,13 +2,14 @@
 
 import React from "react";
 import Link from "next/link";
-import { Github, Globe, ExternalLink, Shield, FileText } from "lucide-react";
+import { Globe, ExternalLink, Shield, FileText, Mail, User } from "lucide-react";
 import { XIcon } from "@/components/icons/x-icon";
 import { FooterPattern } from "./patterns";
+import StackIcon from "tech-stack-icons";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="relative bg-background overflow-hidden pt-16 md:pt-24 pb-12 transition-colors duration-300">
+    <footer className="relative bg-background overflow-hidden py-16 transition-colors duration-300">
       {/* Original 3D Perspective Grid Background */}
       <FooterPattern />
 
@@ -23,9 +24,6 @@ export const Footer: React.FC = () => {
               <span>
                 Pla<span className="text-primary font-extrabold">tor</span>
               </span>
-              <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
-                v2.0
-              </span>
             </Link>
             <p className="text-muted-foreground max-w-sm text-xs sm:text-sm leading-relaxed">
               The modern web-first visual studio for creators. Design device mockups, real-time WebGL fluid mesh shaders, and export images & animations with zero setup.
@@ -39,13 +37,8 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2.5 text-muted-foreground text-xs sm:text-sm">
               <li>
-                <Link href="/editor" className="hover:text-foreground transition-colors">
-                  Studio Editor
-                </Link>
-              </li>
-              <li>
                 <Link href="/#features" className="hover:text-foreground transition-colors">
-                  Features Bento
+                  Features
                 </Link>
               </li>
               <li>
@@ -86,9 +79,14 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <span className="text-muted-foreground/60 text-xs">
-                  100% Client-Side Private
-                </span>
+                <Link
+                  href="https://www.rahul47.space/contact"
+                  target="_blank"
+                  className="hover:text-foreground transition-colors flex items-center gap-1.5"
+                >
+                  <Mail className="size-3 text-muted-foreground" />
+                  <span>Contact</span>
+                </Link>
               </li>
             </ul>
           </div>
@@ -114,7 +112,9 @@ export const Footer: React.FC = () => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
               >
-                <Github className="size-3.5" />
+                <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter]">
+                  <StackIcon name="github" className="w-full h-full" />
+                </div>
                 <span>GitHub</span>
               </a>
               <a
@@ -123,9 +123,8 @@ export const Footer: React.FC = () => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
               >
-                <Globe className="size-3.5" />
+                <User className="size-3.5" />
                 <span>Developer Portfolio</span>
-                <ExternalLink className="size-3 opacity-60" />
               </a>
             </div>
           </div>

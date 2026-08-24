@@ -82,7 +82,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="md:col-span-7 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-7 rounded-3xl border border-border dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -139,7 +139,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="md:col-span-5 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-5 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -166,7 +166,7 @@ export const BentoGrid = () => {
                     backgroundSize: ditherType === "halftone" ? "12px 12px" : "6px 6px",
                   }}
                 />
-                <span className="relative z-10 text-xs font-mono font-bold text-white uppercase tracking-widest bg-black/80 px-3.5 py-1.5 rounded-lg border border-white/20 shadow-md">
+                <span className="relative z-10 text-xs font-bold text-white uppercase tracking-widest bg-black/80 px-3.5 py-1.5 rounded-lg border border-white/20 shadow-md">
                   {ditherType.toUpperCase()} MATRIX
                 </span>
               </div>
@@ -196,7 +196,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -223,7 +223,7 @@ export const BentoGrid = () => {
                   }`}
                 >
                   <div className="w-full flex-1 rounded bg-primary/10 border border-primary/20 flex items-center justify-center my-0.5 min-h-0">
-                    <span className="text-[10px] font-mono font-bold text-primary">
+                    <span className="text-[10px] font-inter font-bold text-primary">
                       {aspectRatio}
                     </span>
                   </div>
@@ -261,7 +261,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -286,7 +286,7 @@ export const BentoGrid = () => {
                     <p className={`text-sm sm:text-base text-foreground ${fontOptions[selectedFont].fontClass}`}>
                       &ldquo;{fontOptions[selectedFont].sample}&rdquo;
                     </p>
-                    <span className="text-[10px] text-muted-foreground font-mono mt-1.5">
+                    <span className="text-[10px] text-muted-foreground font-inter mt-1.5">
                       {fontOptions[selectedFont].sub}
                     </span>
                   </motion.div>
@@ -318,7 +318,7 @@ export const BentoGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
+            className="md:col-span-4 rounded-3xl border border-border/80 dark:border-neutral-800 bg-card/60 backdrop-blur-xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-lg group hover:border-primary/40 transition-colors"
           >
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground">
@@ -333,11 +333,11 @@ export const BentoGrid = () => {
             <div className="mt-6 rounded-2xl border border-border/60 dark:border-neutral-800 bg-muted/20 p-3.5 flex flex-col justify-between h-[200px] overflow-hidden">
               <div className="flex-1 flex flex-col items-center justify-center gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-foreground">
+                  <span className="text-xs font-inter font-bold text-foreground">
                     {activeFormat}
                   </span>
                   {isExporting ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] text-amber-500 font-mono font-semibold animate-pulse">
+                    <span className="inline-flex items-center gap-1 text-[10px] text-amber-500 font-inter font-semibold animate-pulse">
                       Rendering...
                     </span>
                   ) : (
@@ -356,7 +356,7 @@ export const BentoGrid = () => {
                   />
                 </div>
 
-                <span className="text-[10px] text-muted-foreground font-mono">
+                <span className="text-[10px] text-muted-foreground font-inter">
                   Zero-Knowledge Privacy • 100% Client-Side
                 </span>
               </div>

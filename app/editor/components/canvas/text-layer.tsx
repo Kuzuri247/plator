@@ -2,6 +2,7 @@
 
 import React, { memo } from "react";
 import { TextElement } from "../../types";
+import { WRITING_MODES } from "../../values";
 
 export const TextLayer = memo(
   ({
@@ -130,6 +131,15 @@ export const TextLayer = memo(
       ? "1px solid rgba(255, 255, 255, 0.3)"
       : undefined;
 
+    // Writing Mode Computation
+    const selectedMode =
+      WRITING_MODES.find((m) => m.id === element.style.writingMode) ||
+      WRITING_MODES[0];
+    const writingModeStyle: React.CSSProperties = {
+      writingMode: selectedMode.css as any,
+      textOrientation: selectedMode.orientation as any,
+    };
+
     return (
       <div
         className={`absolute select-none transition-all touch-none ${
@@ -184,7 +194,9 @@ export const TextLayer = memo(
             fontSize: element.style.fontSize,
             fontFamily: element.style.fontFamily,
             fontWeight: element.style.fontWeight,
+            letterSpacing: `${element.style.letterSpacing ?? 0}px`,
             textShadow: element.style.textShadow,
+            ...writingModeStyle,
             ...textGradientStyle,
             ...getEffectStyles(),
           }}

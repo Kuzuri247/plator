@@ -12,6 +12,7 @@ export function useSelection(
   elements: CanvasElement[],
   updateElement: (id: string, updates: Partial<CanvasElement>) => void,
   setSelectedElementId: (id: string | null) => void,
+  snappingEnabled: boolean = true,
 ) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [centerOffset, setCenterOffset] = useState({ x: 0, y: 0 });
@@ -123,22 +124,22 @@ export function useSelection(
     let activeSnapX: number | null = null;
     let activeSnapY: number | null = null;
 
-    // When the image center comes in the 47% - 53% region of canvas width:
-    // Snap center to exact 50% canvas width and show vertical center line
-    const minRegionX = canvasWidth * 0.47;
-    const maxRegionX = canvasWidth * 0.53;
-    if (currentCenterX >= minRegionX && currentCenterX <= maxRegionX) {
-      newX = rawX + (canvasCenterX - currentCenterX);
-      activeSnapX = canvasCenterX;
-    }
+    const isSnapActive = snappingEnabled && !e.altKey && !e.ctrlKey;
 
-    // When the image center comes in the 47% - 53% region of canvas height:
-    // Snap center to exact 50% canvas height and show horizontal center line
-    const minRegionY = canvasHeight * 0.47;
-    const maxRegionY = canvasHeight * 0.53;
-    if (currentCenterY >= minRegionY && currentCenterY <= maxRegionY) {
-      newY = rawY + (canvasCenterY - currentCenterY);
-      activeSnapY = canvasCenterY;
+    if (isSnapActive) {
+      const minRegionX = canvasWidth * 0.47;
+      const maxRegionX = canvasWidth * 0.53;
+      if (currentCenterX >= minRegionX && currentCenterX <= maxRegionX) {
+        newX = rawX + (canvasCenterX - currentCenterX);
+        activeSnapX = canvasCenterX;
+      }
+
+      const minRegionY = canvasHeight * 0.47;
+      const maxRegionY = canvasHeight * 0.53;
+      if (currentCenterY >= minRegionY && currentCenterY <= maxRegionY) {
+        newY = rawY + (canvasCenterY - currentCenterY);
+        activeSnapY = canvasCenterY;
+      }
     }
 
     setSnapGuides({ x: activeSnapX, y: activeSnapY });
