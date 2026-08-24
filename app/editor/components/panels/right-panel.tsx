@@ -326,7 +326,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                               solidColor.toLowerCase()
                             )
                               ? "border-primary ring-2 ring-primary/80"
-                              : "border-border/80"
+                              : ""
                           }`}
                         >
                           <div

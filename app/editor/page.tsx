@@ -201,7 +201,16 @@ export default function EditorPage() {
         x: selected.position.x + 20,
         y: selected.position.y + 20,
       },
-    };
+      style: {
+        ...selected.style,
+        ...(selected.type === "image" && selected.style?.crop
+          ? { crop: { ...selected.style.crop } }
+          : {}),
+      },
+      ...(selected.type === "image" && selected.dither
+        ? { dither: { ...selected.dither } }
+        : {}),
+    } as CanvasElement;
     addElement(duplicated);
     selectElement(newId);
   }, [selectedElementId, elements, addElement, selectElement]);
@@ -248,7 +257,10 @@ export default function EditorPage() {
       if (e.key === "Delete" || e.key === "Backspace") {
         if (selectedElementId) {
           e.preventDefault();
-          removeElement(selectedElementId);
+          const selected = elements.find((el) => el.id === selectedElementId);
+          if (selected && !selected.isLocked) {
+            removeElement(selectedElementId);
+          }
         }
         return;
       }

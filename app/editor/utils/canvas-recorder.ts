@@ -55,6 +55,7 @@ export async function captureStaticSnapshot(
       cacheBust: true,
       skipAutoScale: false,
       filter: (node: HTMLElement) => {
+        if (node.dataset?.exportExclude === "true") return false;
         if (node.tagName === "SCRIPT" || node.tagName === "STYLE") return false;
         return true;
       },
@@ -80,6 +81,9 @@ export async function captureStaticSnapshot(
       transformOrigin: "top left",
     },
     filter: (node: HTMLElement) => {
+      if (node.dataset?.exportExclude === "true") {
+        return false;
+      }
       // Exclude WebGL background canvas so we can composite it with full WebGL precision underneath
       if (isMeshBackground && node.tagName === "CANVAS") {
         return false;
@@ -236,6 +240,9 @@ export async function captureCanvasFrames(
       transformOrigin: "top left",
     },
     filter: (node: HTMLElement) => {
+      if (node.dataset?.exportExclude === "true") {
+        return false;
+      }
       // Exclude WebGL background canvas so we can animate it cleanly underneath
       if (isMeshBackground && node.tagName === "CANVAS") {
         return false;
@@ -288,7 +295,8 @@ export async function captureCanvasFrames(
     );
   }
 
-  const totalFrames = Math.min(600, Math.max(1, Math.round(durationSeconds * fps)));
+  const maxFrames = scale >= 4 ? 300 : 600;
+  const totalFrames = Math.min(maxFrames, Math.max(1, Math.round(durationSeconds * fps)));
   const frames: Uint8Array[] = [];
 
   try {

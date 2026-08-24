@@ -2,6 +2,7 @@
 
 import React, { memo } from "react";
 import { TextElement } from "../../types";
+import { WRITING_MODES } from "../../values";
 
 export const TextLayer = memo(
   ({
@@ -131,13 +132,13 @@ export const TextLayer = memo(
       : undefined;
 
     // Writing Mode Computation
-    const writingMode = element.style.writingMode || "horizontal";
-    const writingModeStyle: React.CSSProperties =
-      writingMode === "vertical"
-        ? { writingMode: "vertical-rl", textOrientation: "mixed" }
-        : writingMode === "vertical-upright"
-        ? { writingMode: "vertical-rl", textOrientation: "upright" }
-        : { writingMode: "horizontal-tb" };
+    const selectedMode =
+      WRITING_MODES.find((m) => m.id === element.style.writingMode) ||
+      WRITING_MODES[0];
+    const writingModeStyle: React.CSSProperties = {
+      writingMode: selectedMode.css as any,
+      textOrientation: selectedMode.orientation as any,
+    };
 
     return (
       <div

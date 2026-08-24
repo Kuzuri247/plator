@@ -132,7 +132,10 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
           />
 
           {showGrid && (
-            <div className="absolute inset-0 pointer-events-none z-30 animate-in fade-in duration-200">
+            <div
+              data-export-exclude="true"
+              className="absolute inset-0 pointer-events-none z-30 animate-in fade-in duration-200"
+            >
               <div
                 className="absolute top-0 bottom-0 border-l border-solid border-primary/35"
                 style={{ left: "33.333%" }}
