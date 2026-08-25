@@ -318,11 +318,10 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                     </div>
                   ) : (
                     <div className="flex items-center justify-between gap-1 pl-1 pr-2">
-                      {/* Slot 1: Custom color picker */}
                       <div className="flex flex-col items-center gap-1">
                         <div
                           className={`relative size-8 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 shadow-xs hover:scale-105 transition-transform ${
-                            !["#09090b", "#64748b", "#bae6fd", "#f8fafc"].includes(
+                            ![ "#64748b","#fed7aa", "#bae6fd", "#f8fafc"].includes(
                               solidColor.toLowerCase()
                             )
                               ? "border-primary ring-2 ring-primary/80"
@@ -347,10 +346,9 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                         </span>
                       </div>
 
-                      {/* Slots 2-5: 1 Dark + Cool and Light presets */}
                       {[
-                        { name: "Dark", color: "#09090b" },
                         { name: "Steel", color: "#64748b" },
+                        { name: "Peach", color: "#fed7aa" },
                         { name: "Ice", color: "#bae6fd" },
                         { name: "Snow", color: "#f8fafc" },
                       ].map((item) => {
