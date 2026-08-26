@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://plator.fun";
+  const baseUrl = "https://www.plator.fun";
 
   return [
     {

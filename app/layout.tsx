@@ -71,7 +71,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://plator.fun"),
+  metadataBase: new URL("https://www.plator.fun"),
   title: {
     default: "Plator - Visual Mockup & WebGL Studio for Creators",
     template: "%s | Plator",
@@ -92,7 +92,7 @@ export const metadata: Metadata = {
     "wallpaper studio",
     "creative design tool",
   ],
-  authors: [{ name: "Kuzuri247" }, { name: "Plator", url: "https://plator.fun" }],
+  authors: [{ name: "Kuzuri247" }, { name: "Plator", url: "https://www.plator.fun" }],
   creator: "Plator",
   publisher: "Plator",
   category: "Design & Creative Tools",
@@ -102,16 +102,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://plator.fun",
+    url: "https://www.plator.fun/",
     title: "Plator - Visual Mockup & WebGL Studio for Creators",
     description:
-      "Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and 4K snapshots.",
+      "The ultimate visual studio for creators. Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and 4K snapshots.",
     siteName: "Plator",
     images: [
       {
-        url: "/editor.png",
-        width: 1200,
-        height: 630,
+        url: "/landing.png",
+        width: 1917,
+        height: 867,
         alt: "Plator - Visual Mockup & WebGL Studio for Creators",
       },
     ],
@@ -120,9 +120,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Plator - Visual Mockup & WebGL Studio for Creators",
     description:
-      "Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and 4K snapshots.",
+      "The ultimate free visual studio for creators. Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and stunning snapshots.",
     creator: "@kuzuri247",
-    images: ["/editor.png"],
+    images: ["/landing.png"],
   },
   robots: {
     index: true,
@@ -135,6 +135,10 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  other: {
+    "title": "Plator - Visual Mockup & WebGL Studio for Creators",
+    "twitter:url": "https://www.plator.fun/",
+  },
 };
 
 const jsonLd = {
@@ -142,9 +146,9 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "WebApplication",
-      "@id": "https://plator.fun/#webapp",
+      "@id": "https://www.plator.fun/#webapp",
       "name": "Plator",
-      "url": "https://plator.fun",
+      "url": "https://www.plator.fun",
       "applicationCategory": "DesignApplication",
       "operatingSystem": "All",
       "description":
@@ -158,10 +162,10 @@ const jsonLd = {
     },
     {
       "@type": "Organization",
-      "@id": "https://plator.fun/#organization",
+      "@id": "https://www.plator.fun/#organization",
       "name": "Plator",
-      "url": "https://plator.fun",
-      "logo": "https://plator.fun/editor.png",
+      "url": "https://www.plator.fun",
+      "logo": "https://www.plator.fun/landing.png",
       "sameAs": ["https://twitter.com/kuzuri247"],
     },
   ],
