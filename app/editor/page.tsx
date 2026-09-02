@@ -5,26 +5,26 @@ import { Canvas } from "./components/canvas";
 import { LeftPanel } from "./components/panels/left-panel";
 import { RightPanel } from "./components/panels/right-panel";
 import {
-  ArrowLeft,
-  Undo2,
-  Redo2,
-  RotateCcw,
-  Trash2,
-  Menu,
-  Settings2,
-  X,
-  Loader2,
-  Download,
-  Film,
-  ChevronDown,
-  Magnet,
-  Grid3X3,
-  AlignCenterHorizontal,
-  AlignCenterVertical,
-  Copy,
-  Layers,
-} from "lucide-react";
-import { XIcon } from "@/components/icons/x-icon";
+  ArrowLeftIcon,
+  ArrowCounterClockwiseIcon,
+  ArrowClockwiseIcon,
+  ArrowArcLeftIcon,
+  TrashIcon,
+  ListIcon,
+  SlidersIcon,
+  XIcon,
+  CircleNotchIcon,
+  DownloadSimpleIcon,
+  FilmStripIcon,
+  CaretDownIcon,
+  MagnetIcon,
+  GridFourIcon,
+  AlignCenterHorizontalIcon,
+  AlignCenterVerticalIcon,
+  CopyIcon,
+  StackIcon,
+} from "@phosphor-icons/react";
+import { XIcon as TwitterXIcon } from "@/components/icons/x-icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -49,7 +49,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
+import { StudioSlider } from "@/components/ui/studio-slider";
 
 export default function EditorPage() {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -333,7 +333,7 @@ export default function EditorPage() {
     <>
       <div className="flex items-center justify-between">
         <Label className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 text-foreground">
-          <Film className="size-3.5 text-primary" /> Export Media
+          <FilmStripIcon className="size-3.5 text-primary" weight="duotone" /> Export Media
         </Label>
         <span className="text-[10px] font-bold text-primary uppercase tracking-wide bg-primary/10 px-1.5 py-0.5 rounded">
           {isVideoFormat ? "Video" : "Image"}
@@ -362,24 +362,17 @@ export default function EditorPage() {
         <div className="space-y-3 pt-1">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between px-1">
-                <Label className="text-xs font-medium text-muted-foreground">
-                  Duration
-                </Label>
-                <span className="text-xs text-foreground font-manrope">
-                  {Math.min(10, Math.max(3, exportDuration || 3))}s
-                </span>
-              </div>
-              <div className="h-8 flex items-center px-1">
-                <Slider
-                  value={[Math.min(10, Math.max(3, exportDuration || 3))]}
-                  onValueChange={([val]) => setExportDuration(val)}
-                  min={3}
-                  max={10}
-                  step={1}
-                  className="cursor-pointer"
-                />
-              </div>
+              <StudioSlider
+                label="Duration"
+                value={Math.min(10, Math.max(3, exportDuration || 3))}
+                onChange={(val) => setExportDuration(val)}
+                min={3}
+                max={10}
+                step={1}
+                defaultValue={3}
+                unit="s"
+                compact
+              />
             </div>
 
             <div className="space-y-1.5">
@@ -471,12 +464,12 @@ export default function EditorPage() {
       >
         {isExporting ? (
           <>
-            <Loader2 className="size-3.5 animate-spin" />
+            <CircleNotchIcon className="size-3.5 animate-spin" />
             <span>{exportProgress > 0 ? `Exporting ${exportProgress}%` : "Exporting..."}</span>
           </>
         ) : (
           <>
-            <Download className="size-3.5" />
+            <DownloadSimpleIcon className="size-3.5" weight="bold" />
             <span>Export {exportFormat.toUpperCase()}</span>
           </>
         )}
@@ -491,7 +484,7 @@ export default function EditorPage() {
         <div className="flex items-center gap-1">
           <Link href="/">
             <Button variant="ghost" size="icon" className="size-8 text-muted-foreground hover:text-foreground">
-              <ArrowLeft size={18} />
+              <ArrowLeftIcon size={18} />
             </Button>
           </Link>
           <Button
@@ -500,7 +493,7 @@ export default function EditorPage() {
             className="h-8 px-2 gap-1.5 text-xs font-semibold text-foreground hover:bg-muted"
             onClick={() => setShowLeftPanel(true)}
           >
-            <Layers size={15} className="text-primary" />
+            <StackIcon size={15} weight="duotone" className="text-primary" />
             <span>Layers</span>
           </Button>
         </div>
@@ -567,7 +560,7 @@ export default function EditorPage() {
             className="h-8 px-2 gap-1 text-xs font-semibold text-foreground hover:bg-muted"
             onClick={() => setShowRightPanel(true)}
           >
-            <Settings2 size={15} className="text-primary" />
+            <SlidersIcon size={15} weight="duotone" className="text-primary" />
             <span className="text-xs">Studio</span>
           </Button>
 
@@ -580,9 +573,9 @@ export default function EditorPage() {
                 className="h-8 px-2.5 gap-1 font-bold text-xs uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs rounded-lg cursor-pointer transition-all flex items-center"
               >
                 {isExporting ? (
-                  <Loader2 className="size-3.5 animate-spin" />
+                  <CircleNotchIcon className="size-3.5 animate-spin" />
                 ) : (
-                  <Download className="size-3.5" />
+                  <DownloadSimpleIcon className="size-3.5" weight="bold" />
                 )}
                 <span className="hidden sm:inline">Export</span>
               </Button>
@@ -612,7 +605,7 @@ export default function EditorPage() {
                 size="icon"
                 onClick={() => setShowLeftPanel(false)}
               >
-                <X size={20} />
+                <XIcon size={20} weight="bold" />
               </Button>
             </div>
           </div>
@@ -638,7 +631,7 @@ export default function EditorPage() {
               size="icon"
               onClick={() => setShowRightPanel(false)}
             >
-              <X size={20} />
+              <XIcon size={20} weight="bold" />
             </Button>
           </div>
           <div className="flex-1 min-h-0 relative">
@@ -656,7 +649,7 @@ export default function EditorPage() {
               size="icon"
               className="size-8 text-muted-foreground hover:text-foreground rounded-md"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeftIcon size={20} />
             </Button>
           </Link>
           <span className="text-sm uppercase font-bold pt-0.5 tracking-wider font-display">
@@ -668,7 +661,7 @@ export default function EditorPage() {
               target="_blank"
               className="text-muted-foreground hover:text-foreground transition-colors p-1"
             >
-              <XIcon className="size-4" />
+              <TwitterXIcon className="size-4" />
             </Link>
             <ThemeToggle />
           </div>
@@ -769,17 +762,17 @@ export default function EditorPage() {
               >
                 {isExporting ? (
                   <>
-                    <Loader2 className="size-3.5 animate-spin" />
+                    <CircleNotchIcon className="size-3.5 animate-spin" />
                     <span>{exportProgress > 0 ? `${exportProgress}%` : "Exporting..."}</span>
                   </>
                 ) : (
                   <>
-                    <Download className="size-3.5" />
+                    <DownloadSimpleIcon className="size-3.5" weight="bold" />
                     <span>Export</span>
                     <span className="text-[10px] px-1.5 py-0.5 bg-primary-foreground/20 rounded uppercase font-manrope font-extrabold">
                       {exportFormat}
                     </span>
-                    <ChevronDown className="size-3 opacity-70" />
+                    <CaretDownIcon className="size-3 opacity-70" weight="bold" />
                   </>
                 )}
               </Button>
@@ -849,7 +842,7 @@ export default function EditorPage() {
                 title="Undo (Ctrl+Z)"
                 className="rounded-full w-8 h-8 hover:bg-muted"
               >
-                <Undo2 size={16} />
+                <ArrowCounterClockwiseIcon size={16} weight="bold" />
               </Button>
               <Button
                 onClick={redo}
@@ -859,7 +852,7 @@ export default function EditorPage() {
                 title="Redo (Ctrl+Shift+Z)"
                 className="rounded-full w-8 h-8 hover:bg-muted"
               >
-                <Redo2 size={16} />
+                <ArrowClockwiseIcon size={16} weight="bold" />
               </Button>
 
               <div className="w-px h-5 bg-border mx-1" />
@@ -879,7 +872,7 @@ export default function EditorPage() {
                     : "text-muted-foreground"
                 }`}
               >
-                <Magnet className={`size-4 ${!snappingEnabled ? "opacity-40 line-through" : ""}`} />
+                <MagnetIcon className={`size-4 ${!snappingEnabled ? "opacity-40 line-through" : ""}`} weight="duotone" />
               </Button>
 
               <Button
@@ -893,7 +886,7 @@ export default function EditorPage() {
                     : "text-muted-foreground"
                 }`}
               >
-                <Grid3X3 className="size-4" />
+                <GridFourIcon className="size-4" weight="bold" />
               </Button>
 
               <div className="w-px h-5 bg-border mx-1" />
@@ -906,7 +899,7 @@ export default function EditorPage() {
                 title="Center Horizontally"
                 className="rounded-full w-8 h-8 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-35 disabled:pointer-events-none"
               >
-                <AlignCenterHorizontal className="size-4" />
+                <AlignCenterHorizontalIcon className="size-4" weight="bold" />
               </Button>
 
               <Button
@@ -917,7 +910,7 @@ export default function EditorPage() {
                 title="Center Vertically"
                 className="rounded-full w-8 h-8 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-35 disabled:pointer-events-none"
               >
-                <AlignCenterVertical className="size-4" />
+                <AlignCenterVerticalIcon className="size-4" weight="bold" />
               </Button>
 
               <Button
@@ -928,7 +921,7 @@ export default function EditorPage() {
                 title="Duplicate Layer (Ctrl+D)"
                 className="rounded-full w-8 h-8 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-35 disabled:pointer-events-none"
               >
-                <Copy className="size-4" />
+                <CopyIcon className="size-4" weight="bold" />
               </Button>
 
               <Button
@@ -941,7 +934,7 @@ export default function EditorPage() {
                 title="Delete Layer (Delete / Backspace)"
                 className="rounded-full w-8 h-8 hover:bg-muted text-muted-foreground hover:text-destructive disabled:opacity-35 disabled:pointer-events-none"
               >
-                <Trash2 size={16} />
+                <TrashIcon size={16} weight="bold" />
               </Button>
             </div>
           </div>
@@ -958,7 +951,7 @@ export default function EditorPage() {
                 title="Reset All"
                 className="rounded-full w-8 h-8 hover:bg-muted text-destructive hover:text-red-500"
               >
-                <RotateCcw size={16} />
+                <ArrowArcLeftIcon size={16} weight="bold" />
               </Button>
             </div>
           </div>
@@ -976,7 +969,7 @@ export default function EditorPage() {
                 className="rounded-lg size-7 hover:bg-muted"
                 title="Undo"
               >
-                <Undo2 size={14} />
+                <ArrowCounterClockwiseIcon size={14} weight="bold" />
               </Button>
               <Button
                 onClick={redo}
@@ -986,7 +979,7 @@ export default function EditorPage() {
                 className="rounded-lg size-7 hover:bg-muted"
                 title="Redo"
               >
-                <Redo2 size={14} />
+                <ArrowClockwiseIcon size={14} weight="bold" />
               </Button>
 
               <div className="w-px h-4 bg-border mx-0.5" />
@@ -1000,7 +993,7 @@ export default function EditorPage() {
                 }`}
                 title="Snapping"
               >
-                <Magnet className={`size-3.5 ${!snappingEnabled ? "opacity-40 line-through" : ""}`} />
+                <MagnetIcon className={`size-3.5 ${!snappingEnabled ? "opacity-40 line-through" : ""}`} weight="duotone" />
               </Button>
 
               <Button
@@ -1012,7 +1005,7 @@ export default function EditorPage() {
                 }`}
                 title="Grid"
               >
-                <Grid3X3 className="size-3.5" />
+                <GridFourIcon className="size-3.5" weight="bold" />
               </Button>
 
               <div className="w-px h-4 bg-border mx-0.5" />
@@ -1025,7 +1018,7 @@ export default function EditorPage() {
                 className="rounded-lg size-7 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:pointer-events-none"
                 title="Center Horizontally"
               >
-                <AlignCenterHorizontal className="size-3.5" />
+                <AlignCenterHorizontalIcon className="size-3.5" weight="bold" />
               </Button>
 
               <Button
@@ -1036,7 +1029,7 @@ export default function EditorPage() {
                 className="rounded-lg size-7 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:pointer-events-none"
                 title="Center Vertically"
               >
-                <AlignCenterVertical className="size-3.5" />
+                <AlignCenterVerticalIcon className="size-3.5" weight="bold" />
               </Button>
 
               <Button
@@ -1047,7 +1040,7 @@ export default function EditorPage() {
                 className="rounded-lg size-7 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:pointer-events-none"
                 title="Duplicate"
               >
-                <Copy className="size-3.5" />
+                <CopyIcon className="size-3.5" weight="bold" />
               </Button>
 
               <Button
@@ -1060,7 +1053,7 @@ export default function EditorPage() {
                 className="rounded-lg size-7 hover:bg-muted text-muted-foreground hover:text-destructive disabled:opacity-30 disabled:pointer-events-none"
                 title="Delete"
               >
-                <Trash2 size={14} />
+                <TrashIcon size={14} weight="bold" />
               </Button>
 
               <div className="w-px h-4 bg-border mx-0.5" />
@@ -1072,7 +1065,7 @@ export default function EditorPage() {
                 className="rounded-lg size-7 hover:bg-muted text-destructive hover:text-red-500"
                 title="Reset All"
               >
-                <RotateCcw size={14} />
+                <ArrowArcLeftIcon size={14} weight="bold" />
               </Button>
             </div>
           </div>
@@ -1083,7 +1076,7 @@ export default function EditorPage() {
             <div className="bg-card border-2 border-border shadow-2xl rounded-2xl p-6 max-w-xs w-full space-y-3 text-center animate-in zoom-in-95 duration-200">
               <div className="flex justify-center">
                 <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <Loader2 className="size-5 animate-spin" />
+                  <CircleNotchIcon className="size-5 animate-spin" />
                 </div>
               </div>
 
@@ -1110,11 +1103,11 @@ export default function EditorPage() {
       </div>
 
       <div className="hidden md:flex w-76 shrink-0 border-l-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
-        <div className="flex justify-center h-12 border-b-2 dark:border-neutral-800 items-center px-4 shrink-0 bg-transparent">
+        {/* <div className="flex justify-center h-12 border-b-2 dark:border-neutral-800 items-center px-4 shrink-0 bg-transparent">
           <span className="text-sm uppercase font-bold pt-0.5 tracking-wider font-display">
             Canvas & Shaders
           </span>
-        </div>
+        </div> */}
         <div className="flex-1 min-h-0 w-full relative">
           <RightPanel onDownload={handleDownload} />
         </div>

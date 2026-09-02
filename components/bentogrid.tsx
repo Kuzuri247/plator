@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  Smartphone,
-  Monitor,
-  Square,
-  CheckCircle2,
-} from "lucide-react";
+  DeviceMobileIcon,
+  DesktopIcon,
+  SquareIcon,
+  CheckCircleIcon,
+} from "@phosphor-icons/react";
 
 export const BentoGrid = () => {
   // Card 1: Color palette state
@@ -233,9 +233,9 @@ export const BentoGrid = () => {
               {/* Aspect Ratio Buttons */}
               <div className="w-full flex items-center justify-between gap-1 bg-background/80 p-1 rounded-xl border border-border/60 dark:border-neutral-800 mt-2 shrink-0">
                 {[
-                  { id: "16:9", label: "16:9", icon: <Monitor className="size-3" /> },
-                  { id: "1:1", label: "1:1", icon: <Square className="size-3" /> },
-                  { id: "9:16", label: "9:16", icon: <Smartphone className="size-3" /> },
+                  { id: "16:9", label: "16:9", icon: <DesktopIcon className="size-3" weight="bold" /> },
+                  { id: "1:1", label: "1:1", icon: <SquareIcon className="size-3" weight="bold" /> },
+                  { id: "9:16", label: "9:16", icon: <DeviceMobileIcon className="size-3" weight="bold" /> },
                 ].map((item) => (
                   <button
                     key={item.id}
@@ -341,7 +341,7 @@ export const BentoGrid = () => {
                       Rendering...
                     </span>
                   ) : (
-                    <CheckCircle2 className="size-3.5 text-emerald-500" />
+                    <CheckCircleIcon className="size-3.5 text-emerald-500" weight="fill" />
                   )}
                 </div>
 

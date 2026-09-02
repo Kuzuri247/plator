@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Globe, ExternalLink, Shield, FileText, Mail, User } from "lucide-react";
+import { ShieldCheckIcon, FileTextIcon, EnvelopeSimpleIcon, UserIcon } from "@phosphor-icons/react";
 import { XIcon } from "@/components/icons/x-icon";
 import { FooterPattern } from "./patterns";
 import StackIcon from "tech-stack-icons";
@@ -65,7 +65,7 @@ export const Footer: React.FC = () => {
                   href="/privacy"
                   className="hover:text-foreground transition-colors flex items-center gap-1.5"
                 >
-                  <Shield className="size-3 text-muted-foreground" />
+                  <ShieldCheckIcon className="size-3 text-muted-foreground" weight="duotone" />
                   <span>Privacy Policy</span>
                 </Link>
               </li>
@@ -74,7 +74,7 @@ export const Footer: React.FC = () => {
                   href="/terms"
                   className="hover:text-foreground transition-colors flex items-center gap-1.5"
                 >
-                  <FileText className="size-3 text-muted-foreground" />
+                  <FileTextIcon className="size-3 text-muted-foreground" weight="duotone" />
                   <span>Terms of Service</span>
                 </Link>
               </li>
@@ -84,7 +84,7 @@ export const Footer: React.FC = () => {
                   target="_blank"
                   className="hover:text-foreground transition-colors flex items-center gap-1.5"
                 >
-                  <Mail className="size-3 text-muted-foreground" />
+                  <EnvelopeSimpleIcon className="size-3 text-muted-foreground" weight="duotone" />
                   <span>Contact</span>
                 </Link>
               </li>
@@ -123,7 +123,7 @@ export const Footer: React.FC = () => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
               >
-                <User className="size-3.5" />
+                <UserIcon className="size-3.5" weight="duotone" />
                 <span>Developer Portfolio</span>
               </a>
             </div>

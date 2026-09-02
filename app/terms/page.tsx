@@ -5,20 +5,20 @@ import { Footer } from "@/components/footer";
 import { DitherCursor } from "@/components/landing/dither-cursor";
 import { FooterPattern } from "@/components/patterns";
 import {
-  FileText,
-  Sparkles,
-  ShieldCheck,
-  Scale,
-  Cpu,
-  Layers,
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  AlertCircle,
-  Globe,
-  Mail,
-  FileCode2,
-} from "lucide-react";
+  FileTextIcon,
+  SparkleIcon,
+  ShieldCheckIcon,
+  ScalesIcon,
+  CpuIcon,
+  StackIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  WarningCircleIcon,
+  GlobeIcon,
+  EnvelopeSimpleIcon,
+  CodeIcon,
+} from "@phosphor-icons/react/dist/ssr";
 
 export const metadata: Metadata = {
   title: "Terms of Service & Conditions (TOC)",
@@ -34,12 +34,32 @@ export const metadata: Metadata = {
     url: "https://plator.fun/terms",
     siteName: "Plator",
     type: "website",
+    images: [
+      {
+        url: "https://plator.fun/landing.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: "Plator - Terms of Service",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    site: "@kuzuri247",
+    creator: "@kuzuri247",
     title: "Terms of Service & Conditions (TOC) | Plator",
     description:
       "Review the Terms of Service & Conditions for Plator. Apache 2.0 open-source license, full commercial ownership of all exported designs, and zero-knowledge browser execution.",
+    images: [
+      {
+        url: "https://plator.fun/landing.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: "Plator - Terms of Service",
+      },
+    ],
   },
 };
 
@@ -74,7 +94,7 @@ export default function TermsPage() {
               href="/"
               className="hover:text-foreground transition-colors flex items-center gap-1"
             >
-              <ArrowLeft className="size-3" />
+              <ArrowLeftIcon className="size-3" />
               <span>Home</span>
             </Link>
             <span>/</span>
@@ -90,11 +110,11 @@ export default function TermsPage() {
             <span>Effective Date: August 2026</span>
             <span>•</span>
             <span className="text-primary font-medium flex items-center gap-1">
-              <FileCode2 className="size-3.5" /> Apache License 2.0
+              <CodeIcon className="size-3.5" weight="bold" /> Apache License 2.0
             </span>
             <span>•</span>
             <span className="text-emerald-500 font-medium flex items-center gap-1">
-              <CheckCircle2 className="size-3.5" /> 100% Commercial Freedom
+              <CheckCircleIcon className="size-3.5" weight="fill" /> 100% Commercial Freedom
             </span>
           </div>
         </div>
@@ -106,7 +126,7 @@ export default function TermsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md">
               <div className="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
-                <Layers className="size-4" />
+                <StackIcon className="size-4" weight="duotone" />
               </div>
               <h2 className="text-sm font-bold text-foreground mb-1">
                 You Own Everything
@@ -118,7 +138,7 @@ export default function TermsPage() {
 
             <div className="p-4 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md">
               <div className="size-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-3">
-                <CheckCircle2 className="size-4" />
+                <CheckCircleIcon className="size-4" weight="duotone" />
               </div>
               <h2 className="text-sm font-bold text-foreground mb-1">
                 Commercial Rights
@@ -130,7 +150,7 @@ export default function TermsPage() {
 
             <div className="p-4 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md">
               <div className="size-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-3">
-                <FileCode2 className="size-4" />
+                <CodeIcon className="size-4" weight="duotone" />
               </div>
               <h2 className="text-sm font-bold text-foreground mb-1">
                 Apache 2.0 License
@@ -142,7 +162,7 @@ export default function TermsPage() {
 
             <div className="p-4 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md">
               <div className="size-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-3">
-                <ShieldCheck className="size-4" />
+                <ShieldCheckIcon className="size-4" weight="duotone" />
               </div>
               <h2 className="text-sm font-bold text-foreground mb-1">
                 Zero Royalties
@@ -162,7 +182,7 @@ export default function TermsPage() {
           <aside className="lg:col-span-4 hidden lg:block">
             <div className="sticky top-28 p-5 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xl shadow-xs">
               <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-3 font-geist flex items-center gap-2">
-                <FileText className="size-3.5 text-primary" />
+                <FileTextIcon className="size-3.5 text-primary" />
                 <span>Table of Contents</span>
               </h3>
               <nav className="space-y-1 text-xs font-manrope">
@@ -183,7 +203,7 @@ export default function TermsPage() {
                   rel="noopener noreferrer"
                   className="text-xs text-primary font-medium hover:underline flex items-center gap-1 font-manrope"
                 >
-                  <FileCode2 className="size-3" />
+                  <CodeIcon className="size-3" weight="bold" />
                   <span>View Apache 2.0 LICENSE</span>
                 </a>
                 <Link
@@ -191,7 +211,7 @@ export default function TermsPage() {
                   className="text-xs text-muted-foreground hover:text-foreground font-medium hover:underline flex items-center gap-1 font-manrope"
                 >
                   <span>Read Privacy Policy</span>
-                  <ArrowRight className="size-3" />
+                  <ArrowRightIcon className="size-3" />
                 </Link>
               </div>
             </div>
@@ -244,7 +264,7 @@ export default function TermsPage() {
               </h2>
               <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 text-xs text-muted-foreground space-y-2">
                 <div className="flex items-center gap-2 text-primary font-semibold">
-                  <FileCode2 className="size-4" />
+                  <CodeIcon className="size-4" weight="bold" />
                   <span>APACHE LICENSE, VERSION 2.0</span>
                 </div>
                 <p className="leading-relaxed">
@@ -336,7 +356,7 @@ export default function TermsPage() {
               </h2>
               <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 text-xs text-muted-foreground space-y-2">
                 <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold">
-                  <AlertCircle className="size-4" />
+                  <WarningCircleIcon className="size-4" weight="bold" />
                   <span>&ldquo;AS IS&rdquo; & &ldquo;AS AVAILABLE&rdquo; PROVISION (SECTION 7 OF APACHE 2.0)</span>
                 </div>
                 <p>
@@ -390,7 +410,7 @@ export default function TermsPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/80 bg-muted/40 hover:bg-muted text-xs font-semibold text-foreground transition-all"
                 >
-                  <Globe className="size-3.5 text-primary" />
+                  <GlobeIcon className="size-3.5 text-primary" weight="duotone" />
                   <span>GitHub Repository</span>
                 </a>
                 <a
@@ -399,7 +419,7 @@ export default function TermsPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/80 bg-muted/40 hover:bg-muted text-xs font-semibold text-foreground transition-all"
                 >
-                  <Mail className="size-3.5 text-emerald-500" />
+                  <EnvelopeSimpleIcon className="size-3.5 text-emerald-500" weight="duotone" />
                   <span>Developer Contact Form</span>
                 </a>
               </div>

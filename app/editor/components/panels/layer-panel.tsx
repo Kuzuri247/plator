@@ -2,14 +2,14 @@
 
 import { useStore } from "../../store/use-store";
 import {
-  Eye,
-  EyeOff,
-  Lock,
-  Unlock,
-  Trash2,
-  Image as ImageIcon,
-  GripVertical,
-} from "lucide-react";
+  EyeIcon,
+  EyeSlashIcon,
+  LockSimpleIcon,
+  LockSimpleOpenIcon,
+  TrashIcon,
+  ImageIcon,
+  DotsSixVerticalIcon,
+} from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -228,7 +228,7 @@ const SortableLayer = memo(function SortableLayer({
               toggleLock(element.id);
             }}
           >
-            {element.isLocked ? <Lock size={12} /> : <Unlock size={12} />}
+            {element.isLocked ? <LockSimpleIcon size={13} /> : <LockSimpleOpenIcon size={13} />}
           </Button>
 
           {/* Visibility Button */}
@@ -248,7 +248,7 @@ const SortableLayer = memo(function SortableLayer({
               toggleVisibility(element.id);
             }}
           >
-            {element.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
+            {element.isVisible ? <EyeIcon size={13} /> : <EyeSlashIcon size={13} />}
           </Button>
 
           {/* Delete Button */}
@@ -263,7 +263,7 @@ const SortableLayer = memo(function SortableLayer({
               removeElement(element.id);
             }}
           >
-            <Trash2 size={12} />
+            <TrashIcon size={13} />
           </Button>
 
           {/* Drag Handle */}
@@ -275,7 +275,7 @@ const SortableLayer = memo(function SortableLayer({
             onPointerDown={(e) => controls.start(e)}
             title="Reorder Layer"
           >
-            <GripVertical size={13} />
+            <DotsSixVerticalIcon size={14} />
           </div>
         </div>
       </div>
@@ -316,13 +316,13 @@ const SortableLayer = memo(function SortableLayer({
         {/* Status Indicators */}
         {element.isLocked && (
           <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded-xs text-[9px] font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shrink-0">
-            <Lock size={8} /> Locked
+            <LockSimpleIcon size={9} /> Locked
           </span>
         )}
 
         {!element.isVisible && (
           <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded-xs text-[9px] font-semibold bg-muted text-muted-foreground border border-border/60 shrink-0">
-            <EyeOff size={8} /> Hidden
+            <EyeSlashIcon size={9} /> Hidden
           </span>
         )}
       </div>

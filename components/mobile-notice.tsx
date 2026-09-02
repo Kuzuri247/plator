@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Monitor, X } from "lucide-react";
+import { DesktopIcon, XIcon } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "motion/react";
 
 export function MobileNotice() {
@@ -43,7 +43,7 @@ export function MobileNotice() {
           <div className="w-full px-3.5 py-2 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <div className="size-4.5 rounded bg-primary/15 text-primary flex items-center justify-center shrink-0">
-                <Monitor className="size-3" />
+                <DesktopIcon className="size-3" weight="bold" />
               </div>
               <p className="text-[11px] text-muted-foreground leading-tight truncate sm:whitespace-normal">
                 <strong className="text-foreground font-semibold">Works best on desktop:</strong> Please use on a bigger screen.
@@ -55,7 +55,7 @@ export function MobileNotice() {
               aria-label="Dismiss desktop notice"
               className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0 cursor-pointer"
             >
-              <X className="size-3.5" />
+              <XIcon className="size-3.5" weight="bold" />
             </button>
           </div>
         </motion.aside>

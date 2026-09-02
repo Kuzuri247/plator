@@ -2,16 +2,17 @@
 
 import { useRef, useCallback, useState } from "react";
 import {
-  Image as ImageIcon,
-  Loader2,
-  Laugh,
-  Layers,
-  Zap,
-  Ban,
-} from "lucide-react";
+  ImageIcon,
+  CircleNotchIcon,
+  SmileyIcon,
+  StackIcon,
+  LightningIcon,
+  ProhibitIcon,
+  SparkleIcon,
+} from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
+import { StudioSlider } from "@/components/ui/studio-slider";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -156,16 +157,16 @@ export function RightPanel({ onDownload }: RightPanelProps) {
       <Tabs defaultValue="shaders" className="w-full flex-1 flex flex-col h-full">
         <div className="px-3 pt-3 pb-1 shrink-0">
           <TabsList className="w-full grid grid-cols-3 dark:bg-neutral-800">
-            <TabsTrigger value="shaders">
-              <Zap className="size-3.5" />
+            <TabsTrigger value="shaders" className="gap-1.5 font-semibold text-xs cursor-pointer">
+              <LightningIcon className="size-3.5 text-primary" weight="duotone" />
               Shaders
             </TabsTrigger>
-            <TabsTrigger value="overlays">
-              <Layers className="size-3.5" />
+            <TabsTrigger value="overlays" className="gap-1.5 font-semibold text-xs cursor-pointer">
+              <StackIcon className="size-3.5 text-primary" weight="duotone" />
               Texture
             </TabsTrigger>
-            <TabsTrigger value="pictures">
-              <ImageIcon className="size-3.5" />
+            <TabsTrigger value="pictures" className="gap-1.5 font-semibold text-xs cursor-pointer">
+              <ImageIcon className="size-3.5 text-primary" weight="duotone" />
               Pictures
             </TabsTrigger>
           </TabsList>
@@ -407,91 +408,54 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 font-semibold font-manrope *:pr-1">
-                    <div
-                      className={`space-y-3 ${!meshConfig.isAnimating
-                        ? "opacity-40 pointer-events-none"
-                        : ""
-                        }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-medium text-muted-foreground">
-                          Flow Speed
-                        </Label>
-                        <span className="text-xs text-muted-foreground">
-                          {meshConfig.speed.toFixed(1)}x
-                        </span>
-                      </div>
-                      <Slider
-                        value={[meshConfig.speed * 10]}
-                        min={1}
-                        max={30}
-                        step={1}
-                        disabled={!meshConfig.isAnimating}
-                        onValueChange={([val]) =>
-                          setMeshConfig({ speed: val / 10 })
-                        }
-                      />
-                    </div>
+                    <StudioSlider
+                      label="Flow Speed"
+                      value={Number(meshConfig.speed.toFixed(1))}
+                      onChange={(val) => setMeshConfig({ speed: val })}
+                      min={0.1}
+                      max={3.0}
+                      step={0.1}
+                      defaultValue={1.0}
+                      unit="x"
+                      disabled={!meshConfig.isAnimating}
+                      compact
+                    />
 
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-medium text-muted-foreground">
-                          Distortion
-                        </Label>
-                        <span className="text-xs text-muted-foreground">
-                          {meshConfig.noiseIntensity}%
-                        </span>
-                      </div>
-                      <Slider
-                        value={[meshConfig.noiseIntensity]}
-                        min={0}
-                        max={100}
-                        step={1}
-                        onValueChange={([val]) =>
-                          setMeshConfig({ noiseIntensity: val })
-                        }
-                      />
-                    </div>
+                    <StudioSlider
+                      label="Distortion"
+                      value={meshConfig.noiseIntensity}
+                      onChange={(val) => setMeshConfig({ noiseIntensity: val })}
+                      min={0}
+                      max={100}
+                      step={1}
+                      defaultValue={50}
+                      unit="%"
+                      compact
+                    />
 
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-medium text-muted-foreground">
-                          Mesh Scale
-                        </Label>
-                        <span className="text-xs text-muted-foreground">
-                          {meshConfig.noiseScale.toFixed(1)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[meshConfig.noiseScale * 10]}
-                        min={5}
-                        max={40}
-                        step={1}
-                        onValueChange={([val]) =>
-                          setMeshConfig({ noiseScale: val / 10 })
-                        }
-                      />
-                    </div>
+                    <StudioSlider
+                      label="Mesh Scale"
+                      value={Number(meshConfig.noiseScale.toFixed(1))}
+                      onChange={(val) => setMeshConfig({ noiseScale: val })}
+                      min={0.5}
+                      max={4.0}
+                      step={0.1}
+                      defaultValue={1.0}
+                      unit="x"
+                      compact
+                    />
 
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-medium text-muted-foreground">
-                          Noise Grain
-                        </Label>
-                        <span className="text-xs text-muted-foreground">
-                          {meshConfig.noiseGrain || 0}%
-                        </span>
-                      </div>
-                      <Slider
-                        value={[meshConfig.noiseGrain || 0]}
-                        min={0}
-                        max={100}
-                        step={1}
-                        onValueChange={([val]) =>
-                          setMeshConfig({ noiseGrain: val })
-                        }
-                      />
-                    </div>
+                    <StudioSlider
+                      label="Noise Grain"
+                      value={meshConfig.noiseGrain || 0}
+                      onChange={(val) => setMeshConfig({ noiseGrain: val })}
+                      min={0}
+                      max={100}
+                      step={1}
+                      defaultValue={0}
+                      unit="%"
+                      compact
+                    />
                   </div>
                 </div>
 
@@ -561,45 +525,29 @@ export function RightPanel({ onDownload }: RightPanelProps) {
 
                       {/* Row 2: Pixel Size & Dither Strength Sliders */}
                       <div className="grid grid-cols-2 gap-3 *:pr-1">
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Pixel Size
-                            </Label>
-                            <span className="text-xs font-manrope text-muted-foreground">
-                              {meshConfig.ditherPixelSize}px
-                            </span>
-                          </div>
-                          <Slider
-                            value={[meshConfig.ditherPixelSize]}
-                            min={1}
-                            max={16}
-                            step={1}
-                            onValueChange={([val]) =>
-                              setMeshConfig({ ditherPixelSize: val })
-                            }
-                          />
-                        </div>
+                        <StudioSlider
+                          label="Pixel Size"
+                          value={meshConfig.ditherPixelSize}
+                          onChange={(val) => setMeshConfig({ ditherPixelSize: val })}
+                          min={1}
+                          max={16}
+                          step={1}
+                          defaultValue={1}
+                          unit="px"
+                          compact
+                        />
 
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Strength
-                            </Label>
-                            <span className="text-xs font-manrope text-muted-foreground">
-                              {meshConfig.ditherStrength ?? 100}%
-                            </span>
-                          </div>
-                          <Slider
-                            value={[meshConfig.ditherStrength ?? 100]}
-                            min={0}
-                            max={100}
-                            step={1}
-                            onValueChange={([val]) =>
-                              setMeshConfig({ ditherStrength: val })
-                            }
-                          />
-                        </div>
+                        <StudioSlider
+                          label="Strength"
+                          value={meshConfig.ditherStrength ?? 100}
+                          onChange={(val) => setMeshConfig({ ditherStrength: val })}
+                          min={0}
+                          max={100}
+                          step={1}
+                          defaultValue={100}
+                          unit="%"
+                          compact
+                        />
                       </div>
                     </div>
                   )}
@@ -617,34 +565,18 @@ export function RightPanel({ onDownload }: RightPanelProps) {
               <div className="p-4 flex flex-col gap-6 pb-6">
                 {/* Vector Patterns */}
                 <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-2.5 items-center font-manrope">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Patterns
-                    </Label>
-                    <div
-                      className={`flex items-center gap-0.5 transition-all duration-200 ${overlayConfig.pattern === "none"
-                          ? "opacity-30 pointer-events-none"
-                          : "opacity-100"
-                        }`}
-                    >
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground shrink-0 pr-1">
-                        Opacity
-                      </span>
-                      <Slider
-                        value={[overlayConfig.patternOpacity]}
-                        min={5}
-                        max={100}
-                        step={1}
-                        disabled={overlayConfig.pattern === "none"}
-                        onValueChange={([val]) =>
-                          setOverlayConfig({ patternOpacity: val })
-                        }
-                        className="flex-1 cursor-pointer"
-                      />
-                      <span className="text-[10px] font-bold text-primary w-7 text-right shrink-0">
-                        {overlayConfig.patternOpacity}%
-                      </span>
-                    </div>
+                  <div className="grid grid-cols-1 gap-2.5 items-center font-manrope">
+                    <StudioSlider
+                      label="Pattern Opacity"
+                      value={overlayConfig.patternOpacity}
+                      onChange={(val) => setOverlayConfig({ patternOpacity: val })}
+                      min={5}
+                      max={100}
+                      step={1}
+                      defaultValue={50}
+                      unit="%"
+                      disabled={overlayConfig.pattern === "none"}
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-2.5 font-manrope">
@@ -662,7 +594,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           <div className="absolute inset-0 w-full h-full">
                             {p.id === "none" ? (
                               <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900/90 text-neutral-500 group-hover:text-neutral-300 transition-colors pb-3">
-                                <Ban className="size-5 mb-0.5 opacity-60 group-hover:opacity-100" />
+                                <ProhibitIcon className="size-5 mb-0.5 opacity-60 group-hover:opacity-100" weight="bold" />
                                 <span className="text-[9px] uppercase tracking-wider font-semibold opacity-60">
                                   Off
                                 </span>
@@ -692,34 +624,18 @@ export function RightPanel({ onDownload }: RightPanelProps) {
 
                 {/* Studio Textures */}
                 <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-2.5 items-center font-manrope">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Texture Layer
-                    </Label>
-                    <div
-                      className={`flex items-center gap-0.5 transition-all duration-200 ${overlayConfig.texture === "none"
-                          ? "opacity-30 pointer-events-none"
-                          : "opacity-100"
-                        }`}
-                    >
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground shrink-0 pr-1">
-                        Opacity
-                      </span>
-                      <Slider
-                        value={[overlayConfig.textureOpacity]}
-                        min={5}
-                        max={100}
-                        step={1}
-                        disabled={overlayConfig.texture === "none"}
-                        onValueChange={([val]) =>
-                          setOverlayConfig({ textureOpacity: val })
-                        }
-                        className="flex-1 cursor-pointer"
-                      />
-                      <span className="text-[10px] font-bold text-primary w-7 text-right shrink-0">
-                        {overlayConfig.textureOpacity}%
-                      </span>
-                    </div>
+                  <div className="grid grid-cols-1 gap-2.5 items-center font-manrope">
+                    <StudioSlider
+                      label="Texture Opacity"
+                      value={overlayConfig.textureOpacity}
+                      onChange={(val) => setOverlayConfig({ textureOpacity: val })}
+                      min={5}
+                      max={100}
+                      step={1}
+                      defaultValue={50}
+                      unit="%"
+                      disabled={overlayConfig.texture === "none"}
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-2.5 font-manrope">
@@ -737,7 +653,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                           <div className="absolute inset-0 w-full h-full">
                             {t.id === "none" ? (
                               <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900/90 text-neutral-500 group-hover:text-neutral-300 transition-colors pb-3">
-                                <Ban className="size-5 mb-0.5 opacity-60 group-hover:opacity-100" />
+                                <ProhibitIcon className="size-5 mb-0.5 opacity-60 group-hover:opacity-100" weight="bold" />
                                 <span className="text-[9px] uppercase tracking-wider font-semibold opacity-60">
                                   Off
                                 </span>
@@ -780,7 +696,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                     : "text-muted-foreground hover:text-foreground"
                     }`}
                 >
-                  <ImageIcon className="size-3.5" /> Wallpapers
+                  <ImageIcon className="size-3.5" weight="duotone" /> Wallpapers
                 </button>
                 <button
                   onClick={() => setPictureSubTab("memes")}
@@ -789,7 +705,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                     : "text-muted-foreground hover:text-foreground"
                     }`}
                 >
-                  <Laugh className="size-3.5" /> Memes
+                  <SmileyIcon className="size-3.5" weight="duotone" /> Memes
                 </button>
               </div>
 
@@ -819,7 +735,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                       ))}
                       {wallpapersLoading && (
                         <div className="col-span-2 py-4 flex justify-center">
-                          <Loader2 className="size-5 animate-spin text-primary" />
+                          <CircleNotchIcon className="size-5 animate-spin text-primary" />
                         </div>
                       )}
                     </div>
@@ -859,7 +775,7 @@ export function RightPanel({ onDownload }: RightPanelProps) {
                       ))}
                       {memesLoading && (
                         <div className="col-span-2 py-4 flex justify-center">
-                          <Loader2 className="size-5 animate-spin text-primary" />
+                          <CircleNotchIcon className="size-5 animate-spin text-primary" />
                         </div>
                       )}
                     </div>

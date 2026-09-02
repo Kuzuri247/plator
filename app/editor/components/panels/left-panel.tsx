@@ -1,23 +1,22 @@
 "use client";
 
 import {
-  Type,
-  Image as ImageIcon,
-  Plus,
-  Highlighter,
-  Underline,
-  Strikethrough,
-  Italic,
-  CaseUpper,
-  ALargeSmall,
-  Layers,
-  ArrowLeftRight,
-} from "lucide-react";
+  TextTIcon,
+  ImageIcon,
+  PlusIcon,
+  HighlighterCircleIcon,
+  TextUnderlineIcon,
+  TextStrikethroughIcon,
+  TextItalicIcon,
+  TextAaIcon,
+  StackIcon,
+  ArrowsLeftRightIcon,
+} from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Slider } from "@/components/ui/slider";
+import { StudioSlider } from "@/components/ui/studio-slider";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -146,16 +145,16 @@ export function LeftPanel({
       >
         <div className="px-3 pt-3 pb-1 shrink-0">
           <TabsList className="w-full grid grid-cols-3 dark:bg-neutral-800">
-            <TabsTrigger value="image">
-              <ImageIcon className="size-3.5" />
+            <TabsTrigger value="image" className="gap-1.5 font-semibold text-xs cursor-pointer">
+              <ImageIcon className="size-3.5 text-primary" weight="duotone" />
               Image
             </TabsTrigger>
-            <TabsTrigger value="text">
-              <Type className="size-3.5" />
+            <TabsTrigger value="text" className="gap-1.5 font-semibold text-xs cursor-pointer">
+              <TextTIcon className="size-3.5 text-primary" weight="bold" />
               Text
             </TabsTrigger>
-            <TabsTrigger value="layers">
-              <Layers className="size-3.5" />
+            <TabsTrigger value="layers" className="gap-1.5 font-semibold text-xs cursor-pointer">
+              <StackIcon className="size-3.5 text-primary" weight="duotone" />
               Layers
             </TabsTrigger>
           </TabsList>
@@ -198,7 +197,7 @@ export function LeftPanel({
                           htmlFor="image-upload"
                           className="cursor-pointer"
                         >
-                          <Plus className="w-3.5 h-3.5 mr-2" /> Add Image Layer
+                          <PlusIcon className="w-3.5 h-3.5 mr-2" /> Add Image Layer
                         </label>
                       </Button>
                     </div>
@@ -211,187 +210,113 @@ export function LeftPanel({
                       <Label className="text-sm font-semibold uppercase tracking-wider">
                         Image Properties
                       </Label>
-                      <div className="space-y-5 grid grid-cols-2 gap-2 font-manrope font-semibold *:pr-1">
-                        {/* Scale */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Scale
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {imgStyle.scale}%
-                            </span>
-                          </div>
-                          <Slider
-                            value={[imgStyle.scale]}
-                            onValueChange={([val]) =>
-                              updateSelected({ scale: val })
-                            }
-                            min={10}
-                            max={200}
-                            step={1}
-                          />
-                        </div>
+                      <div className="space-y-4 grid grid-cols-2 gap-3 font-manrope font-semibold *:pr-1">
+                        <StudioSlider
+                          label="Scale"
+                          value={imgStyle.scale}
+                          onChange={(val) => updateSelected({ scale: val })}
+                          min={10}
+                          max={200}
+                          step={1}
+                          defaultValue={100}
+                          unit="%"
+                          compact
+                        />
 
-                        {/* Opacity */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Opacity
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {imgStyle.opacity}%
-                            </span>
-                          </div>
-                          <Slider
-                            value={[imgStyle.opacity]}
-                            onValueChange={([val]) =>
-                              updateSelected({ opacity: val })
-                            }
-                            min={0}
-                            max={100}
-                            step={1}
-                          />
-                        </div>
+                        <StudioSlider
+                          label="Opacity"
+                          value={imgStyle.opacity}
+                          onChange={(val) => updateSelected({ opacity: val })}
+                          min={0}
+                          max={100}
+                          step={1}
+                          defaultValue={100}
+                          unit="%"
+                          compact
+                        />
 
-                        {/* Brightness */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Brightness
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {imgStyle.brightness ?? 100}%
-                            </span>
-                          </div>
-                          <Slider
-                            value={[imgStyle.brightness ?? 100]}
-                            onValueChange={([val]) =>
-                              updateSelected({ brightness: val })
-                            }
-                            min={20}
-                            max={180}
-                            step={1}
-                          />
-                        </div>
+                        <StudioSlider
+                          label="Brightness"
+                          value={imgStyle.brightness ?? 100}
+                          onChange={(val) => updateSelected({ brightness: val })}
+                          min={20}
+                          max={180}
+                          step={1}
+                          defaultValue={100}
+                          unit="%"
+                          compact
+                        />
 
-                        {/* Contrast */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Contrast
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {imgStyle.contrast ?? 100}%
-                            </span>
-                          </div>
-                          <Slider
-                            value={[imgStyle.contrast ?? 100]}
-                            onValueChange={([val]) =>
-                              updateSelected({ contrast: val })
-                            }
-                            min={20}
-                            max={180}
-                            step={1}
-                          />
-                        </div>
+                        <StudioSlider
+                          label="Contrast"
+                          value={imgStyle.contrast ?? 100}
+                          onChange={(val) => updateSelected({ contrast: val })}
+                          min={20}
+                          max={180}
+                          step={1}
+                          defaultValue={100}
+                          unit="%"
+                          compact
+                        />
 
-                        {/* Saturation */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Saturation
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {imgStyle.saturate ?? 100}%
-                            </span>
-                          </div>
-                          <Slider
-                            value={[imgStyle.saturate ?? 100]}
-                            onValueChange={([val]) =>
-                              updateSelected({ saturate: val })
-                            }
-                            min={0}
-                            max={200}
-                            step={1}
-                          />
-                        </div>
+                        <StudioSlider
+                          label="Saturation"
+                          value={imgStyle.saturate ?? 100}
+                          onChange={(val) => updateSelected({ saturate: val })}
+                          min={0}
+                          max={200}
+                          step={1}
+                          defaultValue={100}
+                          unit="%"
+                          compact
+                        />
 
-                        {/* Blur */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Blur
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {imgStyle.blur}px
-                            </span>
-                          </div>
-                          <Slider
-                            value={[imgStyle.blur]}
-                            onValueChange={([val]) =>
-                              updateSelected({ blur: val })
-                            }
-                            min={0}
-                            max={20}
-                            step={1}
-                          />
-                        </div>
+                        <StudioSlider
+                          label="Blur"
+                          value={imgStyle.blur}
+                          onChange={(val) => updateSelected({ blur: val })}
+                          min={0}
+                          max={20}
+                          step={1}
+                          defaultValue={0}
+                          unit="px"
+                          compact
+                        />
 
-                        {/* Roundness */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Roundness
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {imgStyle.borderRadius}px
-                            </span>
-                          </div>
-                          <Slider
-                            value={[imgStyle.borderRadius]}
-                            onValueChange={([val]) =>
-                              updateSelected({ borderRadius: val })
-                            }
-                            min={0}
-                            max={100}
-                            step={1}
-                          />
-                        </div>
+                        <StudioSlider
+                          label="Roundness"
+                          value={imgStyle.borderRadius}
+                          onChange={(val) => updateSelected({ borderRadius: val })}
+                          min={0}
+                          max={100}
+                          step={1}
+                          defaultValue={0}
+                          unit="px"
+                          compact
+                        />
 
-                        {/* Shadow */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-xs font-medium text-muted-foreground">
-                              Shadow
-                            </Label>
-                            <span className="text-xs text-muted-foreground">
-                              {SHADOW_PRESETS.find(
-                                (s) => s.value === imgStyle.shadow,
-                              )?.name || "None"}
-                            </span>
-                          </div>
-                          <Slider
-                            defaultValue={[0]}
-                            value={[
-                              SHADOW_PRESETS.findIndex(
-                                (s) => s.value === imgStyle.shadow,
-                              ) !== -1
-                                ? SHADOW_PRESETS.findIndex(
-                                  (s) => s.value === imgStyle.shadow,
+                        <StudioSlider
+                          label="Shadow"
+                          value={
+                            SHADOW_PRESETS.findIndex(
+                              (s) => s.value === imgStyle.shadow
+                            ) !== -1
+                              ? SHADOW_PRESETS.findIndex(
+                                  (s) => s.value === imgStyle.shadow
                                 )
-                                : 0,
-                            ]}
-                            onValueChange={([val]) => {
-                              const preset = SHADOW_PRESETS[val];
-                              if (preset)
-                                updateSelected({ shadow: preset.value });
-                            }}
-                            min={0}
-                            max={SHADOW_PRESETS.length - 1}
-                            step={1}
-                          />
-                        </div>
+                              : 0
+                          }
+                          onChange={(val) => {
+                            const preset = SHADOW_PRESETS[val];
+                            if (preset) updateSelected({ shadow: preset.value });
+                          }}
+                          min={0}
+                          max={SHADOW_PRESETS.length - 1}
+                          step={1}
+                          defaultValue={0}
+                          formatDisplay={(v) => SHADOW_PRESETS[v]?.name || "None"}
+                          compact
+                        />
                       </div>
 
                       <Separator />
@@ -402,54 +327,40 @@ export function LeftPanel({
                         </Label>
 
                         {/* 3D Rotation Controls */}
-
-
-                        <div className="space-y-2 font-manrope">
-                          <div className="grid grid-cols-3 gap-3 items-center justify-center">
-                            <Label className="text-xs text-muted-foreground flex justify-center">
-                              X-Axis: {imgStyle.rotateX}°
-                            </Label>
-                            <Label className="text-xs text-muted-foreground flex justify-center">
-                              Y-Axis: {imgStyle.rotateY}°
-                            </Label>
-                            <Label className="text-xs text-muted-foreground flex justify-center">
-                              Z-Axis: {imgStyle.rotate}°
-                            </Label>
-                          </div>
-
-                          <div className="grid grid-cols-3 gap-4">
-                            <Slider
-                              value={[imgStyle.rotateX]}
-                              onValueChange={([val]) =>
-                                updateSelected({ rotateX: val })
-                              }
-                              min={-180}
-                              max={180}
-                              step={1}
-                              className="py-1"
-                            />
-                            <Slider
-                              value={[imgStyle.rotateY]}
-                              onValueChange={([val]) =>
-                                updateSelected({ rotateY: val })
-                              }
-                              min={-180}
-                              max={180}
-                              step={1}
-                              className="py-1"
-                            />
-                            <Slider
-                              value={[imgStyle.rotate]}
-                              onValueChange={([val]) =>
-                                updateSelected({ rotate: val })
-                              }
-                              min={-180}
-                              max={180}
-                              step={1}
-                              className="py-1"
-                            />
-                          </div>
-
+                        <div className="grid grid-cols-3 gap-2 font-manrope font-semibold">
+                          <StudioSlider
+                            label="X-Axis"
+                            value={imgStyle.rotateX}
+                            onChange={(val) => updateSelected({ rotateX: val })}
+                            min={-180}
+                            max={180}
+                            step={1}
+                            defaultValue={0}
+                            unit="°"
+                            compact
+                          />
+                          <StudioSlider
+                            label="Y-Axis"
+                            value={imgStyle.rotateY}
+                            onChange={(val) => updateSelected({ rotateY: val })}
+                            min={-180}
+                            max={180}
+                            step={1}
+                            defaultValue={0}
+                            unit="°"
+                            compact
+                          />
+                          <StudioSlider
+                            label="Z-Axis"
+                            value={imgStyle.rotate}
+                            onChange={(val) => updateSelected({ rotate: val })}
+                            min={-180}
+                            max={180}
+                            step={1}
+                            defaultValue={0}
+                            unit="°"
+                            compact
+                          />
                         </div>
 
                         {/* Row: Clip Path & 3D Preset Dropdowns */}
@@ -603,45 +514,33 @@ export function LeftPanel({
 
                             {/* Row 2: Pixel Size & Strength Sliders */}
                             <div className="grid grid-cols-2 gap-3 *:pr-1">
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Pixel Size
-                                  </Label>
-                                  <span className="text-xs font-manrope text-muted-foreground">
-                                    {imgElement?.dither?.pixelSize ?? 4}px
-                                  </span>
-                                </div>
-                                <Slider
-                                  value={[imgElement?.dither?.pixelSize ?? 4]}
-                                  onValueChange={([pixelSize]) =>
-                                    setDitherConfig(selectedElementId!, { pixelSize })
-                                  }
-                                  min={1}
-                                  max={16}
-                                  step={1}
-                                />
-                              </div>
+                              <StudioSlider
+                                label="Pixel Size"
+                                value={imgElement?.dither?.pixelSize ?? 4}
+                                onChange={(pixelSize) =>
+                                  setDitherConfig(selectedElementId!, { pixelSize })
+                                }
+                                min={1}
+                                max={16}
+                                step={1}
+                                defaultValue={4}
+                                unit="px"
+                                compact
+                              />
 
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Strength
-                                  </Label>
-                                  <span className="text-xs font-manrope text-muted-foreground">
-                                    {imgElement?.dither?.strength ?? 100}%
-                                  </span>
-                                </div>
-                                <Slider
-                                  value={[imgElement?.dither?.strength ?? 100]}
-                                  onValueChange={([strength]) =>
-                                    setDitherConfig(selectedElementId!, { strength })
-                                  }
-                                  min={0}
-                                  max={100}
-                                  step={1}
-                                />
-                              </div>
+                              <StudioSlider
+                                label="Strength"
+                                value={imgElement?.dither?.strength ?? 100}
+                                onChange={(strength) =>
+                                  setDitherConfig(selectedElementId!, { strength })
+                                }
+                                min={0}
+                                max={100}
+                                step={1}
+                                defaultValue={100}
+                                unit="%"
+                                compact
+                              />
                             </div>
 
                             {/* Row 3: Color Palette Settings (Swatches & Swap) in Middle */}
@@ -687,7 +586,7 @@ export function LeftPanel({
                                 className="size-7 flex items-center justify-center rounded-md border border-border/70 hover:border-primary text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-background hover:bg-muted shadow-xs"
                                 title="Swap Colors"
                               >
-                                <ArrowLeftRight className="size-3" />
+                                <ArrowsLeftRightIcon className="size-3" weight="bold" />
                               </button>
 
                               {/* Foreground Color */}
@@ -802,7 +701,7 @@ export function LeftPanel({
                       size="sm"
                       className="w-full bg-transparent border-dashed rounded-sm border-neutral-400 dark:border-neutral-600 hover:bg-muted/50"
                     >
-                      <Plus className="w-3.5 h-3.5 mr-2" /> Add Text Layer
+                      <PlusIcon className="w-3.5 h-3.5 mr-2" /> Add Text Layer
                     </Button>
                   </div>
 
@@ -875,47 +774,29 @@ export function LeftPanel({
                             </Select>
                           </div>
 
-                          <div className="space-y-2 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <Label className="text-xs font-medium text-muted-foreground">
-                                Font Size
-                              </Label>
-                              <span className="text-xs text-muted-foreground">
-                                {textStyle.fontSize}px
-                              </span>
-                            </div>
-                            <Slider
-                              value={[textStyle.fontSize]}
-                              onValueChange={([v]) =>
-                                updateSelected({ fontSize: v })
-                              }
-                              min={12}
-                              max={120}
-                              step={1}
-                              className="w-full"
-                            />
-                          </div>
+                          <StudioSlider
+                            label="Font Size"
+                            value={textStyle.fontSize}
+                            onChange={(v) => updateSelected({ fontSize: v })}
+                            min={12}
+                            max={120}
+                            step={1}
+                            defaultValue={32}
+                            unit="px"
+                            compact
+                          />
 
-                          <div className="space-y-2 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <Label className="text-xs font-medium text-muted-foreground">
-                                Tracking
-                              </Label>
-                              <span className="text-xs text-muted-foreground">
-                                {textStyle.letterSpacing ?? 0}px
-                              </span>
-                            </div>
-                            <Slider
-                              value={[textStyle.letterSpacing ?? 0]}
-                              onValueChange={([v]) =>
-                                updateSelected({ letterSpacing: v })
-                              }
-                              min={-5}
-                              max={30}
-                              step={0.5}
-                              className="w-full"
-                            />
-                          </div>
+                          <StudioSlider
+                            label="Tracking"
+                            value={textStyle.letterSpacing ?? 0}
+                            onChange={(v) => updateSelected({ letterSpacing: v })}
+                            min={-5}
+                            max={30}
+                            step={0.5}
+                            defaultValue={0}
+                            unit="px"
+                            compact
+                          />
                         </div>
 
                         <div className="space-y-1.5">
@@ -926,32 +807,32 @@ export function LeftPanel({
                             {[
                               {
                                 id: "outline",
-                                icon: Highlighter,
+                                icon: HighlighterCircleIcon,
                                 title: "Outline Text",
                               },
                               {
                                 id: "underline",
-                                icon: Underline,
+                                icon: TextUnderlineIcon,
                                 title: "Underline",
                               },
                               {
                                 id: "line-through",
-                                icon: Strikethrough,
+                                icon: TextStrikethroughIcon,
                                 title: "Strikethrough",
                               },
                               {
                                 id: "italic",
-                                icon: Italic,
+                                icon: TextItalicIcon,
                                 title: "Italic",
                               },
                               {
                                 id: "uppercase",
-                                icon: CaseUpper,
+                                icon: TextAaIcon,
                                 title: "Uppercase",
                               },
                               {
                                 id: "small-caps",
-                                icon: ALargeSmall,
+                                icon: TextAaIcon,
                                 title: "Small Caps",
                               },
                             ].map((eff) => {
@@ -974,7 +855,7 @@ export function LeftPanel({
                                     }`}
                                   title={eff.title}
                                 >
-                                  <Icon className="size-4" />
+                                  <Icon className="size-4" weight="bold" />
                                 </button>
                               );
                             })}
@@ -1219,47 +1100,39 @@ export function LeftPanel({
                           Orientation
                         </Label>
                         <div className="space-y-3 font-manrope font-semibold">
-                          <div className="grid grid-cols-3 gap-3 items-center justify-center">
-                            <Label className="text-xs text-muted-foreground flex justify-center">
-                              X-Axis: {textStyle.rotateX}°
-                            </Label>
-                            <Label className="text-xs text-muted-foreground flex justify-center">
-                              Y-Axis: {textStyle.rotateY}°
-                            </Label>
-                            <Label className="text-xs text-muted-foreground flex justify-center">
-                              Z-Axis: {textStyle.rotate}°
-                            </Label>
-                          </div>
-                          <div className="grid grid-cols-3 gap-4">
-                            <Slider
-                              value={[textStyle.rotateX]}
-                              onValueChange={([val]) =>
-                                updateSelected({ rotateX: val })
-                              }
+                          <div className="grid grid-cols-3 gap-2">
+                            <StudioSlider
+                              label="X-Axis"
+                              value={textStyle.rotateX}
+                              onChange={(val) => updateSelected({ rotateX: val })}
                               min={-180}
                               max={180}
                               step={1}
-                              className="py-1"
+                              defaultValue={0}
+                              unit="°"
+                              compact
                             />
-                            <Slider
-                              value={[textStyle.rotateY]}
-                              onValueChange={([val]) =>
-                                updateSelected({ rotateY: val })
-                              }
+                            <StudioSlider
+                              label="Y-Axis"
+                              value={textStyle.rotateY}
+                              onChange={(val) => updateSelected({ rotateY: val })}
                               min={-180}
                               max={180}
                               step={1}
-                              className="py-1"
+                              defaultValue={0}
+                              unit="°"
+                              compact
                             />
-                            <Slider
-                              value={[textStyle.rotate]}
-                              onValueChange={([val]) =>
-                                updateSelected({ rotate: val })
-                              }
+                            <StudioSlider
+                              label="Z-Axis"
+                              value={textStyle.rotate}
+                              onChange={(val) => updateSelected({ rotate: val })}
                               min={-180}
                               max={180}
                               step={1}
-                              className="py-1"
+                              defaultValue={0}
+                              unit="°"
+                              compact
                             />
                           </div>
 
@@ -1609,108 +1482,76 @@ export function LeftPanel({
 
                             {/* 2x2 Grid of Sliders: Shadow, Border, Padding, Roundness */}
                             <div className="grid grid-cols-2 gap-3 font-semibold *:pr-1">
-                              {/* 1. Shadow Preset Slider */}
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Shadow
-                                  </Label>
-                                  <span className="text-xs text-muted-foreground">
-                                    {SHADOW_PRESETS.find(
-                                      (s) =>
-                                        s.value === textStyle.backgroundShadow,
-                                    )?.name || "None"}
-                                  </span>
-                                </div>
-                                <Slider
-                                  defaultValue={[0]}
-                                  value={[
-                                    SHADOW_PRESETS.findIndex(
-                                      (s) =>
-                                        s.value === textStyle.backgroundShadow,
-                                    ) !== -1
-                                      ? SHADOW_PRESETS.findIndex(
+                              <StudioSlider
+                                label="Shadow"
+                                value={
+                                  SHADOW_PRESETS.findIndex(
+                                    (s) =>
+                                      s.value === textStyle.backgroundShadow
+                                  ) !== -1
+                                    ? SHADOW_PRESETS.findIndex(
                                         (s) =>
                                           s.value ===
-                                          textStyle.backgroundShadow,
+                                          textStyle.backgroundShadow
                                       )
-                                      : 0,
-                                  ]}
-                                  onValueChange={([val]) => {
-                                    const preset = SHADOW_PRESETS[val];
-                                    if (preset)
-                                      updateSelected({
-                                        backgroundShadow: preset.value,
-                                      });
-                                  }}
-                                  min={0}
-                                  max={SHADOW_PRESETS.length - 1}
-                                  step={1}
-                                />
-                              </div>
+                                    : 0
+                                }
+                                onChange={(val) => {
+                                  const preset = SHADOW_PRESETS[val];
+                                  if (preset)
+                                    updateSelected({
+                                      backgroundShadow: preset.value,
+                                    });
+                                }}
+                                min={0}
+                                max={SHADOW_PRESETS.length - 1}
+                                step={1}
+                                defaultValue={0}
+                                formatDisplay={(v) =>
+                                  SHADOW_PRESETS[v]?.name || "None"
+                                }
+                                compact
+                              />
 
-                              {/* 2. Border Width Slider */}
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Border
-                                  </Label>
-                                  <span className="text-xs text-muted-foreground">
-                                    {textStyle.borderWidth ?? 0}px
-                                  </span>
-                                </div>
-                                <Slider
-                                  value={[textStyle.borderWidth ?? 0]}
-                                  onValueChange={([v]) =>
-                                    updateSelected({ borderWidth: v })
-                                  }
-                                  min={0}
-                                  max={20}
-                                  step={1}
-                                />
-                              </div>
+                              <StudioSlider
+                                label="Border"
+                                value={textStyle.borderWidth ?? 0}
+                                onChange={(v) =>
+                                  updateSelected({ borderWidth: v })
+                                }
+                                min={0}
+                                max={20}
+                                step={1}
+                                defaultValue={0}
+                                unit="px"
+                                compact
+                              />
 
-                              {/* 3. Padding Slider */}
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Padding
-                                  </Label>
-                                  <span className="text-xs text-muted-foreground">
-                                    {textStyle.padding}px
-                                  </span>
-                                </div>
-                                <Slider
-                                  value={[textStyle.padding]}
-                                  onValueChange={([v]) =>
-                                    updateSelected({ padding: v })
-                                  }
-                                  min={0}
-                                  max={40}
-                                  step={1}
-                                />
-                              </div>
+                              <StudioSlider
+                                label="Padding"
+                                value={textStyle.padding}
+                                onChange={(v) => updateSelected({ padding: v })}
+                                min={0}
+                                max={40}
+                                step={1}
+                                defaultValue={16}
+                                unit="px"
+                                compact
+                              />
 
-                              {/* 4. Roundness Slider */}
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-xs font-medium text-muted-foreground">
-                                    Roundness
-                                  </Label>
-                                  <span className="text-xs text-muted-foreground">
-                                    {textStyle.borderRadius}px
-                                  </span>
-                                </div>
-                                <Slider
-                                  value={[textStyle.borderRadius]}
-                                  onValueChange={([v]) =>
-                                    updateSelected({ borderRadius: v })
-                                  }
-                                  min={0}
-                                  max={50}
-                                  step={1}
-                                />
-                              </div>
+                              <StudioSlider
+                                label="Roundness"
+                                value={textStyle.borderRadius}
+                                onChange={(v) =>
+                                  updateSelected({ borderRadius: v })
+                                }
+                                min={0}
+                                max={50}
+                                step={1}
+                                defaultValue={8}
+                                unit="px"
+                                compact
+                              />
                             </div>
                           </div>
                         )}

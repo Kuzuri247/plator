@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -6,8 +6,19 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
+        disallow: ["/api/"],
+      },
+      {
+        userAgent: "Twitterbot",
+        allow: "/",
+      },
+      {
+        userAgent: "facebookexternalhit",
+        allow: "/",
       },
     ],
-    sitemap: "https://www.plator.fun/sitemap.xml",
+    sitemap: "https://plator.fun/sitemap.xml",
+    host: "https://plator.fun",
   };
 }
+

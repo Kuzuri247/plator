@@ -2,7 +2,7 @@
 
 import { forwardRef, useCallback } from "react";
 import { Card } from "@/components/ui/card";
-import { Image as ImageIcon } from "lucide-react";
+import { ImageIcon } from "@phosphor-icons/react";
 import { ImageLayer } from "./image-layer";
 import { TextLayer } from "./text-layer";
 import { WebGLCanvas } from "./webgl-canvas";
@@ -169,7 +169,7 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
               onClick={handleEmptyClick}
               className="group w-56 h-36 border-2 border-dashed border-white/70 hover:border-white rounded-xl flex flex-col items-center justify-center cursor-pointer bg-black/20 backdrop-blur-sm hover:backdrop-blur-md transition-all z-20"
             >
-              <ImageIcon className="size-8 mb-2 text-white/80 group-hover:text-white transition-colors" />
+              <ImageIcon className="size-8 mb-2 text-white/80 group-hover:text-white transition-colors" weight="duotone" />
               <span className="text-sm text-white/90 font-medium font-inter group-hover:text-white">
                 Click to Upload Layer
               </span>

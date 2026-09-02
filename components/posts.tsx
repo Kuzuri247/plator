@@ -1,17 +1,17 @@
 import {
-  Heart,
-  MessageCircle,
-  Repeat,
-  Share,
-  MoreHorizontal,
-  ThumbsUp,
-  Send,
-  Bookmark,
-  Image as ImageIcon,
-  Earth,
-  BadgeCheck,
-  BarChart2,
-} from "lucide-react";
+  HeartIcon,
+  ChatCircleIcon,
+  RepeatIcon,
+  ShareNetworkIcon,
+  DotsThreeIcon,
+  ThumbsUpIcon,
+  PaperPlaneTiltIcon,
+  BookmarkSimpleIcon,
+  ImageIcon,
+  GlobeIcon,
+  SealCheckIcon,
+  ChartBarIcon,
+} from "@phosphor-icons/react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -181,9 +181,10 @@ export const XPost = ({ caption, images = [], className }: PostProps) => (
             <span className="font-bold text-foreground truncate hover:underline cursor-pointer">
               Alex Creator
             </span>
-            <BadgeCheck
+            <SealCheckIcon
               size={16}
-              className="text-blue-500 fill-blue-500/10 shrink-0"
+              weight="fill"
+              className="text-blue-500 shrink-0"
             />
             <span className="text-muted-foreground truncate">@alexcreates</span>
             <span className="text-muted-foreground shrink-0">·</span>
@@ -199,7 +200,7 @@ export const XPost = ({ caption, images = [], className }: PostProps) => (
               alt="grok"
               className="dark:invert"
             />
-            <MoreHorizontal size={16} className="text-muted-foreground" />
+            <DotsThreeIcon size={18} weight="bold" className="text-muted-foreground" />
           </div>
         </div>
 
@@ -216,34 +217,34 @@ export const XPost = ({ caption, images = [], className }: PostProps) => (
         <div className="flex justify-between text-muted-foreground gap-1 w-full max-w-[calc(100%-1rem)]">
           <div className="flex items-center group cursor-pointer transition-colors hover:text-blue-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-blue-500/10 transition-colors">
-              <MessageCircle size={18} />
+              <ChatCircleIcon size={18} />
             </div>
             <span className="text-xs">12</span>
           </div>
           <div className="flex items-center group cursor-pointer transition-colors hover:text-green-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-green-500/10 transition-colors">
-              <Repeat size={18} />
+              <RepeatIcon size={18} />
             </div>
             <span className="text-xs">5</span>
           </div>
           <div className="flex items-center group cursor-pointer transition-colors hover:text-pink-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-pink-500/10 transition-colors">
-              <Heart size={18} />
+              <HeartIcon size={18} />
             </div>
             <span className="text-xs">84</span>
           </div>
           <div className="flex items-center group cursor-pointer transition-colors hover:text-blue-500">
             <div className="p-1.5 -ml-1.5 rounded-full group-hover:bg-blue-500/10 transition-colors">
-              <BarChart2 size={18} />
+              <ChartBarIcon size={18} />
             </div>
             <span className="text-xs">712</span>
           </div>
           <div className="flex items-center pl-3 gap-2">
             <div className="p-1.5 -ml-1.5 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors cursor-pointer">
-              <Bookmark size={18} />
+              <BookmarkSimpleIcon size={18} />
             </div>
             <div className="p-1.5 -ml-1.5 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors cursor-pointer">
-              <Share size={18} />
+              <ShareNetworkIcon size={18} />
             </div>
           </div>
         </div>
@@ -280,12 +281,12 @@ export const LinkedInPost = ({
           <div className="text-neutral-500 text-xs font-inter">
             Product Designer
           </div>
-          <div className="text-neutral-500 text-xs font-sm flex font-inter">
-            Just now . <Earth className="size-3.5 " />
+          <div className="text-neutral-500 text-xs font-sm flex font-inter items-center gap-1">
+            Just now · <GlobeIcon className="size-3.5" weight="duotone" />
           </div>
         </div>
       </div>
-      <MoreHorizontal size={20} className="text-muted-foreground" />
+      <DotsThreeIcon size={22} weight="bold" className="text-muted-foreground" />
     </div>
     <div className="mb-6 text-[14px] leading-relaxed font-light font-inter whitespace-pre-wrap">
       {caption ||
@@ -297,25 +298,25 @@ export const LinkedInPost = ({
     </div>
     <div className="border-t border-border pt-3 flex justify-between text-muted-foreground">
       <div className="flex flex-col items-center gap-1 hover:bg-muted p-2 cursor-pointer flex-1 transition-colors rounded">
-        <ThumbsUp size={16} />
+        <ThumbsUpIcon size={16} />
         <span className="text-[10px] uppercase tracking-wider hidden sm:inline font-manrope">
           Like
         </span>
       </div>
       <div className="flex flex-col items-center gap-1 hover:bg-muted p-2 cursor-pointer flex-1 transition-colors rounded">
-        <MessageCircle size={16} />
+        <ChatCircleIcon size={16} />
         <span className="text-[10px] uppercase tracking-wider hidden sm:inline font-manrope">
           Comment
         </span>
       </div>
       <div className="flex flex-col items-center gap-1 hover:bg-muted p-2 cursor-pointer flex-1 transition-colors rounded">
-        <Repeat size={16} />
+        <RepeatIcon size={16} />
         <span className="text-[10px] uppercase tracking-wider hidden sm:inline font-manrope">
           Repost
         </span>
       </div>
       <div className="flex flex-col items-center gap-1 hover:bg-muted p-2 cursor-pointer flex-1 transition-colors rounded">
-        <Send size={16} className=" mb-1" />
+        <PaperPlaneTiltIcon size={16} className="mb-1" />
         <span className="text-[10px] uppercase tracking-wider hidden sm:inline font-manrope">
           Send
         </span>
@@ -349,7 +350,7 @@ export const InstagramPost = ({
           visual_architect
         </span>
       </div>
-      <MoreHorizontal size={16} className="text-muted-foreground" />
+      <DotsThreeIcon size={20} weight="bold" className="text-muted-foreground" />
     </div>
 
     <div className="w-full bg-muted/30 flex items-center justify-center border-b border-border relative overflow-hidden group">
@@ -359,20 +360,20 @@ export const InstagramPost = ({
     <div className="px-4 py-2">
       <div className="flex justify-between items-center mb-2">
         <div className="flex gap-3 text-foreground">
-          <Heart
+          <HeartIcon
             size={20}
             className="cursor-pointer hover:text-muted-foreground transition-colors"
           />
-          <MessageCircle
+          <ChatCircleIcon
             size={20}
             className="cursor-pointer hover:text-muted-foreground transition-colors"
           />
-          <Send
+          <PaperPlaneTiltIcon
             size={20}
             className="cursor-pointer hover:text-muted-foreground transition-colors"
           />
         </div>
-        <Bookmark
+        <BookmarkSimpleIcon
           size={20}
           className="cursor-pointer hover:text-muted-foreground transition-colors"
         />

@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
-import { Menu } from "lucide-react";
+import { ListIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { name: "Features", href: "/#features" },
   { name: "FAQ", href: "/#faq" },
   { name: "Support", href: "/#support" },
+  { name: "Policy", href: "/privacy" },
 ];
 
 export const Navbar = () => {
@@ -128,7 +129,7 @@ export const Navbar = () => {
                   className="size-8 rounded-lg hover:bg-muted cursor-pointer"
                   aria-label="Toggle navigation menu"
                 >
-                  <Menu className="size-4" />
+                  <ListIcon className="size-4" weight="bold" />
                 </Button>
               </SheetTrigger>
               <SheetContent

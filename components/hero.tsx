@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { motion } from "motion/react";
-import { Layers, Cpu, Video, Download } from "lucide-react";
+import { CpuIcon, StackIcon, VideoCameraIcon, DownloadSimpleIcon } from "@phosphor-icons/react";
 
 export const Hero = () => {
   return (
@@ -110,19 +110,19 @@ export const Hero = () => {
 
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 md:gap-6 text-[11px] sm:text-xs font-manrope font-medium text-muted-foreground">
           <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-border/50 dark:border-neutral-800 bg-card/40">
-            <Cpu className="size-3 sm:size-3.5 text-primary" />
+            <CpuIcon className="size-3 sm:size-3.5 text-primary" weight="duotone" />
             <span>WebGL 2.0 GPU Engine</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-border/50 dark:border-neutral-800 bg-card/40">
-            <Layers className="size-3 sm:size-3.5 text-primary" />
+            <StackIcon className="size-3 sm:size-3.5 text-primary" weight="duotone" />
             <span>Bayer Matrix Dithering</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-border/50 dark:border-neutral-800 bg-card/40">
-            <Video className="size-3 sm:size-3.5 text-primary" />
+            <VideoCameraIcon className="size-3 sm:size-3.5 text-primary" weight="duotone" />
             <span>Client-Side FFmpeg WASM</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-border/50 dark:border-neutral-800 bg-card/40">
-            <Download className="size-3 sm:size-3.5 text-primary" />
+            <DownloadSimpleIcon className="size-3 sm:size-3.5 text-primary" weight="bold" />
             <span>Lossless Snapshots</span>
           </div>
         </div>

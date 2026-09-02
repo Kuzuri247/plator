@@ -15,12 +15,32 @@ export const metadata: Metadata = {
     url: "https://plator.fun/terms",
     siteName: "Plator",
     type: "website",
+    images: [
+      {
+        url: "https://plator.fun/landing.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: "Plator - Terms and Conditions",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    site: "@kuzuri247",
+    creator: "@kuzuri247",
     title: "Terms and Conditions (TOC) | Plator",
     description:
       "Review the Terms and Conditions for Plator. Full commercial ownership of all exported designs, zero-knowledge browser execution, and open creative freedom.",
+    images: [
+      {
+        url: "https://plator.fun/landing.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: "Plator - Terms and Conditions",
+      },
+    ],
   },
 };
 

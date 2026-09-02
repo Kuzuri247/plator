@@ -5,19 +5,19 @@ import { Footer } from "@/components/footer";
 import { DitherCursor } from "@/components/landing/dither-cursor";
 import { FooterPattern } from "@/components/patterns";
 import {
-  ShieldCheck,
-  Lock,
-  EyeOff,
-  HardDrive,
-  BarChart3,
-  Globe,
-  Sparkles,
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  FileText,
-  Mail,
-} from "lucide-react";
+  ShieldCheckIcon,
+  LockSimpleIcon,
+  EyeSlashIcon,
+  HardDriveIcon,
+  ChartBarIcon,
+  GlobeIcon,
+  SparkleIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  FileTextIcon,
+  EnvelopeSimpleIcon,
+} from "@phosphor-icons/react/dist/ssr";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -33,12 +33,32 @@ export const metadata: Metadata = {
     url: "https://plator.fun/privacy",
     siteName: "Plator",
     type: "website",
+    images: [
+      {
+        url: "https://plator.fun/landing.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: "Plator - Privacy Policy",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    site: "@kuzuri247",
+    creator: "@kuzuri247",
     title: "Privacy Policy | Plator",
     description:
       "Plator is built with a zero-knowledge architecture. All mockup rendering, shader computations, and media exports happen 100% client-side in your browser.",
+    images: [
+      {
+        url: "https://plator.fun/landing.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: "Plator - Privacy Policy",
+      },
+    ],
   },
 };
 
@@ -70,7 +90,7 @@ export default function PrivacyPage() {
               href="/"
               className="hover:text-foreground transition-colors flex items-center gap-1"
             >
-              <ArrowLeft className="size-3" />
+              <ArrowLeftIcon className="size-3" />
               <span>Home</span>
             </Link>
             <span>/</span>
@@ -92,12 +112,12 @@ export default function PrivacyPage() {
               rel="noopener noreferrer"
               className="text-primary font-medium hover:underline flex items-center gap-1"
             >
-              <FileText className="size-3.5" />
+              <FileTextIcon className="size-3.5" />
               <span>Apache License 2.0</span>
             </a>
             <span>•</span>
             <span className="text-emerald-500 font-medium flex items-center gap-1">
-              <CheckCircle2 className="size-3.5" /> No Server Database Tracking
+              <CheckCircleIcon className="size-3.5" weight="fill" /> No Server Database Tracking
             </span>
           </div>
         </div>
@@ -109,7 +129,7 @@ export default function PrivacyPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md">
               <div className="size-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-3">
-                <Lock className="size-4" />
+                <LockSimpleIcon className="size-4" weight="duotone" />
               </div>
               <h2 className="text-sm font-bold text-foreground mb-1">
                 Zero Cloud Uploads
@@ -121,7 +141,7 @@ export default function PrivacyPage() {
 
             <div className="p-4 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md">
               <div className="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
-                <EyeOff className="size-4" />
+                <EyeSlashIcon className="size-4" weight="duotone" />
               </div>
               <h2 className="text-sm font-bold text-foreground mb-1">
                 No User Profiling
@@ -133,7 +153,7 @@ export default function PrivacyPage() {
 
             <div className="p-4 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md">
               <div className="size-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-3">
-                <HardDrive className="size-4" />
+                <HardDriveIcon className="size-4" weight="duotone" />
               </div>
               <h2 className="text-sm font-bold text-foreground mb-1">
                 Local Device Storage
@@ -145,7 +165,7 @@ export default function PrivacyPage() {
 
             <div className="p-4 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md">
               <div className="size-8 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-3">
-                <BarChart3 className="size-4" />
+                <ChartBarIcon className="size-4" weight="duotone" />
               </div>
               <h2 className="text-sm font-bold text-foreground mb-1">
                 Privacy-First Analytics
@@ -165,7 +185,7 @@ export default function PrivacyPage() {
           <aside className="lg:col-span-4 hidden lg:block">
             <div className="sticky top-28 p-5 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xl shadow-xs">
               <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-3 font-geist flex items-center gap-2">
-                <FileText className="size-3.5 text-primary" />
+                <FileTextIcon className="size-3.5 text-primary" />
                 <span>On This Page</span>
               </h3>
               <nav className="space-y-1 text-xs font-manrope">
@@ -185,7 +205,7 @@ export default function PrivacyPage() {
                   className="text-xs text-primary font-medium hover:underline flex items-center gap-1 font-manrope"
                 >
                   <span>Read Terms of Service</span>
-                  <ArrowRight className="size-3" />
+                  <ArrowRightIcon className="size-3" />
                 </Link>
               </div>
             </div>
@@ -361,7 +381,7 @@ export default function PrivacyPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/80 bg-muted/40 hover:bg-muted text-xs font-semibold text-foreground transition-all"
                 >
-                  <Globe className="size-3.5 text-primary" />
+                  <GlobeIcon className="size-3.5 text-primary" weight="duotone" />
                   <span>GitHub Issues & Discussions</span>
                 </a>
                 <a
@@ -370,7 +390,7 @@ export default function PrivacyPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/80 bg-muted/40 hover:bg-muted text-xs font-semibold text-foreground transition-all"
                 >
-                  <Mail className="size-3.5 text-emerald-500" />
+                  <EnvelopeSimpleIcon className="size-3.5 text-emerald-500" weight="duotone" />
                   <span>Developer Contact Form</span>
                 </a>
               </div>

@@ -3,19 +3,19 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  QrCode,
-  Copy,
-  Sparkles,
-  Star,
-  ShieldCheck,
-  Cpu,
-  Layers,
-  Check,
-  ArrowRight,
-  GitPullRequest,
-  Bug,
-} from "lucide-react";
-import StackIcon from "tech-stack-icons";
+  QrCodeIcon,
+  CopyIcon,
+  SparkleIcon,
+  StarIcon,
+  ShieldCheckIcon,
+  CpuIcon,
+  StackIcon,
+  CheckIcon,
+  ArrowRightIcon,
+  GitPullRequestIcon,
+  BugIcon,
+} from "@phosphor-icons/react";
+import TechStackIcon from "tech-stack-icons";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -52,7 +52,7 @@ export const Support: React.FC = () => {
       title: "Star & Share",
       badge: "Community",
       desc: "Help more creators discover Plator",
-      icon: <Star className="size-4 text-amber-500 fill-amber-500/20" />,
+      icon: <StarIcon className="size-4 text-amber-500 fill-amber-500/20" />,
       href: "https://github.com/Kuzuri247/plator",
       colorClass: "text-amber-500",
       borderClass: "hover:border-amber-500/50",
@@ -63,7 +63,7 @@ export const Support: React.FC = () => {
       title: "Pull Requests",
       badge: "GLSL & Code",
       desc: "Contribute via new features and tools",
-      icon: <GitPullRequest className="size-4 text-primary" />,
+      icon: <GitPullRequestIcon className="size-4 text-primary" />,
       href: "https://github.com/Kuzuri247/plator/pulls",
       colorClass: "text-primary",
       borderClass: "hover:border-primary/50",
@@ -74,7 +74,7 @@ export const Support: React.FC = () => {
       title: "Issues & Feedback",
       badge: "RFCs",
       desc: "Report bugs or suggest solutions",
-      icon: <Bug className="size-4 text-emerald-500" />,
+      icon: <BugIcon className="size-4 text-emerald-500" />,
       href: "https://github.com/Kuzuri247/plator/issues",
       colorClass: "text-emerald-500",
       borderClass: "hover:border-emerald-500/50",
@@ -84,22 +84,22 @@ export const Support: React.FC = () => {
 
   const telemetryCapabilities = [
     {
-      icon: <Cpu className="size-3.5 text-primary" />,
+      icon: <CpuIcon className="size-3.5 text-primary" weight="duotone" />,
       title: "100% Free Forever",
       sub: "No subscriptions or paywalls",
     },
     {
-      icon: <Sparkles className="size-3.5 text-amber-500" />,
+      icon: <SparkleIcon className="size-3.5 text-amber-500" weight="fill" />,
       title: "4K UHD & 60 FPS Export",
       sub: "Broadcast-ready rendering",
     },
     {
-      icon: <ShieldCheck className="size-3.5 text-emerald-500" />,
+      icon: <ShieldCheckIcon className="size-3.5 text-emerald-500" weight="duotone" />,
       title: "Zero-Knowledge Privacy",
       sub: "100% Client-side browser execution",
     },
     {
-      icon: <Layers className="size-3.5 text-blue-500" />,
+      icon: <StackIcon className="size-3.5 text-blue-500" weight="duotone" />,
       title: "Free for Commercial Use",
       sub: "Use for any client or personal work",
     },
@@ -263,12 +263,12 @@ export const Support: React.FC = () => {
                           <div className="flex items-center gap-1 text-[11px] text-primary shrink-0">
                             {copied ? (
                               <>
-                                <Check className="size-3 text-emerald-500" />
+                                <CheckIcon className="size-3 text-emerald-500" />
                                 <span className="text-emerald-500 font-semibold">Copied</span>
                               </>
                             ) : (
                               <>
-                                <Copy className="size-3" />
+                                <CopyIcon className="size-3" />
                                 <span className="font-semibold">Copy</span>
                               </>
                             )}
@@ -280,7 +280,7 @@ export const Support: React.FC = () => {
                           onClick={() => setShowQR(true)}
                           className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:underline transition-colors cursor-pointer"
                         >
-                          <QrCode className="size-3.5 text-primary" />
+                          <QrCodeIcon className="size-3.5 text-primary" />
                           <span>Show QR Code</span>
                         </button>
                       </motion.div>
@@ -335,13 +335,13 @@ export const Support: React.FC = () => {
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="size-6 rounded-lg bg-foreground/10 flex items-center justify-center dark:invert transition-[filter]">
-                      <StackIcon name="github" className="size-3.5 text-foreground" />
+                      <TechStackIcon name="github" className="size-3.5 text-foreground" />
                     </div>
                     <span>Kuzuri247/plator</span>
                   </div>
                   <div className="flex items-center gap-1 text-[11px] text-muted-foreground group-hover:text-foreground">
                     <span>Explore Repo</span>
-                    <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRightIcon className="size-3 transition-transform group-hover:translate-x-0.5" />
                   </div>
                 </a>
               </div>

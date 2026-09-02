@@ -71,7 +71,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.plator.fun"),
+  metadataBase: new URL("https://plator.fun"),
   title: {
     default: "Plator - Visual Mockup & WebGL Studio for Creators",
     template: "%s | Plator",
@@ -92,7 +92,7 @@ export const metadata: Metadata = {
     "wallpaper studio",
     "creative design tool",
   ],
-  authors: [{ name: "Kuzuri247" }, { name: "Plator", url: "https://www.plator.fun" }],
+  authors: [{ name: "Kuzuri247" }, { name: "Plator", url: "https://plator.fun" }],
   creator: "Plator",
   publisher: "Plator",
   category: "Design & Creative Tools",
@@ -102,27 +102,38 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.plator.fun/",
+    url: "https://plator.fun/",
     title: "Plator - Visual Mockup & WebGL Studio for Creators",
     description:
       "The ultimate visual studio for creators. Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and 4K snapshots.",
     siteName: "Plator",
     images: [
       {
-        url: "/landing.png",
-        width: 1917,
-        height: 867,
+        url: "https://plator.fun/landing.png",
+        secureUrl: "https://plator.fun/landing.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
         alt: "Plator - Visual Mockup & WebGL Studio for Creators",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
+    site: "@kuzuri247",
+    creator: "@kuzuri247",
     title: "Plator - Visual Mockup & WebGL Studio for Creators",
     description:
       "The ultimate free visual studio for creators. Design stunning 3D device mockups, real-time WebGL fluid gradient shaders, retro Bayer dither art, and export broadcast-quality 60FPS MP4 videos and stunning snapshots.",
-    creator: "@kuzuri247",
-    images: ["/landing.png"],
+    images: [
+      {
+        url: "https://plator.fun/landing.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: "Plator - Visual Mockup & WebGL Studio for Creators",
+      },
+    ],
   },
   robots: {
     index: true,
@@ -136,8 +147,12 @@ export const metadata: Metadata = {
     },
   },
   other: {
-    "title": "Plator - Visual Mockup & WebGL Studio for Creators",
-    "twitter:url": "https://www.plator.fun/",
+    "twitter:card": "summary_large_image",
+    "twitter:site": "@kuzuri247",
+    "twitter:creator": "@kuzuri247",
+    "twitter:url": "https://plator.fun/",
+    "twitter:image": "https://plator.fun/landing.png",
+    "twitter:image:alt": "Plator - Visual Mockup & WebGL Studio for Creators",
   },
 };
 
@@ -146,9 +161,9 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "WebApplication",
-      "@id": "https://www.plator.fun/#webapp",
+      "@id": "https://plator.fun/#webapp",
       "name": "Plator",
-      "url": "https://www.plator.fun",
+      "url": "https://plator.fun",
       "applicationCategory": "DesignApplication",
       "operatingSystem": "All",
       "description":
@@ -162,10 +177,10 @@ const jsonLd = {
     },
     {
       "@type": "Organization",
-      "@id": "https://www.plator.fun/#organization",
+      "@id": "https://plator.fun/#organization",
       "name": "Plator",
-      "url": "https://www.plator.fun",
-      "logo": "https://www.plator.fun/landing.png",
+      "url": "https://plator.fun",
+      "logo": "https://plator.fun/landing.png",
       "sameAs": ["https://twitter.com/kuzuri247"],
     },
   ],
