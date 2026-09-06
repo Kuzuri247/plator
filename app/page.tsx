@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/hero";
 import { BentoGrid } from "@/components/bentogrid";
 import { FAQ } from "@/components/faq";
@@ -5,6 +6,15 @@ import { Support } from "@/components/support";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { DitherCursor } from "@/components/landing/dither-cursor";
+
+export const metadata: Metadata = {
+  title: "Plator - 3D Screenshot Mockups & Visual Studio for Developers",
+  description:
+    "Turn code snippets, screenshots, and side-projects into studio-grade 3D device mockups, real-time WebGL mesh gradients, and retro Bayer dither art in seconds. 100% free & client-side.",
+  alternates: {
+    canonical: "https://plator.fun",
+  },
+};
 
 function App() {
   return (

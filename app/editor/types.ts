@@ -57,6 +57,10 @@ export interface ImageElement {
   isVisible: boolean;
   isLocked: boolean;
   dither?: DitherConfig;
+  width?: number;
+  height?: number;
+  isPlaceholder?: boolean;
+  placeholderLabel?: string;
 }
 
 export interface TextStyle {
@@ -130,7 +134,59 @@ export interface TextElement {
   isLocked: boolean;
 }
 
-export type CanvasElement = ImageElement | TextElement;
+export interface CodeStyle {
+  fontSize: number;
+  fontFamily: string;
+  theme: "tokyo-night" | "one-dark" | "dracula" | "github-dark" | "monokai";
+  showWindowControls: boolean;
+  windowTitle: string;
+  lineNumbers: boolean;
+  padding: number;
+  borderRadius: number;
+  shadow: string;
+  rotate: number;
+  rotateX: number;
+  rotateY: number;
+  scale: number;
+  opacity: number;
+  glassmorphism?: boolean;
+  scrollX?: number;
+  width?: number;
+}
+
+export const DEFAULT_CODE_STYLE: CodeStyle = {
+  fontSize: 14,
+  fontFamily: "Geist Mono, JetBrains Mono, Courier New, monospace",
+  theme: "tokyo-night",
+  showWindowControls: true,
+  windowTitle: "showcase.tsx",
+  lineNumbers: true,
+  padding: 16,
+  borderRadius: 12,
+  shadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+  rotate: 0,
+  rotateX: 0,
+  rotateY: 0,
+  scale: 100,
+  opacity: 100,
+  glassmorphism: false,
+  scrollX: 0,
+  width: 480,
+};
+
+export interface CodeElement {
+  id: string;
+  type: "code";
+  name: string;
+  code: string;
+  language: string;
+  position: { x: number; y: number };
+  style: CodeStyle;
+  isVisible: boolean;
+  isLocked: boolean;
+}
+
+export type CanvasElement = ImageElement | TextElement | CodeElement;
 
 export interface MeshGradientConfig {
   colors: string[]; // 5 hex colors
@@ -192,6 +248,17 @@ export interface EditorState {
   activeTab: string;
   lastSelectedTextId: string | null;
   lastSelectedImageId: string | null;
+  lastSelectedCodeId: string | null;
+  userPresets: Array<{
+    id: string;
+    name: string;
+    createdAt: number;
+    aspectRatio: AspectRatioPreset;
+    canvasBackground: string;
+    meshConfig: MeshGradientConfig;
+    overlayConfig: OverlayConfig;
+    elements: CanvasElement[];
+  }>;
 
   setActiveTab: (tab: string) => void;
   setAspectRatio: (name: string) => void;
@@ -210,6 +277,7 @@ export interface EditorState {
       | Partial<CanvasElement>
       | Partial<ImageElement["style"]>
       | Partial<TextElement["style"]>
+      | Partial<CodeStyle>
   ) => void;
   removeElement: (id: string) => void;
   toggleVisibility: (id: string) => void;
@@ -221,7 +289,18 @@ export interface EditorState {
   reset: () => void;
   setElements: (elements: CanvasElement[]) => void;
   setDitherConfig: (layerId: string, config: Partial<DitherConfig>) => void;
-
+  saveCustomPreset: (name: string) => void;
+  deleteCustomPreset: (id: string) => void;
+  loadTemplateOrPreset: (preset: {
+    elements: CanvasElement[];
+    canvasBackground?: string;
+    meshConfig?: MeshGradientConfig;
+    overlayConfig?: OverlayConfig;
+    aspectRatio?: AspectRatioPreset;
+  }) => void;
+  exportPresetsAsJson: () => string;
+  importPresetsFromJson: (jsonStr: string) => boolean;
+  loadUserPresets: () => void;
 }
 
 export interface LeftPanelProps {

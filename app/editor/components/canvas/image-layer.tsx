@@ -1,6 +1,9 @@
 "use client";
 
 import React, { memo, useRef, useMemo, useEffect, useState } from "react";
+import { PlusIcon, UploadSimpleIcon } from "@phosphor-icons/react";
+import { toast } from "sonner";
+import { useStore } from "../../store/use-store";
 import { ImageElement } from "../../types";
 import { applyDitherToCanvas } from "../../utils/dither-engine";
 
@@ -121,12 +124,50 @@ export const ImageLayer = memo(
     ) => void;
     isLocked: boolean;
   }) => {
+    const { updateElement } = useStore();
     const layerRef = useRef<HTMLDivElement>(null);
     const ghostRef = useRef<HTMLImageElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
     const [processedImage, setProcessedImage] = useState<string | null>(null);
+    const [isDragOver, setIsDragOver] = useState(false);
+
+    const triggerFileInput = (e?: React.MouseEvent | React.PointerEvent) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      fileInputRef.current?.click();
+    };
+
+    const handleFileUpload = (file: File) => {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        updateElement(img.id, {
+          src: dataUrl,
+          isPlaceholder: false,
+          name: file.name.replace(/\.[^/.]+$/, ""),
+        });
+        toast.success(`Image added to ${img.placeholderLabel || img.name || "card"}`);
+      };
+      reader.readAsDataURL(file);
+    };
+
+    const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        handleFileUpload(file);
+      }
+      e.target.value = "";
+    };
 
     useEffect(() => {
-      if (!img.dither?.enabled) {
+      if (!img.src || !img.dither?.enabled) {
         setProcessedImage(null);
         return;
       }
@@ -256,6 +297,10 @@ export const ImageLayer = memo(
       document.addEventListener("pointerup", handleUp);
     };
 
+    const isPlaceholder = img.isPlaceholder || !img.src;
+    const cardWidth = img.width || 300;
+    const cardHeight = img.height || 420;
+
     const has3DRotation = img.style.rotateX !== 0 || img.style.rotateY !== 0;
     const hasShapeClip = img.style.clipPath && img.style.clipPath !== "none";
     const clipStyle = hasShapeClip ? img.style.clipPath : undefined;
@@ -266,12 +311,13 @@ export const ImageLayer = memo(
     return (
       <div
         ref={layerRef}
-        className={`absolute transition-transform ${
-          isDragging ? "duration-0" : "duration-100"
-        } ease-out touch-none`}
+        className={`absolute transition-transform ${isDragging ? "duration-0" : "duration-100"
+          } ease-out touch-none`}
         style={{
           left: img.position.x,
           top: img.position.y,
+          width: img.width ? `${img.width}px` : undefined,
+          height: img.height ? `${img.height}px` : undefined,
           willChange: isSelected || isDragging ? "transform" : undefined,
           transformStyle: "preserve-3d",
           transform: `
@@ -287,115 +333,241 @@ export const ImageLayer = memo(
           pointerEvents: "none",
         }}
       >
-        <img
-          ref={ghostRef}
-          src={img.src}
-          alt=""
-          className="opacity-0 pointer-events-none block"
-          style={{ maxWidth: "none" }}
-          draggable={false}
+        {/* Unified hidden file input triggered directly via ref */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileInputChange}
+          style={{ display: "none" }}
         />
 
-        <div
-          className={`absolute pointer-events-auto touch-none
-            ${
-              isLocked ? "cursor-default" : "cursor-move"
-            } ${
-              isSelected ? "ring-2 ring-primary" : ""
-            }
-          `}
-          onPointerDown={(e) => !isLocked && onPointerDown?.(e, img.id)}
-          style={{
-            pointerEvents: isLocked ? "none" : "auto",
-            inset: `${top}% ${right}% ${bottom}% ${left}%`,
-            borderRadius: `${img.style.borderRadius}px`,
-            boxShadow: img.style.glassmorphism
-              ? "0 8px 32px 0 rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
-              : img.style.shadow === "none"
-              ? "none"
-              : img.style.shadow,
-            border: img.style.glassmorphism
-              ? "1px solid rgba(255, 255, 255, 0.35)"
-              : undefined,
-            backdropFilter: img.style.glassmorphism
-              ? `blur(${img.style.glassBlur || 16}px) saturate(180%)`
-              : undefined,
-            WebkitBackdropFilter: img.style.glassmorphism
-              ? `blur(${img.style.glassBlur || 16}px) saturate(180%)`
-              : undefined,
-            opacity: img.style.opacity / 100,
-            filter: `blur(${img.style.blur || 0}px) brightness(${
-              (img.style.brightness ?? 100) / 100
-            }) contrast(${(img.style.contrast ?? 100) / 100}) saturate(${
-              (img.style.saturate ?? 100) / 100
-            })`,
-            backfaceVisibility: has3DRotation ? "visible" : "hidden",
-          }}
-        >
+        {isPlaceholder ? (
+          /* Subtle Framed Image Placeholder with '+' sign */
           <div
-            className="absolute inset-0 overflow-hidden rounded-[inherit]"
-            style={{ clipPath: clipStyle }}
+            className={`w-full h-full relative pointer-events-auto touch-none group flex flex-col items-center justify-center transition-all ${isLocked ? "cursor-default" : "cursor-pointer"
+              } ${isSelected
+                ? "ring-2 ring-primary ring-offset-2 ring-offset-transparent shadow-2xl"
+                : "hover:border-primary/80"
+              }`}
+            onPointerDown={(e) => {
+              if (isLocked) return;
+              pointerStartRef.current = { x: e.clientX, y: e.clientY };
+              onPointerDown?.(e, img.id);
+            }}
+            onPointerUp={(e) => {
+              if (pointerStartRef.current) {
+                const dx = Math.abs(e.clientX - pointerStartRef.current.x);
+                const dy = Math.abs(e.clientY - pointerStartRef.current.y);
+                pointerStartRef.current = null;
+                // If it was a simple click (not a drag gesture), open file picker immediately
+                if (dx < 6 && dy < 6) {
+                  triggerFileInput(e);
+                }
+              }
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDragOver(true);
+            }}
+            onDragLeave={() => setIsDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDragOver(false);
+              const file = e.dataTransfer.files?.[0];
+              if (file) handleFileUpload(file);
+            }}
+            style={{
+              width: `${cardWidth}px`,
+              height: `${cardHeight}px`,
+              borderRadius: `${img.style.borderRadius || 16}px`,
+              boxShadow:
+                img.style.shadow === "none"
+                  ? "0 25px 50px -12px rgba(0,0,0,0.5)"
+                  : img.style.shadow,
+              background: isDragOver
+                ? "rgba(99, 102, 241, 0.18)"
+                : img.style.glassmorphism
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(255, 255, 255, 0.04)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              border: isDragOver
+                ? "2px dashed #6366f1"
+                : "1.5px dashed rgba(255, 255, 255, 0.35)",
+              opacity: img.style.opacity / 100,
+              backfaceVisibility: has3DRotation ? "visible" : "hidden",
+            }}
           >
-            <img
-              src={processedImage || img.src}
-              alt="Layer"
-              draggable={false}
-              className="block object-contain pointer-events-none max-w-none max-h-none absolute"
-              style={{
-                width: `${widthFactor * 100}%`,
-                height: `${heightFactor * 100}%`,
-                left: `${-left * widthFactor}%`,
-                top: `${-top * heightFactor}%`,
-                imageRendering: img.dither?.enabled ? "pixelated" : "auto",
-              }}
-            />
-          </div>
+            {/* Centered plus sign and upload button */}
+            <div className="flex flex-col items-center justify-center p-6 text-center select-none pointer-events-auto transition-transform group-hover:scale-105 duration-200">
+              <button
+                type="button"
+                onClick={(e) => triggerFileInput(e)}
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                }}
+                className="size-16 rounded-full bg-white/10 group-hover:bg-primary border-2 border-white/30 hover:border-primary flex items-center justify-center transition-all duration-200 shadow-xl cursor-pointer hover:scale-110 active:scale-95 text-primary group-hover:text-white mb-3"
+                title="Click to upload image"
+              >
+                <PlusIcon size={32} weight="bold" />
+              </button>
 
-          {isSelected && !isLocked && (
-            <>
-              <div className="absolute inset-0 border border-dashed border-primary/80 pointer-events-none rounded-[inherit]" />
-              {/* Handles using Pointer Events */}
-              <CropHandle
-                position="top"
-                onPointerDown={(e) => handleCropStart(e, "top")}
+              <button
+                type="button"
+                onClick={(e) => triggerFileInput(e)}
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                }}
+                className="cursor-pointer text-center group"
+              >
+                <p className="text-xs font-semibold text-white/90 group-hover:text-white tracking-wide font-manrope transition-colors">
+                  {img.placeholderLabel || img.name || "Add Image"}
+                </p>
+                <p className="text-[10px] text-white/70 group-hover:text-white/90 mt-1 font-inter">
+                  Click to upload image
+                </p>
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Actual Image Frame */
+          <>
+            {!img.width && (
+              <img
+                ref={ghostRef}
+                src={img.src}
+                alt=""
+                className="opacity-0 pointer-events-none block"
+                style={{ maxWidth: "none" }}
+                draggable={false}
               />
-              <CropHandle
-                position="bottom"
-                onPointerDown={(e) => handleCropStart(e, "bottom")}
-              />
-              <CropHandle
-                position="left"
-                onPointerDown={(e) => handleCropStart(e, "left")}
-              />
-              <CropHandle
-                position="right"
-                onPointerDown={(e) => handleCropStart(e, "right")}
-              />
-              <CropHandle
-                position="top-left"
-                onPointerDown={(e) => handleCropStart(e, "top-left")}
-              />
-              <CropHandle
-                position="top-right"
-                onPointerDown={(e) => handleCropStart(e, "top-right")}
-              />
-              <CropHandle
-                position="bottom-left"
-                onPointerDown={(e) => handleCropStart(e, "bottom-left")}
-              />
-              <CropHandle
-                position="bottom-right"
-                onPointerDown={(e) => handleCropStart(e, "bottom-right")}
-              />
-            </>
-          )}
-        </div>
+            )}
+
+            <div
+              className={`pointer-events-auto touch-none group relative
+                ${isLocked ? "cursor-default" : "cursor-move"
+                } ${isSelected ? "ring-2 ring-primary" : ""
+                }
+              `}
+              onPointerDown={(e) => !isLocked && onPointerDown?.(e, img.id)}
+              style={{
+                pointerEvents: isLocked ? "none" : "auto",
+                width: img.width ? `${img.width}px` : undefined,
+                height: img.height ? `${img.height}px` : undefined,
+                position: img.width ? "relative" : "absolute",
+                inset: img.width ? undefined : `${top}% ${right}% ${bottom}% ${left}%`,
+                borderRadius: `${img.style.borderRadius}px`,
+                boxShadow: img.style.glassmorphism
+                  ? "0 8px 32px 0 rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
+                  : img.style.shadow === "none"
+                    ? "none"
+                    : img.style.shadow,
+                border: img.style.glassmorphism
+                  ? "1px solid rgba(255, 255, 255, 0.35)"
+                  : undefined,
+                backdropFilter: img.style.glassmorphism
+                  ? `blur(${img.style.glassBlur || 16}px) saturate(180%)`
+                  : undefined,
+                WebkitBackdropFilter: img.style.glassmorphism
+                  ? `blur(${img.style.glassBlur || 16}px) saturate(180%)`
+                  : undefined,
+                opacity: img.style.opacity / 100,
+                filter: `blur(${img.style.blur || 0}px) brightness(${(img.style.brightness ?? 100) / 100
+                  }) contrast(${(img.style.contrast ?? 100) / 100}) saturate(${(img.style.saturate ?? 100) / 100
+                  })`,
+                backfaceVisibility: has3DRotation ? "visible" : "hidden",
+              }}
+            >
+              <div
+                className="absolute inset-0 overflow-hidden rounded-[inherit]"
+                style={{ clipPath: clipStyle }}
+              >
+                <img
+                  src={processedImage || img.src}
+                  alt={img.name || "Layer"}
+                  draggable={false}
+                  className={`block pointer-events-none ${img.width
+                    ? "w-full h-full object-cover absolute inset-0"
+                    : "object-contain absolute max-w-none max-h-none"
+                    }`}
+                  style={{
+                    width: img.width ? "100%" : `${widthFactor * 100}%`,
+                    height: img.height ? "100%" : `${heightFactor * 100}%`,
+                    left: img.width ? 0 : `${-left * widthFactor}%`,
+                    top: img.width ? 0 : `${-top * heightFactor}%`,
+                    imageRendering: img.dither?.enabled ? "pixelated" : "auto",
+                  }}
+                />
+              </div>
+
+              {/* Replace Image Floating Action */}
+              <button
+                type="button"
+                onClick={(e) => triggerFileInput(e)}
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                }}
+                className="absolute top-2.5 right-2.5 z-30 px-2 py-1 rounded-md bg-black/75 hover:bg-primary/95 text-white text-[10px] font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-lg border border-white/20"
+                title="Replace image in this slot"
+              >
+                <UploadSimpleIcon size={12} weight="bold" />
+                <span>Replace</span>
+              </button>
+
+              {isSelected && !isLocked && !img.width && (
+                <>
+                  <div className="absolute inset-0 border border-dashed border-primary/80 pointer-events-none rounded-[inherit]" />
+                  <CropHandle
+                    position="top"
+                    onPointerDown={(e) => handleCropStart(e, "top")}
+                  />
+                  <CropHandle
+                    position="bottom"
+                    onPointerDown={(e) => handleCropStart(e, "bottom")}
+                  />
+                  <CropHandle
+                    position="left"
+                    onPointerDown={(e) => handleCropStart(e, "left")}
+                  />
+                  <CropHandle
+                    position="right"
+                    onPointerDown={(e) => handleCropStart(e, "right")}
+                  />
+                  <CropHandle
+                    position="top-left"
+                    onPointerDown={(e) => handleCropStart(e, "top-left")}
+                  />
+                  <CropHandle
+                    position="top-right"
+                    onPointerDown={(e) => handleCropStart(e, "top-right")}
+                  />
+                  <CropHandle
+                    position="bottom-left"
+                    onPointerDown={(e) => handleCropStart(e, "bottom-left")}
+                  />
+                  <CropHandle
+                    position="bottom-right"
+                    onPointerDown={(e) => handleCropStart(e, "bottom-right")}
+                  />
+                </>
+              )}
+            </div>
+          </>
+        )}
       </div>
     );
   },
   (prev, next) => {
     return (
       prev.img.id === next.img.id &&
+      prev.img.src === next.img.src &&
+      prev.img.isPlaceholder === next.img.isPlaceholder &&
+      prev.img.width === next.img.width &&
+      prev.img.height === next.img.height &&
+      prev.img.placeholderLabel === next.img.placeholderLabel &&
       prev.img.position.x === next.img.position.x &&
       prev.img.position.y === next.img.position.y &&
       prev.img.style === next.img.style &&

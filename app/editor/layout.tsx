@@ -43,10 +43,12 @@ export const metadata: Metadata = {
   },
 };
 
+import { Suspense } from "react";
+
 export default function EditorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return <Suspense fallback={<div className="h-screen w-full bg-background" />}>{children}</Suspense>;
 }

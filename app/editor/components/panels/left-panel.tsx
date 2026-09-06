@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+import { toast } from "sonner";
 import {
   TextTIcon,
   ImageIcon,
@@ -32,7 +34,9 @@ import {
   LeftPanelProps,
   ImageElement,
   TextElement,
+  CodeElement,
   DEFAULT_TEXT_STYLE,
+  DEFAULT_CODE_STYLE,
 } from "../../types";
 import {
   FONT_FAMILIES,
@@ -48,6 +52,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useStore } from "../../store/use-store";
 import { LayerPanel } from "./layer-panel";
+import { TemplatesPanel } from "./templates-panel";
+import { CodeInspector } from "./code-inspector";
 
 const getFontFamilyStyle = (font: string) => {
   switch (font) {
@@ -112,6 +118,20 @@ export function LeftPanel({
     });
   };
 
+  const handleAddCode = () => {
+    addElement({
+      id: `code_${Date.now()}`,
+      type: "code",
+      name: "Code Snippet",
+      code: `// Sample TypeScript\nimport { Studio } from "@plator/core";\n\nexport async function showcase() {\n  return Studio.render3D({\n    theme: "cyberpunk",\n    fps: 60,\n  });\n}`,
+      language: "typescript",
+      position: { x: 80, y: 120 },
+      style: { ...DEFAULT_CODE_STYLE },
+      isVisible: true,
+      isLocked: false,
+    });
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) onImageUpload(file);
@@ -136,6 +156,31 @@ export function LeftPanel({
       ? (selectedElement as TextElement).style
       : null;
 
+  const holderFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleHolderFileUpload = (file: File) => {
+    if (!selectedElementId || selectedElement?.type !== "image") return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      updateElement(selectedElementId, {
+        src: dataUrl,
+        isPlaceholder: false,
+        name: file.name.replace(/\.[^/.]+$/, ""),
+      });
+      toast.success(
+        `Image added to ${
+          imgElement?.placeholderLabel || imgElement?.name || "card"
+        }`
+      );
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="flex flex-col h-full w-full">
       <Tabs
@@ -145,16 +190,16 @@ export function LeftPanel({
       >
         <div className="px-3 pt-3 pb-1 shrink-0">
           <TabsList className="w-full grid grid-cols-3 dark:bg-neutral-800">
-            <TabsTrigger value="image" className="gap-1.5 font-semibold text-xs cursor-pointer">
-              <ImageIcon className="size-3.5 text-primary" weight="duotone" />
+            <TabsTrigger value="image" className="gap-1.5 font-semibold text-[13px] cursor-pointer">
+              <ImageIcon className="size-4 text-primary" weight="duotone" />
               Image
             </TabsTrigger>
-            <TabsTrigger value="text" className="gap-1.5 font-semibold text-xs cursor-pointer">
-              <TextTIcon className="size-3.5 text-primary" weight="bold" />
+            <TabsTrigger value="text" className="gap-1.5 font-semibold text-[13px] cursor-pointer">
+              <TextTIcon className="size-4 text-primary" weight="bold" />
               Text
             </TabsTrigger>
-            <TabsTrigger value="layers" className="gap-1.5 font-semibold text-xs cursor-pointer">
-              <StackIcon className="size-3.5 text-primary" weight="duotone" />
+            <TabsTrigger value="layers" className="gap-1.5 font-semibold text-[13px] cursor-pointer">
+              <StackIcon className="size-4 text-primary" weight="duotone" />
               Layers
             </TabsTrigger>
           </TabsList>
@@ -667,6 +712,10 @@ export function LeftPanel({
                         : "Select an image layer to edit properties."}
                     </div>
                   )}
+
+                  <Separator />
+
+                  <TemplatesPanel />
                 </div>
               </div>
             </ScrollArea>
@@ -1558,14 +1607,16 @@ export function LeftPanel({
                       </div>
                     </>
                   ) : (
-                    <div className="text-center p-8 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
-                      {activeTab === "text" &&
-                        selectedElement?.type !== "text" &&
-                        elements.some((e) => e.type === "text")
-                        ? "A text layer was previously selected. Select it again from Layers to edit."
-                        : "Select a text layer to edit properties."}
+                    <div className="text-center p-6 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
+                      {elements.some((e) => e.type === "text")
+                        ? "A text layer is available. Select it from Layers to edit."
+                        : "Add a text layer to customize typography and text styles."}
                     </div>
                   )}
+
+                  <Separator />
+
+                  <CodeInspector />
                 </div>
               </div>
             </ScrollArea>

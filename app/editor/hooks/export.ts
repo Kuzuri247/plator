@@ -151,8 +151,60 @@ export function useExport(
     }
   };
 
+  const handleCopyToClipboard = async () => {
+    if (isExporting) return;
+    if (!canvasRef.current) {
+      toast.error("Canvas element not found.");
+      return;
+    }
+
+    setSelectedElementId(null);
+    setIsExporting(true);
+    setExportStatus("Copying image...");
+
+    try {
+      const qualityScale = Math.max(1, parseInt(exportQuality) || 2);
+      const isMesh =
+        canvasBackground === "mesh" ||
+        (!canvasBackground.startsWith("url(") &&
+          !canvasBackground.startsWith("#") &&
+          !canvasBackground.startsWith("rgb"));
+
+      const webglCanvasEl = canvasRef.current?.querySelector("canvas");
+      const currentMeshTime =
+        (webglCanvasEl as any)?.__meshRenderer?.getLastRenderTime?.() ?? 0;
+
+      const imageBlob = await captureStaticSnapshot(canvasRef.current, {
+        scale: qualityScale,
+        format: "png",
+        meshConfig,
+        isMeshBackground: isMesh,
+        canvasBackground,
+        meshTime: currentMeshTime,
+      });
+
+      if (navigator.clipboard && window.ClipboardItem) {
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": imageBlob }),
+        ]);
+        toast.success("Image copied to clipboard");
+      } else {
+        downloadBlob(imageBlob, `plator-snapshot-${Date.now()}.png`);
+        toast.info("Clipboard write unavailable; downloaded PNG instead.");
+      }
+    } catch (error: any) {
+      console.error("Clipboard copy failed:", error);
+      toast.error(`Copy failed: ${error?.message || "Unknown error occurred"}`);
+    } finally {
+      setIsExporting(false);
+      setExportProgress(0);
+      setExportStatus("");
+    }
+  };
+
   return {
     handleDownload,
+    handleCopyToClipboard,
     isExporting,
     exportProgress,
     exportStatus,

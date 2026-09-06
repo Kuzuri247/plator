@@ -70,7 +70,7 @@ export const MESH_PALETTES = [
 export interface AspectRatioPreset {
   name: string;
   label: string;
-  category: "Video & Display" | "Social Media" | "Design & Standard" | "Custom";
+  category: "Video & Display" | "Social Media" | "Developer & Launch" | "Design & Standard" | "Custom";
   width: number;
   height: number;
   previewClass: string;
@@ -193,6 +193,69 @@ export const ASPECT_RATIOS: AspectRatioPreset[] = [
     width: 750,
     height: 600,
     previewClass: "aspect-[5/4]",
+  },
+];
+
+export const CODE_THEMES = [
+  {
+    id: "tokyo-night",
+    name: "Tokyo Night",
+    bg: "#1a1b26",
+    text: "#a9b1d6",
+    keyword: "#bb9af7",
+    string: "#9ece6a",
+    comment: "#565f89",
+    number: "#ff9e64",
+    function: "#7aa2f7",
+    border: "rgba(255, 255, 255, 0.08)",
+  },
+  {
+    id: "one-dark",
+    name: "One Dark Pro",
+    bg: "#282c34",
+    text: "#abb2bf",
+    keyword: "#c678dd",
+    string: "#98c379",
+    comment: "#5c6370",
+    number: "#d19a66",
+    function: "#61afef",
+    border: "rgba(255, 255, 255, 0.08)",
+  },
+  {
+    id: "dracula",
+    name: "Dracula",
+    bg: "#282a36",
+    text: "#f8f8f2",
+    keyword: "#ff79c6",
+    string: "#f1fa8c",
+    comment: "#6272a4",
+    number: "#bd93f9",
+    function: "#50fa7b",
+    border: "rgba(255, 255, 255, 0.08)",
+  },
+  {
+    id: "github-dark",
+    name: "GitHub Dark",
+    bg: "#0d1117",
+    text: "#c9d1d9",
+    keyword: "#ff7b72",
+    string: "#a5d6ff",
+    comment: "#8b949e",
+    number: "#79c0ff",
+    function: "#d2a8ff",
+    border: "rgba(255, 255, 255, 0.12)",
+  },
+  {
+    id: "monokai",
+    name: "Monokai Pro",
+    bg: "#2d2a2e",
+    text: "#fcfcfa",
+    keyword: "#ff6188",
+    string: "#ffd866",
+    comment: "#727072",
+    number: "#ab9df2",
+    function: "#a9dc76",
+    border: "rgba(255, 255, 255, 0.08)",
   },
 ];
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useId } from "react";
+import React, { useId, useState, useEffect } from "react";
 
 export type StudioTextureType =
   | "none"
@@ -60,9 +60,12 @@ export const StudioTexture: React.FC<StudioTextureProps> = ({
 }) => {
   const reactId = useId().replace(/:/g, "_");
   const prefix = idPrefix || `tex_${reactId}`;
-  const grainDataUrl = useMemo(() => {
-    if (type !== "grain") return "";
-    return generateFilmGrainDataUrl();
+  const [grainDataUrl, setGrainDataUrl] = useState<string>("");
+
+  useEffect(() => {
+    if (type === "grain") {
+      setGrainDataUrl(generateFilmGrainDataUrl());
+    }
   }, [type]);
 
   if (type === "none" || opacity <= 0) return null;

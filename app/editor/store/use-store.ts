@@ -8,6 +8,16 @@ import {
 
 const DEFAULT_BG = "mesh";
 
+const loadSavedPresets = (): EditorState["userPresets"] => {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("plator_user_presets");
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+};
+
 export const useStore = create<EditorState>((set, get) => ({
   aspectRatio:
     ASPECT_RATIOS.find((r) => r.name === "16:9") || ASPECT_RATIOS[0],
@@ -20,6 +30,8 @@ export const useStore = create<EditorState>((set, get) => ({
   activeTab: "image",
   lastSelectedTextId: null,
   lastSelectedImageId: null,
+  lastSelectedCodeId: null,
+  userPresets: [],
   exportFormat: "mp4",
   exportQuality: "2",
   exportDuration: 3,
@@ -258,11 +270,16 @@ export const useStore = create<EditorState>((set, get) => ({
       return {
         elements: newElements,
         selectedElementId: element.id,
-        activeTab: element.type === "text" ? "text" : "image",
+        activeTab:
+          element.type === "text" || element.type === "code"
+            ? "text"
+            : "image",
         lastSelectedTextId:
           element.type === "text" ? element.id : state.lastSelectedTextId,
         lastSelectedImageId:
           element.type === "image" ? element.id : state.lastSelectedImageId,
+        lastSelectedCodeId:
+          element.type === "code" ? element.id : state.lastSelectedCodeId,
         history: newHistory,
         historyIndex: newHistory.length - 1,
       };
@@ -274,12 +291,54 @@ export const useStore = create<EditorState>((set, get) => ({
       const newElements = state.elements.map((el) => {
         if (el.id !== id) return el;
 
-        if ("style" in el && !("type" in updates)) {
-          const styleUpdates = updates as any;
-          const newStyle = { ...el.style, ...styleUpdates };
-          const newRoot = { ...el, ...updates, style: newStyle };
-          return newRoot;
+        if ("style" in updates && typeof updates.style === "object" && updates.style !== null) {
+          const { style: styleObj, ...rest } = updates as any;
+          return {
+            ...el,
+            ...rest,
+            style: { ...(el as any).style, ...styleObj },
+          };
         }
+
+        const topLevelKeys = [
+          "id",
+          "type",
+          "name",
+          "content",
+          "code",
+          "language",
+          "position",
+          "isVisible",
+          "isLocked",
+          "src",
+          "dither",
+          "crop",
+          "isPlaceholder",
+          "placeholderLabel",
+          "width",
+          "height",
+          "aspectRatio",
+        ];
+
+        if ("style" in el && !("type" in updates)) {
+          const rootUpdates: Record<string, any> = {};
+          const styleUpdates: Record<string, any> = {};
+
+          for (const [key, val] of Object.entries(updates)) {
+            if (topLevelKeys.includes(key)) {
+              rootUpdates[key] = val;
+            } else {
+              styleUpdates[key] = val;
+            }
+          }
+
+          return {
+            ...el,
+            ...rootUpdates,
+            style: { ...(el as any).style, ...styleUpdates },
+          };
+        }
+
         return { ...el, ...updates };
       });
 
@@ -343,7 +402,10 @@ export const useStore = create<EditorState>((set, get) => ({
       let newTab = state.activeTab;
 
       if (element && state.activeTab !== "layers") {
-        newTab = element.type === "text" ? "text" : "image";
+        newTab =
+          element.type === "text" || element.type === "code"
+            ? "text"
+            : "image";
       }
 
       return {
@@ -353,6 +415,8 @@ export const useStore = create<EditorState>((set, get) => ({
           element?.type === "text" ? id : state.lastSelectedTextId,
         lastSelectedImageId:
           element?.type === "image" ? id : state.lastSelectedImageId,
+        lastSelectedCodeId:
+          element?.type === "code" ? id : state.lastSelectedCodeId,
         activeTab: newTab,
       };
     });
@@ -453,5 +517,110 @@ export const useStore = create<EditorState>((set, get) => ({
         historyIndex: newHistory.length - 1,
       };
     });
+  },
+
+  saveCustomPreset: (name) => {
+    set((state) => {
+      const newPreset = {
+        id: `preset_${Date.now()}`,
+        name: name.trim() || `Preset ${state.userPresets.length + 1}`,
+        createdAt: Date.now(),
+        aspectRatio: state.aspectRatio,
+        canvasBackground: state.canvasBackground,
+        meshConfig: { ...state.meshConfig },
+        overlayConfig: { ...state.overlayConfig },
+        elements: JSON.parse(JSON.stringify(state.elements)),
+      };
+      const updated = [newPreset, ...state.userPresets];
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("plator_user_presets", JSON.stringify(updated));
+        } catch (e) {}
+      }
+      return { userPresets: updated };
+    });
+  },
+
+  deleteCustomPreset: (id) => {
+    set((state) => {
+      const updated = state.userPresets.filter((p) => p.id !== id);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("plator_user_presets", JSON.stringify(updated));
+        } catch (e) {}
+      }
+      return { userPresets: updated };
+    });
+  },
+
+  loadTemplateOrPreset: (preset) => {
+    set((state) => {
+      const targetRatio = preset.aspectRatio || state.aspectRatio;
+      const clonedElements = JSON.parse(JSON.stringify(preset.elements));
+
+      // Templates strictly manage image layout and formations; user's custom shader/background settings are preserved
+      const isCustomUserPreset = "createdAt" in preset;
+      const canvasBg =
+        isCustomUserPreset && preset.canvasBackground
+          ? preset.canvasBackground
+          : state.canvasBackground;
+      const meshCfg =
+        isCustomUserPreset && preset.meshConfig
+          ? { ...preset.meshConfig }
+          : state.meshConfig;
+      const overlayCfg =
+        isCustomUserPreset && preset.overlayConfig
+          ? { ...preset.overlayConfig }
+          : state.overlayConfig;
+
+      const newHistory = [
+        ...state.history.slice(0, state.historyIndex + 1),
+        {
+          elements: clonedElements,
+          canvasBackground: canvasBg,
+          meshConfig: meshCfg,
+          overlayConfig: overlayCfg,
+          aspectRatio: targetRatio,
+        },
+      ];
+      return {
+        elements: clonedElements,
+        canvasBackground: canvasBg,
+        meshConfig: meshCfg,
+        overlayConfig: overlayCfg,
+        aspectRatio: targetRatio,
+        selectedElementId: null,
+        history: newHistory,
+        historyIndex: newHistory.length - 1,
+      };
+    });
+  },
+
+  exportPresetsAsJson: () => {
+    const presets = get().userPresets;
+    return JSON.stringify(presets, null, 2);
+  },
+
+  importPresetsFromJson: (jsonStr) => {
+    try {
+      const parsed = JSON.parse(jsonStr);
+      if (!Array.isArray(parsed)) return false;
+      set((state) => {
+        const merged = [...parsed, ...state.userPresets];
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem("plator_user_presets", JSON.stringify(merged));
+          } catch (e) {}
+        }
+        return { userPresets: merged };
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  loadUserPresets: () => {
+    set({ userPresets: loadSavedPresets() });
   },
 }));

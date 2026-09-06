@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ImageIcon } from "@phosphor-icons/react";
 import { ImageLayer } from "./image-layer";
 import { TextLayer } from "./text-layer";
+import { CodeLayer } from "./code-layer";
 import { WebGLCanvas } from "./webgl-canvas";
 import { VectorOverlay } from "./vector-overlay";
 import { StudioTexture } from "./studio-texture";
@@ -203,6 +204,20 @@ export const Canvas = forwardRef<HTMLDivElement, EditorCanvasProps>(
               return (
                 <div key={el.id} style={wrapperStyle} data-element-id={el.id}>
                   <TextLayer
+                    element={el}
+                    isSelected={isSelected}
+                    isDragging={isDragging && isSelected}
+                    onPointerDown={
+                      el.isLocked ? undefined : (onElementMouseDown as any)
+                    }
+                    isLocked={el.isLocked}
+                  />
+                </div>
+              );
+            } else if (el.type === "code") {
+              return (
+                <div key={el.id} style={wrapperStyle} data-element-id={el.id}>
+                  <CodeLayer
                     element={el}
                     isSelected={isSelected}
                     isDragging={isDragging && isSelected}

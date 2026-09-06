@@ -23,9 +23,12 @@ import {
   AlignCenterVerticalIcon,
   CopyIcon,
   StackIcon,
+  ClipboardTextIcon,
 } from "@phosphor-icons/react";
+import { toast } from "sonner";
 import { XIcon as TwitterXIcon } from "@/components/icons/x-icon";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNotice } from "@/components/mobile-notice";
@@ -34,6 +37,7 @@ import { useSelection } from "./hooks/selection";
 import { useExport } from "./hooks/export";
 import { DEFAULT_IMAGE_STYLE, ImageElement, CanvasElement, ExportFormat } from "./types";
 import { ASPECT_RATIOS } from "./values";
+import { BUILTIN_TEMPLATES } from "./templates/presets-data";
 import {
   Select,
   SelectContent,
@@ -89,7 +93,21 @@ export default function EditorPage() {
     setExportQuality,
     setExportDuration,
     setExportFps,
+    loadTemplateOrPreset,
   } = useStore();
+
+  const searchParams = useSearchParams();
+  const templateParam = searchParams.get("template");
+
+  useEffect(() => {
+    if (templateParam) {
+      const found = BUILTIN_TEMPLATES.find((t) => t.id === templateParam);
+      if (found) {
+        loadTemplateOrPreset(found);
+        toast.success(`Loaded template: ${found.title}`);
+      }
+    }
+  }, [templateParam, loadTemplateOrPreset]);
 
   const isVideoFormat = ["mp4", "gif"].includes(exportFormat);
 
@@ -108,10 +126,15 @@ export default function EditorPage() {
     snappingEnabled
   );
 
-  const { handleDownload, isExporting, exportProgress, exportStatus } =
-    useExport(canvasRef, selectElement);
+  const {
+    handleDownload,
+    handleCopyToClipboard,
+    isExporting,
+    exportProgress,
+    exportStatus,
+  } = useExport(canvasRef, selectElement);
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = useCallback((file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;
@@ -143,7 +166,38 @@ export default function EditorPage() {
       img.src = result;
     };
     reader.readAsDataURL(file);
-  };
+  }, [aspectRatio.width, aspectRatio.height, addElement]);
+
+  // Global Clipboard Paste Listener (Ctrl + V to paste screenshots directly)
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.isContentEditable
+      ) {
+        return;
+      }
+
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            handleImageUpload(file);
+            toast.success("Pasted screenshot from clipboard! 🚀");
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  }, [handleImageUpload]);
 
   const handleCropChange = (id: string, newCrop: any) => {
     updateElement(id, { crop: newCrop });
@@ -346,11 +400,10 @@ export default function EditorPage() {
             <button
               key={fmt}
               onClick={() => setExportFormat(fmt)}
-              className={`py-1 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${
-                exportFormat === fmt
+              className={`py-1 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${exportFormat === fmt
                   ? "bg-primary text-primary-foreground shadow-xs scale-102"
                   : "text-muted-foreground hover:text-foreground"
-              }`}
+                }`}
             >
               {fmt}
             </button>
@@ -390,13 +443,12 @@ export default function EditorPage() {
                     disabled={disabled}
                     onClick={() => !disabled && setExportFps(value)}
                     title={disabled ? "60 FPS is not available for GIF" : undefined}
-                    className={`rounded text-xs font-semibold transition-all flex items-center justify-center ${
-                      disabled
+                    className={`rounded text-xs font-semibold transition-all flex items-center justify-center ${disabled
                         ? "opacity-35 cursor-not-allowed text-muted-foreground"
                         : exportFps === value
-                        ? "bg-primary text-primary-foreground shadow-xs font-bold cursor-pointer"
-                        : "text-muted-foreground hover:text-foreground cursor-pointer"
-                    }`}
+                          ? "bg-primary text-primary-foreground shadow-xs font-bold cursor-pointer"
+                          : "text-muted-foreground hover:text-foreground cursor-pointer"
+                      }`}
                   >
                     {label}
                   </button>
@@ -419,11 +471,10 @@ export default function EditorPage() {
                   key={q}
                   type="button"
                   onClick={() => setExportQuality(q)}
-                  className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${
-                    exportQuality === q
+                  className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${exportQuality === q
                       ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
                       : "border-border text-muted-foreground hover:text-foreground"
-                  }`}
+                    }`}
                   title={label}
                 >
                   {q}x
@@ -443,11 +494,10 @@ export default function EditorPage() {
                 key={q}
                 type="button"
                 onClick={() => setExportQuality(q)}
-                className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${
-                  exportQuality === q
+                className={`px-2.5 py-0.5 rounded text-xs font-semibold border cursor-pointer ${exportQuality === q
                     ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
                     : "border-border text-muted-foreground"
-                }`}
+                  }`}
               >
                 {q}x
               </button>
@@ -456,24 +506,33 @@ export default function EditorPage() {
         </div>
       )}
 
-      {/* Download Action Button */}
-      <Button
-        onClick={handleDownload}
-        disabled={isExporting}
-        className="w-full h-9 font-bold text-xs uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground shadow-md cursor-pointer flex items-center justify-center gap-2 rounded-lg"
-      >
-        {isExporting ? (
-          <>
-            <CircleNotchIcon className="size-3.5 animate-spin" />
-            <span>{exportProgress > 0 ? `Exporting ${exportProgress}%` : "Exporting..."}</span>
-          </>
-        ) : (
-          <>
-            <DownloadSimpleIcon className="size-3.5" weight="bold" />
-            <span>Export {exportFormat.toUpperCase()}</span>
-          </>
-        )}
-      </Button>
+      <div className="grid grid-cols-2 gap-2 ">
+        <Button
+          onClick={handleDownload}
+          disabled={isExporting}
+          className="w-full h-9 font-bold text-xs uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground shadow-md cursor-pointer flex items-center justify-center gap-2 rounded-lg"
+        >
+          {isExporting ? (
+            <span>{"Exporting..."}</span>
+          ) : (
+            <>
+              <DownloadSimpleIcon className="size-3.5" weight="bold" />
+              <span className="text-xs">Export {exportFormat.toUpperCase()}</span>
+            </>
+          )}
+        </Button>
+
+        <Button
+          type="button"
+          onClick={handleCopyToClipboard}
+          disabled={isExporting}
+          variant="outline"
+          className="w-full h-9 text-xs font-semibold border-border/80 hover:bg-muted cursor-pointer shadow-md flex items-center justify-center gap-2 rounded-lg"
+        >
+          <ClipboardTextIcon className="size-3.5 text-primary" weight="bold" />
+          <span className="text-xs">Copy Image</span>
+        </Button>
+      </div>
     </>
   );
 
@@ -515,7 +574,7 @@ export default function EditorPage() {
               <div className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 Aspect Ratio
               </div>
-              {(["Video & Display", "Social Media", "Design & Standard"] as const).map(
+              {(["Developer & Launch", "Video & Display", "Social Media", "Design & Standard"] as const).map(
                 (category) => {
                   const items = ASPECT_RATIOS.filter((r) => r.category === category);
                   if (items.length === 0) return null;
@@ -709,7 +768,7 @@ export default function EditorPage() {
               <div className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 Aspect Ratio
               </div>
-              {(["Video & Display", "Social Media", "Design & Standard"] as const).map(
+              {(["Developer & Launch", "Video & Display", "Social Media", "Design & Standard"] as const).map(
                 (category) => {
                   const items = ASPECT_RATIOS.filter((r) => r.category === category);
                   if (items.length === 0) return null;
@@ -752,8 +811,20 @@ export default function EditorPage() {
           </Select>
         </div>
 
-        {/* Floating Export Control (Desktop Top-Right) */}
-        <div className="hidden md:block absolute top-3 right-3 z-40 animate-in fade-in slide-in-from-top-2 duration-300">
+        {/* Floating Export & Copy Control (Desktop Top-Right) */}
+        <div className="hidden md:flex items-center gap-2 absolute top-3 right-3 z-40 animate-in fade-in slide-in-from-top-2 duration-300">
+          <Button
+            type="button"
+            disabled={isExporting}
+            variant="outline"
+            onClick={handleCopyToClipboard}
+            size="sm"
+            className="h-8 px-2.5 gap-1.5 font-semibold text-xs border-border/80 bg-card/90 backdrop-blur-md hover:bg-muted text-foreground shadow-xs rounded-lg cursor-pointer transition-all"
+            title="Copy 4K Image to Clipboard"
+          >
+            <ClipboardTextIcon className="size-3.5 text-primary" weight="bold" />
+          </Button>
+
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -866,11 +937,10 @@ export default function EditorPage() {
                     ? "Snapping Guides Enabled (Hold Alt to bypass)"
                     : "Snapping Guides Disabled"
                 }
-                className={`rounded-full w-8 h-8 transition-colors hover:bg-muted ${
-                  snappingEnabled
+                className={`rounded-full w-8 h-8 transition-colors hover:bg-muted ${snappingEnabled
                     ? "text-primary"
                     : "text-muted-foreground"
-                }`}
+                  }`}
               >
                 <MagnetIcon className={`size-4 ${!snappingEnabled ? "opacity-40 line-through" : ""}`} weight="duotone" />
               </Button>
@@ -880,11 +950,10 @@ export default function EditorPage() {
                 variant="ghost"
                 size="icon"
                 title={showGrid ? "Hide Precision Grid" : "Show Precision Grid"}
-                className={`rounded-full w-8 h-8 transition-colors hover:bg-muted ${
-                  showGrid
+                className={`rounded-full w-8 h-8 transition-colors hover:bg-muted ${showGrid
                     ? "text-primary"
                     : "text-muted-foreground"
-                }`}
+                  }`}
               >
                 <GridFourIcon className="size-4" weight="bold" />
               </Button>
@@ -988,9 +1057,8 @@ export default function EditorPage() {
                 onClick={() => setSnappingEnabled(!snappingEnabled)}
                 variant="ghost"
                 size="icon"
-                className={`rounded-lg size-7 transition-colors hover:bg-muted ${
-                  snappingEnabled ? "text-primary" : "text-muted-foreground"
-                }`}
+                className={`rounded-lg size-7 transition-colors hover:bg-muted ${snappingEnabled ? "text-primary" : "text-muted-foreground"
+                  }`}
                 title="Snapping"
               >
                 <MagnetIcon className={`size-3.5 ${!snappingEnabled ? "opacity-40 line-through" : ""}`} weight="duotone" />
@@ -1000,9 +1068,8 @@ export default function EditorPage() {
                 onClick={() => setShowGrid(!showGrid)}
                 variant="ghost"
                 size="icon"
-                className={`rounded-lg size-7 transition-colors hover:bg-muted ${
-                  showGrid ? "text-primary" : "text-muted-foreground"
-                }`}
+                className={`rounded-lg size-7 transition-colors hover:bg-muted ${showGrid ? "text-primary" : "text-muted-foreground"
+                  }`}
                 title="Grid"
               >
                 <GridFourIcon className="size-3.5" weight="bold" />
@@ -1074,12 +1141,6 @@ export default function EditorPage() {
         {isExporting && (
           <div className="absolute inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div className="bg-card border-2 border-border shadow-2xl rounded-2xl p-6 max-w-xs w-full space-y-3 text-center animate-in zoom-in-95 duration-200">
-              <div className="flex justify-center">
-                <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <CircleNotchIcon className="size-5 animate-spin" />
-                </div>
-              </div>
-
               <h3 className="font-bold text-sm uppercase tracking-wide">
                 Exporting {exportFormat.toUpperCase()}
               </h3>
@@ -1103,11 +1164,6 @@ export default function EditorPage() {
       </div>
 
       <div className="hidden md:flex w-76 shrink-0 border-l-2 dark:border-neutral-800 bg-card flex-col z-20 h-full">
-        {/* <div className="flex justify-center h-12 border-b-2 dark:border-neutral-800 items-center px-4 shrink-0 bg-transparent">
-          <span className="text-sm uppercase font-bold pt-0.5 tracking-wider font-display">
-            Canvas & Shaders
-          </span>
-        </div> */}
         <div className="flex-1 min-h-0 w-full relative">
           <RightPanel onDownload={handleDownload} />
         </div>

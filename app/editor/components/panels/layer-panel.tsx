@@ -8,13 +8,14 @@ import {
   LockSimpleOpenIcon,
   TrashIcon,
   ImageIcon,
+  CodeIcon,
   DotsSixVerticalIcon,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Reorder, useDragControls } from "motion/react";
-import { CanvasElement, ImageElement, TextElement } from "../../types";
+import { CanvasElement, ImageElement, TextElement, CodeElement } from "../../types";
 import { useEffect, useState, useRef, useCallback, memo } from "react";
 
 export function LayerPanel() {
@@ -60,8 +61,8 @@ export function LayerPanel() {
         </span>
       </div>
 
-      <ScrollArea className="flex-1 w-full min-w-0 overflow-hidden">
-        <div className="p-2 space-y-2 w-full min-w-0 max-w-full box-border">
+      <ScrollArea className="flex-1 w-full min-w-0 overflow-x-hidden">
+        <div className="p-2 space-y-2 w-full min-w-0 max-w-full overflow-x-hidden box-border">
           {displayElements.length === 0 ? (
             <div className="text-center py-12 px-4 text-muted-foreground text-xs space-y-1">
               <p className="font-medium">No layers added yet</p>
@@ -115,23 +116,38 @@ const SortableLayer = memo(function SortableLayer({
 
   // Metadata Extraction
   const isText = element.type === "text";
+  const isCode = element.type === "code";
   const textEl = isText ? (element as TextElement) : null;
-  const imgEl = !isText ? (element as ImageElement) : null;
+  const codeEl = isCode ? (element as CodeElement) : null;
+  const imgEl = !isText && !isCode ? (element as ImageElement) : null;
 
   const has3D = isText
     ? Boolean(textEl?.style.rotate || textEl?.style.rotateX || textEl?.style.rotateY)
+    : isCode
+    ? Boolean(codeEl?.style.rotate || codeEl?.style.rotateX || codeEl?.style.rotateY)
     : Boolean(imgEl?.style.rotate || imgEl?.style.rotateX || imgEl?.style.rotateY);
 
   const rawText = textEl?.content?.trim() || "Text Layer";
-  const rawImageName = imgEl?.name || "Image Layer";
+  const rawCode = codeEl?.style?.windowTitle || codeEl?.name || "Code Snippet";
+  const rawImageName = imgEl?.placeholderLabel || imgEl?.name || "Image Layer";
 
   const title = isText
     ? rawText.length > 14
       ? `${rawText.slice(0, 14)}...`
       : rawText
+    : isCode
+    ? rawCode.length > 14
+      ? `${rawCode.slice(0, 14)}...`
+      : rawCode
     : rawImageName.length > 14
       ? `${rawImageName.slice(0, 14)}...`
       : rawImageName;
+
+  const subtitle = isText
+    ? `${textEl?.style.fontFamily || "Inter"} • ${textEl?.style.fontSize}px`
+    : isCode
+    ? `${codeEl?.language === "python" ? "Python" : "TypeScript"} • ${codeEl?.style?.fontSize || 14}px`
+    : `Scale ${imgEl?.style.scale}% • ${imgEl?.style.opacity}%`;
 
   return (
     <Reorder.Item
@@ -182,6 +198,10 @@ const SortableLayer = memo(function SortableLayer({
                 T
               </span>
             </div>
+          ) : isCode ? (
+            <div className="size-full flex items-center justify-center bg-neutral-900 border border-white/10 rounded-sm">
+              <CodeIcon size={14} className="text-primary" weight="bold" />
+            </div>
           ) : imgEl?.src ? (
             <img
               src={imgEl.src}
@@ -197,15 +217,13 @@ const SortableLayer = memo(function SortableLayer({
         {/* Title and Specs */}
         <div className="flex-1 min-w-0 flex flex-col justify-center overflow-hidden pr-0.5">
           <span
-            className="text-xs font-semibold truncate text-foreground leading-tight"
-            title={isText ? textEl?.content || "Text Layer" : imgEl?.name || "Image Layer"}
+            className="text-xs font-semibold truncate text-foreground leading-tight block max-w-full"
+            title={isText ? textEl?.content || "Text Layer" : isCode ? codeEl?.style?.windowTitle || "Code Snippet" : imgEl?.name || "Image Layer"}
           >
             {title}
           </span>
-          <span className="text-[10px] text-muted-foreground truncate font-medium font-manrope leading-tight mt-0.5">
-            {isText
-              ? `${textEl?.style.fontFamily} • ${textEl?.style.fontSize}px`
-              : `Scale ${imgEl?.style.scale}% • ${imgEl?.style.opacity}%`}
+          <span className="text-[10px] text-muted-foreground truncate font-medium font-manrope leading-tight mt-0.5 block max-w-full">
+            {subtitle}
           </span>
         </div>
 
@@ -281,9 +299,9 @@ const SortableLayer = memo(function SortableLayer({
       </div>
 
       {/* Bottom Row: Metadata Badges & Coordinates */}
-      <div className="flex items-center gap-1 mt-1.5 pt-1.5 border-t border-border/40 text-[9px] text-muted-foreground font-manrope flex-wrap min-w-0 overflow-hidden">
+      <div className="flex items-center gap-1 mt-1.5 pt-1.5 border-t border-border/40 text-[9px] text-muted-foreground font-manrope min-w-0 max-w-full overflow-hidden flex-nowrap">
         {/* Coordinates */}
-        <span className="text-[9px] bg-muted/70 dark:bg-muted/50 px-1.5 py-0.2 rounded-xs border border-border/50 shrink-0">
+        <span className="text-[9px] bg-muted/70 dark:bg-muted/50 px-1.5 py-0.2 rounded-xs border border-border/50 shrink-0 truncate">
           X:{Math.round(element.position.x)} &nbsp; Y:{Math.round(element.position.y)}
         </span>
 
@@ -301,13 +319,14 @@ const SortableLayer = memo(function SortableLayer({
         )}
 
         {((isText && textEl?.style.glassmorphism) ||
-          (!isText && imgEl?.style.glassmorphism)) && (
+          (isCode && codeEl?.style?.glassmorphism) ||
+          (!isText && !isCode && imgEl?.style.glassmorphism)) && (
             <span className="px-1 py-0.2 rounded-xs text-[9px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
               Glass
             </span>
           )}
 
-        {!isText && imgEl?.dither?.enabled && (
+        {!isText && !isCode && imgEl?.dither?.enabled && (
           <span className="px-1 py-0.2 rounded-xs text-[9px] font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 shrink-0">
             Dither
           </span>
