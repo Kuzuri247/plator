@@ -58,12 +58,6 @@ export default function TemplatesPage() {
       <Navbar />
 
       <section className="pt-32 pb-16 px-4 md:pt-40 md:pb-24 max-w-6xl mx-auto w-full flex flex-col items-center text-center">
-        {/* Pill Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border/80 bg-muted/60 text-xs font-semibold text-primary mb-5 shadow-xs">
-          <span>Curated Creator Library</span>
-          <span>•</span>
-          <span className="text-foreground">100% Free & Open</span>
-        </div>
 
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tighter max-w-4xl text-balance">
           Studio-Grade Templates for{" "}

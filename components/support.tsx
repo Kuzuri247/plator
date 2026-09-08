@@ -8,12 +8,13 @@ import {
   SparkleIcon,
   StarIcon,
   ShieldCheckIcon,
-  CpuIcon,
-  StackIcon,
+  PersonIcon,
   CheckIcon,
   ArrowRightIcon,
   GitPullRequestIcon,
   BugIcon,
+  CurrencyDollarIcon,
+  GithubLogoIcon,
 } from "@phosphor-icons/react";
 import TechStackIcon from "tech-stack-icons";
 import Image from "next/image";
@@ -26,7 +27,6 @@ interface ContributionChannel {
   desc: string;
   icon: React.ReactNode;
   href: string;
-  colorClass: string;
   borderClass: string;
   bgHover: string;
 }
@@ -52,56 +52,61 @@ export const Support: React.FC = () => {
       title: "Star & Share",
       badge: "Community",
       desc: "Help more creators discover Plator",
-      icon: <StarIcon className="size-4 text-amber-500 fill-amber-500/20" />,
+      icon: <StarIcon className="size-4 text-orange-400" weight="fill" />,
       href: "https://github.com/Kuzuri247/plator",
-      colorClass: "text-amber-500",
-      borderClass: "hover:border-amber-500/50",
-      bgHover: "hover:bg-amber-500/5",
+      borderClass: "hover:border-orange-400/50",
+      bgHover: "hover:bg-orange-400/5",
     },
     {
       id: "prs",
       title: "Pull Requests",
       badge: "GLSL & Code",
       desc: "Contribute via new features and tools",
-      icon: <GitPullRequestIcon className="size-4 text-primary" />,
+      icon: <GitPullRequestIcon className="size-4 text-purple-600" />,
       href: "https://github.com/Kuzuri247/plator/pulls",
-      colorClass: "text-primary",
-      borderClass: "hover:border-primary/50",
-      bgHover: "hover:bg-primary/5",
+      borderClass: "hover:border-purple-500/50",
+      bgHover: "hover:bg-purple-500/5",
     },
     {
       id: "issues",
       title: "Issues & Feedback",
       badge: "RFCs",
       desc: "Report bugs or suggest solutions",
-      icon: <BugIcon className="size-4 text-emerald-500" />,
+      icon: <BugIcon className="size-4 text-red-500" />,
       href: "https://github.com/Kuzuri247/plator/issues",
-      colorClass: "text-emerald-500",
-      borderClass: "hover:border-emerald-500/50",
-      bgHover: "hover:bg-emerald-500/5",
+      borderClass: "hover:border-red-500/50",
+      bgHover: "hover:bg-red-500/5",
     },
   ];
 
   const telemetryCapabilities = [
     {
-      icon: <CpuIcon className="size-3.5 text-primary" weight="duotone" />,
+      icon: <CurrencyDollarIcon className="size-4 text-indigo-700" weight="duotone" />,
       title: "100% Free Forever",
       sub: "No subscriptions or paywalls",
+      borderClass: "hover:border-indigo-500/50",
+      bgHover: "hover:bg-indigo-500/5",
     },
     {
-      icon: <SparkleIcon className="size-3.5 text-amber-500" weight="fill" />,
-      title: "4K UHD & 60 FPS Export",
+      icon: <SparkleIcon className="size-4 text-amber-500" weight="fill" />,
+      title: "High Quality Export",
       sub: "Broadcast-ready rendering",
+      borderClass: "hover:border-amber-500/50",
+      bgHover: "hover:bg-amber-500/5",
     },
     {
-      icon: <ShieldCheckIcon className="size-3.5 text-emerald-500" weight="duotone" />,
+      icon: <ShieldCheckIcon className="size-4 text-emerald-500" weight="duotone" />,
       title: "Zero-Knowledge Privacy",
       sub: "100% Client-side browser execution",
+      borderClass: "hover:border-emerald-500/50",
+      bgHover: "hover:bg-emerald-500/5",
     },
     {
-      icon: <StackIcon className="size-3.5 text-blue-500" weight="duotone" />,
+      icon: <PersonIcon className="size-4 text-blue-500" weight="duotone" />,
       title: "Free for Commercial Use",
       sub: "Use for any client or personal work",
+      borderClass: "hover:border-blue-500/50",
+      bgHover: "hover:bg-blue-500/5",
     },
   ];
 
@@ -163,9 +168,9 @@ export const Support: React.FC = () => {
                 {telemetryCapabilities.map((cap, i) => (
                   <div
                     key={i}
-                    className="flex items-start gap-3 p-2.5 rounded-2xl border border-border/70 dark:border-neutral-800 bg-background/50 dark:bg-neutral-900/50 backdrop-blur-md transition-all hover:border-primary/40 hover:bg-primary/[0.02]"
+                    className={`flex items-start gap-3 p-2.5 rounded-2xl border border-border/70 dark:border-neutral-800 bg-background/50 dark:bg-neutral-900/50 backdrop-blur-md transition-all ${cap.borderClass} ${cap.bgHover}`}
                   >
-                    <div className="size-7 rounded-xl bg-muted/80 dark:bg-neutral-800 flex items-center justify-center shrink-0 mt-0.5 border border-border/50 dark:border-neutral-800">
+                    <div className="size-8 rounded-xl bg-muted/80 dark:bg-neutral-800 flex flex-col items-center justify-center shrink-0 mt-0.5 border border-border/50 dark:border-neutral-800">
                       {cap.icon}
                     </div>
                     <div>
@@ -309,7 +314,7 @@ export const Support: React.FC = () => {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.02, x: 2 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`w-full flex items-center justify-between p-3 rounded-2xl border transition-all text-left cursor-pointer border-border/70 dark:border-neutral-800 bg-background/50 dark:bg-neutral-900/50 ${channel.borderClass} ${channel.bgHover} group`}
+                    className={`w-full flex items-center justify-between p-2.5 rounded-2xl border transition-all text-left cursor-pointer border-border/70 dark:border-neutral-800 bg-background/50 dark:bg-neutral-900/50 ${channel.borderClass} ${channel.bgHover} group`}
                   >
                     <div className="flex items-center gap-3">
                       <div className="size-8 rounded-xl bg-muted/80 dark:bg-neutral-800 flex items-center justify-center shrink-0 border border-border/50 dark:border-neutral-800">
@@ -317,7 +322,7 @@ export const Support: React.FC = () => {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs sm:text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                          <span className="text-xs sm:text-sm font-bold text-foreground transition-colors">
                             {channel.title}
                           </span>
                         </div>
@@ -331,17 +336,23 @@ export const Support: React.FC = () => {
                   href="https://github.com/Kuzuri247/plator"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-between p-2.5 rounded-xl border border-border/70 dark:border-neutral-800 bg-muted/40 dark:bg-neutral-900/50 hover:bg-muted/70 text-xs font-semibold text-foreground transition-all group shadow-xs"
+                  className="relative overflow-hidden w-full flex items-center justify-between p-2.5 rounded-xl border border-border/70 dark:border-neutral-800 bg-muted/40 dark:bg-neutral-900/50 hover:bg-muted/70 hover:border-foreground/30 dark:hover:border-white/30 text-xs font-semibold text-foreground transition-all group shadow-xs"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div className="size-6 rounded-lg bg-foreground/10 flex items-center justify-center dark:invert transition-[filter]">
-                      <TechStackIcon name="github" className="size-3.5 text-foreground" />
+                  <div className="flex items-center gap-2.5 relative z-10">
+                    <div className="size-8 rounded-xl bg-foreground/10 flex items-center justify-center dark:invert transition-[filter]">
+                      <GithubLogoIcon className="size-4 text-black dark:text-neutral-700" />
                     </div>
                     <span>Kuzuri247/plator</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[11px] text-muted-foreground group-hover:text-foreground">
+                  <div className="flex items-center gap-1 text-[11px] text-muted-foreground group-hover:text-foreground relative z-10">
                     <span>Explore Repo</span>
-                    <ArrowRightIcon className="size-3 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRightIcon className="size-4 transition-transform duration-200 group-hover:-rotate-45" />
+                  </div>
+                  <div
+                    className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
+                    aria-hidden="true"
+                  >
+                    <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-foreground/15 dark:via-white/35 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-button-shimmer transition-opacity duration-300" />
                   </div>
                 </a>
               </div>

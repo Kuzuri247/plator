@@ -10,7 +10,7 @@ import {
   ArrowClockwiseIcon,
   ArrowArcLeftIcon,
   TrashIcon,
-  ListIcon,
+  XLogoIcon,
   SlidersIcon,
   XIcon,
   CircleNotchIcon,
@@ -26,7 +26,6 @@ import {
   ClipboardTextIcon,
 } from "@phosphor-icons/react";
 import { toast } from "sonner";
-import { XIcon as TwitterXIcon } from "@/components/icons/x-icon";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -720,7 +719,7 @@ export default function EditorPage() {
               target="_blank"
               className="text-muted-foreground hover:text-foreground transition-colors p-1"
             >
-              <TwitterXIcon className="size-4" />
+              <XLogoIcon className="size-4" />
             </Link>
             <ThemeToggle />
           </div>

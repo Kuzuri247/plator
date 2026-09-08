@@ -2,10 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { ShieldCheckIcon, FileTextIcon, EnvelopeSimpleIcon, UserIcon } from "@phosphor-icons/react";
-import { XIcon } from "@/components/icons/x-icon";
+import { ShieldCheckIcon, FileTextIcon, EnvelopeSimpleIcon, UserIcon, GithubLogoIcon, XLogoIcon } from "@phosphor-icons/react";
 import { FooterPattern } from "./patterns";
-import StackIcon from "tech-stack-icons";
 
 export const Footer: React.FC = () => {
   return (
@@ -59,22 +57,22 @@ export const Footer: React.FC = () => {
             <h4 className="font-bold text-foreground mb-3 md:mb-4 uppercase text-xs tracking-wider">
               Legal & Info
             </h4>
-            <ul className="space-y-2.5 text-muted-foreground text-xs sm:text-sm">
+            <ul className="space-y-2.5 text-muted-foreground *hover:text-foreground *transition-colors text-xs sm:text-sm">
               <li>
                 <Link
                   href="/privacy"
-                  className="hover:text-foreground transition-colors flex items-center gap-1.5"
+                  className="hover:text-foreground transition-colors flex items-center gap-1.5 group"
                 >
-                  <ShieldCheckIcon className="size-3 text-muted-foreground" weight="duotone" />
+                  <ShieldCheckIcon className="size-4 transition-all duration-200 ease-in-out group-hover:scale-105 group-hover:-translate-y-0.5" weight="duotone" />
                   <span>Privacy Policy</span>
                 </Link>
               </li>
               <li>
                 <Link
                   href="/terms"
-                  className="hover:text-foreground transition-colors flex items-center gap-1.5"
+                  className="hover:text-foreground transition-colors flex items-center gap-1.5 group"
                 >
-                  <FileTextIcon className="size-3 text-muted-foreground" weight="duotone" />
+                  <FileTextIcon className="size-4 transition-all duration-200 ease-in-out group-hover:scale-105 group-hover:-translate-y-0.5" weight="duotone" />
                   <span>Terms of Service</span>
                 </Link>
               </li>
@@ -82,9 +80,9 @@ export const Footer: React.FC = () => {
                 <Link
                   href="https://www.rahul47.space/contact"
                   target="_blank"
-                  className="hover:text-foreground transition-colors flex items-center gap-1.5"
+                  className="hover:text-foreground transition-colors flex items-center gap-1.5 group"
                 >
-                  <EnvelopeSimpleIcon className="size-3 text-muted-foreground" weight="duotone" />
+                  <EnvelopeSimpleIcon className="size-4 transition-all duration-200 ease-in-out group-hover:scale-105 group-hover:-translate-y-0.5" weight="duotone" />
                   <span>Contact</span>
                 </Link>
               </li>
@@ -101,30 +99,28 @@ export const Footer: React.FC = () => {
                 href="https://x.com/kuzuri247"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
               >
-                <XIcon className="size-3.5" />
+                <XLogoIcon className="size-4 transition-all duration-200 ease-in-out group-hover:scale-105 group-hover:-translate-y-0.5" />
                 <span>X (Twitter)</span>
               </a>
               <a
                 href="https://github.com/Kuzuri247"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
               >
-                <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter]">
-                  <StackIcon name="github" className="w-full h-full" />
-                </div>
+                <GithubLogoIcon className="size-4 transition-all duration-200 ease-in-out group-hover:scale-105 group-hover:-translate-y-0.5" weight="duotone" />
                 <span>GitHub</span>
               </a>
               <a
                 href="https://github.com/Kuzuri247"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
               >
-                <UserIcon className="size-3.5" weight="duotone" />
-                <span>Developer Portfolio</span>
+                <UserIcon className="size-4 transition-all duration-200 ease-in-out group-hover:scale-105 group-hover:-translate-y-0.5" weight="duotone" />
+                <span>Dev Portfolio</span>
               </a>
             </div>
           </div>

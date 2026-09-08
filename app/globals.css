@@ -16,28 +16,30 @@
   --font-instrument: var(--font-instrument);
   --font-montserrat: var(--font-montserrat);
 
+  --color-ring: oklch(var(--ring));
   --color-card: oklch(var(--card));
+  --color-input: oklch(var(--input));
   --color-muted: oklch(var(--muted));
+  --color-border: oklch(var(--border));
   --color-accent: oklch(var(--accent));
+  --color-success: oklch(var(--success));
   --color-popover: oklch(var(--popover));
   --color-primary: oklch(var(--primary));
   --color-surface: oklch(var(--surface));
+  --color-secondary: oklch(var(--secondary));
   --color-background: oklch(var(--background));
   --color-foreground: oklch(var(--foreground));
-  --color-secondary: oklch(var(--secondary));
+  --color-destructive: oklch(var(--destructive));
   --color-card-foreground: oklch(var(--card-foreground));
   --color-muted-foreground: oklch(var(--muted-foreground));
+  --color-accent-foreground: oklch(var(--accent-foreground));
+  --color-success-foreground: oklch(var(--success-foreground));
   --color-popover-foreground: oklch(var(--popover-foreground));
   --color-primary-foreground: oklch(var(--primary-foreground));
-  --color-accent-foreground: oklch(var(--accent-foreground));
   --color-secondary-foreground: oklch(var(--secondary-foreground));
-  --color-destructive: oklch(var(--destructive));
   --color-destructive-foreground: oklch(var(--destructive-foreground));
-  --color-border: oklch(var(--border));
-  --color-input: oklch(var(--input));
-  --color-ring: oklch(var(--ring));
-  --color-success: oklch(var(--success));
-  --color-success-foreground: oklch(var(--success-foreground));
+
+  --animate-button-shimmer: button-shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @layer base {
@@ -216,6 +218,23 @@
 
 .animate-palette-shimmer {
   animation: shimmer-wave 2.5s ease-in-out infinite;
+}
+
+@keyframes button-shimmer {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+.animate-button-shimmer {
+  animation: button-shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.group:hover .group-hover\:animate-button-shimmer {
+  animation: button-shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @property --rainbow-angle {

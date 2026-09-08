@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
-import { ListIcon } from "@phosphor-icons/react";
+import { ListIcon, GithubLogoIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -110,12 +110,18 @@ export const Navbar = () => {
             <Button
               size="sm"
               variant="outline"
-              className="gap-1.5 rounded-lg px-3 h-8 text-xs font-semibold font-manrope border-border/80 hover:bg-muted text-foreground shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all duration-50 cursor-pointer"
+              className="relative overflow-hidden group gap-1.5 rounded-lg px-3 h-8 text-xs font-semibold font-manrope border-border/80 hover:border-foreground/30 dark:hover:border-white/30 hover:bg-muted text-foreground shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 cursor-pointer"
             >
-              <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter]">
-                <StackIcon name="github" className="w-full h-full" />
+              <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter] relative z-10">
+                <GithubLogoIcon className="w-full h-full" />
               </div>
-              <span>GitHub</span>
+              <span className="relative z-10">GitHub</span>
+              <div
+                className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
+                aria-hidden="true"
+              >
+                <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-foreground/15 dark:via-white/35 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-button-shimmer transition-opacity duration-300" />
+              </div>
             </Button>
           </a>
 
@@ -180,12 +186,18 @@ export const Navbar = () => {
                   >
                     <Button
                       variant="outline"
-                      className="w-full rounded-lg h-10 text-xs font-semibold font-manrope border-border gap-1.5 hover:bg-muted cursor-pointer"
+                      className="relative overflow-hidden group w-full rounded-lg h-10 text-xs font-semibold font-manrope border-border hover:border-foreground/30 dark:hover:border-white/30 gap-1.5 hover:bg-muted cursor-pointer"
                     >
-                      <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter]">
+                      <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter] relative z-10">
                         <StackIcon name="github" className="w-full h-full" />
                       </div>
-                      <span>GitHub</span>
+                      <span className="relative z-10">GitHub</span>
+                      <div
+                        className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
+                        aria-hidden="true"
+                      >
+                        <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-foreground/15 dark:via-white/35 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-button-shimmer transition-opacity duration-300" />
+                      </div>
                     </Button>
                   </a>
                 </div>
