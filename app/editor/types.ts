@@ -156,7 +156,7 @@ export interface CodeStyle {
 
 export const DEFAULT_CODE_STYLE: CodeStyle = {
   fontSize: 14,
-  fontFamily: "Geist Mono, JetBrains Mono, Courier New, monospace",
+  fontFamily: "var(--font-mono)",
   theme: "tokyo-night",
   showWindowControls: true,
   windowTitle: "showcase.tsx",

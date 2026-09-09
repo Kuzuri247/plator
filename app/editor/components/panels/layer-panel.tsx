@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Reorder, useDragControls } from "motion/react";
+import { Reorder } from "motion/react";
 import { CanvasElement, ImageElement, TextElement, CodeElement } from "../../types";
 import { useEffect, useState, useRef, useCallback, memo } from "react";
 
@@ -111,7 +111,6 @@ const SortableLayer = memo(function SortableLayer({
     removeElement,
   } = useStore();
 
-  const controls = useDragControls();
   const isSelected = selectedElementId === element.id;
 
   // Metadata Extraction
@@ -152,8 +151,6 @@ const SortableLayer = memo(function SortableLayer({
   return (
     <Reorder.Item
       value={element}
-      dragListener={false}
-      dragControls={controls}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       whileDrag={{
@@ -162,7 +159,7 @@ const SortableLayer = memo(function SortableLayer({
         boxShadow: "0 8px 20px -5px rgba(0,0,0,0.3)",
       }}
       className={cn(
-        "group flex flex-col p-2 rounded-lg border transition-all relative bg-card select-none touch-none w-full min-w-0 max-w-full box-border overflow-hidden",
+        "group flex flex-col p-2 rounded-lg border transition-all relative bg-card select-none touch-none w-full min-w-0 max-w-full box-border overflow-hidden cursor-grab active:cursor-grabbing",
         isSelected
           ? "border-primary dark:border-primary/60 bg-primary/5 shadow-xs ring-1 ring-primary/20"
           : "border-neutral-300 dark:border-neutral-700/80 hover:bg-muted/40 hover:border-neutral-400 dark:hover:border-neutral-600 shadow-2xs",
@@ -245,6 +242,7 @@ const SortableLayer = memo(function SortableLayer({
               e.stopPropagation();
               toggleLock(element.id);
             }}
+            onPointerDown={(e) => e.stopPropagation()}
           >
             {element.isLocked ? <LockSimpleIcon size={13} /> : <LockSimpleOpenIcon size={13} />}
           </Button>
@@ -265,6 +263,7 @@ const SortableLayer = memo(function SortableLayer({
               e.stopPropagation();
               toggleVisibility(element.id);
             }}
+            onPointerDown={(e) => e.stopPropagation()}
           >
             {element.isVisible ? <EyeIcon size={13} /> : <EyeSlashIcon size={13} />}
           </Button>
@@ -280,18 +279,15 @@ const SortableLayer = memo(function SortableLayer({
               e.stopPropagation();
               removeElement(element.id);
             }}
+            onPointerDown={(e) => e.stopPropagation()}
           >
             <TrashIcon size={13} />
           </Button>
 
-          {/* Drag Handle */}
+          {/* Drag Handle Indicator */}
           <div
-            role="button"
-            tabIndex={0}
-            aria-label="Reorder layer"
-            className="p-1 rounded-md text-muted-foreground/60 hover:text-foreground cursor-grab active:cursor-grabbing hover:bg-muted/50 transition-colors shrink-0 touch-none"
-            onPointerDown={(e) => controls.start(e)}
-            title="Reorder Layer"
+            className="p-1 rounded-md text-muted-foreground/30 group-hover:text-foreground transition-colors shrink-0 pointer-events-none"
+            title="Drag anywhere on card to reorder"
           >
             <DotsSixVerticalIcon size={14} />
           </div>

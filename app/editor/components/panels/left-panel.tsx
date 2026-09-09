@@ -14,6 +14,7 @@ import {
   StackIcon,
   ArrowsLeftRightIcon,
 } from "@phosphor-icons/react";
+import { CaseUpper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -724,24 +725,27 @@ export function LeftPanel({
           {/* --- TEXT TAB --- */}
           <TabsContent
             value="text"
-            className="absolute inset-0 data-[state=inactive]:hidden focus-visible:outline-none mt-0"
+            className="absolute inset-0 data-[state=inactive]:hidden focus-visible:outline-none mt-0 overflow-hidden w-full max-w-full"
           >
-            <ScrollArea className="h-full w-full">
-              <div className="p-4 flex flex-col gap-6 pb-20">
-                <div className="space-y-5">
-                  <div className="space-y-3">
+            <ScrollArea className="h-full w-full max-w-full">
+              <div className="p-4 flex flex-col gap-6 pb-20 w-full min-w-0 max-w-full box-border">
+                <div className="space-y-5 w-full min-w-0 max-w-full">
+                  <div className="space-y-3 w-full min-w-0 max-w-full">
                     <Label className="text-sm font-semibold uppercase tracking-wider">
                       Content
                     </Label>
                     {selectedElement?.type === "text" && textStyle ? (
-                      <Textarea
-                        value={(selectedElement as TextElement).content}
-                        onChange={(e) =>
-                          updateSelected({ content: e.target.value })
-                        }
-                        className="min-h-8 resize-none bg-transparent placeholder:font-inter"
-                        placeholder="Type text here..."
-                      />
+                      <div className="w-full min-w-0 max-w-full overflow-hidden">
+                        <Textarea
+                          value={(selectedElement as TextElement).content}
+                          onChange={(e) =>
+                            updateSelected({ content: e.target.value })
+                          }
+                          rows={3}
+                          className="w-full max-w-full min-w-0 box-border [field-sizing:fixed] min-h-8 resize-y bg-transparent placeholder:font-inter text-xs leading-relaxed whitespace-pre-wrap break-words wrap-anywhere overflow-y-auto overflow-x-hidden"
+                          placeholder="Type text here..."
+                        />
+                      </div>
                     ) : null}
 
                     <Button
@@ -876,7 +880,7 @@ export function LeftPanel({
                               },
                               {
                                 id: "uppercase",
-                                icon: TextAaIcon,
+                                icon: (props: any) => <CaseUpper {...props} strokeWidth={2.5} />,
                                 title: "Uppercase",
                               },
                               {
@@ -893,9 +897,19 @@ export function LeftPanel({
                                   type="button"
                                   onClick={() => {
                                     const current = textStyle.textEffect || [];
-                                    const next = isActive
-                                      ? current.filter((x) => x !== eff.id)
-                                      : [...current, eff.id];
+                                    let next: string[];
+                                    if (isActive) {
+                                      next = current.filter((x) => x !== eff.id);
+                                    } else {
+                                      // Uppercase and small-caps switch each other
+                                      let filtered = current;
+                                      if (eff.id === "uppercase") {
+                                        filtered = current.filter((x) => x !== "small-caps");
+                                      } else if (eff.id === "small-caps") {
+                                        filtered = current.filter((x) => x !== "uppercase");
+                                      }
+                                      next = [...filtered, eff.id];
+                                    }
                                     updateSelected({ textEffect: next });
                                   }}
                                   className={`aspect-square w-full rounded-md border flex items-center justify-center transition-all cursor-pointer shadow-2xs hover:scale-105 ${isActive
@@ -1616,7 +1630,9 @@ export function LeftPanel({
 
                   <Separator />
 
-                  <CodeInspector />
+                  <div className="w-full min-w-0 max-w-full overflow-hidden">
+                    <CodeInspector />
+                  </div>
                 </div>
               </div>
             </ScrollArea>

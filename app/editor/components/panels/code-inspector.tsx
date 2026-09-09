@@ -49,7 +49,7 @@ export function CodeInspector() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full min-w-0 max-w-full overflow-hidden box-border">
       {/* Header Row: Clean title with Add button */}
       <div className="flex items-center justify-between">
         <Label className="text-sm font-semibold uppercase tracking-wider">
@@ -66,19 +66,21 @@ export function CodeInspector() {
       </div>
 
       {isCode && codeEl ? (
-        <div className="space-y-4">
-          {/* Code Input */}
-          <div className="space-y-1.5">
+        <div className="space-y-4 w-full min-w-0 max-w-full">
+          {/* Code Input with Fixed Width */}
+          <div className="space-y-1.5 w-full min-w-0 max-w-full">
             <Label className="text-xs font-medium text-muted-foreground">
               Code Content
             </Label>
-            <Textarea
-              value={codeEl.code}
-              onChange={(e) => updateElement(codeEl.id, { code: e.target.value })}
-              rows={5}
-              className="font-mono text-xs leading-relaxed bg-neutral-300 dark:bg-neutral-900 resize-y rounded-md border-neutral-300 dark:border-neutral-700"
-              placeholder="Paste or type code here..."
-            />
+            <div className="w-full min-w-0 max-w-full overflow-hidden">
+              <Textarea
+                value={codeEl.code}
+                onChange={(e) => updateElement(codeEl.id, { code: e.target.value })}
+                rows={5}
+                className="w-full max-w-full min-w-0 box-border [field-sizing:fixed] font-mono text-xs leading-relaxed bg-neutral-300 dark:bg-neutral-900 resize-y rounded-md border-2 border-neutral-300 dark:border-neutral-700 whitespace-pre-wrap break-words [overflow-wrap:anywhere] overflow-y-auto overflow-x-hidden"
+                placeholder="Paste or type code here..."
+              />
+            </div>
           </div>
 
           {/* Language & Theme Selectors */}
@@ -143,45 +145,6 @@ export function CodeInspector() {
               placeholder="e.g. index.ts"
               className="h-8 text-xs rounded-md"
             />
-          </div>
-
-          {/* Switches */}
-          <div className="space-y-2.5 font-manrope font-semibold pt-1">
-            <div className="flex items-center justify-between">
-              <Label className="text-xs font-medium text-muted-foreground">
-                Window Controls
-              </Label>
-              <Switch
-                checked={style.showWindowControls}
-                onCheckedChange={(checked) =>
-                  updateElement(codeEl.id, { showWindowControls: checked })
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label className="text-xs font-medium text-muted-foreground">
-                Line Numbers
-              </Label>
-              <Switch
-                checked={style.lineNumbers}
-                onCheckedChange={(checked) =>
-                  updateElement(codeEl.id, { lineNumbers: checked })
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label className="text-xs font-medium text-muted-foreground">
-                Glassmorphism
-              </Label>
-              <Switch
-                checked={Boolean(style.glassmorphism)}
-                onCheckedChange={(checked) =>
-                  updateElement(codeEl.id, { glassmorphism: checked })
-                }
-              />
-            </div>
           </div>
 
           {/* Geometry Sliders */}
@@ -259,75 +222,112 @@ export function CodeInspector() {
             />
           </div>
 
-          {/* 3D Presets & Sliders */}
-          <div className="space-y-2">
-            <Label className="text-xs font-medium text-muted-foreground">
-              3D Preset
-            </Label>
-            <div className="grid grid-cols-2 gap-1.5">
-              {TRANSFORM_3D_PRESETS.slice(0, 4).map((preset) => (
-                <Button
-                  key={preset.name}
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
+          {/* 2x2 Grid below sliders: Window, Glass, Numbers, Normal Presets Dropdown */}
+          <div className="grid grid-cols-2 gap-4 font-manrope font-semibold pt-1 items-center *:pr-1">
+            {/* Window */}
+            <div className="flex items-center justify-between min-w-0 h-8">
+              <Label className="text-xs font-medium text-muted-foreground cursor-pointer select-none">
+                Window
+              </Label>
+              <Switch
+                checked={style.showWindowControls}
+                onCheckedChange={(checked) =>
+                  updateElement(codeEl.id, { showWindowControls: checked })
+                }
+              />
+            </div>
+
+            {/* Glass */}
+            <div className="flex items-center justify-between min-w-0 h-8">
+              <Label className="text-xs font-medium text-muted-foreground cursor-pointer select-none">
+                Glass
+              </Label>
+              <Switch
+                checked={Boolean(style.glassmorphism)}
+                onCheckedChange={(checked) =>
+                  updateElement(codeEl.id, { glassmorphism: checked })
+                }
+              />
+            </div>
+
+            {/* Numbers */}
+            <div className="flex items-center justify-between min-w-0 h-8">
+              <Label className="text-xs font-medium text-muted-foreground cursor-pointer select-none">
+                Numbers
+              </Label>
+              <Switch
+                checked={style.lineNumbers}
+                onCheckedChange={(checked) =>
+                  updateElement(codeEl.id, { lineNumbers: checked })
+                }
+              />
+            </div>
+
+            {/* Normal Presets Dropdown */}
+            <div className="min-w-0">
+              <Select
+                value={
+                  TRANSFORM_3D_PRESETS.find(
+                    (p) =>
+                      p.id !== "custom" &&
+                      p.rotateX === style.rotateX &&
+                      p.rotateY === style.rotateY &&
+                      p.rotate === style.rotate
+                  )?.id || "custom"
+                }
+                onValueChange={(presetId) => {
+                  const preset = TRANSFORM_3D_PRESETS.find(
+                    (p) => p.id === presetId
+                  );
+                  if (preset && preset.id !== "custom") {
                     updateElement(codeEl.id, {
                       rotateX: preset.rotateX,
                       rotateY: preset.rotateY,
                       rotate: preset.rotate,
-                    })
+                    });
                   }
-                  className="h-7 text-xs truncate rounded-md border-neutral-300 dark:border-neutral-700 hover:bg-muted/50"
-                >
-                  {preset.name}
-                </Button>
-              ))}
+                }}
+              >
+                <SelectTrigger className="h-8 w-full text-xs cursor-pointer">
+                  <SelectValue placeholder="Preset" />
+                </SelectTrigger>
+                <SelectContent className="text-xs max-h-56">
+                  <SelectItem
+                    value="custom"
+                    className="text-xs py-1.5 cursor-pointer text-muted-foreground"
+                    disabled
+                  >
+                    Custom
+                  </SelectItem>
+                  {TRANSFORM_3D_PRESETS.map((preset) => (
+                    <SelectItem
+                      key={preset.id}
+                      value={preset.id}
+                      className="text-xs py-1.5 cursor-pointer"
+                    >
+                      {preset.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 font-manrope font-semibold">
-            <StudioSlider
-              label="X-Axis"
-              value={style.rotateX}
-              onChange={(val) => updateElement(codeEl.id, { rotateX: val })}
-              min={-90}
-              max={90}
-              step={1}
-              defaultValue={0}
-              unit="°"
-              compact
-            />
-
-            <StudioSlider
-              label="Y-Axis"
-              value={style.rotateY}
-              onChange={(val) => updateElement(codeEl.id, { rotateY: val })}
-              min={-90}
-              max={90}
-              step={1}
-              defaultValue={0}
-              unit="°"
-              compact
-            />
-
-            <StudioSlider
-              label="Rotate"
-              value={style.rotate}
-              onChange={(val) => updateElement(codeEl.id, { rotate: val })}
-              min={-180}
-              max={180}
-              step={1}
-              defaultValue={0}
-              unit="°"
-              compact
-            />
           </div>
         </div>
       ) : (
-        <div className="text-center p-6 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
-          {elements.some((e) => e.type === "code")
-            ? "A code snippet exists. Select it from Layers to edit properties."
-            : "Add a code snippet to customize syntax, language, and 3D perspectives."}
+        <div className="space-y-3">
+          <Button
+            onClick={handleAddCode}
+            variant="outline"
+            size="sm"
+            className="w-full bg-transparent border-dashed rounded-sm border-neutral-400 dark:border-neutral-600 hover:bg-muted/50 text-xs font-semibold"
+          >
+            <PlusIcon className="w-3.5 h-3.5 mr-2" /> Add Code Layer
+          </Button>
+          <div className="text-center p-6 text-muted-foreground font-inter text-xs border-2 border-dashed rounded-lg">
+            {elements.some((e) => e.type === "code")
+              ? "A code snippet exists. Select it from Layers to edit properties."
+              : "Add a code snippet to customize syntax, language, and 3D perspectives."}
+          </div>
         </div>
       )}
     </div>

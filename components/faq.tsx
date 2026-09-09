@@ -55,8 +55,7 @@ export function FAQ() {
           className="text-center max-w-xl mx-auto mb-12 md:mb-16"
         >
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-border/80 dark:border-neutral-800 bg-muted/40 text-xs font-semibold font-manrope text-muted-foreground mb-4">
-            <QuestionIcon className="size-3.5 text-primary" weight="bold" />
-            <span>Got Questions?</span>
+            <span>Got Questions ?</span>
           </div>
           <h2 className="text-4xl font-bold tracking-tight text-foreground">
             Frequently asked questions

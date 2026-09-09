@@ -120,6 +120,23 @@ export const CodeLayer = memo(
       CODE_THEMES.find((t) => t.id === style.theme) || CODE_THEMES[0];
 
     const has3D = (style.rotateX || 0) !== 0 || (style.rotateY || 0) !== 0;
+    const hasRotate = (style.rotate || 0) !== 0;
+    const hasScale = (style.scale || 100) !== 100;
+
+    let transformValue: string | undefined = undefined;
+    if (has3D) {
+      transformValue = `perspective(2000px) rotateZ(${style.rotate || 0}deg) rotateX(${style.rotateX || 0}deg) rotateY(${style.rotateY || 0}deg) scale(${(style.scale || 100) / 100})`;
+    } else if (hasRotate && hasScale) {
+      transformValue = `rotate(${style.rotate}deg) scale(${style.scale / 100})`;
+    } else if (hasRotate) {
+      transformValue = `rotate(${style.rotate}deg)`;
+    } else if (hasScale) {
+      transformValue = `scale(${style.scale / 100})`;
+    }
+
+    const codeFontFamily =
+      style.fontFamily || "var(--font-mono), monospace";
+
     const language = element.language || "typescript";
     const tokenized = highlightCode(element.code || "", language, theme);
 
@@ -149,23 +166,21 @@ export const CodeLayer = memo(
 
     return (
       <div
-        className={`absolute select-none transition-all touch-none ${
-          isDragging ? "duration-0" : "duration-100"
-        } ${isLocked ? "cursor-default" : "cursor-move"}`}
+        className={`absolute select-none touch-none ${
+          isLocked ? "cursor-default" : "cursor-move"
+        }`}
         style={{
           left: element.position.x,
           top: element.position.y,
           zIndex: isSelected ? 40 : 20,
           pointerEvents: isLocked ? "none" : "auto",
-          transformStyle: "preserve-3d",
+          transformStyle: has3D ? "preserve-3d" : undefined,
           transformOrigin: "center center",
-          willChange: isSelected || isDragging ? "transform, left, top" : undefined,
-          transform: `
-            perspective(2000px)
-            rotateZ(${style.rotate || 0}deg)
-            ${has3D ? `rotateX(${style.rotateX || 0}deg) rotateY(${style.rotateY || 0}deg)` : ""}
-            scale(${(style.scale || 100) / 100})
-          `,
+          willChange: isSelected || isDragging ? "left, top" : undefined,
+          transform: transformValue,
+          WebkitFontSmoothing: "antialiased",
+          MozOsxFontSmoothing: "grayscale",
+          textRendering: "geometricPrecision",
         }}
         onPointerDown={(e) => {
           if (!isLocked && onPointerDown) {
@@ -193,6 +208,11 @@ export const CodeLayer = memo(
             WebkitBackdropFilter: style.glassmorphism ? "blur(16px)" : undefined,
             border: `1px solid ${style.glassmorphism ? "rgba(255,255,255,0.2)" : theme.border}`,
             opacity: (style.opacity ?? 100) / 100,
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
+            textRendering: "geometricPrecision",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
           }}
         >
           {style.showWindowControls && (
@@ -206,7 +226,7 @@ export const CodeLayer = memo(
               }}
             >
               <div className="flex items-center gap-1.5">
-                <div className="size-2.5 rounded-full bg-[#ff5f56]   border border-[#e0443e]/40 shadow-xs" />
+                <div className="size-2.5 rounded-full bg-[#ff5f56] border border-[#e0443e]/40 shadow-xs" />
                 <div className="size-2.5 rounded-full bg-[#ffbd2e] border border-[#dea123]/40 shadow-xs" />
                 <div className="size-2.5 rounded-full bg-[#27c93f] border border-[#1aab29]/40 shadow-xs" />
               </div>
@@ -214,7 +234,13 @@ export const CodeLayer = memo(
               {style.windowTitle && (
                 <div
                   className="text-[11px] font-mono tracking-tight font-medium opacity-75 truncate max-w-[200px]"
-                  style={{ color: theme.text }}
+                  style={{
+                    color: theme.text,
+                    fontFamily: codeFontFamily,
+                    WebkitFontSmoothing: "antialiased",
+                    MozOsxFontSmoothing: "grayscale",
+                    textRendering: "geometricPrecision",
+                  }}
                 >
                   {style.windowTitle}
                 </div>
@@ -232,8 +258,11 @@ export const CodeLayer = memo(
               fontSize: `${style.fontSize}px`,
               lineHeight: 1.6,
               color: theme.text,
-              fontFamily: style.fontFamily,
+              fontFamily: codeFontFamily,
               maxWidth: "100%",
+              WebkitFontSmoothing: "antialiased",
+              MozOsxFontSmoothing: "grayscale",
+              textRendering: "geometricPrecision",
             }}
             onWheel={(e) => {
               if (maxScroll > 0) {
@@ -252,8 +281,8 @@ export const CodeLayer = memo(
           >
             <div
               style={{
-                transform: `translateX(-${scrollOffsetPx}px)`,
-                transition: "transform 0.05s ease-out",
+                transform: scrollOffsetPx > 0 ? `translateX(-${scrollOffsetPx}px)` : undefined,
+                transition: scrollOffsetPx > 0 ? "transform 0.05s ease-out" : undefined,
                 width: "max-content",
                 minWidth: "100%",
               }}
@@ -268,14 +297,33 @@ export const CodeLayer = memo(
                     <tr key={lineIndex} className="hover:bg-white/5 transition-colors">
                       {style.lineNumbers && (
                         <td
-                          className="pr-4 select-none text-right opacity-30 font-mono text-[11px] align-top"
-                          style={{ color: theme.text, width: "1%" }}
+                          className="pr-4 select-none text-right opacity-35 font-mono align-top"
+                          style={{
+                            color: theme.text,
+                            width: "1%",
+                            fontSize: `${style.fontSize}px`,
+                            lineHeight: 1.6,
+                            fontFamily: codeFontFamily,
+                            fontVariantNumeric: "tabular-nums",
+                            whiteSpace: "nowrap",
+                            WebkitFontSmoothing: "antialiased",
+                            MozOsxFontSmoothing: "grayscale",
+                            textRendering: "geometricPrecision",
+                          }}
                         >
                           {lineIndex}
                         </td>
                       )}
                       <td
                         className="whitespace-pre align-top font-mono"
+                        style={{
+                          fontSize: `${style.fontSize}px`,
+                          lineHeight: 1.6,
+                          fontFamily: codeFontFamily,
+                          WebkitFontSmoothing: "antialiased",
+                          MozOsxFontSmoothing: "grayscale",
+                          textRendering: "geometricPrecision",
+                        }}
                         dangerouslySetInnerHTML={{ __html: html }}
                       />
                     </tr>

@@ -17,7 +17,6 @@ import {
 import { ThemeToggle } from "./theme-toggle";
 import { MobileNotice } from "./mobile-notice";
 import { cn } from "@/lib/utils";
-import StackIcon from "tech-stack-icons";
 
 const NAV_ITEMS = [
   { name: "Features", href: "/#features" },
@@ -112,9 +111,7 @@ export const Navbar = () => {
               variant="outline"
               className="relative overflow-hidden group gap-1.5 rounded-lg px-3 h-8 text-xs font-semibold font-manrope border-border/80 hover:border-foreground/30 dark:hover:border-white/30 hover:bg-muted text-foreground shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 cursor-pointer"
             >
-              <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter] relative z-10">
-                <GithubLogoIcon className="w-full h-full" />
-              </div>
+              <GithubLogoIcon className="size-3.5 shrink-0 text-foreground relative z-10" />
               <span className="relative z-10">GitHub</span>
               <div
                 className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
@@ -188,9 +185,7 @@ export const Navbar = () => {
                       variant="outline"
                       className="relative overflow-hidden group w-full rounded-lg h-10 text-xs font-semibold font-manrope border-border hover:border-foreground/30 dark:hover:border-white/30 gap-1.5 hover:bg-muted cursor-pointer"
                     >
-                      <div className="size-3.5 flex items-center justify-center dark:invert transition-[filter] relative z-10">
-                        <StackIcon name="github" className="w-full h-full" />
-                      </div>
+                      <GithubLogoIcon className="size-3.5 shrink-0 text-foreground relative z-10" />
                       <span className="relative z-10">GitHub</span>
                       <div
                         className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
