@@ -883,7 +883,13 @@ export default function EditorPage() {
                 if (elements.length === 0) {
                   hiddenInputRef.current?.click();
                 } else {
-                  selectElement(null);
+                  const codeEl = elements.find((e) => e.type === "code");
+                  const hasOtherElements = elements.some((e) => e.type !== "code");
+                  if (codeEl && !hasOtherElements) {
+                    selectElement(codeEl.id);
+                  } else {
+                    selectElement(null);
+                  }
                 }
               }}
               selectedElementId={selectedElementId}

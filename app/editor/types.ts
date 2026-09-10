@@ -134,12 +134,15 @@ export interface TextElement {
   isLocked: boolean;
 }
 
+export type WindowFrameStyle = "macos" | "windows" | "classic" | "browser" | "minimal";
+
 export interface CodeStyle {
   fontSize: number;
   fontFamily: string;
   theme: "tokyo-night" | "one-dark" | "dracula" | "github-dark" | "monokai";
   showWindowControls: boolean;
   windowTitle: string;
+  windowFrame?: WindowFrameStyle;
   lineNumbers: boolean;
   padding: number;
   borderRadius: number;
@@ -150,7 +153,7 @@ export interface CodeStyle {
   scale: number;
   opacity: number;
   glassmorphism?: boolean;
-  scrollX?: number;
+  glassBlur?: number;
   width?: number;
 }
 
@@ -160,6 +163,7 @@ export const DEFAULT_CODE_STYLE: CodeStyle = {
   theme: "tokyo-night",
   showWindowControls: true,
   windowTitle: "showcase.tsx",
+  windowFrame: "macos",
   lineNumbers: true,
   padding: 16,
   borderRadius: 12,
@@ -170,8 +174,8 @@ export const DEFAULT_CODE_STYLE: CodeStyle = {
   scale: 100,
   opacity: 100,
   glassmorphism: false,
-  scrollX: 0,
-  width: 480,
+  glassBlur: 24,
+  width: 500,
 };
 
 export interface CodeElement {
@@ -184,6 +188,7 @@ export interface CodeElement {
   style: CodeStyle;
   isVisible: boolean;
   isLocked: boolean;
+  width?: number;
 }
 
 export type CanvasElement = ImageElement | TextElement | CodeElement;

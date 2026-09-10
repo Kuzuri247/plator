@@ -102,16 +102,21 @@ export const TextLayer = memo(
         : bgGradient
       : "transparent";
 
-    const hasBorder = (element.style.borderWidth ?? 0) > 0;
+    const isBgEnabled = Boolean(element.style.showBackground);
+    const isGlass = Boolean(element.style.glassmorphism);
+
+    const hasBorder = (isBgEnabled || isGlass) && (element.style.borderWidth ?? 0) > 0;
     const borderGradient = element.style.colorVia
       ? `linear-gradient(${colorDirection}, ${startColor}, ${viaColor}, ${endColor})`
       : `linear-gradient(${colorDirection}, ${startColor}, ${endColor})`;
 
-    const baseBackground = element.style.glassmorphism
-      ? element.style.showBackground
+    const baseBackground = isGlass
+      ? isBgEnabled
         ? backgroundStyle
         : "rgba(255, 255, 255, 0.15)"
-      : backgroundStyle;
+      : isBgEnabled
+      ? backgroundStyle
+      : "transparent";
 
     const backgroundCss = hasBorder
       ? colorType === "solid"
@@ -127,7 +132,7 @@ export const TextLayer = memo(
       ? colorType === "solid"
         ? `${element.style.borderWidth}px solid ${startColor}`
         : `${element.style.borderWidth}px solid transparent`
-      : element.style.glassmorphism
+      : isGlass
       ? "1px solid rgba(255, 255, 255, 0.3)"
       : undefined;
 
@@ -135,6 +140,7 @@ export const TextLayer = memo(
     const selectedMode =
       WRITING_MODES.find((m) => m.id === element.style.writingMode) ||
       WRITING_MODES[0];
+    const isUpright = element.style.writingMode === "vertical-upright";
     const writingModeStyle: React.CSSProperties = {
       writingMode: selectedMode.css as any,
       textOrientation: selectedMode.orientation as any,
@@ -142,9 +148,7 @@ export const TextLayer = memo(
 
     return (
       <div
-        className={`absolute select-none transition-all touch-none ${
-          isDragging ? "duration-0" : "duration-100"
-        } ${
+        className={`absolute select-none touch-none ${
           isLocked ? "cursor-default" : "cursor-move"
         } ${
           isSelected ? "ring-2 ring-primary" : "hover:ring-1 hover:ring-white/40"
@@ -168,22 +172,24 @@ export const TextLayer = memo(
             rotateY(${element.style.rotateY || 0}deg)
             rotateZ(${element.style.rotate || 0}deg)
           `,
+          ...writingModeStyle,
+          textAlign: isUpright ? "center" : undefined,
           background: backgroundCss,
-          backdropFilter: element.style.glassmorphism
+          backdropFilter: isGlass
             ? `blur(${element.style.glassBlur || 16}px) saturate(180%)`
             : undefined,
-          WebkitBackdropFilter: element.style.glassmorphism
+          WebkitBackdropFilter: isGlass
             ? `blur(${element.style.glassBlur || 16}px) saturate(180%)`
             : undefined,
           border: borderCss,
-          boxShadow: element.style.glassmorphism
+          boxShadow: isGlass
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35)"
-            : element.style.showBackground
+            : isBgEnabled
             ? element.style.backgroundShadow
             : "none",
-          borderRadius: `${element.style.borderRadius}px`,
-          padding: `${element.style.padding}px`,
-          lineHeight: 1.2,
+          borderRadius: isBgEnabled || isGlass ? `${element.style.borderRadius}px` : "0px",
+          padding: isBgEnabled || isGlass ? `${element.style.padding}px` : "0px",
+          lineHeight: isUpright ? 1.35 : 1.2,
           backfaceVisibility: "visible",
           filter: isSelected ? "brightness(1.03)" : "none",
         }}
@@ -196,6 +202,8 @@ export const TextLayer = memo(
             fontWeight: element.style.fontWeight,
             letterSpacing: `${element.style.letterSpacing ?? 0}px`,
             textShadow: element.style.textShadow,
+            textAlign: isUpright ? "center" : undefined,
+            lineHeight: isUpright ? 1.35 : 1.2,
             ...writingModeStyle,
             ...textGradientStyle,
             ...getEffectStyles(),

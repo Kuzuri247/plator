@@ -127,15 +127,15 @@ export function useSelection(
     const isSnapActive = snappingEnabled && !e.altKey && !e.ctrlKey;
 
     if (isSnapActive) {
-      const minRegionX = canvasWidth * 0.47;
-      const maxRegionX = canvasWidth * 0.53;
+      const minRegionX = canvasWidth * 0.48;
+      const maxRegionX = canvasWidth * 0.52;
       if (currentCenterX >= minRegionX && currentCenterX <= maxRegionX) {
         newX = rawX + (canvasCenterX - currentCenterX);
         activeSnapX = canvasCenterX;
       }
 
-      const minRegionY = canvasHeight * 0.47;
-      const maxRegionY = canvasHeight * 0.53;
+      const minRegionY = canvasHeight * 0.48;
+      const maxRegionY = canvasHeight * 0.52;
       if (currentCenterY >= minRegionY && currentCenterY <= maxRegionY) {
         newY = rawY + (canvasCenterY - currentCenterY);
         activeSnapY = canvasCenterY;

@@ -65,6 +65,18 @@ export const MESH_PALETTES = [
     name: "Deep Ocean",
     colors: ["#020b14", "#0a2540", "#004b79", "#0077b6", "#00f2fe"],
   },
+  {
+    name: "Terracotta",
+    colors: ["#2d1519", "#5e2930", "#99474e", "#cf7c73", "#f2c4b8"],
+  },
+  {
+    name: "Emerald Coast",
+    colors: ["#22577a", "#38a3a5", "#57cc99", "#80ed99", "#c7f9cc"],
+  },
+  {
+    name: "Golden Hour",
+    colors: ["#1c1008", "#451a03", "#b45309", "#f59e0b", "#fde68a"],
+  },
 ];
 
 export interface AspectRatioPreset {
@@ -257,6 +269,20 @@ export const CODE_THEMES = [
     function: "#a9dc76",
     border: "rgba(255, 255, 255, 0.08)",
   },
+];
+
+export interface WindowFramePreset {
+  id: "macos" | "windows" | "classic" | "browser" | "minimal";
+  name: string;
+  description: string;
+}
+
+export const WINDOW_FRAME_PRESETS: WindowFramePreset[] = [
+  { id: "macos", name: "macOS", description: "Traffic lights" },
+  { id: "windows", name: "Windows 11", description: "Modern min/max/close" },
+  { id: "classic", name: "Classic 95", description: "Retro 3D buttons" },
+  { id: "browser", name: "Browser", description: "Address bar pill" },
+  { id: "minimal", name: "Minimal", description: "Terminal prompt" },
 ];
 
 export const FONT_FAMILIES = [
@@ -583,4 +609,28 @@ export const BACKGROUND_GRADIENT_PRESETS: GradientPresetOption[] = [
   { name: "Deep Amber", from: "#78350f", via: "#451a03", to: "#180a02" },
   { name: "Abyss Noir", from: "#18181b", via: "#09090b", to: "#000000" },
   { name: "Ocean Deep", from: "#0f3460", via: "#16213e", to: "#1a1a2e" },
+];
+
+export interface DitherColorPreset {
+  name: string;
+  front: string;
+  back: string;
+}
+
+export const DITHER_COLOR_PRESETS: DitherColorPreset[] = [
+  { name: "Mono", front: "#ffffff", back: "#000000" },
+  { name: "GameBoy", front: "#9bbc0f", back: "#0f380f" },
+  { name: "Cyber", front: "#00f0ff", back: "#ff007f" },
+  { name: "Matrix", front: "#00ff66", back: "#041508" },
+  { name: "Amber", front: "#ffb300", back: "#180b00" },
+  { name: "Sepia", front: "#f6ecd4", back: "#2d1e16" },
+  { name: "Blueprint", front: "#d6f5ff", back: "#0a1936" },
+  { name: "Solar", front: "#ffd000", back: "#2d0606" },
+  { name: "Vaporwave", front: "#d8b4fe", back: "#1e0b36" },
+  { name: "Emerald", front: "#a7f3d0", back: "#062b1b" },
+  { name: "Crimson", front: "#ff4d6d", back: "#1c0409" },
+  { name: "Nordic", front: "#e0f2fe", back: "#0f172a" },
+  { name: "Champagne", front: "#fde68a", back: "#18181b" },
+  { name: "Bubblegum", front: "#f472b6", back: "#2e0821" },
+  { name: "Risograph", front: "#0077c8", back: "#fff8f0" },
 ];

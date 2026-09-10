@@ -18,6 +18,8 @@ import { ImageElement } from "../../types";
 
 function TemplateAccuratePreview({ template }: { template: TemplateItem }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasW = template.aspectRatio?.width || 960;
+  const canvasH = template.aspectRatio?.height || 540;
   const [scale, setScale] = useState(0.24);
 
   useEffect(() => {
@@ -26,32 +28,28 @@ function TemplateAccuratePreview({ template }: { template: TemplateItem }) {
     const updateScale = () => {
       const w = el.clientWidth;
       if (w > 0) {
-        setScale(w / 960);
+        setScale(w / canvasW);
       }
     };
     updateScale();
     const ro = new ResizeObserver(updateScale);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [canvasW]);
 
   return (
     <div
       ref={containerRef}
       className="relative w-full aspect-video rounded-md overflow-hidden bg-neutral-950/90 border border-white/10 shadow-inner flex items-center justify-center select-none"
     >
-      {/* Subtle Studio Grid Pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.07)_1px,transparent_1px)] bg-[size:10px_10px] opacity-70 pointer-events-none" />
 
-      {/* Accurately Scaled 960x540 Canvas Viewport */}
       <div
         className="absolute top-0 left-0 pointer-events-none origin-top-left"
         style={{
-          width: 960,
-          height: 540,
+          width: canvasW,
+          height: canvasH,
           transform: `scale(${scale})`,
-          transformStyle: "preserve-3d",
-          perspective: "2000px",
         }}
       >
         {template.elements.map((el, idx) => {
@@ -59,7 +57,10 @@ function TemplateAccuratePreview({ template }: { template: TemplateItem }) {
           const img = el as ImageElement;
           const cardW = img.width || 260;
           const cardH = img.height || 380;
-          const zIndex = idx + 1;
+          const zIndex = idx + 20;
+          const has3DRotation = img.style.rotateX !== 0 || img.style.rotateY !== 0;
+
+          const isShortCard = cardH < 280;
 
           return (
             <div
@@ -70,31 +71,49 @@ function TemplateAccuratePreview({ template }: { template: TemplateItem }) {
                 top: `${img.position.y}px`,
                 width: `${cardW}px`,
                 height: `${cardH}px`,
-                transformStyle: "preserve-3d",
                 transform: `
+                  perspective(${has3DRotation ? 2000 : 1500}px)
                   rotateX(${img.style.rotateX}deg)
                   rotateY(${img.style.rotateY}deg)
                   rotateZ(${img.style.rotate}deg)
-                  scale(${img.style.scale / 100})
+                  scale3d(${((img.style.scale || 100) / 100)}, ${((img.style.scale || 100) / 100)}, 1)
+                  scaleX(${img.style.flipX ? -1 : 1})
+                  scaleY(${img.style.flipY ? -1 : 1})
                 `,
                 borderRadius: `${img.style.borderRadius || 16}px`,
-                background:
-                  "linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04))",
-                backdropFilter: "blur(12px)",
-                border: "2px dashed rgba(255, 255, 255, 0.4)",
+                background: img.style.glassmorphism
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(255, 255, 255, 0.04)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
                 boxShadow:
-                  img.style.shadow || "0 25px 50px -12px rgba(0,0,0,0.65)",
-                opacity: (img.style.opacity || 100) / 100,
+                  img.style.shadow === "none"
+                    ? "0 25px 50px -12px rgba(0,0,0,0.5)"
+                    : img.style.shadow || "0 25px 50px -12px rgba(0,0,0,0.65)",
+                opacity: (img.style.opacity ?? 100) / 100,
                 zIndex,
               }}
             >
-              <div className="flex flex-col items-center justify-center text-center select-none">
-                <div className="size-16 rounded-full bg-white/15 border-2 border-white/40 flex items-center justify-center text-white mb-2 shadow-xl">
-                  <PlusIcon size={32} weight="bold" />
+              <div
+                className={`flex flex-col items-center justify-center text-center select-none ${
+                  isShortCard ? "p-3" : "p-6"
+                }`}
+              >
+                <div
+                  className={`${
+                    isShortCard ? "size-11 mb-2" : "size-16 mb-3"
+                  } rounded-full bg-white/10 border-2 border-white/30 flex items-center justify-center text-primary shadow-xl`}
+                >
+                  <PlusIcon size={isShortCard ? 22 : 32} weight="bold" />
                 </div>
-                <span className="text-sm font-bold text-white/90 font-manrope tracking-wider">
-                  {img.placeholderLabel || img.name || "Slot"}
-                </span>
+                <p className="text-xs font-semibold text-white/90 tracking-wide font-manrope">
+                  {img.placeholderLabel || img.name || "Add Image"}
+                </p>
+                {!isShortCard && (
+                  <p className="text-[10px] text-white/70 mt-1 font-inter">
+                    Click to upload image
+                  </p>
+                )}
               </div>
             </div>
           );
@@ -172,7 +191,6 @@ export function TemplatesPanel() {
 
   return (
     <div className="space-y-3">
-      {/* Header Row: Minimal title with side-by-side icon buttons */}
       <div className="flex items-center justify-between">
         <Label className="text-sm font-semibold uppercase tracking-wider">
           Templates
@@ -225,7 +243,7 @@ export function TemplatesPanel() {
             className="h-8 text-xs bg-background"
             autoFocus
           />
-          <Button type="submit" size="sm" className="w-full h-7 text-xs bg-primary">
+          <Button type="submit" size="sm" className="w-full h-7 text-xs bg-primary rounded-md">
             Save Preset
           </Button>
         </form>
@@ -234,10 +252,13 @@ export function TemplatesPanel() {
       {/* User Saved Presets List */}
       {mounted && userPresets.length > 0 && (
         <div className="space-y-1.5">
-          <span className="text-[11px] font-medium text-muted-foreground">
-            Saved ({userPresets.length})
+          <span className=" flex items-center justify-between pr-1 text-[11px] font-medium text-muted-foreground">
+            <span>
+              Saved Preset{userPresets.length === 1 ? "" : "s"}
+            </span>
+            ({userPresets.length})
           </span>
-          <div className="space-y-1 max-h-36 overflow-y-auto pr-0.5">
+          <div className="gap-1 flex flex-col max-h-40 overflow-y-auto pr-1">
             {userPresets.map((preset) => (
               <div
                 key={preset.id}
@@ -252,7 +273,7 @@ export function TemplatesPanel() {
                   className="flex-1 text-left truncate cursor-pointer pr-2 flex items-center gap-2"
                 >
                   <div
-                    className="size-4 rounded-full shrink-0 border border-white/20 shadow-xs"
+                    className="size-6 rounded-md shrink-0 shadow-xs"
                     style={{
                       background: `linear-gradient(135deg, ${preset.meshConfig?.colors?.[0] || "#6366f1"}, ${preset.meshConfig?.colors?.[1] || "#a855f7"})`,
                     }}
@@ -273,7 +294,7 @@ export function TemplatesPanel() {
                     deleteCustomPreset(preset.id);
                     toast.info(`Deleted "${preset.name}"`);
                   }}
-                  className="size-6 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="size-6 text-muted-foreground rounded-lg dark:hover:bg-neutral-900 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <TrashIcon size={12} />
                 </Button>

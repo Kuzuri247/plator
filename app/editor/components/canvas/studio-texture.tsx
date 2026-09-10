@@ -24,7 +24,6 @@ export const TEXTURE_LIST: { id: StudioTextureType; name: string }[] = [
   { id: "paper", name: "Crushed Paper" },
   { id: "scratches", name: "Studio Scratches" },
   { id: "canvas", name: "Woven Canvas" },
-  { id: "dust", name: "Vintage Dust" },
   { id: "halftone", name: "Print Halftone" },
 ];
 

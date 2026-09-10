@@ -1,7 +1,6 @@
 "use client";
 
 import React, { memo } from "react";
-import { useStore } from "../../store/use-store";
 import { CodeElement } from "../../types";
 import { CODE_THEMES } from "../../values";
 
@@ -114,7 +113,6 @@ export const CodeLayer = memo(
     onPointerDown?: (e: React.PointerEvent, id: string) => void;
     isLocked: boolean;
   }) => {
-    const { updateElement } = useStore();
     const { style } = element;
     const theme =
       CODE_THEMES.find((t) => t.id === style.theme) || CODE_THEMES[0];
@@ -140,29 +138,8 @@ export const CodeLayer = memo(
     const language = element.language || "typescript";
     const tokenized = highlightCode(element.code || "", language, theme);
 
-    const codeBodyRef = React.useRef<HTMLDivElement>(null);
-    const tableRef = React.useRef<HTMLTableElement>(null);
-    const [maxScroll, setMaxScroll] = React.useState(0);
-
-    const windowWidth = style.width || 480;
-
-    React.useEffect(() => {
-      const updateScrollBounds = () => {
-        if (codeBodyRef.current && tableRef.current) {
-          const containerWidth = codeBodyRef.current.clientWidth;
-          const contentWidth = tableRef.current.scrollWidth;
-          const max = Math.max(0, contentWidth - containerWidth);
-          setMaxScroll(max);
-        }
-      };
-
-      updateScrollBounds();
-      const t = setTimeout(updateScrollBounds, 50);
-      return () => clearTimeout(t);
-    }, [style.scrollX, element.code, style.fontSize, style.width, style.padding, style.lineNumbers]);
-
-    const scrollOffsetPx =
-      maxScroll > 0 ? (maxScroll * Math.min(100, Math.max(0, style.scrollX || 0))) / 100 : 0;
+    const windowWidth = element.width || style.width || 500;
+    const isGlassActive = (style.glassBlur !== undefined && style.glassBlur > 0) || Boolean(style.glassmorphism);
 
     return (
       <div
@@ -196,17 +173,23 @@ export const CodeLayer = memo(
           }`}
           style={{
             width: `${windowWidth}px`,
-            minWidth: 280,
-            maxWidth: `${windowWidth}px`,
+            maxWidth: "100%",
+            boxSizing: "border-box",
             overflow: "hidden",
             borderRadius: `${style.borderRadius}px`,
             boxShadow: style.shadow,
-            background: style.glassmorphism
-              ? `${theme.bg}d9`
+            background: isGlassActive
+              ? theme.bg.startsWith("#")
+                ? `${theme.bg}a6`
+                : "rgba(24, 24, 27, 0.65)"
               : theme.bg,
-            backdropFilter: style.glassmorphism ? "blur(16px)" : undefined,
-            WebkitBackdropFilter: style.glassmorphism ? "blur(16px)" : undefined,
-            border: `1px solid ${style.glassmorphism ? "rgba(255,255,255,0.2)" : theme.border}`,
+            backdropFilter: isGlassActive
+              ? `blur(${style.glassBlur || 16}px) saturate(180%)`
+              : undefined,
+            WebkitBackdropFilter: isGlassActive
+              ? `blur(${style.glassBlur || 16}px) saturate(180%)`
+              : undefined,
+            border: `1px solid ${isGlassActive ? "rgba(255,255,255,0.2)" : theme.border}`,
             opacity: (style.opacity ?? 100) / 100,
             WebkitFontSmoothing: "antialiased",
             MozOsxFontSmoothing: "grayscale",
@@ -217,41 +200,135 @@ export const CodeLayer = memo(
         >
           {style.showWindowControls && (
             <div
-              className="flex items-center justify-between px-3.5 py-2.5 border-b select-none"
+              className="flex items-center justify-between px-3.5 py-2.5 border-b select-none min-h-8"
               style={{
                 borderColor: theme.border,
-                backgroundColor: style.glassmorphism
+                backgroundColor: isGlassActive
                   ? "transparent"
+                  : style.windowFrame === "classic"
+                  ? "rgba(0,0,128,0.25)"
                   : "rgba(0,0,0,0.15)",
               }}
             >
-              <div className="flex items-center gap-1.5">
-                <div className="size-2.5 rounded-full bg-[#ff5f56] border border-[#e0443e]/40 shadow-xs" />
-                <div className="size-2.5 rounded-full bg-[#ffbd2e] border border-[#dea123]/40 shadow-xs" />
-                <div className="size-2.5 rounded-full bg-[#27c93f] border border-[#1aab29]/40 shadow-xs" />
-              </div>
+              {/* Frame 1: macOS (Traffic Lights) */}
+              {(style.windowFrame === "macos" || !style.windowFrame) && (
+                <>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="size-2.5 rounded-full bg-[#ff5f56] border border-[#e0443e]/40 shadow-xs" />
+                    <div className="size-2.5 rounded-full bg-[#ffbd2e] border border-[#dea123]/40 shadow-xs" />
+                    <div className="size-2.5 rounded-full bg-[#27c93f] border border-[#1aab29]/40 shadow-xs" />
+                  </div>
 
-              {style.windowTitle && (
-                <div
-                  className="text-[11px] font-mono tracking-tight font-medium opacity-75 truncate max-w-[200px]"
-                  style={{
-                    color: theme.text,
-                    fontFamily: codeFontFamily,
-                    WebkitFontSmoothing: "antialiased",
-                    MozOsxFontSmoothing: "grayscale",
-                    textRendering: "geometricPrecision",
-                  }}
-                >
-                  {style.windowTitle}
-                </div>
+                  {style.windowTitle && (
+                    <div
+                      className="text-[11px] font-mono tracking-tight font-medium opacity-75 truncate max-w-[200px]"
+                      style={{
+                        color: theme.text,
+                        fontFamily: codeFontFamily,
+                      }}
+                    >
+                      {style.windowTitle}
+                    </div>
+                  )}
+
+                  <div className="w-10 shrink-0" />
+                </>
               )}
 
-              <div className="w-10" />
+              {style.windowFrame === "windows" && (
+                <>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div
+                      className="size-3.5 flex items-center justify-center opacity-70 text-xs font-mono font-bold"
+                      style={{ color: theme.keyword || theme.text }}
+                    >
+                      &lt;/&gt;
+                    </div>
+                    {style.windowTitle && (
+                      <div
+                        className="text-[11px] font-sans tracking-tight font-medium opacity-80 truncate max-w-[220px]"
+                        style={{ color: theme.text }}
+                      >
+                        {style.windowTitle}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0 opacity-70">
+                    <div className="w-2.5 h-[1.5px] bg-current" style={{ color: theme.text }} />
+                    <div className="size-2.5 border border-current rounded-[1px]" style={{ color: theme.text }} />
+                    <span className="text-xs leading-none select-none font-mono" style={{ color: theme.text }}>✕</span>
+                  </div>
+                </>
+              )}
+
+              {style.windowFrame === "classic" && (
+                <>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="size-3.5 bg-[#000080] text-white flex items-center justify-center text-[8px] font-bold font-mono border border-black/40 shadow-2xs">
+                      &gt;_
+                    </div>
+                    {style.windowTitle && (
+                      <div
+                        className="text-[11px] font-mono font-bold tracking-wider truncate max-w-[200px]"
+                        style={{ color: theme.text }}
+                      >
+                        {style.windowTitle}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0 font-mono text-[9px] font-bold select-none">
+                    <div className="size-3.5 flex items-center justify-center bg-[#c0c0c0] text-black border-t border-l border-t-white border-l-white border-b border-r border-b-black border-r-black shadow-2xs leading-none">
+                      _
+                    </div>
+                    <div className="size-3.5 flex items-center justify-center bg-[#c0c0c0] text-black border-t border-l border-t-white border-l-white border-b border-r border-b-black border-r-black shadow-2xs leading-none">
+                      □
+                    </div>
+                    <div className="size-3.5 flex items-center justify-center bg-[#c0c0c0] text-black border-t border-l border-t-white border-l-white border-b border-r border-b-black border-r-black shadow-2xs leading-none">
+                      ✕
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {style.windowFrame === "browser" && (
+         
+                  <div
+                    className="flex justify-center items-center w-fit mx-2 px-2.5 py-0.5 rounded-full border gap-1.5 text-[10px] truncate shadow-2xs"
+                    style={{
+                      backgroundColor: "rgba(0, 0, 0, 0.2)",
+                      borderColor: theme.border,
+                      color: theme.text,
+                    }}
+                  >
+                    <span className="size-1.5 rounded-full bg-emerald-400 shrink-0" />
+                    <span className="font-mono truncate opacity-85 font-medium">
+                      {style.windowTitle || "localhost:3000"}
+                    </span>
+                  </div>
+              )}
+
+              {style.windowFrame === "minimal" && (
+                <>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-emerald-400 font-mono text-xs font-bold leading-none">$</span>
+                    {style.windowTitle && (
+                      <div
+                        className="text-[11px] font-mono tracking-tight font-medium opacity-85 truncate"
+                        style={{ color: theme.text, fontFamily: codeFontFamily }}
+                      >
+                        {style.windowTitle}
+                      </div>
+                    )}
+                  </div>
+                  <div className="size-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                </>
+              )}
             </div>
           )}
 
           <div
-            ref={codeBodyRef}
             className="font-mono overflow-hidden relative"
             style={{
               padding: `${style.padding}px`,
@@ -259,78 +336,57 @@ export const CodeLayer = memo(
               lineHeight: 1.6,
               color: theme.text,
               fontFamily: codeFontFamily,
-              maxWidth: "100%",
+              width: "100%",
+              boxSizing: "border-box",
               WebkitFontSmoothing: "antialiased",
               MozOsxFontSmoothing: "grayscale",
               textRendering: "geometricPrecision",
             }}
-            onWheel={(e) => {
-              if (maxScroll > 0) {
-                const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-                if (Math.abs(delta) > 1) {
-                  e.stopPropagation();
-                  const currentPx = (maxScroll * (style.scrollX || 0)) / 100;
-                  const nextPx = Math.max(0, Math.min(maxScroll, currentPx + delta));
-                  const nextPercent = Math.round((nextPx / maxScroll) * 100);
-                  if (nextPercent !== (style.scrollX || 0)) {
-                    updateElement(element.id, { scrollX: nextPercent });
-                  }
-                }
-              }
-            }}
           >
-            <div
-              style={{
-                transform: scrollOffsetPx > 0 ? `translateX(-${scrollOffsetPx}px)` : undefined,
-                transition: scrollOffsetPx > 0 ? "transform 0.05s ease-out" : undefined,
-                width: "max-content",
-                minWidth: "100%",
-              }}
+            <table
+              className="border-collapse w-full"
+              style={{ width: "100%" }}
             >
-              <table
-                ref={tableRef}
-                className="border-collapse"
-                style={{ width: "max-content", minWidth: "100%" }}
-              >
-                <tbody>
-                  {tokenized.map(({ lineIndex, html }) => (
-                    <tr key={lineIndex} className="hover:bg-white/5 transition-colors">
-                      {style.lineNumbers && (
-                        <td
-                          className="pr-4 select-none text-right opacity-35 font-mono align-top"
-                          style={{
-                            color: theme.text,
-                            width: "1%",
-                            fontSize: `${style.fontSize}px`,
-                            lineHeight: 1.6,
-                            fontFamily: codeFontFamily,
-                            fontVariantNumeric: "tabular-nums",
-                            whiteSpace: "nowrap",
-                            WebkitFontSmoothing: "antialiased",
-                            MozOsxFontSmoothing: "grayscale",
-                            textRendering: "geometricPrecision",
-                          }}
-                        >
-                          {lineIndex}
-                        </td>
-                      )}
+              <tbody>
+                {tokenized.map(({ lineIndex, html }) => (
+                  <tr key={lineIndex} className="hover:bg-white/5 transition-colors">
+                    {style.lineNumbers !== false && (
                       <td
-                        className="whitespace-pre align-top font-mono"
+                        className="pr-4 select-none text-right opacity-35 font-mono align-top"
                         style={{
+                          color: theme.text,
+                          width: "1%",
                           fontSize: `${style.fontSize}px`,
                           lineHeight: 1.6,
                           fontFamily: codeFontFamily,
+                          fontVariantNumeric: "tabular-nums",
+                          whiteSpace: "nowrap",
                           WebkitFontSmoothing: "antialiased",
                           MozOsxFontSmoothing: "grayscale",
                           textRendering: "geometricPrecision",
                         }}
-                        dangerouslySetInnerHTML={{ __html: html }}
-                      />
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      >
+                        {lineIndex}
+                      </td>
+                    )}
+                    <td
+                      className="whitespace-pre-wrap break-words align-top font-mono"
+                      style={{
+                        fontSize: `${style.fontSize}px`,
+                        lineHeight: 1.6,
+                        fontFamily: codeFontFamily,
+                        wordBreak: "break-word",
+                        overflowWrap: "anywhere",
+                        WebkitFontSmoothing: "antialiased",
+                        MozOsxFontSmoothing: "grayscale",
+                        textRendering: "geometricPrecision",
+                      }}
+                      dangerouslySetInnerHTML={{ __html: html }}
+                    />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

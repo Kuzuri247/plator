@@ -49,6 +49,7 @@ import {
   TEXT_GRADIENT_PRESETS,
   BACKGROUND_GRADIENT_PRESETS,
   WRITING_MODES,
+  DITHER_COLOR_PRESETS,
 } from "../../values";
 import { cn } from "@/lib/utils";
 import { useStore } from "../../store/use-store";
@@ -668,15 +669,8 @@ export function LeftPanel({
                               <Label className="text-xs font-medium text-muted-foreground">
                                 Color Presets
                               </Label>
-                              <div className="grid grid-cols-3 gap-1.5">
-                                {[
-                                  { name: "Mono", front: "#ffffff", back: "#000000" },
-                                  { name: "GameBoy", front: "#9bbc0f", back: "#0f380f" },
-                                  { name: "Cyber", front: "#00dfd8", back: "#ff007f" },
-                                  { name: "Matrix", front: "#00ff66", back: "#0a1a0f" },
-                                  { name: "Amber", front: "#ffb000", back: "#1a0f00" },
-                                  { name: "Sepia", front: "#f4ecd8", back: "#3d2b1f" },
-                                ].map((pal) => (
+                              <div className="grid grid-cols-3 gap-1.5 h-full z-100 overflow-visible pr-1">
+                                {DITHER_COLOR_PRESETS.map((pal) => (
                                   <button
                                     key={pal.name}
                                     type="button"
@@ -686,10 +680,16 @@ export function LeftPanel({
                                         colorBack: pal.back,
                                       })
                                     }
-                                    className="group relative flex flex-col items-center p-1 rounded-md border border-border/70 hover:border-primary/80 transition-all hover:scale-105 bg-background/50 cursor-pointer shadow-xs"
-                                    title={pal.name}
+                                    className={cn(
+                                      "group relative flex flex-col items-center p-1.5 rounded-md border transition-all hover:scale-105 bg-background/50 cursor-pointer shadow-xs",
+                                      imgElement?.dither?.colorFront?.toLowerCase() === pal.front.toLowerCase() &&
+                                      imgElement?.dither?.colorBack?.toLowerCase() === pal.back.toLowerCase()
+                                        ? "border-primary ring-1 ring-primary/40 bg-primary/5"
+                                        : "border-border dark:border-neutral-700 hover:border-primary/80"
+                                    )}
+                                    title={`${pal.name} (${pal.front} / ${pal.back})`}
                                   >
-                                    <div className="flex h-3.5 w-full rounded-xs overflow-hidden mb-1 shadow-2xs">
+                                    <div className="flex h-3.5 w-full rounded-xs overflow-hidden mb-1 shadow-2xs border border-black/10 dark:border-white/10">
                                       <div className="flex-1 h-full" style={{ backgroundColor: pal.front }} />
                                       <div className="flex-1 h-full" style={{ backgroundColor: pal.back }} />
                                     </div>
@@ -728,7 +728,7 @@ export function LeftPanel({
             className="absolute inset-0 data-[state=inactive]:hidden focus-visible:outline-none mt-0 overflow-hidden w-full max-w-full"
           >
             <ScrollArea className="h-full w-full max-w-full">
-              <div className="p-4 flex flex-col gap-6 pb-20 w-full min-w-0 max-w-full box-border">
+              <div className="p-4 flex flex-col gap-6 w-full min-w-0 max-w-full box-border">
                 <div className="space-y-5 w-full min-w-0 max-w-full">
                   <div className="space-y-3 w-full min-w-0 max-w-full">
                     <Label className="text-sm font-semibold uppercase tracking-wider">

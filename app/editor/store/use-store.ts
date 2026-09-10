@@ -229,12 +229,17 @@ export const useStore = create<EditorState>((set, get) => ({
       let newSelectedId = state.selectedElementId;
 
       if (tab === "text") {
-        const currentIsText =
-          state.elements.find((el) => el.id === state.selectedElementId)?.type ===
-          "text";
-        if (!currentIsText && state.lastSelectedTextId) {
-          if (state.elements.find((el) => el.id === state.lastSelectedTextId)) {
+        const currentEl = state.elements.find((el) => el.id === state.selectedElementId);
+        const currentIsTextOrCode =
+          currentEl?.type === "text" || currentEl?.type === "code";
+        if (!currentIsTextOrCode) {
+          if (state.lastSelectedCodeId && state.elements.find((el) => el.id === state.lastSelectedCodeId)) {
+            newSelectedId = state.lastSelectedCodeId;
+          } else if (state.lastSelectedTextId && state.elements.find((el) => el.id === state.lastSelectedTextId)) {
             newSelectedId = state.lastSelectedTextId;
+          } else {
+            const codeEl = state.elements.find((el) => el.type === "code");
+            if (codeEl) newSelectedId = codeEl.id;
           }
         }
       }
@@ -256,6 +261,16 @@ export const useStore = create<EditorState>((set, get) => ({
 
   addElement: (element) => {
     set((state) => {
+      if (element.type === "code") {
+        const existingCode = state.elements.find((e) => e.type === "code");
+        if (existingCode) {
+          return {
+            selectedElementId: existingCode.id,
+            activeTab: "text",
+            lastSelectedCodeId: existingCode.id,
+          };
+        }
+      }
       const newElements = [...state.elements, element];
       const newHistory = [
         ...state.history.slice(0, state.historyIndex + 1),
@@ -325,7 +340,10 @@ export const useStore = create<EditorState>((set, get) => ({
           const styleUpdates: Record<string, any> = {};
 
           for (const [key, val] of Object.entries(updates)) {
-            if (topLevelKeys.includes(key)) {
+            if (el.type === "code" && key === "width") {
+              rootUpdates[key] = val;
+              styleUpdates[key] = val;
+            } else if (topLevelKeys.includes(key)) {
               rootUpdates[key] = val;
             } else {
               styleUpdates[key] = val;
